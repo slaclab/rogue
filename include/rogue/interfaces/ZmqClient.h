@@ -136,7 +136,8 @@ class ZmqClient {
      * downstream callers (notably `pysmurf`) rely on. Use `failTime == warnTime`
      * to fail on the first timeout.
      *
-     * @param warnTime Warn/poll period in milliseconds (ZMQ_RCVTIMEO).
+     * @param warnTime Warn/poll period in milliseconds (ZMQ_RCVTIMEO). Must be
+     *                 greater than 0; a value of 0 throws `rogue::GeneralError`.
      * @param failTime Absolute wait deadline in milliseconds. `0` (default)
      *                 means no deadline (retry forever).
      */

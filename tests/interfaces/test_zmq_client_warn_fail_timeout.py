@@ -161,3 +161,26 @@ def test_setTimeout_rejects_bool_arguments(free_zmq_port) -> None:
         pub.close(linger=0)
         rep.close(linger=0)
         ctx.term()
+
+
+def test_setTimeout_rejects_zero_warnTime(free_zmq_port) -> None:
+    """``warnTime == 0`` must raise, not install a non-blocking busy-spin.
+
+    A 0 ms warn period sets ZMQ_RCVTIMEO to 0 (non-blocking), so the recv loop
+    would spin without ever advancing toward failTime. The setter rejects it.
+    """
+    port = free_zmq_port
+    ctx, pub, rep = _silent_peer(port)
+    try:
+        client = rogue.interfaces.ZmqClient("127.0.0.1", port, False)
+        try:
+            with pytest.raises(rogue.GeneralError, match="warnTime"):
+                client.setTimeout(0, 0)
+            with pytest.raises(rogue.GeneralError, match="warnTime"):
+                client.setTimeout(0, 100)
+        finally:
+            client._stop()
+    finally:
+        pub.close(linger=0)
+        rep.close(linger=0)
+        ctx.term()

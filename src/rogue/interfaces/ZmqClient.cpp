@@ -217,15 +217,24 @@ void rogue::interfaces::ZmqClient::stop() {
     if (running_) {
         running_ = false;
         // Break any in-flight forever loop (failTime_ == 0) in send()/sendString()
-        // so teardown is not blocked. Covers both string and binary modes.
+        // so the recv loop throws and releases reqLock_ within one RCVTIMEO
+        // period. Covers both string and binary modes.
         stopping_ = true;
+
+        rogue::GilRelease noGil;
+
         if (threadEn_) {
-            rogue::GilRelease noGil;
             threadEn_ = false;
             thread_->join();
             delete thread_;
             thread_ = nullptr;
         }
+
+        // ZMQ sockets are not thread-safe. Serialize with any in-flight
+        // send()/sendString() before tearing down zmqReq_ and the context:
+        // stopping_ guarantees such a call releases reqLock_ promptly, so this
+        // cannot deadlock. The SUB thread is already joined, so zmqSub_ is idle.
+        std::lock_guard<std::mutex> lock(reqLock_);
         if (!doString_) zmq_close(this->zmqSub_);
         zmq_close(this->zmqReq_);
         zmq_ctx_destroy(this->zmqCtx_);
@@ -233,6 +242,12 @@ void rogue::interfaces::ZmqClient::stop() {
 }
 
 void rogue::interfaces::ZmqClient::setTimeout(uint32_t warnTime, uint32_t failTime) {
+    // warnTime drives ZMQ_RCVTIMEO and the warn cadence. A value of 0 would make
+    // recv non-blocking, so the send()/sendString() loop would busy-spin without
+    // ever advancing seconds toward failTime. Reject it.
+    if (warnTime == 0)
+        throw rogue::GeneralError("ZmqClient::setTimeout", "warnTime must be greater than 0 milliseconds");
+
     // ZMQ sockets are not thread-safe; serialize zmqReq_ access.
     rogue::GilRelease noGil;
     std::lock_guard<std::mutex> lock(reqLock_);
