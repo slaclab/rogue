@@ -53,7 +53,7 @@ def test_zmq_server_runthread_recovers_after_bad_response(free_zmq_port):
 
         client = rogue.interfaces.ZmqClient("127.0.0.1", port, False)
         try:
-            client.setTimeout(500, False)
+            client.setTimeout(500, 500)
             payload = pickle.dumps({"attr": "noop", "path": ""})
 
             # Send several requests; track how many reach _doRequest.

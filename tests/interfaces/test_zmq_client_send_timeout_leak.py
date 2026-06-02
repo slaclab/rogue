@@ -111,7 +111,7 @@ def _hammer_send_binary_timeouts(port: int, iterations: int) -> None:
     """
     client = rogue.interfaces.ZmqClient("127.0.0.1", port, False)
     try:
-        client.setTimeout(50, False)  # 50 ms timeout, no waitRetry
+        client.setTimeout(50, 50)  # 50 ms warn poll, fail on first timeout
         payload = b"timeout-leak-probe"
         for _ in range(iterations):
             with pytest.raises(Exception):
