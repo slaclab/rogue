@@ -102,19 +102,19 @@ def test_poll_queue_poll_cycle_processes_and_reschedules(wait_until, monkeypatch
     def fake_start(entry_block, **kwargs):
         calls.append(("start", entry_block.path, kwargs["type"]))
 
-    def fake_check(entry_block, **kwargs):
-        calls.append(("check", entry_block.path))
+    def fake_wait(entry_block, **kwargs):
+        calls.append(("wait", entry_block.path))
         with pq._condLock:
             pq._run = False
             pq._condLock.notify()
 
     monkeypatch.setattr(pr, "startTransaction", fake_start)
-    monkeypatch.setattr(pr, "checkTransaction", fake_check)
+    monkeypatch.setattr(pr, "waitTransaction", fake_wait)
 
     pq._addEntry(block, 10.0)
     pq._start()
 
-    assert wait_until(lambda: calls == [("start", "poll.block", 1), ("check", "poll.block")], timeout=1.0)
+    assert wait_until(lambda: calls == [("start", "poll.block", 1), ("wait", "poll.block")], timeout=1.0)
     pq._pollThread.join(timeout=1.0)
 
     assert pq._entries[block].block is block

@@ -111,20 +111,20 @@ def test_device_block_operations_respect_bulk_flags_and_recurse(monkeypatch):
     def fake_start(block, **kwargs):
         calls.append(("start", block.path if hasattr(block, "path") else repr(block), kwargs["type"], kwargs.get("variable")))
 
-    def fake_check(block, **kwargs):
-        calls.append(("check", block.path if hasattr(block, "path") else repr(block), None, kwargs.get("variable")))
+    def fake_wait(block, **kwargs):
+        calls.append(("wait", block.path if hasattr(block, "path") else repr(block), None, kwargs.get("variable")))
 
     monkeypatch.setattr(pr, "startTransaction", fake_start)
-    monkeypatch.setattr(pr, "checkTransaction", fake_check)
+    monkeypatch.setattr(pr, "waitTransaction", fake_wait)
 
     with CoreRoot() as root:
-        root.Parent.writeBlocks(force=True, recurse=True, checkEach=True)
-        root.Parent.verifyBlocks(recurse=True, checkEach=True)
-        root.Parent.readBlocks(recurse=True, checkEach=True)
-        root.Parent.checkBlocks(recurse=True)
+        root.Parent.writeBlocks(force=True, recurse=True, waitEach=True)
+        root.Parent.verifyBlocks(recurse=True, waitEach=True)
+        root.Parent.readBlocks(recurse=True, waitEach=True)
+        root.Parent.waitBlocks(recurse=True)
 
-        root.Parent.writeAndVerifyBlocks(force=True, recurse=False, variable=root.Parent.RemoteCfg, checkEach=True)
-        root.Parent.readAndCheckBlocks(recurse=False, variable=root.Parent.RemoteCfg, checkEach=True)
+        root.Parent.writeAndVerifyBlocks(force=True, recurse=False, variable=root.Parent.RemoteCfg, waitEach=True)
+        root.Parent.readAndWaitBlocks(recurse=False, variable=root.Parent.RemoteCfg, waitEach=True)
 
     # The bulk-disabled variable should not be included in whole-device block walks.
     started_paths = [path for kind, path, _type, _var in calls if kind == "start"]

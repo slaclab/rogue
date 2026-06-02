@@ -9,13 +9,13 @@
 #-----------------------------------------------------------------------------
 
 """
-Regression tests for ESROGUE-733: checkTransaction verify failure when
-blockData_ is modified between write and verify check.
+Regression tests for ESROGUE-733: waitTransaction verify failure when
+blockData_ is modified between write and verify wait.
 
 The bug manifests when two variables share a block and one variable's
 blockData_ is modified (via set with write=False or a concurrent _set call)
 between the write transaction and the verify comparison. Without the fix,
-checkTransaction compares the verify read-back against the modified (stale)
+waitTransaction compares the verify read-back against the modified (stale)
 blockData_ instead of the data that was actually written, causing a spurious
 verify error.
 """
@@ -125,7 +125,7 @@ def test_verify_survives_interleaved_set():
       2. writeBlocks (writes both to hardware, snapshots expected data)
       3. verifyBlocks (starts verify read; block is not stale so verify runs)
       4. Modify one var's blockData_ via set(write=False)
-      5. checkBlocks (compares against expectedData_ snapshot, not blockData_)
+      5. waitBlocks (compares against expectedData_ snapshot, not blockData_)
     """
     with VerifyRoot() as root:
         dev = root.Dev
@@ -144,12 +144,12 @@ def test_verify_survives_interleaved_set():
 
         # Step 4: modify VarHigh's blockData_ without writing to hardware.
         # This simulates a concurrent thread calling _set() between
-        # the verify read and the comparison in checkBlocks.
+        # the verify read and the comparison in waitBlocks.
         dev.VarHigh.set(0xAAAA, write=False)
 
-        # Step 5: check the verify result. Without the fix this would raise
+        # Step 5: wait for the verify result. Without the fix this would raise
         # a GeneralError because blockData_ (0xAAAA) != hardware (0x5678).
-        dev.checkBlocks()  # Should NOT raise
+        dev.waitBlocks()  # Should NOT raise
 
         # Write the pending VarHigh change so the block is no longer stale,
         # then read back from hardware to confirm original VarLow write persisted.

@@ -19,6 +19,7 @@ import os
 import signal
 import yaml
 import time
+import warnings
 import zipfile
 import inspect
 from typing import Any, Callable, Mapping, MutableMapping, Sequence
@@ -29,6 +30,44 @@ import rogue.interfaces.stream as ris
 import rogue.interfaces.memory as rim
 
 from collections import OrderedDict as odict
+
+
+def _warn_deprecated(message: str, *, stacklevel: int = 2) -> None:
+    warnings.warn(message, DeprecationWarning, stacklevel=stacklevel)
+
+
+def _resolve_deprecated_bool(
+    *,
+    new_name: str,
+    new_value: bool | None,
+    old_name: str,
+    old_value: bool | None,
+    default: bool,
+    stacklevel: int = 4,
+) -> bool:
+    """Resolve a new boolean argument with a deprecated alias."""
+    if new_value is None and old_value is None:
+        return default
+
+    if old_value is not None:
+        _warn_deprecated(
+            f"`{old_name}` is deprecated; use `{new_name}` instead.",
+            stacklevel=stacklevel,
+        )
+
+    if new_value is None:
+        return bool(old_value)
+
+    if old_value is None:
+        return bool(new_value)
+
+    if bool(new_value) != bool(old_value):
+        raise ValueError(
+            f"Conflicting values supplied for `{new_name}` and deprecated "
+            f"`{old_name}`."
+        )
+
+    return bool(new_value)
 
 
 def setUnifiedLogging(enable: bool = True) -> None:

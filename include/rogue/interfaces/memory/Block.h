@@ -88,7 +88,8 @@ class Variable;
  *   staged bytes using variable metadata (bit offsets, bit widths, byte order,
  *   list indexing/stride).
  * - Transaction methods (`write`, `read`, `startTransaction`, `checkTransaction`)
- *   move staged bytes to/from hardware and handle verify/retry/update behavior.
+ *   move staged bytes to/from hardware, wait for completion where requested,
+ *   and handle verify/retry/update behavior.
  *
  * Typical usage is through `Variable` APIs, which call the matching `Block`
  * conversion method and then issue read/write transactions.
@@ -311,13 +312,11 @@ class Block : public Master {
      *
      * @param type Transaction type.
      * @param forceWr Forces write even when block is not stale.
-     * @param check Requests immediate result checking.
      * @param var Variable associated with the transaction.
      * @param index Variable index for list variables, or `-1` for full variable.
      */
     void intStartTransaction(uint32_t type,
                              bool forceWr,
-                             bool check,
                              rogue::interfaces::memory::Variable* var,
                              int32_t index);
 
@@ -327,7 +326,9 @@ class Block : public Master {
      *
      * @param type Transaction type.
      * @param forceWr Forces write even when block is not stale.
-     * @param check Requests immediate result checking, meaning wait for the transaction to complete before returning.
+     * @param check If `true`, immediately calls `checkTransaction()` before
+     * returning. This waits for completion, surfaces transaction errors, and
+     * validates pending verify data.
      * @param var Variable associated with the transaction.
      * @param index Variable index for list variables, or `-1` for full variable.
      */
@@ -342,11 +343,15 @@ class Block : public Master {
     /**
      * @brief Starts a block transaction from Python.
      *
-     * @details Exposed as `startTransaction()` in Python.
+     * @details
+     * Exposed internally as `_startTransaction()` in Python and wrapped by
+     * PyRogue helper functions such as `pyrogue.startTransaction()`.
      *
      * @param type Transaction type.
      * @param forceWr Forces write even when block is not stale.
-     * @param check Requests immediate result checking, meaning wait for the transaction to complete before returning.
+     * @param check If `true`, immediately calls `checkTransaction()` before
+     * returning. This waits for completion, surfaces transaction errors,
+     * validates pending verify data, and updates Python Variables when needed.
      * @param var Variable associated with transaction, or `None` for block scope.
      * @param index Variable index for list variables, or `-1` for full variable.
      */
@@ -359,28 +364,33 @@ class Block : public Master {
 #endif
 
     /**
-     * @brief Checks transaction result in C++ mode.
+     * @brief Waits for pending transaction completion and checks the result.
      *
-     * @details Throws an exception if an error occurred.
+     * @details
+     * Waits for pending transactions on this Block, surfaces transaction
+     * errors, validates pending verify data, and returns whether Variables
+     * should be updated.
      */
     bool checkTransaction();
 
 #ifndef NO_PYTHON
 
     /**
-     * @brief Checks transaction result.
+     * @brief Waits for pending transaction completion and checks the result.
      *
      * @details
      * Python version of `checkTransaction()`, with variable update calls.
-     * Throws an exception if an error occurred.
-     * Exposed as `checkTransaction()` in Python.
+     * Waits for pending transactions, surfaces transaction errors, validates
+     * pending verify data, and throws an exception if an error occurred.
+     * Exposed internally as `_checkTransaction()` in Python and wrapped by
+     * PyRogue wait/check helper functions.
      */
     void checkTransactionPy();
 
 #endif
 
     /**
-     * @brief Issues write/verify/check sequence from C++.
+     * @brief Issues a write/verify/wait-and-check sequence from C++.
      *
      * @param var Variable associated with the transaction.
      * @param index Variable index for list variables, or `-1` for full variable.
@@ -388,7 +398,7 @@ class Block : public Master {
     void write(rogue::interfaces::memory::Variable* var, int32_t index = -1);
 
     /**
-     * @brief Issues read/check sequence from C++.
+     * @brief Issues a read/wait-and-check sequence from C++.
      *
      * @param var Variable associated with the transaction.
      * @param index Variable index for list variables, or `-1` for full variable.
