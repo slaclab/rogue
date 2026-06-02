@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-02T14:47:01Z",
+  "generated_at": "2026-06-02T14:54:48Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -265,6 +265,14 @@
       "history": [
         {
           "ref_name": "tests/protocols/test_epicsV4/patch",
+          "sha": "f1a7b92863c3fb45d4cacc2892b32fbc079280a0",
+          "short_sha": "f1a7b92",
+          "published_at": "2026-06-02T14:54:48Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26827694142",
+          "summary_url": "/rogue/perf/branches/tests_protocols_test_epicsV4_patch/history/f1a7b92863c3fb45d4cacc2892b32fbc079280a0.json"
+        },
+        {
+          "ref_name": "tests/protocols/test_epicsV4/patch",
           "sha": "72cb50b23da212e86638241c3f00c015353181a4",
           "short_sha": "72cb50b",
           "published_at": "2026-06-02T14:47:01Z",
@@ -282,10 +290,10 @@
       ],
       "latest": {
         "ref_name": "tests/protocols/test_epicsV4/patch",
-        "sha": "72cb50b23da212e86638241c3f00c015353181a4",
-        "short_sha": "72cb50b",
-        "published_at": "2026-06-02T14:47:01Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/26827217420",
+        "sha": "f1a7b92863c3fb45d4cacc2892b32fbc079280a0",
+        "short_sha": "f1a7b92",
+        "published_at": "2026-06-02T14:54:48Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26827694142",
         "summary_url": "/rogue/perf/branches/tests_protocols_test_epicsV4_patch/latest.json"
       }
     },
