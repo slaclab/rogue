@@ -241,6 +241,7 @@ do not need to acquire it when using built-in APIs. PyRogue acquires it
 automatically for:
 
 * ``ReadAll`` and ``WriteAll`` root operations
+* ``Initialize``, ``HardReset``, and ``CountReset`` root lifecycle operations
 * YAML import/export helpers such as ``getYaml``, ``saveYaml``, ``loadYaml``,
   and ``setYaml``
 * ``RemoteVariableDump`` and ``RemoteConfigDump``
@@ -254,8 +255,8 @@ load.
 
 Application authors usually only need to know about this lock when they create
 custom commands or callbacks that perform a multi-step system operation. If the
-operation must not interleave with YAML loads, root reads/writes, or remote
-client requests, wrap it with ``operationLock()``:
+operation must not interleave with YAML loads, root reads/writes, lifecycle
+operations, or remote client requests, wrap it with ``operationLock()``:
 
 .. code-block:: python
 

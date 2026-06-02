@@ -31,7 +31,8 @@ ZMQ request/reply operations are serialized through the server Root's
 ``operationLock()``. This means multiple remote clients do not execute tree
 operations concurrently with each other, and they also wait behind local
 root-level operations such as YAML configuration loads, ``ReadAll``, or
-``WriteAll``.
+``WriteAll``. Root lifecycle operations such as ``Initialize``, ``HardReset``,
+and ``CountReset`` also use the same lock.
 
 This is usually the desired behavior for control applications: a client should
 not read or write the tree halfway through a long ``LoadConfig`` operation.

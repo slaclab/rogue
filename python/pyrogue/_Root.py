@@ -571,10 +571,11 @@ class Root(pr.Device):
         """Serialize root-level operations that must not interleave.
 
         The lock is reentrant so built-in helpers can compose safely. Root
-        read/write helpers, YAML import/export helpers, and ZMQ request
-        handlers acquire this lock automatically. Application code can use it
-        around custom multi-step root operations that must not run concurrently
-        with remote client requests or other serialized root operations.
+        read/write helpers, lifecycle helpers, YAML import/export helpers, and
+        ZMQ request handlers acquire this lock automatically. Application code
+        can use it around custom multi-step root operations that must not run
+        concurrently with remote client requests or other serialized root
+        operations.
         """
         with self._opLock:
             yield
@@ -664,14 +665,36 @@ class Root(pr.Device):
             if not self._running:
                 return
 
+    def initialize(self) -> None:
+        """Generate an initialize operation on all devices.
+
+        Serialized with :meth:`operationLock` so local lifecycle operations do
+        not interleave with YAML configuration loads, root read/write
+        operations, or ZMQ client requests.
+        """
+        with self.operationLock():
+            super().initialize()
+
     def hardReset(self) -> None:
         """Generate a hard reset on all devices.
 
-        Called recursively on the entire tree.
-
+        Serialized with :meth:`operationLock` so local lifecycle operations do
+        not interleave with YAML configuration loads, root read/write
+        operations, or ZMQ client requests.
         """
-        super().hardReset()
-        self._clearLog()
+        with self.operationLock():
+            super().hardReset()
+            self._clearLog()
+
+    def countReset(self) -> None:
+        """Generate a count reset on all devices.
+
+        Serialized with :meth:`operationLock` so local lifecycle operations do
+        not interleave with YAML configuration loads, root read/write
+        operations, or ZMQ client requests.
+        """
+        with self.operationLock():
+            super().countReset()
 
     def __reduce__(self) -> tuple[Any, tuple[dict]]:
         """Return reduced state used by virtual-client serialization."""

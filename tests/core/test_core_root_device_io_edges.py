@@ -110,6 +110,36 @@ def test_root_operation_lock_is_reentrant_and_blocks_other_threads():
     assert not thread.is_alive()
 
 
+def test_root_lifecycle_operations_wait_for_operation_lock():
+    with IoRoot() as root:
+        for method_name in ("initialize", "hardReset", "countReset"):
+            child_called = threading.Event()
+            done = threading.Event()
+            errors = []
+
+            setattr(root.Top, method_name, lambda child_called=child_called: child_called.set())
+
+            def call_root_method():
+                try:
+                    getattr(root, method_name)()
+                except Exception as exc:
+                    errors.append(exc)
+                finally:
+                    done.set()
+
+            with root.operationLock():
+                thread = threading.Thread(target=call_root_method)
+                thread.start()
+                assert not child_called.wait(timeout=0.1)
+                assert not done.wait(timeout=0.1)
+
+            assert done.wait(timeout=5.0)
+            thread.join(timeout=1.0)
+            assert not thread.is_alive()
+            assert child_called.is_set()
+            assert errors == []
+
+
 def test_yaml_operations_require_root(tmp_path):
     config = tmp_path / "detached.yml"
     config.write_text("Detached:\n  LocalCfg: 3\n")

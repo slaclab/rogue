@@ -48,8 +48,8 @@ YAML helpers operate on a live tree attached to a ``Root``. PyRogue serializes
 ``getYaml``, ``saveYaml``, ``loadYaml``, and ``setYaml`` with the
 ``Root.operationLock()`` context. This prevents YAML snapshots and
 configuration loads from interleaving with other root-level operations, such as
-``ReadAll``, ``WriteAll``, another YAML operation, or a request from a ZMQ
-client.
+``ReadAll``, ``WriteAll``, ``Initialize``, ``HardReset``, ``CountReset``,
+another YAML operation, or a request from a ZMQ client.
 
 For most applications this is automatic and no user code is needed. It matters
 when designing custom application commands: if a command performs a coordinated
