@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZmqClient &mdash; Rogue v6.13.0-63-g36a2cd9ab documentation</title>
+  <title>ZmqClient &mdash; Rogue v6.13.0-68-g6d9053149 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=467f4956"></script>
+      <script src="../../../../_static/documentation_options.js?v=3bd9556d"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -172,16 +172,15 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="rogue.interfaces.ZmqClient.setTimeout">
-<span class="sig-name descname"><span class="pre">setTimeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waitRetry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxRetries</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.ZmqClient.setTimeout" title="Link to this definition"></a></dt>
-<dd><p>C++: <a class="reference internal" href="../../../cpp/interfaces/zmqClient.html#_CPPv4N5rogue10interfaces9ZmqClient10setTimeoutE8uint32_tb8uint32_t" title="rogue::interfaces::ZmqClient::setTimeout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::ZmqClient::setTimeout()</span></code></a></p>
+<span class="sig-name descname"><span class="pre">setTimeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">warnTime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failTime</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.ZmqClient.setTimeout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../cpp/interfaces/zmqClient.html#_CPPv4N5rogue10interfaces9ZmqClient10setTimeoutE8uint32_t8uint32_t" title="rogue::interfaces::ZmqClient::setTimeout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::ZmqClient::setTimeout()</span></code></a></p>
 <p>Sets request timeout behavior.</p>
-<p><code class="docutils literal notranslate"><span class="pre">maxRetries</span></code> caps the recv-then-retry loop in <code class="docutils literal notranslate"><span class="pre">send()</span></code> / <code class="docutils literal notranslate"><span class="pre">sendString()</span></code> when <code class="docutils literal notranslate"><span class="pre">waitRetry</span></code> is true. <code class="docutils literal notranslate"><span class="pre">0</span></code> (default) preserves the historic unbounded-retry contract; downstream callers (notably <code class="docutils literal notranslate"><span class="pre">pysmurf</span></code>) rely on it. A positive value throws <code class="docutils literal notranslate"><span class="pre">rogue::GeneralError</span></code> after that many RCVTIMEO trips, matching the throw on the <code class="docutils literal notranslate"><span class="pre">waitRetry</span> <span class="pre">==</span> <span class="pre">false</span></code> path. Ignored when <code class="docutils literal notranslate"><span class="pre">waitRetry</span></code> is false.</p>
+<p>The recv loop in <code class="docutils literal notranslate"><span class="pre">send()</span></code> / <code class="docutils literal notranslate"><span class="pre">sendString()</span></code> wakes every <code class="docutils literal notranslate"><span class="pre">warnTime</span></code> milliseconds; on each wake it logs a “still waiting” warning and keeps waiting until the accumulated wait reaches <code class="docutils literal notranslate"><span class="pre">failTime</span></code>, at which point it throws <code class="docutils literal notranslate"><span class="pre">rogue::GeneralError</span></code>. <code class="docutils literal notranslate"><span class="pre">failTime</span> <span class="pre">==</span> <span class="pre">0</span></code> (default) installs no deadline and retries forever, preserving the historic contract that downstream callers (notably <code class="docutils literal notranslate"><span class="pre">pysmurf</span></code>) rely on. Use <code class="docutils literal notranslate"><span class="pre">failTime</span> <span class="pre">==</span> <span class="pre">warnTime</span></code> to fail on the first timeout.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msecs</strong> – Timeout in milliseconds.</p></li>
-<li><p><strong>waitRetry</strong> – <code class="docutils literal notranslate"><span class="pre">true</span></code> to continue waiting/retrying after timeouts.</p></li>
-<li><p><strong>maxRetries</strong> – Optional retry cap when <code class="docutils literal notranslate"><span class="pre">waitRetry</span></code> is true. <code class="docutils literal notranslate"><span class="pre">0</span></code> means unbounded (default).</p></li>
+<li><p><strong>warnTime</strong> – Warn/poll period in milliseconds (ZMQ_RCVTIMEO). Must be greater than 0; a value of 0 throws <code class="docutils literal notranslate"><span class="pre">rogue::GeneralError</span></code>.</p></li>
+<li><p><strong>failTime</strong> – Absolute wait deadline in milliseconds. <code class="docutils literal notranslate"><span class="pre">0</span></code> (default) means no deadline (retry forever).</p></li>
 </ul>
 </dd>
 </dl>

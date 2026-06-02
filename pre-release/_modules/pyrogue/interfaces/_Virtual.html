@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.13.0-63-g36a2cd9ab documentation</title>
+  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.13.0-68-g6d9053149 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=467f4956"></script>
+      <script src="../../../_static/documentation_options.js?v=3bd9556d"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -579,8 +579,8 @@
         <span class="c1"># Setup logging</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;VirtualClient&quot;</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
-        <span class="c1"># Get root name as a connection test</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># Get root name as a connection test (fail on first 1 s timeout)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_waitForRoot</span><span class="p">()</span>
@@ -600,7 +600,8 @@
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected to </span><span class="si">{}</span><span class="s2"> at </span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Operational: warn every 1 s, retry forever (failTime=0)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">_root</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
