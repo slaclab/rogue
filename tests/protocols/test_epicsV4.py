@@ -143,6 +143,44 @@ class LocalRootWithEpics(LocalRoot):
         self.addProtocol(self.epics)
 
 
+def make_pva_client(root):
+    """Build a p4p client wired directly to the running EpicsPvServer.
+
+    The server and client must rendezvous without UDP broadcast/search: that
+    discovery path is unreliable over loopback on CI runners (the same
+    limitation that disables this test on macOS ARM64), and the EPICS default
+    ports are not always bindable on CI, so the server may fall back to an
+    ephemeral port.
+
+    Read the server's actual bound TCP port and point the client at it via
+    EPICS_PVA_NAME_SERVERS. In PVXS this performs the channel search over a
+    direct TCP connection to the named server, bypassing UDP broadcast and UDP
+    search (the client resolves the PV even with every UDP search destination
+    removed). useenv=False keeps ambient EPICS_* settings from re-introducing
+    UDP discovery.
+
+    Raises RuntimeError if the EPICS server has not started or its config does
+    not expose a server port, so an infrastructure or p4p API change surfaces as
+    a clear message rather than an opaque AttributeError/KeyError.
+    """
+    server = getattr(root.epics, '_server', None)
+    if server is None:
+        raise RuntimeError('EpicsPvServer is not started; cannot determine the '
+                           'PVA server port for the test client')
+
+    conf = server.conf()
+    port = conf.get('EPICS_PVA_SERVER_PORT')
+    if not port:
+        raise RuntimeError('EpicsPvServer config has no EPICS_PVA_SERVER_PORT; '
+                           'cannot determine the PVA server port for the test '
+                           'client (config keys: {})'.format(sorted(conf)))
+    return Context('pva', conf={
+        'EPICS_PVA_NAME_SERVERS': '127.0.0.1:{}'.format(port),
+        'EPICS_PVA_AUTO_ADDR_LIST': 'NO',
+        'EPICS_PVA_ADDR_LIST': '',
+    }, useenv=False)
+
+
 def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=None):
     start = time.monotonic()
 
@@ -174,10 +212,6 @@ def test_local_root():
     # setup the P4P client
     # https://mdavidsaver.github.io/p4p/client.html#usage
     print( Context.providers() )
-    try:
-        ctxt = Context('pva')
-    except RuntimeError as exc:
-        pytest.skip(f'EPICS PVA socket setup unavailable: {exc}')
 
     for s in pv_map_states:
         with LocalRootWithEpics(use_map=s) as root:
@@ -190,78 +224,88 @@ def test_local_root():
             # Test list method
             root.epics.list()
 
-            # Wait for PVs to become visible through the EPICS server.
-            wait_pv_value(ctxt, device_epics_prefix+':LocalRwInt', 0, timeout=PV_DISCOVERY_TIMEOUT)
+            # Build a client bound directly to this server instance. Each
+            # iteration starts a fresh server, so build a fresh client.
+            try:
+                client = make_pva_client(root)
+            except RuntimeError as exc:
+                pytest.skip(f'EPICS PVA socket setup unavailable: {exc}')
 
-            # Test RW a variable holding an scalar value
-            pv_name=device_epics_prefix+':LocalRwInt'
-            test_value=314
-            ctxt.put(pv_name, test_value)
-            wait_pv_value(ctxt, pv_name, test_value)
-            test_result=ctxt.get(pv_name)
-            if test_result != test_value:
-                raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
+            # The context manager guarantees the client is closed before the
+            # server is torn down, even if an assertion below fails.
+            with client as ctxt:
+                # Wait for PVs to become visible through the EPICS server.
+                wait_pv_value(ctxt, device_epics_prefix+':LocalRwInt', 0, timeout=PV_DISCOVERY_TIMEOUT)
 
-            # Test WO a variable holding an scalar value
-            pv_name=device_epics_prefix+':LocalWoInt'
-            test_value=314
-            ctxt.put(pv_name, test_value)
+                # Test RW a variable holding an scalar value
+                pv_name=device_epics_prefix+':LocalRwInt'
+                test_value=314
+                ctxt.put(pv_name, test_value)
+                wait_pv_value(ctxt, pv_name, test_value)
+                test_result=ctxt.get(pv_name)
+                if test_result != test_value:
+                    raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
 
-            # Test RW a variable holding a float value
-            pv_name=device_epics_prefix+':LocalRwFloat'
-            test_value=5.67
-            ctxt.put(pv_name, test_value)
-            wait_pv_value(ctxt, pv_name, test_value, transform=lambda value: round(value,2))
-            test_result=round(ctxt.get(pv_name),2)
-            if test_result != test_value:
-                raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(s, pv_name, test_value, test_result))
+                # Test WO a variable holding an scalar value
+                pv_name=device_epics_prefix+':LocalWoInt'
+                test_value=314
+                ctxt.put(pv_name, test_value)
 
-            # Test RW a variable holding an scalar value
-            pv_name=device_epics_prefix+':RemoteRwInt'
-            test_value=314
-            ctxt.put(pv_name, test_value)
-            wait_pv_value(ctxt, pv_name, test_value)
-            test_result=ctxt.get(pv_name)
-            if test_result != test_value:
-                raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
+                # Test RW a variable holding a float value
+                pv_name=device_epics_prefix+':LocalRwFloat'
+                test_value=5.67
+                ctxt.put(pv_name, test_value)
+                wait_pv_value(ctxt, pv_name, test_value, transform=lambda value: round(value,2))
+                test_result=round(ctxt.get(pv_name),2)
+                if test_result != test_value:
+                    raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(s, pv_name, test_value, test_result))
 
-            # Test WO a variable holding an scalar value
-            pv_name=device_epics_prefix+':RemoteWoInt'
-            test_value=314
-            ctxt.put(pv_name, test_value)
+                # Test RW a variable holding an scalar value
+                pv_name=device_epics_prefix+':RemoteRwInt'
+                test_value=314
+                ctxt.put(pv_name, test_value)
+                wait_pv_value(ctxt, pv_name, test_value)
+                test_result=ctxt.get(pv_name)
+                if test_result != test_value:
+                    raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
 
-            # Test RPC: set LocalRwInt to non-zero, call rpc to reset, verify it's zero
-            pv_name=device_epics_prefix+':LocalRwInt'
-            rpc_pv=device_epics_prefix+':ResetLocalRwInt'
-            test_value=42
-            ctxt.put(pv_name, test_value)
-            wait_pv_value(ctxt, pv_name, test_value)
+                # Test WO a variable holding an scalar value
+                pv_name=device_epics_prefix+':RemoteWoInt'
+                test_value=314
+                ctxt.put(pv_name, test_value)
 
-            # Use a separate context for rpc() to avoid tainting the main
-            # context's NTScalar unwrapping for subsequent get() calls.
-            rpc_ctxt = Context('pva')
-            uri = NTURI([])
-            rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv))
-            rpc_ctxt.close()
+                # Test RPC: set LocalRwInt to non-zero, call rpc to reset, verify it's zero
+                pv_name=device_epics_prefix+':LocalRwInt'
+                rpc_pv=device_epics_prefix+':ResetLocalRwInt'
+                test_value=42
+                ctxt.put(pv_name, test_value)
+                wait_pv_value(ctxt, pv_name, test_value)
 
-            wait_pv_value(ctxt, pv_name, 0)
-            test_result=ctxt.get(pv_name)
-            if test_result != 0:
-                raise AssertionError('RPC reset failed: pv_name={}: expected=0; test_result={}'.format(pv_name, test_result))
+                # Use a separate context for rpc() to avoid tainting the main
+                # context's NTScalar unwrapping for subsequent get() calls. The
+                # context manager guarantees the client is closed even if rpc()
+                # raises.
+                uri = NTURI([])
+                with make_pva_client(root) as rpc_ctxt:
+                    rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv))
 
-            # Test RPC with argument: call rpc with arg to set LocalRwInt to a specific value
-            pv_name=device_epics_prefix+':LocalRwInt'
-            rpc_pv=device_epics_prefix+':SetLocalRwInt'
-            test_value=99
-            rpc_ctxt = Context('pva')
-            uri = NTURI([('arg', 'i')])
-            rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv, kws={'arg': test_value}))
-            rpc_ctxt.close()
+                wait_pv_value(ctxt, pv_name, 0)
+                test_result=ctxt.get(pv_name)
+                if test_result != 0:
+                    raise AssertionError('RPC reset failed: pv_name={}: expected=0; test_result={}'.format(pv_name, test_result))
 
-            wait_pv_value(ctxt, pv_name, test_value)
-            test_result=ctxt.get(pv_name)
-            if test_result != test_value:
-                raise AssertionError('RPC set failed: pv_name={}: expected={}; test_result={}'.format(pv_name, test_value, test_result))
+                # Test RPC with argument: call rpc with arg to set LocalRwInt to a specific value
+                pv_name=device_epics_prefix+':LocalRwInt'
+                rpc_pv=device_epics_prefix+':SetLocalRwInt'
+                test_value=99
+                uri = NTURI([('arg', 'i')])
+                with make_pva_client(root) as rpc_ctxt:
+                    rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv, kws={'arg': test_value}))
+
+                wait_pv_value(ctxt, pv_name, test_value)
+                test_result=ctxt.get(pv_name)
+                if test_result != test_value:
+                    raise AssertionError('RPC set failed: pv_name={}: expected={}; test_result={}'.format(pv_name, test_value, test_result))
 
 if __name__ == "__main__":
     test_local_root()
