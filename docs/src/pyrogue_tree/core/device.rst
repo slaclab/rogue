@@ -371,6 +371,11 @@ operate on the device subtree using device-relative paths. This allows
 configuration of individual devices without needing to know the full tree
 structure above the device.
 
+These methods are live-tree operations. The device must be attached to a
+``Root``, and PyRogue serializes the operation with ``Root.operationLock()`` so
+device-level YAML work does not interleave with root-level YAML operations,
+whole-tree reads/writes, or ZMQ client requests.
+
 .. code-block:: python
 
    with root:

@@ -232,6 +232,51 @@ with background poll reads.
 For the detailed scheduling and behavior model, see
 :doc:`/pyrogue_tree/core/poll_queue`.
 
+Root Operation Lock
+===================
+
+``Root`` owns a reentrant operation lock used to serialize long-running
+root-level operations. This is mostly a behind-the-scenes guard: normal users
+do not need to acquire it when using built-in APIs. PyRogue acquires it
+automatically for:
+
+* ``ReadAll`` and ``WriteAll`` root operations
+* YAML import/export helpers such as ``getYaml``, ``saveYaml``, ``loadYaml``,
+  and ``setYaml``
+* ``RemoteVariableDump`` and ``RemoteConfigDump``
+* ZMQ request/reply operations served by :py:class:`~pyrogue.interfaces.ZmqServer`
+
+The goal is to prevent operations that change or snapshot a coordinated tree
+state from interleaving with each other. For example, if one client starts a
+long ``LoadConfig`` operation, another ZMQ client request will wait until that
+operation completes instead of reading or writing the tree halfway through the
+load.
+
+Application authors usually only need to know about this lock when they create
+custom commands or callbacks that perform a multi-step system operation. If the
+operation must not interleave with YAML loads, root reads/writes, or remote
+client requests, wrap it with ``operationLock()``:
+
+.. code-block:: python
+
+   @pyrogue.command(name='ApplyMode', value='')
+   def _applyMode(self, arg):
+       with self.operationLock():
+           self.Control.Mode.setDisp(arg)
+           self.Control.Enable.set(True)
+           self.WriteAll()
+
+The lock is reentrant, so code inside the block can safely call built-in
+helpers that also acquire the lock. Keep the protected section limited to the
+coordinated operation. The operation lock is not a replacement for lower-level
+memory transaction locking, and it does not stop asynchronous value update
+publishing; those mechanisms remain handled by the block, polling, and update
+queue paths.
+
+YAML helpers operate on a live tree attached to a ``Root``. Calling YAML
+helpers on detached ``Device`` or ``Node`` objects is treated as a tree
+construction error.
+
 YAML Configuration And Bulk Operations
 ======================================
 

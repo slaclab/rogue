@@ -685,26 +685,33 @@ class Device(pr.Node,rim.Hub):
         -------
         bool
             Returns ``True`` when export completes.
+
+        Notes
+        -----
+        The device must be attached to a Root. The export is serialized with
+        the Root operation lock so it does not interleave with other root-level
+        operations such as YAML loads or ZMQ requests.
         """
+        with self._operationLock():
 
-        # Auto generate name if no arg
-        if name is None or name == '':
-            name = datetime.datetime.now().strftime(autoPrefix + "_%Y%m%d_%H%M%S.yml")
+            # Auto generate name if no arg
+            if name is None or name == '':
+                name = datetime.datetime.now().strftime(autoPrefix + "_%Y%m%d_%H%M%S.yml")
 
-            if autoCompress:
-                name += '.zip'
+                if autoCompress:
+                    name += '.zip'
 
-        yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups, recurse=True)
+            yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups, recurse=True)
 
-        if name.split('.')[-1] == 'zip':
-            with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf:
-                with zf.open(os.path.basename(name[:-4]),'w') as f:
-                    f.write(yml.encode('utf-8'))
-        else:
-            with open(name,'w') as f:
-                f.write(yml)
+            if name.split('.')[-1] == 'zip':
+                with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf:
+                    with zf.open(os.path.basename(name[:-4]),'w') as f:
+                        f.write(yml.encode('utf-8'))
+            else:
+                with open(name,'w') as f:
+                    f.write(yml)
 
-        return True
+            return True
 
     def loadYaml(
         self,
@@ -733,91 +740,98 @@ class Device(pr.Node,rim.Hub):
         -------
         bool
             Returns ``True`` when load completes.
+
+        Notes
+        -----
+        The device must be attached to a Root. The load is serialized with the
+        Root operation lock so it does not interleave with other root-level
+        operations such as YAML exports or ZMQ requests.
         """
+        with self._operationLock():
 
-        # Pass arg is a python list
-        if isinstance(name,list):
-            rawlst = name
+            # Pass arg is a python list
+            if isinstance(name,list):
+                rawlst = name
 
-        # Passed arg is a comma separated list of files
-        elif ',' in name:
-            rawlst = name.split(',')
+            # Passed arg is a comma separated list of files
+            elif ',' in name:
+                rawlst = name.split(',')
 
-        # Not a list
-        else:
-            rawlst = [name]
-
-        # Init final list
-        lst = []
-
-        # Iterate through raw list and look for directories
-        for rl in rawlst:
-
-            # Name ends with .yml or .yaml
-            if rl[-4:] == '.yml' or rl[-5:] == '.yaml':
-                lst.append(rl)
-
-            # Entry is a zip file directory
-            elif '.zip' in rl:
-                base = rl.split('.zip')[0] + '.zip'
-                sub = rl.split('.zip')[1][1:]
-
-                # Open zipfile
-                with zipfile.ZipFile(base, 'r', compression=zipfile.ZIP_LZMA) as myzip:
-
-                    # Check if passed name is a directory, otherwise generate an error
-                    if not any(x.startswith("%s/" % sub.rstrip("/")) for x in myzip.namelist()):
-                        raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
-
-                    else:
-                        zip_yaml = []
-
-                        # Iterate through directory contents
-                        for zfn in myzip.namelist():
-
-                            # Filter by base directory
-                            if zfn.find(sub) == 0:
-                                spt = zfn.split('%s/' % sub.rstrip('/'))[1]
-
-                                # Entry ends in .yml or *.yml and is in current directory
-                                if '/' not in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'):
-                                    zip_yaml.append(base + '/' + zfn)
-
-                        # Keep zip-directory loads aligned with normal directory
-                        # loads by applying a lexicographic pathname sort.
-                        lst.extend(sorted(zip_yaml))
-
-            # Entry is a directory
-            elif os.path.isdir(rl):
-                dlst = glob.glob('{}/*.yml'.format(rl))
-                dlst.extend(glob.glob('{}/*.yaml'.format(rl)))
-                lst.extend(sorted(dlst))
-
-            # Not a zipfile, not a directory and does not end in .yml
+            # Not a list
             else:
-                raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+                rawlst = [name]
 
-        self._log.info(
-            "Loading YAML config from %s file(s), writeEach=%s, modes=%s, incGroups=%s, excGroups=%s",
-            len(lst),
-            writeEach,
-            modes,
-            incGroups,
-            excGroups,
-        )
+            # Init final list
+            lst = []
 
-        # Read each file
-        with self.root.pollBlock(), self.root.updateGroup():
-            for fn in lst:
-                self._log.debug("Applying YAML config file %s", fn)
-                d = pr.yamlToData(fName=fn)
-                self._applyYamlDict(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            # Iterate through raw list and look for directories
+            for rl in rawlst:
 
-            if not writeEach:
-                self._log.info("Committing staged YAML config to hardware")
-                self._writeConfig()
+                # Name ends with .yml or .yaml
+                if rl[-4:] == '.yml' or rl[-5:] == '.yaml':
+                    lst.append(rl)
 
-        return True
+                # Entry is a zip file directory
+                elif '.zip' in rl:
+                    base = rl.split('.zip')[0] + '.zip'
+                    sub = rl.split('.zip')[1][1:]
+
+                    # Open zipfile
+                    with zipfile.ZipFile(base, 'r', compression=zipfile.ZIP_LZMA) as myzip:
+
+                        # Check if passed name is a directory, otherwise generate an error
+                        if not any(x.startswith("%s/" % sub.rstrip("/")) for x in myzip.namelist()):
+                            raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+
+                        else:
+                            zip_yaml = []
+
+                            # Iterate through directory contents
+                            for zfn in myzip.namelist():
+
+                                # Filter by base directory
+                                if zfn.find(sub) == 0:
+                                    spt = zfn.split('%s/' % sub.rstrip('/'))[1]
+
+                                    # Entry ends in .yml or *.yml and is in current directory
+                                    if '/' not in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'):
+                                        zip_yaml.append(base + '/' + zfn)
+
+                            # Keep zip-directory loads aligned with normal directory
+                            # loads by applying a lexicographic pathname sort.
+                            lst.extend(sorted(zip_yaml))
+
+                # Entry is a directory
+                elif os.path.isdir(rl):
+                    dlst = glob.glob('{}/*.yml'.format(rl))
+                    dlst.extend(glob.glob('{}/*.yaml'.format(rl)))
+                    lst.extend(sorted(dlst))
+
+                # Not a zipfile, not a directory and does not end in .yml
+                else:
+                    raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+
+            self._log.info(
+                "Loading YAML config from %s file(s), writeEach=%s, modes=%s, incGroups=%s, excGroups=%s",
+                len(lst),
+                writeEach,
+                modes,
+                incGroups,
+                excGroups,
+            )
+
+            # Read each file
+            with self.root.pollBlock(), self.root.updateGroup():
+                for fn in lst:
+                    self._log.debug("Applying YAML config file %s", fn)
+                    d = pr.yamlToData(fName=fn)
+                    self._applyYamlDict(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
+                if not writeEach:
+                    self._log.info("Committing staged YAML config to hardware")
+                    self._writeConfig()
+
+            return True
 
     def setYaml(
         self,
@@ -841,23 +855,30 @@ class Device(pr.Node,rim.Hub):
             Group name or group names to include.
         excGroups : str or list[str], optional
             Group name or group names to exclude.
+
+        Notes
+        -----
+        The device must be attached to a Root. The apply operation is
+        serialized with the Root operation lock so it does not interleave with
+        other root-level operations such as YAML exports or ZMQ requests.
         """
-        d = pr.yamlToData(yml)
+        with self._operationLock():
+            d = pr.yamlToData(yml)
 
-        self._log.info(
-            "Applying YAML text config, writeEach=%s, modes=%s, incGroups=%s, excGroups=%s",
-            writeEach,
-            modes,
-            incGroups,
-            excGroups,
-        )
+            self._log.info(
+                "Applying YAML text config, writeEach=%s, modes=%s, incGroups=%s, excGroups=%s",
+                writeEach,
+                modes,
+                incGroups,
+                excGroups,
+            )
 
-        with self.root.pollBlock(), self.root.updateGroup():
-            self._applyYamlDict(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            with self.root.pollBlock(), self.root.updateGroup():
+                self._applyYamlDict(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-            if not writeEach:
-                self._log.info("Committing staged YAML text config to hardware")
-                self._writeConfig()
+                if not writeEach:
+                    self._log.info("Committing staged YAML text config to hardware")
+                    self._writeConfig()
 
     def _applyYamlDict(
         self,

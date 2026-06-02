@@ -18,6 +18,7 @@ import collections
 import inspect
 import re
 from collections import OrderedDict as odict
+from contextlib import nullcontext
 from typing import Any, Callable, Iterable, OrderedDict
 
 import pyrogue as pr
@@ -540,6 +541,19 @@ class Node(object):
         """Return the root node."""
         return self._root
 
+    def _operationLock(self) -> Any:
+        """Return the root operation lock context for rooted nodes.
+
+        YAML helpers operate on a live Root tree. Calling them on detached
+        Nodes is a tree-construction error, so fail explicitly before any
+        partial YAML work begins.
+        """
+        root = self.root
+        if root is None:
+            raise NodeError(f"{self.path} is not attached to a Root")
+        lock = getattr(root, 'operationLock', None)
+        return lock() if callable(lock) else nullcontext()
+
     def node(self, name: str) -> Node:
         """Return a direct child node by name.
 
@@ -728,10 +742,17 @@ class Node(object):
         -------
         str
             YAML-formatted representation of the node subtree.
+
+        Notes
+        -----
+        The node must be attached to a Root. The export is serialized with the
+        Root operation lock so it does not interleave with other root-level
+        operations such as YAML loads or ZMQ requests.
         """
-        if readFirst:
-            self.root._read()
-        return pr.dataToYaml({self.name:self._getDict(modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse)})
+        with self._operationLock():
+            if readFirst:
+                self.root._read()
+            return pr.dataToYaml({self.name:self._getDict(modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse)})
 
     def printYaml(
         self,
