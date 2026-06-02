@@ -1,0 +1,23 @@
+{
+  "ref_name": "zmq-updatelist-deque",
+  "ref_slug": "zmq-updatelist-deque",
+  "latest_url": "/rogue/perf/branches/zmq-updatelist-deque/latest.json",
+  "history": [
+    {
+      "ref_name": "zmq-updatelist-deque",
+      "sha": "3d7f39e8058e4aca35bad63ea4622419b298d0c4",
+      "short_sha": "3d7f39e",
+      "published_at": "2026-06-02T12:40:51Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26820019261",
+      "summary_url": "/rogue/perf/branches/zmq-updatelist-deque/history/3d7f39e8058e4aca35bad63ea4622419b298d0c4.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "zmq-updatelist-deque",
+    "sha": "3d7f39e8058e4aca35bad63ea4622419b298d0c4",
+    "short_sha": "3d7f39e",
+    "published_at": "2026-06-02T12:40:51Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26820019261",
+    "summary_url": "/rogue/perf/branches/zmq-updatelist-deque/latest.json"
+  }
+}
