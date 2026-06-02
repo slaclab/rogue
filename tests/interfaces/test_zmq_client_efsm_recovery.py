@@ -18,7 +18,8 @@
 #   "Connected to AMCc at localhost:9006".
 #
 # Root-cause hypothesis under investigation:
-#   H1: REQ socket in EFSM after a prior recv timeout (waitRetry_=False path).
+#   H1: REQ socket in EFSM after a prior recv timeout (fail-fast path,
+#       failTime == warnTime).
 #       The _waitForRoot tight retry loop abandons recv and retries send;
 #       without ZMQ_REQ_RELAXED that would leave the socket in EFSM.
 #       ZMQ_REQ_RELAXED is already set in ZmqClient::ZmqClient — so EFSM
@@ -31,7 +32,7 @@
 #     constructor's zmq_connect calls succeed.
 #   - First _send: the REP peer does NOT recv/send, so the client
 #     hits RCVTIMEO and throws "Timeout waiting for response".
-#   - Second _send: with waitRetry_=False and ZMQ_REQ_RELAXED the client
+#   - Second _send: with a fail-fast timeout and ZMQ_REQ_RELAXED the client
 #     MUST be able to send again without zmq_sendmsg returning -1.
 #
 # The failing assertion (H1 confirmed) would be:
@@ -86,7 +87,7 @@ def test_zmq_client_second_send_after_recv_timeout_does_not_raise_sendmsg_failed
     try:
         client = rogue.interfaces.ZmqClient("127.0.0.1", port, False)
         try:
-            client.setTimeout(200, False)  # 200 ms, no waitRetry
+            client.setTimeout(200, 200)  # 200 ms, fail on first timeout
             payload = pickle.dumps({"path": "__ROOT__", "attr": None, "args": (), "kwargs": {}})
 
             # First send: server is silent, expect Timeout (not zmq_sendmsg failed)
@@ -136,7 +137,7 @@ def test_zmq_client_multiple_sends_after_repeated_recv_timeouts(free_zmq_port):
     """N consecutive sends each timing out must all reach the send phase.
 
     Mirrors the _waitForRoot tight-retry loop: up to 5 calls with
-    waitRetry_=False, server silent.  Each must raise Timeout, not
+    fail-fast timeout, server silent.  Each must raise Timeout, not
     zmq_sendmsg failed.  This proves the REQ socket does not degrade
     after multiple abandoned-recv cycles.
     """
@@ -145,7 +146,7 @@ def test_zmq_client_multiple_sends_after_repeated_recv_timeouts(free_zmq_port):
     try:
         client = rogue.interfaces.ZmqClient("127.0.0.1", port, False)
         try:
-            client.setTimeout(100, False)  # 100 ms, no waitRetry
+            client.setTimeout(100, 100)  # 100 ms, fail on first timeout
             payload = pickle.dumps({"path": "__ROOT__", "attr": None, "args": (), "kwargs": {}})
 
             for i in range(5):

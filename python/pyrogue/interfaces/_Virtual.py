@@ -474,8 +474,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
-        # Get root name as a connection test
-        self.setTimeout(1000,False)
+        # Get root name as a connection test (fail on first 1 s timeout)
+        self.setTimeout(1000,1000)
 
         try:
             self._root = self._waitForRoot()
@@ -495,7 +495,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             ) from exc
 
         print("Connected to {} at {}:{}".format(self._root.name,addr,port))
-        self.setTimeout(1000,True)
+        # Operational: warn every 1 s, retry forever (failTime=0)
+        self.setTimeout(1000,0)
 
         self._root._parent = self._root
         self._root._root   = self._root

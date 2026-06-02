@@ -80,7 +80,7 @@ def test_zmq_server_runthread_survives_bad_response(free_zmq_port):
         try:
             # Use a short timeout so this test cannot hang the suite if
             # the request silently drops; one round-trip is enough.
-            client.setTimeout(500, False)
+            client.setTimeout(500, 500)
 
             # Retry a few times because ZMQ REQ-REP connect is
             # asynchronous and the first send may race the server's

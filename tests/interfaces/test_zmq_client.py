@@ -64,7 +64,7 @@ def _setup():
         time.sleep(0.5)
         port = zmqSrv.port()
         client = rogue.interfaces.ZmqClient("127.0.0.1", port, True)
-        client.setTimeout(2000, False)
+        client.setTimeout(2000, 2000)
     except Exception:
         zmqSrv._stop()
         root.stop()
