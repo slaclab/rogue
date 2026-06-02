@@ -7,13 +7,15 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-"""Thread-safety tests for ZmqServer._updateList dictionary.
+"""Thread-safety tests for the ZmqServer pending-update queue.
 
-_varUpdate() and _varDone() access _updateList without synchronization
-prior to the ESROGUE-711 fix. If user code or multiple Root instances
-invoke these callbacks from different threads, concurrent access can
-corrupt the dictionary or raise "dictionary changed size during
-iteration" during pickle.dumps.
+_varUpdate() appends to a collections.deque and _varDone() drains it into a
+thread-private dict before pickle.dumps. deque append/popleft are GIL-atomic
+and pickle only ever iterates the private snapshot, so concurrent callers --
+whether user code or multiple Root instances invoking these callbacks from
+different threads -- cannot corrupt the queue or raise "dictionary changed
+size during iteration". Prior to the ESROGUE-711 fix _varDone() pickled the
+live shared dict, which could raise under exactly that concurrency.
 """
 import threading
 import time
@@ -27,8 +29,8 @@ class _SlowPickleValue:
 
     Reproduces the matplotlib-transforms scenario from the original JIRA
     report (ESROGUE-711): a value whose serialization is slow enough that
-    a concurrent _varUpdate() can mutate _updateList mid-pickle and raise
-    "RuntimeError: dictionary changed size during iteration".
+    a concurrent _varUpdate() could mutate the live shared dict mid-pickle
+    and raise "RuntimeError: dictionary changed size during iteration".
     """
     delay_s = 0.2
 
@@ -47,7 +49,7 @@ class ZmqTestRoot(pr.Root):
 
 
 def test_zmq_server_update_list_concurrent_access():
-    """Rapid variable updates should not corrupt _updateList."""
+    """Rapid variable updates should not corrupt the pending-update queue."""
     errors = []
 
     with ZmqTestRoot() as root:
@@ -86,7 +88,7 @@ def test_zmq_server_update_list_concurrent_access():
 
 
 def test_zmq_server_update_list_direct_race():
-    """Directly call _varUpdate/_varDone from multiple threads to race _updateList."""
+    """Directly call _varUpdate/_varDone from multiple threads to race the pending queue."""
     errors = []
 
     with ZmqTestRoot() as root:
@@ -125,10 +127,12 @@ def test_zmq_server_update_list_direct_race():
 def test_zmq_server_varDone_race_with_slow_pickle():
     """Deterministic ESROGUE-711 reproducer.
 
-    Seed _updateList with a slow-pickling value and have a second thread
-    call _varUpdate() while _varDone() is mid-pickle. Without the
-    snapshot-and-swap fix this raises:
+    Seed the pending queue with a slow-pickling value and have a second
+    thread call _varUpdate() while _varDone() is mid-pickle. With the old
+    live-dict serialization this raised:
         RuntimeError: dictionary changed size during iteration
+    The deque drain-into-private-dict design makes that structurally
+    impossible: pickle iterates a thread-private snapshot.
     """
     errors = []
 
@@ -138,8 +142,8 @@ def test_zmq_server_varDone_race_with_slow_pickle():
         # Seed extra entries so pickle iteration has time to start before
         # hitting the slow value.
         for i in range(10):
-            zmq_server._updateList[f'Root.Pre{i}'] = i
-        zmq_server._updateList['Root.Slow'] = _SlowPickleValue()
+            zmq_server._pendingUpdates.append((f'Root.Pre{i}', i))
+        zmq_server._pendingUpdates.append(('Root.Slow', _SlowPickleValue()))
 
         mutator_started = threading.Event()
 
@@ -148,7 +152,7 @@ def test_zmq_server_varDone_race_with_slow_pickle():
             try:
                 # Insert during _varDone's pickle iteration. The slow value
                 # holds pickle for ~0.2 s with the GIL released, giving this
-                # thread ample time to mutate _updateList.
+                # thread ample time to append to the pending queue.
                 for i in range(50):
                     zmq_server._varUpdate(f'Root.Late{i}', i)
                     time.sleep(0.001)
@@ -170,6 +174,6 @@ def test_zmq_server_varDone_race_with_slow_pickle():
     runtime_errors = [e for tag, e in errors if isinstance(e, RuntimeError)]
     assert not runtime_errors, (
         f"ESROGUE-711 race triggered: {runtime_errors}. "
-        f"_varDone must snapshot _updateList under a lock before serializing."
+        f"_varDone must drain the pending queue into a private dict before serializing."
     )
     assert not errors, f"Unexpected errors: {errors}"

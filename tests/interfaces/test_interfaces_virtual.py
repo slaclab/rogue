@@ -179,7 +179,7 @@ def test_virtual_client_cache_update_dispatch_and_monitor(monkeypatch):
     virtual_mod.VirtualClient.ClientCache.clear()
 
     monkeypatch.setattr(virtual_mod.rogue.interfaces.ZmqClient, "__init__", lambda self, addr, port, flag: (setattr(self, "_host", addr), setattr(self, "_port", port)))
-    monkeypatch.setattr(virtual_mod.VirtualClient, "setTimeout", lambda self, timeout, enabled: setattr(self, "_timeouts", getattr(self, "_timeouts", []) + [(timeout, enabled)]))
+    monkeypatch.setattr(virtual_mod.VirtualClient, "setTimeout", lambda self, warnTime, failTime=0: setattr(self, "_timeouts", getattr(self, "_timeouts", []) + [(warnTime, failTime)]))
     monkeypatch.setattr(virtual_mod.threading, "Thread", FakeThread)
 
     root = virtual_mod.VirtualFactory({
@@ -210,7 +210,7 @@ def test_virtual_client_cache_update_dispatch_and_monitor(monkeypatch):
     assert client.root is root
     assert client.linked is True
     assert client._monThread.started is True
-    assert client._timeouts == [(1000, False), (1000, True)]
+    assert client._timeouts == [(1000, 1000), (1000, 0)]
 
     root._nodes["Leaf"] = virtual_mod.VirtualFactory({
         "name": "Leaf",
