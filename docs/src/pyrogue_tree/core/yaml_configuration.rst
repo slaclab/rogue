@@ -132,7 +132,7 @@ the application workflow is:
 2. Traverse the tree and assign Variable display values with
    ``setDisp(..., write=False)``.
 3. After the full YAML payload is staged in shadow state, commit through the
-   device's write path (``writeBlocks``, ``verifyBlocks``, ``checkBlocks``).
+   device's write path (``writeBlocks``, ``verifyBlocks``, ``waitBlocks``).
 
 Implications:
 
@@ -158,7 +158,7 @@ directory are considered. Nested subdirectories are ignored, matching the
 normal directory behavior.
 
 The staged values are then committed using the normal tree transaction path.
-For the bulk write, verify, read, and check model behind that commit step, see
+For the bulk write, verify, read, and wait model behind that commit step, see
 :doc:`/pyrogue_tree/core/block_operations`.
 
 Device-Level YAML Operations
@@ -197,7 +197,7 @@ Device-level loads support the same array matching and wildcard syntax:
      Gain: 100
 
 **Device-level writes are scoped** to the device subtree. Only blocks belonging
-to the device and its descendants are written, verified, and checked. The
+to the device and its descendants are written, verified, and waited on. The
 ``ForceWrite`` setting on Root is still respected.
 
 **Round-trip example:**

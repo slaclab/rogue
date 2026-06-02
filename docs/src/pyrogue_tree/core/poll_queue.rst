@@ -36,7 +36,7 @@ At runtime, PollQueue:
 * Tracks poll entries per Block (not per Variable)
 * Schedules reads using a time-ordered heap
 * Issues Block read transactions with ``startTransaction(..., Read)``
-* Waits for completion via ``checkTransaction``
+* Waits for completion via ``waitTransaction``
 * Wraps each poll batch in ``root.updateGroup()`` so updates are coalesced
 
 The block-level design is important. PollQueue does not schedule one hardware
