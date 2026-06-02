@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "RemoteCommand-checkEach-fix",
+      "sha": "cb781c15c0e65b056b93107ccd178e727fa72f52",
+      "short_sha": "cb781c1",
+      "published_at": "2026-06-02T17:01:14Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26834910154",
+      "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/history/cb781c15c0e65b056b93107ccd178e727fa72f52.json"
+    },
+    {
+      "ref_name": "RemoteCommand-checkEach-fix",
       "sha": "314d100ef31ec4d4fba1e4dd9d1fb741980683fd",
       "short_sha": "314d100",
       "published_at": "2026-05-15T20:38:58Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "RemoteCommand-checkEach-fix",
-    "sha": "314d100ef31ec4d4fba1e4dd9d1fb741980683fd",
-    "short_sha": "314d100",
-    "published_at": "2026-05-15T20:38:58Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25940018054",
+    "sha": "cb781c15c0e65b056b93107ccd178e727fa72f52",
+    "short_sha": "cb781c1",
+    "published_at": "2026-06-02T17:01:14Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26834910154",
     "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/latest.json"
   }
 }

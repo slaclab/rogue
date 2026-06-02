@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-02T17:00:40Z",
+  "generated_at": "2026-06-02T17:01:14Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -256,6 +256,45 @@
         "published_at": "2026-06-02T17:00:40Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/26834892940",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "RemoteCommand-checkEach-fix",
+      "ref_slug": "RemoteCommand-checkEach-fix",
+      "latest_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/latest.json",
+      "history": [
+        {
+          "ref_name": "RemoteCommand-checkEach-fix",
+          "sha": "cb781c15c0e65b056b93107ccd178e727fa72f52",
+          "short_sha": "cb781c1",
+          "published_at": "2026-06-02T17:01:14Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26834910154",
+          "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/history/cb781c15c0e65b056b93107ccd178e727fa72f52.json"
+        },
+        {
+          "ref_name": "RemoteCommand-checkEach-fix",
+          "sha": "314d100ef31ec4d4fba1e4dd9d1fb741980683fd",
+          "short_sha": "314d100",
+          "published_at": "2026-05-15T20:38:58Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25940018054",
+          "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/history/314d100ef31ec4d4fba1e4dd9d1fb741980683fd.json"
+        },
+        {
+          "ref_name": "RemoteCommand-checkEach-fix",
+          "sha": "271717d7ae58f96f54f6bd9378ae19b68613d9d2",
+          "short_sha": "271717d",
+          "published_at": "2026-05-11T22:39:10Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25701239541",
+          "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/history/271717d7ae58f96f54f6bd9378ae19b68613d9d2.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "RemoteCommand-checkEach-fix",
+        "sha": "cb781c15c0e65b056b93107ccd178e727fa72f52",
+        "short_sha": "cb781c1",
+        "published_at": "2026-06-02T17:01:14Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26834910154",
+        "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/latest.json"
       }
     },
     {
@@ -1253,37 +1292,6 @@
         "published_at": "2026-05-15T20:39:37Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25940038686",
         "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-helpers-init-cli/latest.json"
-      }
-    },
-    {
-      "ref_name": "RemoteCommand-checkEach-fix",
-      "ref_slug": "RemoteCommand-checkEach-fix",
-      "latest_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/latest.json",
-      "history": [
-        {
-          "ref_name": "RemoteCommand-checkEach-fix",
-          "sha": "314d100ef31ec4d4fba1e4dd9d1fb741980683fd",
-          "short_sha": "314d100",
-          "published_at": "2026-05-15T20:38:58Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25940018054",
-          "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/history/314d100ef31ec4d4fba1e4dd9d1fb741980683fd.json"
-        },
-        {
-          "ref_name": "RemoteCommand-checkEach-fix",
-          "sha": "271717d7ae58f96f54f6bd9378ae19b68613d9d2",
-          "short_sha": "271717d",
-          "published_at": "2026-05-11T22:39:10Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25701239541",
-          "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/history/271717d7ae58f96f54f6bd9378ae19b68613d9d2.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "RemoteCommand-checkEach-fix",
-        "sha": "314d100ef31ec4d4fba1e4dd9d1fb741980683fd",
-        "short_sha": "314d100",
-        "published_at": "2026-05-15T20:38:58Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25940018054",
-        "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/latest.json"
       }
     },
     {
