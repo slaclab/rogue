@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-02T16:53:48Z",
+  "generated_at": "2026-06-02T17:00:40Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "6d9053149f3f8310fcf401857651fbe6e60991ad",
-      "short_sha": "6d90531",
-      "published_at": "2026-06-02T16:27:02Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/26833083628",
+      "sha": "897e80252092ce3ba79828ecfaef9dd7e60dbaf3",
+      "short_sha": "897e802",
+      "published_at": "2026-06-02T17:00:40Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26834892940",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -88,6 +88,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "897e80252092ce3ba79828ecfaef9dd7e60dbaf3",
+          "short_sha": "897e802",
+          "published_at": "2026-06-02T17:00:40Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26834892940",
+          "summary_url": "/rogue/perf/branches/pre-release/history/897e80252092ce3ba79828ecfaef9dd7e60dbaf3.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "6d9053149f3f8310fcf401857651fbe6e60991ad",
@@ -239,54 +247,15 @@
           "published_at": "2026-05-07T22:32:19Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/25525473411",
           "summary_url": "/rogue/perf/branches/pre-release/history/304671f5affc4b2bc8a4d2060c90e0e7a39a0454.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "7c7b8e38cc52e33988d93abee8aecefce6e64e1e",
-          "short_sha": "7c7b8e3",
-          "published_at": "2026-05-07T21:37:26Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25523224645",
-          "summary_url": "/rogue/perf/branches/pre-release/history/7c7b8e38cc52e33988d93abee8aecefce6e64e1e.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "6d9053149f3f8310fcf401857651fbe6e60991ad",
-        "short_sha": "6d90531",
-        "published_at": "2026-06-02T16:27:02Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/26833083628",
+        "sha": "897e80252092ce3ba79828ecfaef9dd7e60dbaf3",
+        "short_sha": "897e802",
+        "published_at": "2026-06-02T17:00:40Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26834892940",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "zmq-updatelist-deque",
-      "ref_slug": "zmq-updatelist-deque",
-      "latest_url": "/rogue/perf/branches/zmq-updatelist-deque/latest.json",
-      "history": [
-        {
-          "ref_name": "zmq-updatelist-deque",
-          "sha": "a7ec8b1b7a96ef58790cbd88364ce6702113635d",
-          "short_sha": "a7ec8b1",
-          "published_at": "2026-06-02T16:53:48Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/26834528714",
-          "summary_url": "/rogue/perf/branches/zmq-updatelist-deque/history/a7ec8b1b7a96ef58790cbd88364ce6702113635d.json"
-        },
-        {
-          "ref_name": "zmq-updatelist-deque",
-          "sha": "3d7f39e8058e4aca35bad63ea4622419b298d0c4",
-          "short_sha": "3d7f39e",
-          "published_at": "2026-06-02T12:40:51Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/26820019261",
-          "summary_url": "/rogue/perf/branches/zmq-updatelist-deque/history/3d7f39e8058e4aca35bad63ea4622419b298d0c4.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "zmq-updatelist-deque",
-        "sha": "a7ec8b1b7a96ef58790cbd88364ce6702113635d",
-        "short_sha": "a7ec8b1",
-        "published_at": "2026-06-02T16:53:48Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/26834528714",
-        "summary_url": "/rogue/perf/branches/zmq-updatelist-deque/latest.json"
       }
     },
     {
