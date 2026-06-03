@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-02T17:58:16Z",
+  "generated_at": "2026-06-03T17:22:25Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -256,6 +256,29 @@
         "published_at": "2026-06-02T17:10:53Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/26835447559",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "codex/agent-build-env-guidance",
+      "ref_slug": "codex_agent-build-env-guidance",
+      "latest_url": "/rogue/perf/branches/codex_agent-build-env-guidance/latest.json",
+      "history": [
+        {
+          "ref_name": "codex/agent-build-env-guidance",
+          "sha": "285c1771398e6b8a3255f28c83b0380a24a72e26",
+          "short_sha": "285c177",
+          "published_at": "2026-06-03T17:22:25Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26900991180",
+          "summary_url": "/rogue/perf/branches/codex_agent-build-env-guidance/history/285c1771398e6b8a3255f28c83b0380a24a72e26.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "codex/agent-build-env-guidance",
+        "sha": "285c1771398e6b8a3255f28c83b0380a24a72e26",
+        "short_sha": "285c177",
+        "published_at": "2026-06-03T17:22:25Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26900991180",
+        "summary_url": "/rogue/perf/branches/codex_agent-build-env-guidance/latest.json"
       }
     },
     {
