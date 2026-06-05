@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "root-operation-lock",
+      "sha": "328b594a95db3d74e8af49ec0ea93f829e44b3ab",
+      "short_sha": "328b594",
+      "published_at": "2026-06-05T17:35:03Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/27029947705",
+      "summary_url": "/rogue/perf/branches/root-operation-lock/history/328b594a95db3d74e8af49ec0ea93f829e44b3ab.json"
+    },
+    {
+      "ref_name": "root-operation-lock",
       "sha": "13c64536e2671e5a2f145909992daff2ca45913d",
       "short_sha": "13c6453",
       "published_at": "2026-06-02T17:58:16Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "root-operation-lock",
-    "sha": "13c64536e2671e5a2f145909992daff2ca45913d",
-    "short_sha": "13c6453",
-    "published_at": "2026-06-02T17:58:16Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/26837948208",
+    "sha": "328b594a95db3d74e8af49ec0ea93f829e44b3ab",
+    "short_sha": "328b594",
+    "published_at": "2026-06-05T17:35:03Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/27029947705",
     "summary_url": "/rogue/perf/branches/root-operation-lock/latest.json"
   }
 }
