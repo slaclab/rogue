@@ -38,6 +38,7 @@ namespace bp = boost::python;
 #include <exception>
 #include <iomanip>
 #include <memory>
+#include <mutex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -655,8 +656,18 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     uint8_t tmp;
     uint8_t* buff;
 
-    rogue::GilRelease noGil;
-    std::lock_guard<std::mutex> lock(mtx_);
+    // Fast path: take mtx_ without dropping the GIL. The body below is pure
+    // in-memory work (memcpy/copyBits/byte-reverse) with no Python calls, so
+    // holding the GIL across it is correct and avoids the release/re-acquire
+    // thrash that dominates bulk update-queue drains (SLAC rogue #1262). Only
+    // when mtx_ is actually contended -- held by a memory-transaction worker
+    // that may need the GIL for a Python callback -- do we drop the GIL while
+    // blocking, preserving the deadlock-avoidance contract.
+    std::unique_lock<std::mutex> lock(mtx_, std::try_to_lock);
+    if (!lock.owns_lock()) {
+        rogue::GilRelease noGil;
+        lock.lock();
+    }
 
     // Set stale flag
     if (var->mode_ != "RO") stale_ = true;
@@ -739,8 +750,15 @@ void rim::Block::getBytes(uint8_t* data, rim::Variable* var, uint32_t index) {
     uint32_t dstBit;
     uint32_t x;
 
-    rogue::GilRelease noGil;
-    std::lock_guard<std::mutex> lock(mtx_);
+    // Fast path: take mtx_ without dropping the GIL. See setBytes() for the full
+    // rationale -- the body is pure in-memory work, so we only release the GIL
+    // on the contended-wait path to preserve deadlock avoidance (SLAC rogue
+    // #1262).
+    std::unique_lock<std::mutex> lock(mtx_, std::try_to_lock);
+    if (!lock.owns_lock()) {
+        rogue::GilRelease noGil;
+        lock.lock();
+    }
 
     // List variable
     if (var->numValues_ != 0) {
