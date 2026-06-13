@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-05T17:35:03Z",
+  "generated_at": "2026-06-13T19:46:43Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -259,6 +259,29 @@
       }
     },
     {
+      "ref_name": "issues/1262",
+      "ref_slug": "issues_1262",
+      "latest_url": "/rogue/perf/branches/issues_1262/latest.json",
+      "history": [
+        {
+          "ref_name": "issues/1262",
+          "sha": "dddb00a3f1b5f17a961a7b2df4f0014e90ac3032",
+          "short_sha": "dddb00a",
+          "published_at": "2026-06-13T19:46:43Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/27477052621",
+          "summary_url": "/rogue/perf/branches/issues_1262/history/dddb00a3f1b5f17a961a7b2df4f0014e90ac3032.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "issues/1262",
+        "sha": "dddb00a3f1b5f17a961a7b2df4f0014e90ac3032",
+        "short_sha": "dddb00a",
+        "published_at": "2026-06-13T19:46:43Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/27477052621",
+        "summary_url": "/rogue/perf/branches/issues_1262/latest.json"
+      }
+    },
+    {
       "ref_name": "root-operation-lock",
       "ref_slug": "root-operation-lock",
       "latest_url": "/rogue/perf/branches/root-operation-lock/latest.json",
@@ -287,29 +310,6 @@
         "published_at": "2026-06-05T17:35:03Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/27029947705",
         "summary_url": "/rogue/perf/branches/root-operation-lock/latest.json"
-      }
-    },
-    {
-      "ref_name": "codex/agent-build-env-guidance",
-      "ref_slug": "codex_agent-build-env-guidance",
-      "latest_url": "/rogue/perf/branches/codex_agent-build-env-guidance/latest.json",
-      "history": [
-        {
-          "ref_name": "codex/agent-build-env-guidance",
-          "sha": "285c1771398e6b8a3255f28c83b0380a24a72e26",
-          "short_sha": "285c177",
-          "published_at": "2026-06-03T17:22:25Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/26900991180",
-          "summary_url": "/rogue/perf/branches/codex_agent-build-env-guidance/history/285c1771398e6b8a3255f28c83b0380a24a72e26.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "codex/agent-build-env-guidance",
-        "sha": "285c1771398e6b8a3255f28c83b0380a24a72e26",
-        "short_sha": "285c177",
-        "published_at": "2026-06-03T17:22:25Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/26900991180",
-        "summary_url": "/rogue/perf/branches/codex_agent-build-env-guidance/latest.json"
       }
     }
   ]
