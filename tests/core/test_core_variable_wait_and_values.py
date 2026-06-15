@@ -11,6 +11,7 @@
 import threading
 import time
 import io
+import warnings
 
 import numpy as np
 import pyrogue as pr
@@ -23,6 +24,7 @@ class WaitDevice(pr.Device):
         super().__init__(memBase=mem_base, **kwargs)
         self.set_calls = []
         self.get_calls = []
+        self.link_call_args = []
 
         self.add(pr.LocalVariable(
             name="Counter",
@@ -64,22 +66,32 @@ class WaitDevice(pr.Device):
 
         self.add(pr.LinkVariable(
             name="ReadOnlyMirror",
-            linkedGet=lambda dev=None, var=None, read=True, index=-1, check=True: self.Counter.get(
+            linkedGet=lambda dev=None, var=None, read=True, index=-1, wait=True: self.Counter.get(
                 read=read,
                 index=index,
-                check=check,
+                wait=wait,
             ),
         ))
 
         self.add(pr.LinkVariable(
             name="WriteOnlyMirror",
-            linkedSet=lambda dev=None, var=None, value=None, write=True, index=-1, verify=True, check=True: self.Counter.set(
+            linkedSet=lambda dev=None, var=None, value=None, write=True, index=-1, verify=True, wait=True: self.Counter.set(
                 value,
                 index=index,
                 write=write,
                 verify=verify,
-                check=check,
+                wait=wait,
             ),
+        ))
+
+        self.add(pr.LinkVariable(
+            name="WaitArgMirror",
+            linkedGet=lambda wait=True: self._record_link_arg("wait", wait),
+        ))
+
+        self.add(pr.LinkVariable(
+            name="CheckArgMirror",
+            linkedGet=lambda check=True: self._record_link_arg("check", check),
         ))
 
         self.add(pr.LinkVariable(
@@ -99,6 +111,10 @@ class WaitDevice(pr.Device):
 
     def _tracked_get(self, **_kwargs):
         return self.set_calls[-1][0] if self.set_calls else 5
+
+    def _record_link_arg(self, name, value):
+        self.link_call_args.append((name, value))
+        return value
 
 
 class WaitRoot(MemoryRoot):
@@ -178,6 +194,15 @@ def test_link_variable_modes_and_dependency_blocks():
         assert root.Dev.Counter.value() == 8
         assert root.Dev.ReadOnlyMirror.get() == 8
 
+        root.Dev.link_call_args.clear()
+        assert root.Dev.WaitArgMirror.get(wait=False) is False
+        assert root.Dev.CheckArgMirror.get(wait=False) is False
+        assert root.Dev.link_call_args == [("wait", False), ("check", False)]
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", DeprecationWarning)
+            assert root.Dev.NestedMirror.get(wait=False) == 8
+
 
 def test_local_and_remote_variable_edge_operations(monkeypatch):
     posted = []
@@ -200,7 +225,7 @@ def test_local_and_remote_variable_edge_operations(monkeypatch):
         root.Dev.RemoteArray.post(99, index=2)
         assert posted == [("root.Dev.RemoteArray", rogue.interfaces.memory.Post, root.Dev.RemoteArray, 2)]
 
-        root.Dev.RemoteArray.write(verify=False, check=False)
+        root.Dev.RemoteArray.write(verify=False, wait=False)
 
         # Getter-only local variables should still materialize a native type at finish-init time.
         assert root.Dev.GetterOnly.value() == 12

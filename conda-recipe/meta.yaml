@@ -51,6 +51,7 @@ requirements:
     - qtpy >=2.0
     - pyqtgraph >=0.13
     - matplotlib
+    - rdma-core  # [linux]
 
 test:
   imports:

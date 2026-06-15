@@ -165,13 +165,14 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
     if (tmpEof) {
         tranFrame_[0]->setLastUser(tmpLuser);
         tranCount_[0] = 0;
+
+        // Detect SSI error — must precede pushFrame/reset or the indication is lost.
+        if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[0]->setError(0x80);
+
         if (app_[tranDest_]) {
             app_[tranDest_]->pushFrame(tranFrame_[0]);
         }
         tranFrame_[0].reset();
-
-        // Detect SSI error
-        if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[tmpDest]->setError(0x80);
     } else {
         tranCount_[0]++;
     }

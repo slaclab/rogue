@@ -104,7 +104,7 @@ def test_zmq_server_operation_request_and_string_paths(monkeypatch, capsys):
     server._varUpdate("root.Node.other", 7)
     server._varDone()
     assert published == [{"root.Node.value": 5, "root.Node.other": 7}]
-    assert server._updateList == {}
+    assert len(server._pendingUpdates) == 0
 
     server._start()
     out = capsys.readouterr().out

@@ -56,8 +56,6 @@ class BaseCommand(pr.BaseVariable):
         keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the
         callback may accept any subset of these names.
         Default to no-op for command if None.
-    background : bool, optional (default = False)
-        Reserved for background execution.
     guiGroup : str, optional
         GUI grouping label.
     **kwargs : Any
@@ -77,7 +75,6 @@ class BaseCommand(pr.BaseVariable):
         minimum: Any | None = None,
         maximum: Any | None = None,
         function: Callable[..., Any] | None = None,
-        background: bool = False,
         guiGroup: str | None = None,
         **kwargs: Any,
     ) -> None:
@@ -554,7 +551,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             self._set(value,index)
 
             if write:
-                pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, checkEach=True, variable=self, index=index)
+                pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, wait=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -580,7 +577,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             index = operator.index(index)
 
             if read:
-                pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, checkEach=True, variable=self, index=index)
+                pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, wait=True, variable=self, index=index)
 
             return self._get(index)
 

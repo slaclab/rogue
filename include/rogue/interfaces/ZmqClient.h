@@ -55,16 +55,20 @@ class ZmqClient {
     // Logger instance.
     std::shared_ptr<rogue::Logging> log_;
 
-    // Request timeout in milliseconds.
+    // Warn/poll period in milliseconds (drives ZMQ_RCVTIMEO). Each time it
+    // trips, the recv loop logs a "still waiting" warning and keeps waiting.
     uint32_t timeout_;
 
-    // Continue retrying after timeout when true.
-    bool waitRetry_;
+    // Absolute wait deadline in milliseconds. Once the accumulated wait reaches
+    // failTime_ the recv loop throws. 0 means no deadline (retry forever),
+    // preserving the pre-#1236 contract that pysmurf and other downstream
+    // callers rely on.
+    uint32_t failTime_;
 
-    // Maximum recv retries when waitRetry_ is true. 0 means unbounded (the
-    // default, preserving the pre-#1236 forever-retry contract that pysmurf
-    // and other downstream callers rely on).
-    uint32_t maxRetries_;
+    // Shutdown sentinel. stop() sets this so an in-flight forever loop
+    // (failTime_ == 0) throws out of send()/sendString() instead of blocking
+    // teardown.
+    std::atomic<bool> stopping_{false};
 
     //! \cond INTERNAL
   protected:
@@ -124,19 +128,27 @@ class ZmqClient {
      * @brief Sets request timeout behavior.
      *
      * @details
-     * `maxRetries` caps the recv-then-retry loop in `send()` / `sendString()`
-     * when `waitRetry` is true. `0` (default) preserves the historic
-     * unbounded-retry contract; downstream callers (notably `pysmurf`) rely
-     * on it. A positive value throws `rogue::GeneralError` after that many
-     * RCVTIMEO trips, matching the throw on the `waitRetry == false` path.
-     * Ignored when `waitRetry` is false.
+     * The recv loop in `send()` / `sendString()` wakes every `warnTime`
+     * milliseconds; on each wake it logs a "still waiting" warning and keeps
+     * waiting until the accumulated wait reaches `failTime`, at which point it
+     * throws `rogue::GeneralError`. `failTime == 0` (default) installs no
+     * deadline and retries forever, preserving the historic contract that
+     * downstream callers (notably `pysmurf`) rely on. Use `failTime == warnTime`
+     * to fail on the first timeout.
      *
-     * @param msecs Timeout in milliseconds.
-     * @param waitRetry `true` to continue waiting/retrying after timeouts.
-     * @param maxRetries Optional retry cap when `waitRetry` is true. `0` means
-     *                   unbounded (default).
+     * @param warnTime Warn/poll period in milliseconds (ZMQ_RCVTIMEO). Must be
+     *                 greater than 0; a value of 0 throws `rogue::GeneralError`.
+     * @param failTime Absolute wait deadline in milliseconds. `0` (default)
+     *                 means no deadline (retry forever).
      */
-    void setTimeout(uint32_t msecs, bool waitRetry, uint32_t maxRetries = 0);
+    void setTimeout(uint32_t warnTime, uint32_t failTime = 0);
+
+    // Reject legacy (msecs, waitRetry[, maxRetries]) calls at compile time: a
+    // bool argument would otherwise implicitly convert to uint32_t and silently
+    // set failTime = 1 ms. Stale C++ callers get a compile error instead. The
+    // Python binding rejects bools at runtime via the setTimeoutPy wrapper.
+    void setTimeout(uint32_t warnTime, bool failTime) = delete;
+    void setTimeout(uint32_t warnTime, bool waitRetry, uint32_t maxRetries) = delete;
 
     /**
      * @brief Sends a string-mode request.

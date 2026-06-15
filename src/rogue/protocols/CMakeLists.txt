@@ -17,6 +17,10 @@ add_subdirectory("udp")
 add_subdirectory("batcher")
 add_subdirectory("xilinx")
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+   add_subdirectory("rocev2")
+endif()
+
 if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
 endif()

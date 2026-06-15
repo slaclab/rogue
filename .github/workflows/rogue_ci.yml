@@ -32,18 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Check for trailing whitespace and tabs
-        run: |
-          # Check for trailing whitespace
-          if grep -rnI '[[:blank:]]$' --include=\*.{cpp,h,py} --exclude=doctest.h .; then
-            echo "Error: Trailing whitespace found in the repository!"
-            exit 1
-          fi
-
-          # Check for tab characters instead of spaces
-          if grep -rnI $'\t' --include=\*.{cpp,h,py} --exclude=doctest.h .; then
-            echo "Error: Tab characters found in the repository! Please use spaces for indentation."
-            exit 1
-          fi
+        run: ./scripts/check_whitespace.sh
 
       - uses: actions/setup-python@v6
         with:
@@ -53,11 +42,9 @@ jobs:
             pip_requirements_ci.txt
             pip_requirements_docs.txt
 
-      # Install dependencies
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libzmq3-dev libboost-all-dev bzip2 libbz2-dev
+          ./scripts/ci_install_deps.sh
           python -m pip install -r pip_requirements_ci.txt
 
       # Run Linters
@@ -65,11 +52,17 @@ jobs:
         run: |
           ./scripts/run_linters.sh
 
+      # See scripts/ci_bring_up_soft_roce.sh for the azure-kernel caveat that
+      # forces `continue-on-error: true` on GHA-hosted runners.
+      - name: Bring up Soft-RoCE (rxe0)
+        continue-on-error: true
+        run: ./scripts/ci_bring_up_soft_roce.sh
+
       # Rogue
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
-          cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON
+          cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON -DROGUE_COVERAGE=ON
           cmake --build build -j$(nproc)
           cmake --build build --target install
 
@@ -77,21 +70,60 @@ jobs:
       # Full Linux build runs the complete native C++ suite in a
       # Python-enabled configuration.
       - name: Rogue Native C++ Tests
+        timeout-minutes: 10
         run: |
-          source build/setup_rogue.sh
+          source ./scripts/ci_test_env.sh
           ctest --test-dir build --output-on-failure -L cpp
 
       - name: Rogue Tests
+        # 15m cap catches pytest-xdist hangs after a native-abort in a worker.
+        # Observed on GHA: a SIGABRT inside a C extension leaves execnet's
+        # thread_receiver waiting forever; workflow_dispatch then hits its own
+        # 360-minute wall instead of failing fast.
+        timeout-minutes: 15
         run: |
-          source build/setup_rogue.sh
+          source ./scripts/ci_test_env.sh
           python -m pytest -n auto --dist loadfile --cov -m "not perf"
+          coverage xml -o coverage-py.xml
 
-      # Code Coverage
-      - name: Code Coverage
+      # Generate C++ coverage report from .gcda files produced by ctest + pytest.
+      # Scope: all Rogue C++ sources and headers under src/rogue/ and include/rogue/.
+      # Exclude: tests/ (test .cpp files do not receive --coverage flags, but
+      # this is belt-and-braces against build-tree artifacts leaking into the report).
+      - name: Generate C++ Coverage Report
+        if: always()
+        run: |
+          set -euo pipefail
+          gcovr \
+            --root . \
+            --filter 'src/rogue/' \
+            --filter 'include/rogue/' \
+            --exclude 'tests/' \
+            --print-summary \
+            --txt    coverage-cpp.txt \
+            --cobertura coverage-cpp.xml \
+            --gcov-ignore-parse-errors=negative_hits.warn_once_per_file \
+            build/
+          cat coverage-cpp.txt
+
+      # Python coverage summary to job log
+      - name: Python Coverage Report
+        if: always()
         run: |
           source build/setup_rogue.sh
-          codecov
           coverage report -m
+
+      # Dual-language Codecov upload; non-blocking
+      - name: Upload Coverage to Codecov
+        if: always()
+        uses: codecov/codecov-action@v5
+        continue-on-error: true
+        with:
+          files: ./coverage-py.xml,./coverage-cpp.xml
+          flags: python,cpp
+          disable_search: true
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
 # ----------------------------------------------------------------------------
 
   small_build_test:
@@ -105,9 +137,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libzmq3-dev libboost-all-dev bzip2 libbz2-dev
+        run: ./scripts/ci_install_deps.sh
 
       # Rogue
       - name: Build Rogue
@@ -201,11 +231,11 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.12
           cache: 'pip'

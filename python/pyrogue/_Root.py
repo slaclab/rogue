@@ -383,6 +383,8 @@ class Root(pr.Device):
         #self.add(pr.LocalCommand(name='Exit', function=self._exit,
         #                         description='Exit the server application'))
 
+        self.add(pr.LoadConfigProcess(name='LoadConfigProcess'))
+        self.add(pr.SaveConfigProcess(name='SaveConfigProcess'))
 
     def start(self) -> None:
         """Setup the tree and start background threads for pollQueue and updateQueue.
@@ -613,8 +615,40 @@ class Root(pr.Device):
 
     @pr.expose
     def waitOnUpdate(self) -> None:
-        """Wait until all update queue items have been processed."""
-        self._updateQueue.join()
+        """Block until update-queue items present at call time have been processed.
+
+        A barrier sentinel (``threading.Event``) is appended to the update
+        queue and this method blocks until the update worker reaches it.
+        Items added to the queue *while* this method is waiting are NOT
+        included in the wait — the wait is bounded by the queue contents
+        at the moment of this call.
+
+        This is intentional: the previous implementation called
+        ``_updateQueue.join()``, which only returns once the unfinished-task
+        counter reaches zero. Under sustained producer load (poll thread,
+        listener-fired sets, UDP listeners) the counter never settles and
+        the call could silently take minutes.
+
+        To flush updates that the calling thread has accumulated inside
+        an ``updateGroup()`` context, call this method *outside* that
+        context. While inside ``updateGroup()`` the calling thread's
+        pending updates remain buffered in its ``UpdateTracker`` and
+        have not yet been queued.
+        """
+        if not self._running:
+            return
+
+        barrier = threading.Event()
+        self._updateQueue.put(barrier)
+
+        # Race guard: stop() can flip _running and enqueue the None stop
+        # sentinel between this method's _running check and the put() above.
+        # If our barrier ends up behind the stop sentinel the worker will
+        # consume None and exit before reaching us, leaving barrier.wait()
+        # blocked forever. Poll _running so we return after stop() runs.
+        while not barrier.wait(timeout=0.5):
+            if not self._running:
+                return
 
     def hardReset(self) -> None:
         """Generate a hard reset on all devices.
@@ -801,25 +835,25 @@ class Root(pr.Device):
             v._finishInit()
 
     def _write(self) -> bool:
-        """Write and verify all blocks."""
+        """Write, verify, and wait for block transactions to complete."""
         self._log.info("Start root write (forceWrite=%s)", self.ForceWrite.value())
         with self.pollBlock(), self.updateGroup():
             self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
             self._log.info("Verify root write with readback")
             self.verifyBlocks(recurse=True)
-            self._log.info("Check verified root write transactions")
-            self.checkBlocks(recurse=True)
+            self._log.info("Wait for verified root write transactions")
+            self.waitBlocks(recurse=True)
 
         self._log.info("Done root write")
         return True
 
     def _read(self) -> bool:
-        """Read and check all blocks."""
+        """Read blocks and wait for read transactions to complete."""
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
             self.readBlocks(recurse=True)
-            self._log.info("Check root read transactions")
-            self.checkBlocks(recurse=True)
+            self._log.info("Wait for root read transactions")
+            self.waitBlocks(recurse=True)
 
         self._log.info("Done root read")
         return True
@@ -1122,6 +1156,14 @@ class Root(pr.Device):
                 self._log.info("Stopping update thread")
                 self._updateQueue.task_done()
                 return
+
+            # Barrier sentinel posted by waitOnUpdate(). Items queued before
+            # the barrier have already been processed by the time we reach
+            # it; signal the waiter and continue.
+            if isinstance(uvars, threading.Event):
+                uvars.set()
+                self._updateQueue.task_done()
+                continue
 
             # Process list
             elif len(uvars) > 0:

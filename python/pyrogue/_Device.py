@@ -24,6 +24,7 @@ import zipfile
 from typing import Any, Callable, Iterable, Literal
 
 import pyrogue as pr
+from pyrogue._HelperFunctions import _resolve_deprecated_bool, _warn_deprecated
 import rogue.interfaces.memory as rim
 
 
@@ -229,8 +230,7 @@ class Device(pr.Node,rim.Hub):
 
         self._ifAndProto = []
 
-        self.forceCheckEach = False
-        self._preWriteListeners = []
+        self._forceWaitEach = False
 
         # Connect to memory slave
         if memBase:
@@ -248,7 +248,7 @@ class Device(pr.Node,rim.Hub):
         self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
         self.add(pr.LocalCommand(name='ReadDevice', value=False, hidden=True,
-                                 function=lambda arg: self.readAndCheckBlocks(recurse=arg),
+                                 function=lambda arg: self.readAndWaitBlocks(recurse=arg),
                                  description='Force read of device without recursion'))
 
         self.add(pr.LocalCommand(name='WriteDevice', value='', hidden=True,
@@ -331,6 +331,32 @@ class Device(pr.Node,rim.Hub):
     def running(self) -> bool:
         """Return True if the device is running."""
         return self.root is not None and self.root.running
+
+    @property
+    def forceWaitEach(self) -> bool:
+        """Force block operations to wait after each transaction."""
+        return self._forceWaitEach
+
+    @forceWaitEach.setter
+    def forceWaitEach(self, value: bool) -> None:
+        self._forceWaitEach = bool(value)
+
+    @property
+    def forceCheckEach(self) -> bool:
+        """Deprecated alias for :attr:`forceWaitEach`."""
+        _warn_deprecated(
+            "`forceCheckEach` is deprecated; use `forceWaitEach` instead.",
+            stacklevel=3,
+        )
+        return self._forceWaitEach
+
+    @forceCheckEach.setter
+    def forceCheckEach(self, value: bool) -> None:
+        _warn_deprecated(
+            "`forceCheckEach` is deprecated; use `forceWaitEach` instead.",
+            stacklevel=3,
+        )
+        self._forceWaitEach = bool(value)
 
 
     def addRemoteVariables(
@@ -465,49 +491,14 @@ class Device(pr.Node,rim.Hub):
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
-    def addPreWriteListener(
-        self,
-        listener: Callable[[str, Any, dict[str, Any]], Any | None],
-        stateVars: list[pr.BaseVariable] | None = None,
-    ) -> None:
-        """Register a device-level pre-write listener.
-
-        Fires before any child variable write on this device.
-        See BaseVariable.addPreWriteListener for callback semantics.
-
-        Parameters
-        ----------
-        listener : callable
-            Callback: func(path, value, state) -> value | None
-        stateVars : list of BaseVariable, optional
-            Variables whose current values are captured into the state dict.
-        """
-        entry = (listener, stateVars or [])
-        if entry not in self._preWriteListeners:
-            self._preWriteListeners.append(entry)
-
-    def delPreWriteListener(
-        self,
-        listener: Callable[[str, Any, dict[str, Any]], Any | None],
-    ) -> None:
-        """Remove a device-level pre-write listener.
-
-        Parameters
-        ----------
-        listener : callable
-            The callback to remove.
-        """
-        self._preWriteListeners = [
-            (cb, sv) for (cb, sv) in self._preWriteListeners if cb is not listener
-        ]
-
     def writeBlocks(
         self,
         *,
         force: bool = False,
         recurse: bool = True,
         variable: Any | None = None,
-        checkEach: bool = False,
+        waitEach: bool | None = None,
+        checkEach: bool | None = None,
         index: int = -1,
         **kwargs: Any,
     ) -> None:
@@ -521,33 +512,42 @@ class Device(pr.Node,rim.Hub):
             If True, recurse into child devices.
         variable : object, optional
             Optional variable to write.
-        checkEach : bool, optional (default = False)
-            Perform per-variable verification checks.
+        waitEach : bool, optional (default = False)
+            Wait for each block transaction before starting the next one.
+        checkEach : bool, optional (deprecated)
+            Deprecated alias for ``waitEach``.
         index : int, optional (default = -1)
             Optional index for array variables.
         **kwargs : Any
             Additional arguments passed through to the transaction.
         """
-        checkEach = checkEach or self.forceCheckEach
+        waitEach = _resolve_deprecated_bool(
+            new_name="waitEach",
+            new_value=waitEach,
+            old_name="checkEach",
+            old_value=checkEach,
+            default=False,
+        ) or self.forceWaitEach
 
         if variable is not None:
-            pr.startTransaction(variable._block, type=rim.Write, forceWr=force, checkEach=checkEach, variable=variable, index=index, **kwargs)
+            pr.startTransaction(variable._block, type=rim.Write, forceWr=force, wait=waitEach, variable=variable, index=index, **kwargs)
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-                    pr.startTransaction(block, type=rim.Write, forceWr=force, checkEach=checkEach, **kwargs)
+                    pr.startTransaction(block, type=rim.Write, forceWr=force, wait=waitEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.writeBlocks(force=force, recurse=True, checkEach=checkEach, **kwargs)
+                    value.writeBlocks(force=force, recurse=True, waitEach=waitEach, **kwargs)
 
     def verifyBlocks(
         self,
         *,
         recurse: bool = True,
         variable: Any | None = None,
-        checkEach: bool = False,
+        waitEach: bool | None = None,
+        checkEach: bool | None = None,
         **kwargs: Any,
     ) -> None:
         """Verify blocks in the background.
@@ -558,31 +558,40 @@ class Device(pr.Node,rim.Hub):
             If True, recurse into child devices.
         variable : object, optional
             Optional variable to verify.
-        checkEach : bool, optional (default = False)
-            Perform per-variable verification checks.
+        waitEach : bool, optional (default = False)
+            Wait for each block transaction before starting the next one.
+        checkEach : bool, optional (deprecated)
+            Deprecated alias for ``waitEach``.
         **kwargs : Any
             Additional arguments passed through to the transaction.
         """
-        checkEach = checkEach or self.forceCheckEach
+        waitEach = _resolve_deprecated_bool(
+            new_name="waitEach",
+            new_value=waitEach,
+            old_name="checkEach",
+            old_value=checkEach,
+            default=False,
+        ) or self.forceWaitEach
 
         if variable is not None:
-            pr.startTransaction(variable._block, type=rim.Verify, checkEach=checkEach, **kwargs) # Verify range is set by previous write
+            pr.startTransaction(variable._block, type=rim.Verify, wait=waitEach, **kwargs) # Verify range is set by previous write
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-                    pr.startTransaction(block, type=rim.Verify, checkEach=checkEach, **kwargs)
+                    pr.startTransaction(block, type=rim.Verify, wait=waitEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.verifyBlocks(recurse=True, checkEach=checkEach, **kwargs)
+                    value.verifyBlocks(recurse=True, waitEach=waitEach, **kwargs)
 
     def readBlocks(
         self,
         *,
         recurse: bool = True,
         variable: Any | None = None,
-        checkEach: bool = False,
+        waitEach: bool | None = None,
+        checkEach: bool | None = None,
         index: int = -1,
         **kwargs: Any,
     ) -> None:
@@ -594,26 +603,63 @@ class Device(pr.Node,rim.Hub):
             If True, recurse into child devices.
         variable : object, optional
             Optional variable to read.
-        checkEach : bool, optional (default = False)
-            Perform per-variable verification checks.
+        waitEach : bool, optional (default = False)
+            Wait for each block transaction before starting the next one.
+        checkEach : bool, optional (deprecated)
+            Deprecated alias for ``waitEach``.
         index : int, optional (default = -1)
             Optional index for array variables.
         **kwargs : Any
             Additional arguments passed through to the transaction.
         """
-        checkEach = checkEach or self.forceCheckEach
+        waitEach = _resolve_deprecated_bool(
+            new_name="waitEach",
+            new_value=waitEach,
+            old_name="checkEach",
+            old_value=checkEach,
+            default=False,
+        ) or self.forceWaitEach
 
         if variable is not None:
-            pr.startTransaction(variable._block, type=rim.Read, checkEach=checkEach, variable=variable, index=index, **kwargs)
+            pr.startTransaction(variable._block, type=rim.Read, wait=waitEach, variable=variable, index=index, **kwargs)
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-                    pr.startTransaction(block, type=rim.Read, checkEach=checkEach, **kwargs)
+                    pr.startTransaction(block, type=rim.Read, wait=waitEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.readBlocks(recurse=True, checkEach=checkEach, **kwargs)
+                    value.readBlocks(recurse=True, waitEach=waitEach, **kwargs)
+
+    def waitBlocks(
+        self,
+        *,
+        recurse: bool = True,
+        variable: Any | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Wait for block transactions and notify variable listeners.
+
+        Parameters
+        ----------
+        recurse : bool, optional (default = True)
+            If True, recurse into child devices.
+        variable : object, optional
+            Optional variable to wait on.
+        **kwargs : Any
+            Additional arguments passed through to the transaction.
+        """
+        if variable is not None:
+            pr.waitTransaction(variable._block, **kwargs)
+
+        else:
+            for block in self._blocks:
+                pr.waitTransaction(block, **kwargs)
+
+            if recurse:
+                for key,value in self.devices.items():
+                    value.waitBlocks(recurse=True, **kwargs)
 
     def checkBlocks(
         self,
@@ -622,36 +668,23 @@ class Device(pr.Node,rim.Hub):
         variable: Any | None = None,
         **kwargs: Any,
     ) -> None:
-        """Check block transactions and notify variable listeners.
-
-        Parameters
-        ----------
-        recurse : bool, optional (default = True)
-            If True, recurse into child devices.
-        variable : object, optional
-            Optional variable to check.
-        **kwargs : Any
-            Additional arguments passed through to the transaction.
-        """
-        if variable is not None:
-            pr.checkTransaction(variable._block, **kwargs)
-
-        else:
-            for block in self._blocks:
-                pr.checkTransaction(block, **kwargs)
-
-            if recurse:
-                for key,value in self.devices.items():
-                    value.checkBlocks(recurse=True, **kwargs)
+        """Deprecated alias for :meth:`waitBlocks`."""
+        _warn_deprecated(
+            "`checkBlocks()` is deprecated; use `waitBlocks()` instead.",
+            stacklevel=3,
+        )
+        self.waitBlocks(recurse=recurse, variable=variable, **kwargs)
 
     def writeAndVerifyBlocks(
         self,
         force: bool = False,
         recurse: bool = True,
         variable: Any | None = None,
-        checkEach: bool = False,
+        checkEach: bool | None = None,
+        *,
+        waitEach: bool | None = None,
     ) -> None:
-        """Write, verify, and check all blocks.
+        """Write, verify, and wait for block transactions to complete.
 
         Parameters
         ----------
@@ -661,20 +694,31 @@ class Device(pr.Node,rim.Hub):
             If True, recurse into child devices.
         variable : object, optional
             Optional variable to write/verify.
-        checkEach : bool, optional (default = False)
-            Perform per-variable verification checks.
+        waitEach : bool, optional (default = False)
+            Wait for each block transaction before starting the next one.
+        checkEach : bool, optional (deprecated)
+            Deprecated alias for ``waitEach``.
         """
-        self.writeBlocks(force=force, recurse=recurse, variable=variable, checkEach=checkEach)
-        self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
-        self.checkBlocks(recurse=recurse, variable=variable)
+        waitEach = _resolve_deprecated_bool(
+            new_name="waitEach",
+            new_value=waitEach,
+            old_name="checkEach",
+            old_value=checkEach,
+            default=False,
+        )
+        self.writeBlocks(force=force, recurse=recurse, variable=variable, waitEach=waitEach)
+        self.verifyBlocks(recurse=recurse, variable=variable, waitEach=waitEach)
+        self.waitBlocks(recurse=recurse, variable=variable)
 
-    def readAndCheckBlocks(
+    def readAndWaitBlocks(
         self,
         recurse: bool = True,
         variable: Any | None = None,
-        checkEach: bool = False,
+        waitEach: bool | None = None,
+        *,
+        checkEach: bool | None = None,
     ) -> None:
-        """Read and check all blocks.
+        """Read blocks and wait for read transactions to complete.
 
         Parameters
         ----------
@@ -682,11 +726,35 @@ class Device(pr.Node,rim.Hub):
             If True, recurse into child devices.
         variable : object, optional
             Optional variable to read.
-        checkEach : bool, optional (default = False)
-            Perform per-variable verification checks.
+        waitEach : bool, optional (default = False)
+            Wait for each block transaction before starting the next one.
+        checkEach : bool, optional (deprecated)
+            Deprecated alias for ``waitEach``.
         """
-        self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
-        self.checkBlocks(recurse=recurse, variable=variable)
+        waitEach = _resolve_deprecated_bool(
+            new_name="waitEach",
+            new_value=waitEach,
+            old_name="checkEach",
+            old_value=checkEach,
+            default=False,
+        )
+        self.readBlocks(recurse=recurse, variable=variable, waitEach=waitEach)
+        self.waitBlocks(recurse=recurse, variable=variable)
+
+    def readAndCheckBlocks(
+        self,
+        recurse: bool = True,
+        variable: Any | None = None,
+        checkEach: bool | None = None,
+        *,
+        waitEach: bool | None = None,
+    ) -> None:
+        """Deprecated alias for :meth:`readAndWaitBlocks`."""
+        _warn_deprecated(
+            "`readAndCheckBlocks()` is deprecated; use `readAndWaitBlocks()` instead.",
+            stacklevel=3,
+        )
+        self.readAndWaitBlocks(recurse=recurse, variable=variable, checkEach=checkEach, waitEach=waitEach)
 
     @pr.expose
     def saveYaml(
@@ -947,7 +1015,7 @@ class Device(pr.Node,rim.Hub):
         self._log.info("Start device config write (forceWrite=%s)", force)
         self.writeBlocks(force=force, recurse=True)
         self.verifyBlocks(recurse=True)
-        self.checkBlocks(recurse=True)
+        self.waitBlocks(recurse=True)
         self._log.info("Done device config write")
 
     def _updateBlockEnable(self) -> None:

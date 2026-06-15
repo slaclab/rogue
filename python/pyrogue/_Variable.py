@@ -25,6 +25,7 @@ from typing import Any, Callable, Type
 
 import numpy as np
 import pyrogue as pr
+from pyrogue._HelperFunctions import _resolve_deprecated_bool
 import rogue.interfaces.memory as rim
 from collections import OrderedDict as odict
 from collections.abc import Iterable
@@ -33,17 +34,6 @@ from collections.abc import Iterable
 class VariableError(Exception):
     """Raised when variable configuration or access fails."""
     pass
-
-
-class WriteBlockedError(VariableError):
-    """Raised by a pre-write listener to block a write operation."""
-    def __init__(self, path: str, reason: str = '') -> None:
-        self.varPath = path
-        self.reason = reason
-        msg = f"Write to '{path}' blocked"
-        if reason:
-            msg += f": {reason}"
-        super().__init__(msg)
 
 
 class VariableWaitClass(object):
@@ -346,7 +336,6 @@ class BaseVariable(pr.Node):
         self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
-        self._preWriteListeners = []
 
         # Build enum if specified
         self._disp = disp
@@ -640,92 +629,6 @@ class BaseVariable(pr.Node):
             if listener in self.__functions:
                 self.__functions.remove(listener)
 
-    def addPreWriteListener(
-        self,
-        listener: Callable[[str, Any, dict[str, Any]], Any | None],
-        stateVars: list[BaseVariable] | None = None,
-    ) -> None:
-        """Register a pre-write listener for this variable.
-
-        The listener is called synchronously before hardware writes,
-        in the caller's thread. It receives (path, value, state) where
-        state is a dict of {var.path: var.value()} for each var in stateVars.
-
-        To block a write, raise WriteBlockedError.
-        To modify the value being written, return the new value.
-        Return None to leave the value unchanged.
-
-        Parameters
-        ----------
-        listener : callable
-            Callback: func(path, value, state) -> value | None
-        stateVars : list of BaseVariable, optional
-            Variables whose current values are captured into the state dict.
-        """
-        entry = (listener, stateVars or [])
-        if entry not in self._preWriteListeners:
-            self._preWriteListeners.append(entry)
-
-    def delPreWriteListener(
-        self,
-        listener: Callable[[str, Any, dict[str, Any]], Any | None],
-    ) -> None:
-        """Remove a previously registered pre-write listener.
-
-        Parameters
-        ----------
-        listener : callable
-            The callback to remove.
-        """
-        self._preWriteListeners = [
-            (cb, sv) for (cb, sv) in self._preWriteListeners if cb is not listener
-        ]
-
-    def _runPreWriteListeners(self, value: Any, index: int) -> Any:
-        """Execute pre-write listeners and return the (possibly modified) value.
-
-        Execution order: device-level listeners first, then variable-level.
-        All must pass. Stops on first WriteBlockedError. Value modifications chain.
-
-        Parameters
-        ----------
-        value : Any
-            The proposed write value.
-        index : int
-            Array index (-1 for scalar).
-
-        Returns
-        -------
-        Any
-            Final value after all listener modifications.
-
-        Raises
-        ------
-        WriteBlockedError
-            If any listener blocks the write.
-        """
-        allListeners = []
-        if hasattr(self, '_parent') and self._parent is not None:
-            if hasattr(self._parent, '_preWriteListeners'):
-                allListeners.extend(self._parent._preWriteListeners)
-        allListeners.extend(self._preWriteListeners)
-
-        if not allListeners:
-            return value
-
-        currentValue = value
-        for callback, stateVars in list(allListeners):
-            state = {}
-            for sv in stateVars:
-                try:
-                    state[sv.path] = sv.value()
-                except Exception:
-                    state[sv.path] = None
-            result = callback(self.path, currentValue, state)
-            if result is not None:
-                currentValue = result
-        return currentValue
-
     @pr.expose
     def set(
         self,
@@ -734,7 +637,8 @@ class BaseVariable(pr.Node):
         index: int = -1,
         write: bool = True,
         verify: bool = True,
-        check: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
     ) -> None:
         """
         Set the value and write to hardware if applicable
@@ -751,8 +655,10 @@ class BaseVariable(pr.Node):
             If True, perform a write transaction.
         verify : bool, optional (default = True)
             If True, verify after write.
-        check : bool, optional (default = True)
+        wait : bool, optional (default = True)
             If True, wait for the transaction to complete.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
@@ -781,7 +687,14 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def get(self, *, index: int = -1, read: bool = True, check: bool = True) -> Any:
+    def get(
+        self,
+        *,
+        index: int = -1,
+        read: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
+    ) -> Any:
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -793,8 +706,10 @@ class BaseVariable(pr.Node):
             Optional index for array variables.
         read : bool, optional (default = True)
             If True, perform a read transaction.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
@@ -803,7 +718,13 @@ class BaseVariable(pr.Node):
         return None
 
     @pr.expose
-    def write(self, *, verify: bool = True, check: bool = True) -> None:
+    def write(
+        self,
+        *,
+        verify: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
+    ) -> None:
         """
         Force a write of the variable.
 
@@ -811,8 +732,10 @@ class BaseVariable(pr.Node):
         ----------
         verify : bool, optional (default = True)
             If True, verify after write.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
@@ -1550,11 +1473,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
         index: int = -1,
         write: bool = True,
         verify: bool = True,
-        check: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
     ) -> None:
         """
         Set the value and write to hardware if applicable
-        Writes to hardware are blocking if check=True, otherwise non-blocking.
+        Writes to hardware are blocking if wait=True, otherwise non-blocking.
         A verify will be performed according to self.verifyEn if verify=True
         A verify will not be performed if verify=False
         An error will result in a logged exception.
@@ -1569,20 +1493,26 @@ class RemoteVariable(BaseVariable,rim.Variable):
             If True, perform a write transaction.
         verify : bool, optional (default = True)
             If True, verify after write.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
 
         """
         try:
+            wait = _resolve_deprecated_bool(
+                new_name="wait",
+                new_value=wait,
+                old_name="check",
+                old_value=check,
+                default=True,
+            )
 
             # Set value to block
             index = operator.index(index)
-
-            if write:
-                value = self._runPreWriteListeners(value, index)
 
             self._set(value,index)
 
@@ -1590,11 +1520,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
                 self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
                 if verify:
                     self._parent.verifyBlocks(recurse=False, variable=self)
-                if check:
-                    self._parent.checkBlocks(recurse=False, variable=self)
+                if wait:
+                    self._parent.waitBlocks(recurse=False, variable=self)
 
-        except WriteBlockedError:
-            raise
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(
@@ -1628,15 +1556,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
             index = operator.index(index)
 
-            value = self._runPreWriteListeners(value, index)
-
             # Set value to block
             self._set(value,index)
 
-            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
+            pr.startTransaction(self._block, type=rim.Post, forceWr=False, wait=True, variable=self, index=index)
 
-        except WriteBlockedError:
-            raise
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(
@@ -1648,10 +1572,17 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def get(self, *, index: int = -1, read: bool = True, check: bool = True) -> Any:
+    def get(
+        self,
+        *,
+        index: int = -1,
+        read: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
+    ) -> Any:
         """Return the value, optionally reading from hardware.
 
-        Hardware read is blocking if check=True, otherwise non-blocking.
+        Hardware read is blocking if wait=True, otherwise non-blocking.
         An error will result in a logged exception.
         Listeners will be informed of the update.
 
@@ -1661,16 +1592,25 @@ class RemoteVariable(BaseVariable,rim.Variable):
             Optional index for array variables.
         read : bool, optional (default = True)
             If True, perform a read transaction.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
         """
         try:
+            wait = _resolve_deprecated_bool(
+                new_name="wait",
+                new_value=wait,
+                old_name="check",
+                old_value=check,
+                default=True,
+            )
             index = operator.index(index)
 
             if read:
                 self._parent.readBlocks(recurse=False, variable=self, index=index)
-                if check:
-                    self._parent.checkBlocks(recurse=False, variable=self)
+                if wait:
+                    self._parent.waitBlocks(recurse=False, variable=self)
 
             return self._get(index)
 
@@ -1680,10 +1620,16 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def write(self, *, verify: bool = True, check: bool = True) -> None:
+    def write(
+        self,
+        *,
+        verify: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
+    ) -> None:
         """
         Force a write of the variable.
-        Hardware write is blocking if check=True.
+        Hardware write is blocking if wait=True.
         A verify will be performed according to self.verifyEn if verify=True
         A verify will not be performed if verify=False
         An error will result in a logged exception
@@ -1692,19 +1638,28 @@ class RemoteVariable(BaseVariable,rim.Variable):
         ----------
         verify : bool, optional (default = True)
             If True, verify after write.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
 
         """
         try:
+            wait = _resolve_deprecated_bool(
+                new_name="wait",
+                new_value=wait,
+                old_name="check",
+                old_value=check,
+                default=True,
+            )
             self._parent.writeBlocks(force=True, recurse=False, variable=self)
             if verify:
                 self._parent.verifyBlocks(recurse=False, variable=self)
-            if check:
-                self._parent.checkBlocks(recurse=False, variable=self)
+            if wait:
+                self._parent.waitBlocks(recurse=False, variable=self)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1863,7 +1818,8 @@ class LocalVariable(BaseVariable):
         index: int = -1,
         write: bool = True,
         verify: bool = True,
-        check: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
     ) -> None:
         """
         Set the value and write to hardware if applicable
@@ -1879,8 +1835,10 @@ class LocalVariable(BaseVariable):
             If True, perform a write transaction.
         verify : bool, optional (default = True)
             If True, verify after write.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
@@ -1889,9 +1847,13 @@ class LocalVariable(BaseVariable):
         self._log.debug("%s.set(%r)", self, value)
 
         try:
-
-            if write:
-                value = self._runPreWriteListeners(value, index)
+            _resolve_deprecated_bool(
+                new_name="wait",
+                new_value=wait,
+                old_name="check",
+                old_value=check,
+                default=True,
+            )
 
             # Set value to block
             self._block.set(self, value, index)
@@ -1899,8 +1861,6 @@ class LocalVariable(BaseVariable):
             if write:
                 self._block._checkTransaction()
 
-        except WriteBlockedError:
-            raise
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(
@@ -1933,13 +1893,9 @@ class LocalVariable(BaseVariable):
         self._log.debug("%s.post(%r)", self, value)
 
         try:
-            value = self._runPreWriteListeners(value, index)
-
             self._block.set(self, value, index)
             self._block._checkTransaction()
 
-        except WriteBlockedError:
-            raise
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(
@@ -1951,7 +1907,14 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def get(self, *, index: int = -1, read: bool = True, check: bool = True) -> Any:
+    def get(
+        self,
+        *,
+        index: int = -1,
+        read: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
+    ) -> Any:
         """
 
 
@@ -1961,8 +1924,10 @@ class LocalVariable(BaseVariable):
             Optional index for array variables.
         read : bool, optional (default = True)
             If True, perform a read transaction.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
@@ -1972,7 +1937,14 @@ class LocalVariable(BaseVariable):
 
         """
         try:
-            if read and check:
+            wait = _resolve_deprecated_bool(
+                new_name="wait",
+                new_value=wait,
+                old_name="check",
+                old_value=check,
+                default=True,
+            )
+            if read and wait:
                 self._block._checkTransaction()
 
             return self._block.get(self,index)
@@ -2065,14 +2037,18 @@ class LinkVariable(BaseVariable):
         List of variables that this variable depends on.
     linkedSet : callable, optional
         Setter callback. Expected keyword arguments are
-        ``dev, var, value, write, index, verify, check``.
+        ``dev, var, value, write, index, verify, wait, check``.
+        New callbacks should use ``wait``; ``check`` remains available for
+        compatibility.
         These match the parameters of BaseVariable.set().
         The callback may accept any subset of these names.
         Only value is required.
         If not provided, will infer mode = 'RO'.
     linkedGet : callable, optional
         Getter callback. Expected keyword arguments are
-        ``dev, var, read, index, check``.
+        ``dev, var, read, index, wait, check``.
+        New callbacks should use ``wait``; ``check`` remains available for
+        compatibility.
         These match the parameters of BaseVariable.get().
         The callback may accept any subset of these names.
     minimum : object, optional
@@ -2104,8 +2080,39 @@ class LinkVariable(BaseVariable):
         if variable is not None:
             # If directly linked to a variable, use it's value and set by defualt
             # for linkedGet and linkedSet unless overridden
-            self._linkedGet = linkedGet if linkedGet else variable.get
-            self._linkedSet = linkedSet if linkedSet else variable.set
+            if linkedGet:
+                self._linkedGet = linkedGet
+            else:
+                def linkedGetFromVariable(
+                    dev: Any = None,
+                    var: BaseVariable | None = None,
+                    read: bool = True,
+                    index: int = -1,
+                    wait: bool | None = None,
+                    check: bool | None = None,
+                ) -> Any:
+                    wait = wait if wait is not None else check
+                    return variable.get(read=read, index=index, wait=wait)
+
+                self._linkedGet = linkedGetFromVariable
+
+            if linkedSet:
+                self._linkedSet = linkedSet
+            else:
+                def linkedSetFromVariable(
+                    dev: Any = None,
+                    var: BaseVariable | None = None,
+                    value: Any = None,
+                    write: bool = True,
+                    index: int = -1,
+                    verify: bool = True,
+                    wait: bool | None = None,
+                    check: bool | None = None,
+                ) -> None:
+                    wait = wait if wait is not None else check
+                    variable.set(value, index=index, write=write, verify=verify, wait=wait)
+
+                self._linkedSet = linkedSetFromVariable
 
             # Search the kwargs for overridden properties, otherwise the properties from the linked variable will be used
             args = ['disp', 'enum', 'units', 'minimum', 'maximum']
@@ -2119,9 +2126,17 @@ class LinkVariable(BaseVariable):
         if not self._linkedGet:
             kwargs['mode'] = 'WO'
 
-        # Wrap linked get and set functions
-        self._linkedGetWrap = pr.functionWrapper(function=self._linkedGet, callArgs=['dev', 'var', 'read', 'index', 'check'])
-        self._linkedSetWrap = pr.functionWrapper(function=self._linkedSet, callArgs=['dev', 'var', 'value', 'write', 'index', 'verify', 'check'])
+        # Linked callback argument names are part of the callback ABI. Forward
+        # both names so new callbacks can use wait and old callbacks can keep
+        # using check.
+        self._linkedGetWrap = pr.functionWrapper(
+            function=self._linkedGet,
+            callArgs=['dev', 'var', 'read', 'index', 'wait', 'check'],
+        )
+        self._linkedSetWrap = pr.functionWrapper(
+            function=self._linkedSet,
+            callArgs=['dev', 'var', 'value', 'write', 'index', 'verify', 'wait', 'check'],
+        )
 
         # Call super constructor
         BaseVariable.__init__(self, name=name, **kwargs)
@@ -2150,7 +2165,8 @@ class LinkVariable(BaseVariable):
         write: bool = True,
         index: int = -1,
         verify: bool = True,
-        check: bool = True,
+        wait: bool | None = None,
+        check: bool | None = None,
     ) -> None:
         """
 
@@ -2165,22 +2181,48 @@ class LinkVariable(BaseVariable):
             Optional index for array variables.
         verify : bool, optional (default = True)
             If True, verify after write.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
 
         """
         try:
-            self._linkedSetWrap(function=self._linkedSet, dev=self.parent, var=self, value=value, write=write, index=index, verify=verify, check=check)
+            wait = _resolve_deprecated_bool(
+                new_name="wait",
+                new_value=wait,
+                old_name="check",
+                old_value=check,
+                default=True,
+            )
+            self._linkedSetWrap(
+                function=self._linkedSet,
+                dev=self.parent,
+                var=self,
+                value=value,
+                write=write,
+                index=index,
+                verify=verify,
+                wait=wait,
+                check=wait,
+            )
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error setting link variable %s", self.path)
             raise e
 
     @pr.expose
-    def get(self, read: bool = True, index: int = -1, check: bool = True) -> Any:
+    def get(
+        self,
+        read: bool = True,
+        index: int = -1,
+        check: bool | None = None,
+        *,
+        wait: bool | None = None,
+    ) -> Any:
         """
 
 
@@ -2190,15 +2232,32 @@ class LinkVariable(BaseVariable):
             If True, perform a read transaction.
         index : int, optional (default = -1)
             Optional index for array variables.
-        check : bool, optional (default = True)
-            If True, check transaction completion.
+        wait : bool, optional (default = True)
+            If True, wait for transaction completion.
+        check : bool, optional (deprecated)
+            Deprecated alias for ``wait``.
 
         Returns
         -------
 
         """
         try:
-            return self._linkedGetWrap(function=self._linkedGet, dev=self.parent, var=self, read=read, index=index, check=check)
+            wait = _resolve_deprecated_bool(
+                new_name="wait",
+                new_value=wait,
+                old_name="check",
+                old_value=check,
+                default=True,
+            )
+            return self._linkedGetWrap(
+                function=self._linkedGet,
+                dev=self.parent,
+                var=self,
+                read=read,
+                index=index,
+                wait=wait,
+                check=wait,
+            )
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error getting link variable %s", self.path)

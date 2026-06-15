@@ -38,6 +38,7 @@ namespace bp = boost::python;
 #include <exception>
 #include <iomanip>
 #include <memory>
+#include <mutex>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -172,7 +173,7 @@ bool rim::Block::blockPyTrans() {
 }
 
 // Start a transaction for this block
-void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, rim::Variable* var, int32_t index) {
+void rim::Block::intStartTransaction(uint32_t type, bool forceWr, rim::Variable* var, int32_t index) {
     uint32_t x;
     uint32_t tOff;
     uint32_t tSize;
@@ -292,7 +293,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
     fWr   = forceWr;
 
     do {
-        intStartTransaction(type, fWr, check, var, index);
+        intStartTransaction(type, fWr, var, index);
 
         try {
             if (check || retryCount_ > 0) checkTransaction();
@@ -332,7 +333,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
     fWr   = forceWr;
 
     do {
-        intStartTransaction(type, fWr, check, var.get(), index);
+        intStartTransaction(type, fWr, var.get(), index);
 
         try {
             if (check || retryCount_ > 0) upd = checkTransaction();
@@ -361,7 +362,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
 
 #endif
 
-// Check transaction result
+// Wait for pending transaction completion and check the result
 bool rim::Block::checkTransaction() {
     std::string err;
     bool locUpdate;
@@ -417,7 +418,7 @@ bool rim::Block::checkTransaction() {
 
 #ifndef NO_PYTHON
 
-// Check transaction result
+// Wait for pending transaction completion, check the result, and update variables
 void rim::Block::checkTransactionPy() {
     if (blockPyTrans_) return;
 
@@ -426,14 +427,14 @@ void rim::Block::checkTransactionPy() {
 
 #endif
 
-// Write sequence
+// Write/verify/wait-and-check sequence
 void rim::Block::write(rim::Variable* var, int32_t index) {
     startTransaction(rim::Write, true, false, var, index);
     startTransaction(rim::Verify, false, false, var, index);
     checkTransaction();
 }
 
-// Read sequence
+// Read/wait-and-check sequence
 void rim::Block::read(rim::Variable* var, int32_t index) {
     startTransaction(rim::Read, false, false, var, index);
     checkTransaction();
@@ -655,8 +656,18 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     uint8_t tmp;
     uint8_t* buff;
 
-    rogue::GilRelease noGil;
-    std::lock_guard<std::mutex> lock(mtx_);
+    // Fast path: take mtx_ without dropping the GIL. The body below is pure
+    // in-memory work (memcpy/copyBits/byte-reverse) with no Python calls, so
+    // holding the GIL across it is correct and avoids the release/re-acquire
+    // thrash that dominates bulk update-queue drains (SLAC rogue #1262). Only
+    // when mtx_ is actually contended -- held by a memory-transaction worker
+    // that may need the GIL for a Python callback -- do we drop the GIL while
+    // blocking, preserving the deadlock-avoidance contract.
+    std::unique_lock<std::mutex> lock(mtx_, std::try_to_lock);
+    if (!lock.owns_lock()) {
+        rogue::GilRelease noGil;
+        lock.lock();
+    }
 
     // Set stale flag
     if (var->mode_ != "RO") stale_ = true;
@@ -739,8 +750,15 @@ void rim::Block::getBytes(uint8_t* data, rim::Variable* var, uint32_t index) {
     uint32_t dstBit;
     uint32_t x;
 
-    rogue::GilRelease noGil;
-    std::lock_guard<std::mutex> lock(mtx_);
+    // Fast path: take mtx_ without dropping the GIL. See setBytes() for the full
+    // rationale -- the body is pure in-memory work, so we only release the GIL
+    // on the contended-wait path to preserve deadlock avoidance (SLAC rogue
+    // #1262).
+    std::unique_lock<std::mutex> lock(mtx_, std::try_to_lock);
+    if (!lock.owns_lock()) {
+        rogue::GilRelease noGil;
+        lock.lock();
+    }
 
     // List variable
     if (var->numValues_ != 0) {

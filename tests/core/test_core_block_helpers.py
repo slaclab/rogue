@@ -47,14 +47,14 @@ def test_block_transaction_helpers_forward_expected_arguments():
     second = FakeBlock()
     variable = object()
 
-    pr.startTransaction(first, type=rim.Write, forceWr=True, check=True, variable=variable, index=3)
-    pr.checkTransaction(first)
-    pr.writeBlocks([first, second], force=True, checkEach=True, index=7)
-    pr.verifyBlocks([first, second], checkEach=True)
-    pr.readBlocks([first, second], checkEach=True)
-    pr.checkBlocks([first, second])
-    pr.writeAndVerifyBlocks([first, second], force=True, checkEach=True, index=9)
-    pr.readAndCheckBlocks([first, second], checkEach=True)
+    pr.startTransaction(first, type=rim.Write, forceWr=True, wait=True, variable=variable, index=3)
+    pr.waitTransaction(first)
+    pr.writeBlocks([first, second], force=True, waitEach=True, index=7)
+    pr.verifyBlocks([first, second], waitEach=True)
+    pr.readBlocks([first, second], waitEach=True)
+    pr.waitBlocks([first, second])
+    pr.writeAndVerifyBlocks([first, second], force=True, waitEach=True, index=9)
+    pr.readAndWaitBlocks([first, second], waitEach=True)
 
     assert first.started[0] == (rim.Write, True, True, variable, 3)
     assert first.started[1:] == [
@@ -75,6 +75,36 @@ def test_block_transaction_helpers_forward_expected_arguments():
     ]
     assert first.checked == 4
     assert second.checked == 3
+
+
+def test_deprecated_transaction_check_names_remain_compatible():
+    block = FakeBlock()
+
+    with pytest.warns(DeprecationWarning, match="`check` is deprecated"):
+        pr.startTransaction(block, type=rim.Write, forceWr=True, check=True)
+
+    with pytest.warns(DeprecationWarning, match="`checkTransaction\\(\\)` is deprecated"):
+        pr.checkTransaction(block)
+
+    with pytest.warns(DeprecationWarning, match="`checkEach` is deprecated"):
+        pr.writeBlocks([block], checkEach=True)
+
+    with pytest.warns(DeprecationWarning, match="`checkBlocks\\(\\)` is deprecated"):
+        pr.checkBlocks([block])
+
+    with pytest.warns(DeprecationWarning, match="`readAndCheckBlocks\\(\\)` is deprecated"):
+        pr.readAndCheckBlocks([block], waitEach=True)
+
+    with pytest.warns(DeprecationWarning, match="`check` is deprecated"):
+        with pytest.raises(ValueError, match="Conflicting values"):
+            pr.startTransaction(block, type=rim.Read, wait=True, check=False)
+
+    assert block.started == [
+        (rim.Write, True, True, None, -1),
+        (rim.Write, False, True, None, -1),
+        (rim.Read, False, True, None, -1),
+    ]
+    assert block.checked == 3
 
 
 def test_memory_error_string_contains_context():

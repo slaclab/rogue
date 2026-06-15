@@ -474,8 +474,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
-        # Get root name as a connection test
-        self.setTimeout(1000,False)
+        # Get root name as a connection test (fail on first 1 s timeout)
+        self.setTimeout(1000,1000)
 
         try:
             self._root = self._waitForRoot()
@@ -495,7 +495,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             ) from exc
 
         print("Connected to {} at {}:{}".format(self._root.name,addr,port))
-        self.setTimeout(1000,True)
+        # Operational: warn every 1 s, retry forever (failTime=0)
+        self.setTimeout(1000,0)
 
         self._root._parent = self._root
         self._root._root   = self._root
@@ -507,12 +508,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._link  = True
         self._ltime = self._root.Time.value()
 
-        # Create monitoring thread. daemon=True so the interpreter can exit
-        # cleanly even when ClientCache still pins this instance (issue #1238);
-        # without it, an ipython/host script that forgot to call stop() hangs
-        # on quit().
+        # Create monitoring thread
         self._monEnable = True
-        self._monThread = threading.Thread(target=self._monWorker, daemon=True)
+        self._monThread = threading.Thread(target=self._monWorker)
         self._monThread.start()
 
     def _removeFromCache(self) -> None:
@@ -749,22 +747,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             for func in self._varListeners:
                 func(k,val)
 
-    def stopMonitor(self) -> None:
-        """Stop the link-monitor thread without releasing ZMQ resources.
+    def stop(self) -> None:
+        """Stop the monitor thread and release the underlying ZMQ resources.
 
-        Use this when a long-lived client must drop link-heartbeat polling
-        but the ZMQ transport must remain open. The intended caller is a
-        host script that hands a ``VirtualClient`` to an interactive
-        wrapper (for example ``pysmurf``) and wants to silence the monitor
-        on shutdown without losing the connection. ``stop()`` is the
-        wrong choice for that case because it also closes the C++
-        ``ZmqClient`` sockets and removes the instance from
-        ``ClientCache``.
-
-        After ``stopMonitor()`` returns the client still services
-        ``_remoteAttr`` calls and SUB publish updates; only the periodic
-        link-state heartbeat is disabled. Idempotent; safe to call from
-        any thread other than ``_monThread`` itself.
+        After ``stop()`` returns the C++ sockets and ZMQ context are released
+        and this instance is removed from ``ClientCache``; a subsequent
+        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully
+        connected instance instead of returning the torn-down one.
         """
         self._monEnable = False
         thr = self._monThread
@@ -777,16 +766,6 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             thr.join(timeout=3.0)
             if thr.is_alive():
                 self._log.warning("Monitor thread did not stop within timeout")
-
-    def stop(self) -> None:
-        """Stop the monitor thread and release the underlying ZMQ resources.
-
-        After ``stop()`` returns the C++ sockets and ZMQ context are released
-        and this instance is removed from ``ClientCache``; a subsequent
-        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully
-        connected instance instead of returning the torn-down one.
-        """
-        self.stopMonitor()
 
         # ClientCache pins this instance, so the C++ stop() must run explicitly
         # to release SUB/REQ sockets and the ZMQ context. _stop() is idempotent.

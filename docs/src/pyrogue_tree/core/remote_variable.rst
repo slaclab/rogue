@@ -81,7 +81,7 @@ How RemoteVariable Fits The Tree
 ``RemoteVariable`` is where the ``Variable`` and ``Device`` narratives meet:
 
 * ``Variable`` provides the user-facing typed value interface
-* ``Device`` provides the write/verify/read/check transaction model
+* ``Device`` provides the write/verify/read/wait transaction model
 * ``Block`` groups one or more compatible RemoteVariables into efficient
   transaction units
 
