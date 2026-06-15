@@ -766,10 +766,11 @@ class RoCEv2Server(pr.Device):
         if not _ROCEV2_AVAILABLE:
             raise ImportError(
                 "RoCEv2Server requires a Linux build of rogue with "
-                "libibverbs/rdma-core available at runtime.  Install "
-                "rdma-core (`conda install -c conda-forge rdma-core` or "
-                "`apt install libibverbs-dev`) and rebuild rogue on Linux "
-                "with those libraries available."
+                "libibverbs/rdma-core available at runtime.  This module is "
+                "also absent when rogue was built with -DNO_ROCEV2=ON.  "
+                "Install rdma-core (`conda install -c conda-forge rdma-core` "
+                "or `apt install libibverbs-dev`) and rebuild rogue on Linux "
+                "without -DNO_ROCEV2 and with those libraries available."
             )
         if not (1 <= pmtu <= 5):
             raise rogue.GeneralError(

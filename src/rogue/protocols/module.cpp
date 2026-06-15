@@ -25,7 +25,7 @@
 
 #include "rogue/protocols/batcher/module.h"
 #include "rogue/protocols/packetizer/module.h"
-#ifdef ROGUE_LINUX_BUILD
+#ifdef ROGUE_ROCEV2
 #include "rogue/protocols/rocev2/module.h"
 #endif
 #include "rogue/protocols/rssi/module.h"
@@ -51,7 +51,7 @@ void rogue::protocols::setup_module() {
     rogue::protocols::udp::setup_module();
     rogue::protocols::batcher::setup_module();
     rogue::protocols::xilinx::setup_module();
-#ifdef ROGUE_LINUX_BUILD
+#ifdef ROGUE_ROCEV2
     rogue::protocols::rocev2::setup_module();
 #endif
 }
