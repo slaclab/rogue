@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-06-15T18:44:47Z",
+  "generated_at": "2026-06-15T19:00:00Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
       "ref_name": "main",
-      "sha": "263daced49c65c602513911cb0a5ea91b0292ad7",
-      "short_sha": "263dace",
-      "published_at": "2026-06-15T18:42:32Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/27567877025",
+      "sha": "eb014dc3542c94d207f2367c5488355c29df69a3",
+      "short_sha": "eb014dc",
+      "published_at": "2026-06-15T19:00:00Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/27568988380",
       "summary_url": "/rogue/perf/refs/main/latest.json"
     },
     "pre-release": {
@@ -25,6 +25,14 @@
       "ref_slug": "main",
       "latest_url": "/rogue/perf/branches/main/latest.json",
       "history": [
+        {
+          "ref_name": "main",
+          "sha": "eb014dc3542c94d207f2367c5488355c29df69a3",
+          "short_sha": "eb014dc",
+          "published_at": "2026-06-15T19:00:00Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/27568988380",
+          "summary_url": "/rogue/perf/branches/main/history/eb014dc3542c94d207f2367c5488355c29df69a3.json"
+        },
         {
           "ref_name": "main",
           "sha": "263daced49c65c602513911cb0a5ea91b0292ad7",
@@ -84,10 +92,10 @@
       ],
       "latest": {
         "ref_name": "main",
-        "sha": "263daced49c65c602513911cb0a5ea91b0292ad7",
-        "short_sha": "263dace",
-        "published_at": "2026-06-15T18:42:32Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/27567877025",
+        "sha": "eb014dc3542c94d207f2367c5488355c29df69a3",
+        "short_sha": "eb014dc",
+        "published_at": "2026-06-15T19:00:00Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/27568988380",
         "summary_url": "/rogue/perf/branches/main/latest.json"
       }
     },
@@ -264,29 +272,6 @@
         "published_at": "2026-06-15T18:44:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/27568101111",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "issues/1262",
-      "ref_slug": "issues_1262",
-      "latest_url": "/rogue/perf/branches/issues_1262/latest.json",
-      "history": [
-        {
-          "ref_name": "issues/1262",
-          "sha": "dddb00a3f1b5f17a961a7b2df4f0014e90ac3032",
-          "short_sha": "dddb00a",
-          "published_at": "2026-06-13T19:46:43Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/27477052621",
-          "summary_url": "/rogue/perf/branches/issues_1262/history/dddb00a3f1b5f17a961a7b2df4f0014e90ac3032.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "issues/1262",
-        "sha": "dddb00a3f1b5f17a961a7b2df4f0014e90ac3032",
-        "short_sha": "dddb00a",
-        "published_at": "2026-06-13T19:46:43Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/27477052621",
-        "summary_url": "/rogue/perf/branches/issues_1262/latest.json"
       }
     },
     {
