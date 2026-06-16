@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Process Device Class &mdash; Rogue v6.14.0 documentation</title>
+  <title>Process Device Class &mdash; Rogue v6.14.0-3-gce8b5e702 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=c005f40e"></script>
+      <script src="../../_static/documentation_options.js?v=87470b04"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -182,6 +182,7 @@ on the subclass.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Progress</span></code> for fractional completion</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Message</span></code> for operator-facing status text</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Step</span></code> and <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> for step-count style progress reporting</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">UpdatePeriod</span></code> (hidden, default <code class="docutils literal notranslate"><span class="pre">1.0</span></code> s) for the <code class="docutils literal notranslate"><span class="pre">updateGroup</span></code> leak period</p></li>
 </ul>
 <p>If you provide <code class="docutils literal notranslate"><span class="pre">argVariable</span></code> and <code class="docutils literal notranslate"><span class="pre">returnVariable</span></code>, they can be used to
 pass one tree-visible argument into the procedure and publish one result back
@@ -233,35 +234,34 @@ operator-facing settings and result storage, then updates <code class="docutils 
         <span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Batch update notifications while the process runs. PyRogue still</span>
-        <span class="c1"># publishes changes during the block, but it coalesces them so GUIs</span>
-        <span class="c1"># and remote listeners do not get spammed on every individual write.</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
-            <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SampleCount</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
-            <span class="n">captured</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># The base _run() already wraps _process() in an updateGroup context.</span>
+        <span class="c1"># Tune the leak period via the inherited UpdatePeriod Variable instead</span>
+        <span class="c1"># of opening a nested context here.</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SampleCount</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+        <span class="n">captured</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="c1"># Initialize the built-in status Variables before starting work.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Running capture&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setTotalSteps</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+        <span class="c1"># Initialize the built-in status Variables before starting work.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Running capture&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTotalSteps</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total</span><span class="p">):</span>
-                <span class="c1"># Respect the built-in Stop command.</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Stopped by user&#39;</span><span class="p">)</span>
-                    <span class="k">return</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total</span><span class="p">):</span>
+            <span class="c1"># Respect the built-in Stop command.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Stopped by user&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
 
-                <span class="c1"># Do one unit of hardware or software work.</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
-                <span class="n">captured</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="c1"># Do one unit of hardware or software work.</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+            <span class="n">captured</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
-                <span class="c1"># setStep() updates Step and recomputes Progress together.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># setStep() updates Step and recomputes Progress together.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-            <span class="c1"># Publish the final result back into the tree.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">CaptureResult</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">captured</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+        <span class="c1"># Publish the final result back into the tree.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CaptureResult</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">captured</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -287,8 +287,9 @@ written to that Variable before the background thread starts.</p>
 <li><p>Add explicit input or result Variables when the procedure needs operator
 parameters or produces structured output</p></li>
 <li><p>Check the stop condition when the work can be interrupted cleanly</p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">root.updateGroup(...)</span></code> when the body will publish many updates over
-time</p></li>
+<li><p>Rely on the base-class <code class="docutils literal notranslate"><span class="pre">updateGroup</span></code> context that wraps every <code class="docutils literal notranslate"><span class="pre">_process()</span></code>
+call; tune its leak period via the hidden <code class="docutils literal notranslate"><span class="pre">UpdatePeriod</span></code> Variable rather
+than opening a redundant nested context</p></li>
 </ul>
 </section>
 <section id="related-topics">
