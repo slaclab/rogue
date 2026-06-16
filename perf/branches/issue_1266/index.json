@@ -1,0 +1,23 @@
+{
+  "ref_name": "issue_1266",
+  "ref_slug": "issue_1266",
+  "latest_url": "/rogue/perf/branches/issue_1266/latest.json",
+  "history": [
+    {
+      "ref_name": "issue_1266",
+      "sha": "dbc38740a93f6f0b14b7fcfece075d8117e643b3",
+      "short_sha": "dbc3874",
+      "published_at": "2026-06-16T00:38:33Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/27585819828",
+      "summary_url": "/rogue/perf/branches/issue_1266/history/dbc38740a93f6f0b14b7fcfece075d8117e643b3.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "issue_1266",
+    "sha": "dbc38740a93f6f0b14b7fcfece075d8117e643b3",
+    "short_sha": "dbc3874",
+    "published_at": "2026-06-16T00:38:33Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/27585819828",
+    "summary_url": "/rogue/perf/branches/issue_1266/latest.json"
+  }
+}
