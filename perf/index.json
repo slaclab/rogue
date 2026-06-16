@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-16T00:47:26Z",
+  "generated_at": "2026-06-16T03:07:33Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -272,6 +272,29 @@
         "published_at": "2026-06-15T19:30:35Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/27570714944",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "rocev2-soft-reset-on-reconnect",
+      "ref_slug": "rocev2-soft-reset-on-reconnect",
+      "latest_url": "/rogue/perf/branches/rocev2-soft-reset-on-reconnect/latest.json",
+      "history": [
+        {
+          "ref_name": "rocev2-soft-reset-on-reconnect",
+          "sha": "0a465eacd930bda388eb9b56873f0edce98c5c80",
+          "short_sha": "0a465ea",
+          "published_at": "2026-06-16T03:07:33Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/27591140427",
+          "summary_url": "/rogue/perf/branches/rocev2-soft-reset-on-reconnect/history/0a465eacd930bda388eb9b56873f0edce98c5c80.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "rocev2-soft-reset-on-reconnect",
+        "sha": "0a465eacd930bda388eb9b56873f0edce98c5c80",
+        "short_sha": "0a465ea",
+        "published_at": "2026-06-16T03:07:33Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/27591140427",
+        "summary_url": "/rogue/perf/branches/rocev2-soft-reset-on-reconnect/latest.json"
       }
     },
     {
