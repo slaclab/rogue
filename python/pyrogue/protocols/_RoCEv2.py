@@ -551,6 +551,20 @@ def _roce_setup_connection(engine, host_qpn, host_rq_psn, host_sq_psn,
         except Exception:
             pass
 
+    # Clear any stale RoCE transport state (QP / PSN tables) left behind by a
+    # prior session. Without this, a software reconnect reuses a stale FPGA
+    # transmit PSN and the host NIC silently drops every RDMA WRITE as
+    # out-of-sequence (FPGA SuccessCounter and host rxCount both stay 0). The
+    # SoftReset fires an FW one-shot that re-initialises the transport core
+    # (equivalent to an FPGA reload of the engine datapath) without disturbing
+    # the RUDP/UDP link. Best-effort: older firmware lacks the register.
+    try:
+        engine.SoftReset()
+        _time.sleep(0.05)
+    except AttributeError:
+        warn("RoceEngine has no SoftReset register — a software reconnect may "
+             "require an FPGA reload to clear stale QP/PSN state")
+
     # Ensure SendMetaData starts at 0 for a clean first rising edge
     engine.SendMetaData.set(0)
     _time.sleep(0.1)
