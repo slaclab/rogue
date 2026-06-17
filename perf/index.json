@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-17T16:42:25Z",
+  "generated_at": "2026-06-17T18:34:39Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -275,6 +275,37 @@
       }
     },
     {
+      "ref_name": "issues/1264",
+      "ref_slug": "issues_1264",
+      "latest_url": "/rogue/perf/branches/issues_1264/latest.json",
+      "history": [
+        {
+          "ref_name": "issues/1264",
+          "sha": "9e99799d13f7a7a6ef39093707b73feb69c7bdd7",
+          "short_sha": "9e99799",
+          "published_at": "2026-06-17T18:34:39Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/27710684700",
+          "summary_url": "/rogue/perf/branches/issues_1264/history/9e99799d13f7a7a6ef39093707b73feb69c7bdd7.json"
+        },
+        {
+          "ref_name": "issues/1264",
+          "sha": "98acead8db69f7ad0302361baba78dee96165648",
+          "short_sha": "98acead",
+          "published_at": "2026-06-15T21:49:43Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/27578406656",
+          "summary_url": "/rogue/perf/branches/issues_1264/history/98acead8db69f7ad0302361baba78dee96165648.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "issues/1264",
+        "sha": "9e99799d13f7a7a6ef39093707b73feb69c7bdd7",
+        "short_sha": "9e99799",
+        "published_at": "2026-06-17T18:34:39Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/27710684700",
+        "summary_url": "/rogue/perf/branches/issues_1264/latest.json"
+      }
+    },
+    {
       "ref_name": "rocev2-soft-reset-on-reconnect",
       "ref_slug": "rocev2-soft-reset-on-reconnect",
       "latest_url": "/rogue/perf/branches/rocev2-soft-reset-on-reconnect/latest.json",
@@ -334,29 +365,6 @@
         "published_at": "2026-06-16T00:47:26Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/27586118648",
         "summary_url": "/rogue/perf/branches/issue_1266/latest.json"
-      }
-    },
-    {
-      "ref_name": "issues/1264",
-      "ref_slug": "issues_1264",
-      "latest_url": "/rogue/perf/branches/issues_1264/latest.json",
-      "history": [
-        {
-          "ref_name": "issues/1264",
-          "sha": "98acead8db69f7ad0302361baba78dee96165648",
-          "short_sha": "98acead",
-          "published_at": "2026-06-15T21:49:43Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/27578406656",
-          "summary_url": "/rogue/perf/branches/issues_1264/history/98acead8db69f7ad0302361baba78dee96165648.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "issues/1264",
-        "sha": "98acead8db69f7ad0302361baba78dee96165648",
-        "short_sha": "98acead",
-        "published_at": "2026-06-15T21:49:43Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/27578406656",
-        "summary_url": "/rogue/perf/branches/issues_1264/latest.json"
       }
     },
     {
