@@ -177,6 +177,14 @@ Common CMake options:
 - `-DROGUE_INSTALL=conda`: install into the active conda environment.
 - `-DROGUE_BUILD_TESTS=ON`: build native C++ tests under `tests/cpp`.
 - `-DNO_PYTHON=1 -DSTATIC_LIB=1`: small static no-Python build.
+- `-DNO_ROCEV2=ON`: build without RoCEv2 / `libibverbs` (Linux). Skips ibverbs
+  discovery and linking and excludes the `rocev2` sources, so `rdma-core` is not
+  required. For cross-compiled / packaged builds that do not need RoCEv2.
+- `-DROGUE_SKIP_PIP_INSTALL=ON`: with `-DROGUE_INSTALL=system` (or `conda`), still
+  install the C++ libraries, headers, and `RogueConfig.cmake`, but skip the
+  cmake-driven `pip install` of the Python package. For packaging systems
+  (Yocto `setuptools3`, distro `%py_install`, etc.) that stage the Python package
+  into `DESTDIR` themselves.
 
 For day-to-day local builds, use one of two modes:
 

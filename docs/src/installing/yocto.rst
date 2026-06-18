@@ -115,6 +115,24 @@ Update the `ROGUE_VERSION` line for an updated version when appropriate. You wil
 
 RDEPENDS is the  Runtime Dependencies. If your rogue application requires additional python libraries you can add them to the RDEPENDS += line in the above text.
 
+.. note::
+
+   As of rogue v6.14.0, two optional CMake flags make cross-compiled / packaged
+   builds simpler. Add them to ``EXTRA_OECMAKE`` when you do not want RoCEv2 and
+   want the recipe (``setuptools3``) to install the Python package into
+   ``DESTDIR`` itself:
+
+   .. code::
+
+      EXTRA_OECMAKE += "-DROGUE_INSTALL=system -DNO_ROCEV2=1 -DROGUE_SKIP_PIP_INSTALL=1"
+
+   * ``-DNO_ROCEV2=1`` builds without RoCEv2 / ``libibverbs``, so you do not need
+     to add ``rdma-core`` to ``DEPENDS``/``RDEPENDS``.
+   * ``-DROGUE_SKIP_PIP_INSTALL=1`` skips the cmake-driven ``pip install`` (which
+     uses the build-host interpreter and ignores ``DESTDIR``); the C++ libraries,
+     headers, and ``RogueConfig.cmake`` are still installed, and ``setuptools3``
+     handles the Python package into ``DESTDIR``.
+
 Step 3 - Add your application to the image installation list
 
 To enable compilation and installation of the rogue package in your Yocto project execute the following command:
