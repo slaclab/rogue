@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols._RoCEv2 &mdash; Rogue v6.14.0-3-gce8b5e702 documentation</title>
+  <title>pyrogue.protocols._RoCEv2 &mdash; Rogue v6.14.0-6-g602b7fcc4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=87470b04"></script>
+      <script src="../../../_static/documentation_options.js?v=a885fd53"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -871,10 +871,11 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_ROCEV2_AVAILABLE</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
                 <span class="s2">&quot;RoCEv2Server requires a Linux build of rogue with &quot;</span>
-                <span class="s2">&quot;libibverbs/rdma-core available at runtime.  Install &quot;</span>
-                <span class="s2">&quot;rdma-core (`conda install -c conda-forge rdma-core` or &quot;</span>
-                <span class="s2">&quot;`apt install libibverbs-dev`) and rebuild rogue on Linux &quot;</span>
-                <span class="s2">&quot;with those libraries available.&quot;</span>
+                <span class="s2">&quot;libibverbs/rdma-core available at runtime.  This module is &quot;</span>
+                <span class="s2">&quot;also absent when rogue was built with -DNO_ROCEV2=ON.  &quot;</span>
+                <span class="s2">&quot;Install rdma-core (`conda install -c conda-forge rdma-core` &quot;</span>
+                <span class="s2">&quot;or `apt install libibverbs-dev`) and rebuild rogue on Linux &quot;</span>
+                <span class="s2">&quot;without -DNO_ROCEV2 and with those libraries available.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">pmtu</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
