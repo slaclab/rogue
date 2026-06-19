@@ -22,6 +22,24 @@
 #####################################
 set(NO_PYTHON   @NO_PYTHON@)
 
+# CMake policy compatibility:
+# - CMP0144: honor upper-case <PACKAGENAME>_ROOT variables in find_package.
+# - CMP0167: keep FindBoost module behavior for the current Boost discovery flow.
+if(POLICY CMP0144)
+   cmake_policy(SET CMP0144 NEW)
+endif()
+
+if(POLICY CMP0167)
+   cmake_policy(SET CMP0167 OLD)
+endif()
+
+# Set default release type
+if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
+  if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+  endif()
+endif()
+
 #####################################
 # Boost + Python
 #####################################
@@ -52,38 +70,28 @@ if ( NOT NO_PYTHON )
       set(BOOST_ROOT $ENV{CONDA_PREFIX})
    endif()
 
-   # libboost_python3.7 style libraries
-   message("Looking for libboost_python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
-   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+   # Loop through potential Boost Python component names
+   set(BOOST_PYTHON_CANDIDATES
+       "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"      # e.g. python38
+       "python${Python3_VERSION_MAJOR}"                              # e.g. python3
+       "python"                                                      # e.g. python
+       "python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"   # e.g. python-py38
+       "python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"  # e.g. python3-py38
+   )
 
-   # libboost_python3 style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python${Python3_VERSION_MAJOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${Python3_VERSION_MAJOR})
-   endif()
-
-   # libboost_python style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python)
-   endif()
-
-   # libboost_python-py37 style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-   endif()
-
-   # libboost_python3-py37 style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-   endif()
+   foreach(COMPONENT_NAME ${BOOST_PYTHON_CANDIDATES})
+       if(NOT Boost_FOUND)
+           message(STATUS "Checking for Boost component: ${COMPONENT_NAME}")
+           find_package(Boost QUIET COMPONENTS ${COMPONENT_NAME})
+       else()
+           break()
+       endif()
+   endforeach()
 
    # Nothing worked
    if (NOT Boost_FOUND)
       message("")
-      message(FATAL_ERROR "Failed to find boost libraries!")
+      message(FATAL_ERROR "Failed to find boost libraries! Tried: ${BOOST_PYTHON_CANDIDATES}")
    endif()
 
 else()
@@ -104,11 +112,17 @@ find_package(ZeroMQ QUIET)
 # ZeroMQ does not always support cmake, use brute force
 if (NOT ZeroMQ_FOUND)
 
-   # Convert LD_LIBRARY PATH for search
+   set(HINT_PATHS "")
+
+   # Convert library path hints for search.
    if(DEFINED ENV{LD_LIBRARY_PATH})
-      string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
-   else()
-      set(HINT_PATHS, "")
+      string(REPLACE ":" ";" LD_HINT_PATHS $ENV{LD_LIBRARY_PATH})
+      list(APPEND HINT_PATHS ${LD_HINT_PATHS})
+   endif()
+
+   if(APPLE AND DEFINED ENV{DYLD_LIBRARY_PATH})
+      string(REPLACE ":" ";" DYLD_HINT_PATHS $ENV{DYLD_LIBRARY_PATH})
+      list(APPEND HINT_PATHS ${DYLD_HINT_PATHS})
    endif()
 
    # See if zmq library is in LD_LIBRARY_PATH
@@ -136,6 +150,7 @@ if (NOT ZeroMQ_FOUND)
       message("")
       message(FATAL_ERROR "Failed to find zeroMQ!")
    endif()
+
 endif()
 
 #####################################
