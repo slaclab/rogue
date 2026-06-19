@@ -1,0 +1,23 @@
+{
+  "ref_name": "cmake_fix2",
+  "ref_slug": "cmake_fix2",
+  "latest_url": "/rogue/perf/branches/cmake_fix2/latest.json",
+  "history": [
+    {
+      "ref_name": "cmake_fix2",
+      "sha": "bb93ccd80734b9dc7a7c59b42896e92016de071b",
+      "short_sha": "bb93ccd",
+      "published_at": "2026-06-19T18:08:34Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/27841258976",
+      "summary_url": "/rogue/perf/branches/cmake_fix2/history/bb93ccd80734b9dc7a7c59b42896e92016de071b.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "cmake_fix2",
+    "sha": "bb93ccd80734b9dc7a7c59b42896e92016de071b",
+    "short_sha": "bb93ccd",
+    "published_at": "2026-06-19T18:08:34Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/27841258976",
+    "summary_url": "/rogue/perf/branches/cmake_fix2/latest.json"
+  }
+}
