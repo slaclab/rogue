@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-19T18:08:34Z",
+  "generated_at": "2026-06-19T23:12:48Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -283,33 +283,18 @@
       }
     },
     {
-      "ref_name": "cmake_fix2",
-      "ref_slug": "cmake_fix2",
-      "latest_url": "/rogue/perf/branches/cmake_fix2/latest.json",
-      "history": [
-        {
-          "ref_name": "cmake_fix2",
-          "sha": "bb93ccd80734b9dc7a7c59b42896e92016de071b",
-          "short_sha": "bb93ccd",
-          "published_at": "2026-06-19T18:08:34Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/27841258976",
-          "summary_url": "/rogue/perf/branches/cmake_fix2/history/bb93ccd80734b9dc7a7c59b42896e92016de071b.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "cmake_fix2",
-        "sha": "bb93ccd80734b9dc7a7c59b42896e92016de071b",
-        "short_sha": "bb93ccd",
-        "published_at": "2026-06-19T18:08:34Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/27841258976",
-        "summary_url": "/rogue/perf/branches/cmake_fix2/latest.json"
-      }
-    },
-    {
       "ref_name": "rocev2-soft-reset-on-reconnect",
       "ref_slug": "rocev2-soft-reset-on-reconnect",
       "latest_url": "/rogue/perf/branches/rocev2-soft-reset-on-reconnect/latest.json",
       "history": [
+        {
+          "ref_name": "rocev2-soft-reset-on-reconnect",
+          "sha": "7897542491526c78b74642ffc3a65e27a60e5394",
+          "short_sha": "7897542",
+          "published_at": "2026-06-19T23:12:48Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/27852419198",
+          "summary_url": "/rogue/perf/branches/rocev2-soft-reset-on-reconnect/history/7897542491526c78b74642ffc3a65e27a60e5394.json"
+        },
         {
           "ref_name": "rocev2-soft-reset-on-reconnect",
           "sha": "56088f3267b3eb7c52c4d000cb0f2d7789a69f8e",
@@ -353,11 +338,34 @@
       ],
       "latest": {
         "ref_name": "rocev2-soft-reset-on-reconnect",
-        "sha": "56088f3267b3eb7c52c4d000cb0f2d7789a69f8e",
-        "short_sha": "56088f3",
-        "published_at": "2026-06-19T16:59:31Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/27838395299",
+        "sha": "7897542491526c78b74642ffc3a65e27a60e5394",
+        "short_sha": "7897542",
+        "published_at": "2026-06-19T23:12:48Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/27852419198",
         "summary_url": "/rogue/perf/branches/rocev2-soft-reset-on-reconnect/latest.json"
+      }
+    },
+    {
+      "ref_name": "cmake_fix2",
+      "ref_slug": "cmake_fix2",
+      "latest_url": "/rogue/perf/branches/cmake_fix2/latest.json",
+      "history": [
+        {
+          "ref_name": "cmake_fix2",
+          "sha": "bb93ccd80734b9dc7a7c59b42896e92016de071b",
+          "short_sha": "bb93ccd",
+          "published_at": "2026-06-19T18:08:34Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/27841258976",
+          "summary_url": "/rogue/perf/branches/cmake_fix2/history/bb93ccd80734b9dc7a7c59b42896e92016de071b.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "cmake_fix2",
+        "sha": "bb93ccd80734b9dc7a7c59b42896e92016de071b",
+        "short_sha": "bb93ccd",
+        "published_at": "2026-06-19T18:08:34Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/27841258976",
+        "summary_url": "/rogue/perf/branches/cmake_fix2/latest.json"
       }
     },
     {
