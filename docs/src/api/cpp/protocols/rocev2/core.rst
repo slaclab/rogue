@@ -37,7 +37,7 @@ Class Reference
       :param deviceName: ibverbs device name (e.g. ``rxe0`` for SoftRoCE, ``mlx5_0`` for a Mellanox/NVIDIA NIC)
       :param ibPort: ibverbs port number (almost always ``1``)
       :param gidIndex: GID table index for the host NIC's RoCEv2 IPv4/IPv6 entry
-      :param maxPayload: maximum bytes per RDMA WRITE (default: ``DefaultMaxPayload`` = 9000)
+      :param maxPayload: maximum bytes per RDMA SEND (default: ``DefaultMaxPayload`` = 9000)
 
    .. cpp:function:: virtual ~Core()
 
@@ -73,5 +73,5 @@ Module Constants
 
 .. cpp:var:: static const uint32_t DefaultMaxPayload = 9000
 
-   Default maximum transfer unit for a single RDMA WRITE (jumbo-frame
+   Default maximum transfer unit for a single RDMA SEND (jumbo-frame
    equivalent).

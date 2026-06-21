@@ -9,13 +9,15 @@ RoCEv2 Protocol
 over Converged Ethernet v2 (RoCEv2). ``Core`` opens an ibverbs device and
 allocates a shared Protection Domain (PD); ``Server`` creates the Completion
 Queue, Queue Pair (type ``IBV_QPT_RC``), and Memory Region, then polls for
-incoming RDMA WRITEs and forwards them as Rogue stream frames.
+incoming RDMA SENDs and forwards them as Rogue stream frames.
 
 The user-facing entry point is ``pyrogue.protocols.RoCEv2Server`` — a
-``pyrogue.Device`` wrapper that owns the C++ server and the surf-side
-``RoceEngine`` register block. It manages the QP handshake with the FPGA,
-exposes 15 ``LocalVariable`` status/configuration fields, and integrates
-cleanly into the standard PyRogue device tree via ``Root.addInterface()``.
+``pyrogue.Device`` wrapper that owns the C++ server. It exposes 15
+``LocalVariable`` status/configuration fields and integrates cleanly into
+the standard PyRogue device tree via ``Root.addInterface()``. The FPGA-side
+QP handshake is driven by the surf ``RoCEv2Engine`` device (a separate node
+in the tree, not a child of the server); the application ``Root`` sequences
+the host↔FPGA bring-up and teardown.
 
 Where RoCEv2 Fits In The Stack
 ==============================
@@ -28,12 +30,16 @@ Typical protocol stack:
                                                    |
                                            Rogue stream graph (channels via getChannel())
 
-The FPGA side runs a ``surf.ethernet.roce._RoceEngine.RoceEngine`` block that
-drives a metadata bus. ``RoCEv2Server`` reads QP parameters from that metadata
-bus during ``_start()`` to complete the RC connection setup. Once the QP
-reaches ``IBV_QPS_RTS``, the FPGA issues RDMA WRITEs directly into the host
-Memory Region and the C++ completion-queue polling thread reassembles frames
-for the Rogue stream graph.
+The FPGA side runs a ``surf.ethernet.roce.RoCEv2Engine`` block that drives a
+metadata bus. The application ``Root`` reads the host QP parameters from
+``RoCEv2Server`` (``getHostParams``), runs ``engine.setupConnection()`` over
+that metadata bus, and finishes the host side with
+``server.completeConnection()``. Once the QP reaches ``IBV_QPS_RTS``, the FPGA
+issues RDMA-SEND-with-immediate frames that land in the host's pre-posted
+receive slots and the C++ completion-queue polling thread reassembles frames
+for the Rogue stream graph. Because RDMA-SEND is two-sided, the host receive
+queue itself is the flow-control mechanism: when it drains, the NIC RNR-NAKs
+the FPGA, which self-throttles to the poll thread's re-post rate.
 
 Key Classes
 ===========
@@ -47,9 +53,11 @@ Key Classes
   polling thread, and re-posts receive work requests as frames are returned
   by downstream consumers (zero-copy slab).
 
-- ``pyrogue.protocols.RoCEv2Server``: the PyRogue ``Device`` wrapper. Adds the
-  ``RoceEngine`` child device (from ``surf.ethernet.roce._RoceEngine``) and 15
-  ``LocalVariable`` fields for status and configuration.
+- ``pyrogue.protocols.RoCEv2Server``: the PyRogue ``Device`` wrapper around
+  the C++ server. Exposes 15 ``LocalVariable`` fields for status and
+  configuration. The FPGA-side ``surf.ethernet.roce.RoCEv2Engine`` is a
+  separate tree node (not a child of the server); the ``Root`` drives the
+  handshake between the two.
 
 When To Use
 ===========
@@ -66,7 +74,7 @@ Operational Requirements
 Jumbo-frame MTU (9000 bytes)
 -----------------------------
 
-The RoCEv2 server defaults to a 9000-byte maximum payload per RDMA WRITE
+The RoCEv2 server defaults to a 9000-byte maximum payload per RDMA SEND
 (``DefaultMaxPayload`` in ``include/rogue/protocols/rocev2/Core.h``). The
 host NIC and every switch in the path MUST be configured for a 9000-byte
 (or larger) MTU — typically:
@@ -97,48 +105,94 @@ Then pass ``deviceName='rxe0'`` to ``RoCEv2Server``. SoftRoCE works for
 functional bring-up and CI but does not deliver the throughput of a
 hardware RoCEv2 NIC.
 
-surf RoceEngine dependency
----------------------------
+surf RoCEv2Engine dependency
+----------------------------
 
-``RoCEv2Server`` constructs a child device of type
-``surf.ethernet.roce._RoceEngine.RoceEngine`` to drive the FPGA-side
-metadata-bus handshake. The ``surf`` Python package MUST be on the
-Python path. Pass ``roceEngine=<existing instance>`` if your tree
-already instantiates the engine elsewhere; otherwise pass
-``roceEngineOffset`` and ``roceMemBase`` so ``RoCEv2Server`` can build
-its own.
+The FPGA-side metadata-bus handshake is performed by
+``surf.ethernet.roce.RoCEv2Engine``, instantiated as part of the FPGA
+register tree (e.g. under ``Core`` in the application device map), NOT by
+``RoCEv2Server``. The application ``Root`` wires the two together:
+``engine.setupConnection(**server.getHostParams())`` followed by
+``server.completeConnection(...)``. The ``surf`` Python package MUST be on
+the Python path for the engine device.
 
 Python Example
 ==============
+
+The application ``Root`` owns both the host ``RoCEv2Server`` and the FPGA
+``surf.ethernet.roce.RoCEv2Engine`` register block, and sequences the
+host↔FPGA QP bring-up inside its own ``start()``. The two configuration
+dataclasses are passed in at construction: ``RoCEv2ServerCfg`` carries the
+host-NIC knobs, and a single ``RoCEv2TransportCfg`` is forwarded into BOTH
+``engine.setupConnection()`` and ``server.completeConnection()`` so the FPGA
+and host sides cannot drift on ``pmtu`` / ``minRnrTimer``.
 
 .. code-block:: python
 
    import pyrogue as pr
    import pyrogue.protocols
-   import rogue.protocols.srp
+   from pyrogue.protocols import (
+       RoCEv2Server, RoCEv2ServerCfg, RoCEv2TransportCfg,
+   )
 
    class MyRoot(pr.Root):
-       def __init__(self):
-           super().__init__(name='MyRoot')
+       def __init__(self, *, rocev2Cfg, transportCfg, **kwargs):
+           super().__init__(name='MyRoot', **kwargs)
 
-           # SRP memBase for the RoceEngine register block
-           srp = rogue.protocols.srp.SrpV3()
+           self._transportCfg = transportCfg
 
-           self.add(pyrogue.protocols.RoCEv2Server(
-               name             = 'RoCEv2',
-               ip               = '10.0.0.1',     # FPGA IP
-               deviceName       = 'rxe0',          # SoftRoCE or 'mlx5_0'
-               ibPort           = 1,
-               gidIndex         = 0,
-               maxPayload       = 9000,            # jumbo-frame MTU
-               rxQueueDepth     = 256,
-               roceEngineOffset = 0x00000000,
-               roceMemBase      = srp,
-           ))
+           # FPGA register tree (carries surf.ethernet.roce.RoCEv2Engine).
+           self.add(MyFpgaCore(name='Core', memBase=...))
+
+           # The host-side RX server. The FPGA-side RoCEv2Engine is a
+           # separate node (self.Core.RoCEv2Engine), not a child of the server.
+           self.add(RoCEv2Server(name='RoCEv2', rocev2Cfg=rocev2Cfg))
            self.addInterface(self.RoCEv2)
 
-           # Channel-filtered view (channel id = immediate value bits [7:0])
-           data_ch = self.RoCEv2.getChannel(0)
+       def start(self, **kwargs):
+           super().start(**kwargs)
+
+           # Drive the host<->FPGA QP handshake once transport is up.
+           server = self.RoCEv2
+           engine = self.Core.RoCEv2Engine          # surf.ethernet.roce.RoCEv2Engine
+           xport  = self._transportCfg
+
+           # Host params (hostQpn/hostRqPsn/hostSqPsn/mrAddr/mrLen) feed the FPGA;
+           # the engine returns a RoCEv2FpgaParams (fpgaQpn/lkey/...) to finish
+           # the host side.
+           params = server.getHostParams()
+           fpga = engine.setupConnection(
+               **params._asdict(),
+               pmtu        = xport.pmtu,
+               minRnrTimer = xport.minRnrTimer,
+               rnrRetry    = xport.rnrRetry,
+               retryCount  = xport.retryCount,
+           )
+           server.completeConnection(
+               fpga.fpgaQpn,
+               fpgaLkey    = fpga.lkey,
+               pmtu        = xport.pmtu,
+               minRnrTimer = xport.minRnrTimer,
+               rnrRetry    = xport.rnrRetry,
+               retryCount  = xport.retryCount,
+           )
+           server.printConnInfo()
+
+   # Construct with the two cfg bundles (mirrors rocev2PrbsTest.py):
+   root = MyRoot(
+       rocev2Cfg = RoCEv2ServerCfg(
+           ip         = '192.168.2.10',   # FPGA IP
+           deviceName = 'mlx5_0',          # HW NIC ('rxe0' for SoftRoCE)
+           gidIndex   = -1,                # auto-detect the RoCE v2 IPv4 GID
+       ),
+       transportCfg = RoCEv2TransportCfg(  # proven acceptance-gate defaults
+           minRnrTimer = 12,
+       ),
+   )
+   with root:
+       # Root.start() already ran the bring-up; the QP is connected here.
+       # Channel-filtered view (channel id = immediate value bits [7:0]).
+       data_ch = root.RoCEv2.getChannel(0)
 
 Logging
 =======
@@ -182,8 +236,8 @@ Stale FPGA resources after a crash
 
 If a previous session crashed or was killed without a clean ``Root.stop()``,
 the FPGA RoCEv2 engine may still hold a PD, MR, or QP from that session.
-The next ``_start()`` call will fail with a ``rogue.GeneralError`` whose
-message includes:
+The next ``engine.setupConnection()`` call (driven by the ``Root`` during
+``start()``) will fail with a ``rogue.GeneralError`` whose message includes:
 
 .. code-block:: text
 
@@ -198,31 +252,26 @@ advance, so a reprogram is the only reliable recovery path.
 MR length exceeds 32-bit metadata-bus field
 ---------------------------------------------
 
-``RoCEv2Server._start()`` computes the FPGA-side Memory Region length as
-``maxPayload * rxQueueDepth``. If this product is >= 2\ :sup:`32` (4 GiB),
-the value cannot be represented in the 32-bit ``length`` field of the
-metadata bus and ``_start()`` raises a ``rogue.GeneralError``:
-
-.. code-block:: text
-
-   FPGA MR length ... bytes (... GiB) exceeds the 32-bit field of the
-   metadata bus. Reduce --roceMaxPay (...) or --roceQDepth (...).
-
-The default configuration (``maxPayload=9000``, ``rxQueueDepth=256``,
-product ~2.3 MB) is four orders of magnitude below this limit. The guard
-protects against accidentally passing very large queue depths.
+The FPGA-side Memory Region length is ``maxPayload * rxQueueDepth``. If this
+product is too large for the 32-bit ``length`` field of the metadata bus, the
+surf ``RoCEv2Engine.setupConnection()`` argument validation raises a
+``rogue.GeneralError`` before any bus traffic, so the FPGA is never left with
+a partially-allocated resource. The default configuration
+(``maxPayload=9000``, ``rxQueueDepth=256``, product ~2.3 MB) is far below this
+limit; the guard protects against accidentally passing very large queue depths.
 
 QP state-machine enforcement
 -------------------------------
 
-The Python metadata-bus encoders (``_encode_modify_qp``,
-``_encode_err_qp``, ``_encode_destroy_qp``) are stateless — they will
-encode and send any QP transition without checking whether it is valid.
-The **FPGA state machine is the single source of truth**: illegal
-transitions return ``success=False``, which is raised as a
-``rogue.GeneralError`` on the setup path and logged as a warning on the
-teardown path. No Python-side state mirror is maintained because it would
-become stale after a crash and block legitimate teardown attempts.
+The metadata-bus codec now lives in surf
+(``surf.ethernet.roce._RoCEv2Protocol``). Its encoders are stateless — they
+encode and send any QP transition without checking whether it is valid. The
+**FPGA state machine is the single source of truth**: illegal transitions
+return ``success=False``, which ``RoCEv2Engine.setupConnection()`` raises as a
+``rogue.GeneralError`` on the setup path and logs as a warning on the
+``teardownConnection()`` path. No Python-side state mirror is maintained
+because it would become stale after a crash and block legitimate teardown
+attempts.
 
 Related Topics
 ==============
