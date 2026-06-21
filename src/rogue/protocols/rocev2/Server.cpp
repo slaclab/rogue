@@ -18,6 +18,7 @@
 
 #include "rogue/protocols/rocev2/Server.h"
 
+#include <arpa/inet.h>
 #include <infiniband/verbs.h>
 #include <inttypes.h>
 #include <stdint.h>
@@ -363,7 +364,7 @@ void rpr::Server::completeConnection(uint32_t fpgaQpn, uint32_t fpgaRqPsn,
         attr.sq_psn        = hostSqPsn_;
         attr.timeout       = 14;
         attr.retry_cnt     = 3;
-        attr.rnr_retry     = 3;
+        attr.rnr_retry     = 7;  // infinite (host SQ never transmits; cosmetic consistency)
         attr.max_rd_atomic = 16;
 
         if (ibv_modify_qp(qp_, &attr,
@@ -377,7 +378,7 @@ void rpr::Server::completeConnection(uint32_t fpgaQpn, uint32_t fpgaRqPsn,
                                               "QP RTR→RTS failed"));
     }
 
-    log_->info("QP → RTS — ready to receive RDMA WRITEs");
+    log_->info("QP → RTS — ready to receive RDMA SENDs");
 
     // Start receive thread
     std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
@@ -478,7 +479,14 @@ void rpr::Server::runThread(std::weak_ptr<int> lockPtr) {
                                //  sendFrame() re-acquires via ScopedGil when
                                //  calling Python slaves.
 
-    struct ibv_wc wc;
+    // Drain up to kPollBatch completions per ibv_poll_cq() call.  At line rate
+    // the CQ holds many ready CQEs, and polling them one-at-a-time pays the
+    // provider's per-call cost (CQ lock + consumer-index update / doorbell) once
+    // per frame.  Batching amortizes that over the burst — this per-frame fixed
+    // cost is the bound that pins MonBandwidth to the receive-loop rate, since
+    // RDMA-SEND is two-sided (the FPGA self-throttles to our re-post rate).
+    constexpr int kPollBatch = 16;
+    struct ibv_wc wcArr[kPollBatch];
 
     // The poll loop body is wrapped in try/catch so that an ibverbs failure
     // (postRecvWr throws rogue::GeneralError on ibv_post_recv failure)
@@ -486,7 +494,7 @@ void rpr::Server::runThread(std::weak_ptr<int> lockPtr) {
     // point and triggering std::terminate.
     try {
         while (threadEn_.load()) {
-            int n = ibv_poll_cq(cq_, 1, &wc);
+            int n = ibv_poll_cq(cq_, kPollBatch, wcArr);
             if (n == 0) {
                 std::this_thread::sleep_for(std::chrono::microseconds(100));
                 continue;
@@ -496,77 +504,101 @@ void rpr::Server::runThread(std::weak_ptr<int> lockPtr) {
                 continue;
             }
 
-            uint32_t slot = static_cast<uint32_t>(wc.wr_id);
+            // Process every completion drained in this batch.  Each is
+            // independent and RC delivers them in order, so iterating the batch
+            // is identical to the old one-CQE-at-a-time loop (the per-completion
+            // `continue` skips just that completion; a WR_FLUSH_ERR `break`
+            // leaves the batch and the outer while exits on threadEn_).
+            for (int k = 0; k < n; ++k) {
+                struct ibv_wc& wc = wcArr[k];
 
-            // Defensive: every posted WR sets wr_id = slot with slot <
-            // numBufs_; a corrupted wr_id must not be dereferenced as a
-            // slab offset at line `slab_ + slot * bufSize_` below.  We
-            // cannot safely re-post either (the real slot is unknown),
-            // so drop the completion and keep polling.
-            if (slot >= numBufs_) {
-                log_->warning("CQ returned out-of-range wr_id=%" PRIu64
-                              " (numBufs=%u); discarding",
-                              static_cast<uint64_t>(wc.wr_id), numBufs_);
-                continue;
-            }
+                uint32_t slot = static_cast<uint32_t>(wc.wr_id);
 
-            if (wc.status != IBV_WC_SUCCESS) {
-                log_->warning("CQ error: %s (slot=%u)",
-                              ibv_wc_status_str(wc.status), slot);
-
-                if (wc.status == IBV_WC_WR_FLUSH_ERR) {
-                    // QP transitioned to ERROR; every remaining posted
-                    // WR flushes with this status.  Do NOT re-post - stop the
-                    // thread gracefully.
-                    log_->error("QP in ERROR state (WR_FLUSH_ERR); exiting CQ poll thread");
-                    threadEn_.store(false);
-                    break;
+                // Defensive: every posted WR sets wr_id = slot with slot <
+                // numBufs_; a corrupted wr_id must not be dereferenced as a
+                // slab offset at line `slab_ + slot * bufSize_` below.  We
+                // cannot safely re-post either (the real slot is unknown),
+                // so drop the completion and keep polling.
+                if (slot >= numBufs_) {
+                    log_->warning("CQ returned out-of-range wr_id=%" PRIu64
+                                  " (numBufs=%u); discarding",
+                                  static_cast<uint64_t>(wc.wr_id), numBufs_);
+                    continue;
                 }
 
-                postRecvWr(slot);
-                continue;
+                if (wc.status != IBV_WC_SUCCESS) {
+                    log_->warning("CQ error: %s (slot=%u)",
+                                  ibv_wc_status_str(wc.status), slot);
+
+                    if (wc.status == IBV_WC_WR_FLUSH_ERR) {
+                        // QP transitioned to ERROR; every remaining posted
+                        // WR flushes with this status.  Do NOT re-post - stop the
+                        // thread gracefully.
+                        log_->error("QP in ERROR state (WR_FLUSH_ERR); exiting CQ poll thread");
+                        threadEn_.store(false);
+                        break;
+                    }
+
+                    postRecvWr(slot);
+                    continue;
+                }
+
+                // RDMA-SEND-with-immediate completes as IBV_WC_RECV with the IBV_WC_WITH_IMM
+                // flag set (RDMA-WRITE-with-immediate would have been IBV_WC_RECV_RDMA_WITH_IMM).
+                if (wc.opcode != IBV_WC_RECV || !(wc.wc_flags & IBV_WC_WITH_IMM)) {
+                    log_->warning("Unexpected opcode %d / wc_flags 0x%x (slot=%u), re-posting",
+                                  wc.opcode, wc.wc_flags, slot);
+                    postRecvWr(slot);
+                    continue;
+                }
+
+                // Decode immediate value: bits [7:0] = channel id; bits [31:8] = the
+                // free-running ring position the FPGA stamped (addrCount). With RDMA-SEND
+                // (two-sided) the payload lands in the CONSUMED recv-WR's SGE buffer, so the
+                // data lives at wc.wr_id (= slot), and the immediate's slot field is now
+                // purely informational (kept for the debug log). The recv queue itself is the
+                // flow-control mechanism: when it drains, the NIC RNR-NAKs the FPGA, which
+                // self-throttles to this thread's re-post rate — no software credit feed.
+                //
+                // RoCE carries imm_data in network byte order, so ntohl() recovers the
+                // FPGA's immDt word before splitting out the channel and slot fields.
+                uint32_t imm        = ntohl(wc.imm_data);
+                uint8_t  channel    = static_cast<uint8_t>(imm & 0xFF);
+                uint32_t dataSlot   = (imm >> 8) & 0x00FFFFFF;
+                uint32_t payloadLen = wc.byte_len;
+
+                if (payloadLen == 0 || payloadLen > bufSize_) {
+                    log_->warning("Bad payload len=%u (slot=%u), re-posting",
+                                  payloadLen, slot);
+                    postRecvWr(slot);
+                    continue;
+                }
+
+                // Zero-copy: the SEND landed the payload in the consumed recv-WR's buffer at
+                // slab_ + slot*bufSize_; wrap it as a rogue Buffer. The meta is the same slot
+                // so retBuffer() re-posts THAT credit when downstream releases the buffer.
+                uint8_t* slotPtr = slab_ + (static_cast<uint64_t>(slot) * bufSize_);
+
+                ris::BufferPtr buff = createBuffer(slotPtr,
+                                                   slot & 0x00FFFFFF,
+                                                   payloadLen,
+                                                   bufSize_);
+                buff->setPayload(payloadLen);
+
+                ris::FramePtr frame = ris::Frame::create();
+                frame->appendBuffer(buff);
+                frame->setChannel(channel);
+                frame->setFirstUser(SsiSof);
+                frame->setLastUser(0);
+
+                log_->debug("RX wrId=%u dataSlot=%u channel=%u len=%u",
+                            slot, dataSlot, channel, payloadLen);
+
+                sendFrame(frame);
+
+                frameCount_.fetch_add(1, std::memory_order_relaxed);
+                byteCount_.fetch_add(payloadLen, std::memory_order_relaxed);
             }
-
-            if (wc.opcode != IBV_WC_RECV_RDMA_WITH_IMM) {
-                log_->warning("Unexpected opcode %d (slot=%u), re-posting",
-                              wc.opcode, slot);
-                postRecvWr(slot);
-                continue;
-            }
-
-            // Decode immediate value: bits [7:0] = channel id
-            uint8_t  channel    = static_cast<uint8_t>(wc.imm_data & 0xFF);
-            uint32_t payloadLen = wc.byte_len;
-
-            if (payloadLen == 0 || payloadLen > bufSize_) {
-                log_->warning("Bad payload len=%u (slot=%u), re-posting",
-                              payloadLen, slot);
-                postRecvWr(slot);
-                continue;
-            }
-
-            // Zero-copy: wrap the slab slot directly as a rogue Buffer.
-            // retBuffer() re-posts the slot when downstream releases it.
-            uint8_t* slotPtr = slab_ + (static_cast<uint64_t>(slot) * bufSize_);
-
-            ris::BufferPtr buff = createBuffer(slotPtr,
-                                               slot & 0x00FFFFFF,
-                                               payloadLen,
-                                               bufSize_);
-            buff->setPayload(payloadLen);
-
-            ris::FramePtr frame = ris::Frame::create();
-            frame->appendBuffer(buff);
-            frame->setChannel(channel);
-            frame->setFirstUser(SsiSof);
-            frame->setLastUser(0);
-
-            log_->debug("RX slot=%u channel=%u len=%u", slot, channel, payloadLen);
-
-            sendFrame(frame);
-
-            frameCount_.fetch_add(1, std::memory_order_relaxed);
-            byteCount_.fetch_add(payloadLen, std::memory_order_relaxed);
         }
     } catch (const rogue::GeneralError& e) {
         log_->error("RoCEv2 receive thread exiting on ibverbs error: %s", e.what());
