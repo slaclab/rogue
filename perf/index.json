@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-21T18:59:54Z",
+  "generated_at": "2026-06-22T18:44:50Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -280,6 +280,29 @@
         "published_at": "2026-06-18T18:59:54Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/27780776279",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "cmake_fix3",
+      "ref_slug": "cmake_fix3",
+      "latest_url": "/rogue/perf/branches/cmake_fix3/latest.json",
+      "history": [
+        {
+          "ref_name": "cmake_fix3",
+          "sha": "828470aaa84aba8ce6bdf28b87f21acb9f436499",
+          "short_sha": "828470a",
+          "published_at": "2026-06-22T18:44:50Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/27975550442",
+          "summary_url": "/rogue/perf/branches/cmake_fix3/history/828470aaa84aba8ce6bdf28b87f21acb9f436499.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "cmake_fix3",
+        "sha": "828470aaa84aba8ce6bdf28b87f21acb9f436499",
+        "short_sha": "828470a",
+        "published_at": "2026-06-22T18:44:50Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/27975550442",
+        "summary_url": "/rogue/perf/branches/cmake_fix3/latest.json"
       }
     },
     {
