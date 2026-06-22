@@ -51,7 +51,7 @@ if ( NOT NO_PYTHON )
 
    # Find Numpy
    execute_process(
-      COMMAND python3 -c "import numpy; print(numpy.get_include(), end='')"
+      COMMAND ${Python3_EXECUTABLE} -c "import numpy; print(numpy.get_include(), end='')"
       RESULT_VARIABLE Python3_NumPy_RESULT
       OUTPUT_VARIABLE Python3_NumPy_INCLUDE_DIRS
       ERROR_QUIET
