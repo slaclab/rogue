@@ -188,11 +188,11 @@ class RoCEv2ServerCfg:
     gidIndex : int
         GID table index for the host NIC's RoCEv2 IPv4 address.  -1 (the
         default) auto-detects the index matching ``ip`` via ``ibv_devinfo``.
-    maxPayload : int
+    maxPayload : int | None
         Maximum payload bytes per RDMA SEND (the size of each pre-posted
         receive slot).  Defaults to 4096 (one MTU_4096 PMTU); pass None to
         use the C++ DefaultMaxPayload (9000).
-    rxQueueDepth : int
+    rxQueueDepth : int | None
         Number of pre-posted receive slots.  None (the default) uses the C++
         DefaultRxQueueDepth (256).
     """
@@ -200,8 +200,8 @@ class RoCEv2ServerCfg:
     deviceName:   str
     ibPort:       int = 1
     gidIndex:     int = -1
-    maxPayload:   int = 4096
-    rxQueueDepth: int = None
+    maxPayload:   int | None = 4096
+    rxQueueDepth: int | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -373,12 +373,12 @@ class RoCEv2Server(pr.Device):
         self.add(pr.LocalVariable(
             name='MrAddr', mode='RO', value=0, typeStr='UInt64',
             localGet=lambda: self._server.getMrAddr(),
-            description='Host MR virtual address (FPGA writes here)'))
+            description='Host MR virtual address (base of the pre-posted RDMA SEND receive buffers)'))
 
         self.add(pr.LocalVariable(
             name='MrRkey', mode='RO', value=0, typeStr='UInt32',
             localGet=lambda: self._server.getMrRkey(),
-            description='Host MR rkey (given to FPGA)'))
+            description='Host MR rkey (local registration; not used by the RDMA SEND receive path)'))
 
         self.add(pr.LocalVariable(
             name='RxFrameCount', mode='RO', value=0, typeStr='UInt64',
@@ -490,10 +490,10 @@ class RoCEv2Server(pr.Device):
     def getChannel(self, channel: int):
         """Return a channel-filtered view (channel id from immediate value bits [7:0]).
 
-        The RDMA WRITE-with-Immediate carries the channel id in the low 8
+        The RDMA SEND-with-Immediate carries the channel id in the low 8
         bits of the immediate value (Server.cpp runThread decodes
-        `wc.imm_data & 0xFF`), so valid channel ids are 0..255.  Out-of-
-        range values would previously blow up with `OverflowError` inside
+        `ntohl(wc.imm_data) & 0xFF`), so valid channel ids are 0..255.  Out-
+        of-range values would previously blow up with `OverflowError` inside
         the Filter ctor — validate up front and raise a clear
         `rogue.GeneralError` instead.
         """

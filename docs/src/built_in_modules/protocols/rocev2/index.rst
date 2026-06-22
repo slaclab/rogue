@@ -256,9 +256,12 @@ MR length exceeds 32-bit metadata-bus field
 
 The FPGA-side Memory Region length is ``maxPayload * rxQueueDepth``. If this
 product is too large for the 32-bit ``length`` field of the metadata bus, the
-surf ``RoCEv2Engine.setupConnection()`` argument validation raises a
-``rogue.GeneralError`` before any bus traffic, so the FPGA is never left with
-a partially-allocated resource. The default configuration
+host-side ``RoCEv2Server.getHostParams()`` raises a ``rogue.GeneralError``
+before the FPGA engine is ever called; the surf
+``RoCEv2Engine.setupConnection()`` argument validation enforces the same
+invariant as a second line of defense. Either way the error is raised before
+any bus traffic, so the FPGA is never left with a partially-allocated
+resource. The default configuration
 (``maxPayload=9000``, ``rxQueueDepth=256``, product ~2.3 MB) is far below this
 limit; the guard protects against accidentally passing very large queue depths.
 

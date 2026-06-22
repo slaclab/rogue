@@ -174,6 +174,26 @@ def test_get_channel_creates_filter_and_wires_server():
     assert obj._server.__rshift__.called
 
 
+@pytest.mark.parametrize("channel", [0, 255])
+def test_get_channel_accepts_edge_ids(channel):
+    """The valid channel range is the 8-bit immediate field 0..255; both
+    extremes must construct a Filter without raising."""
+    obj = MagicMock()
+    obj._server = MagicMock()
+    result = RoCEv2Server.getChannel(obj, channel)
+    assert isinstance(result, rogue.interfaces.stream.Filter)
+
+
+@pytest.mark.parametrize("channel", [-1, 256, 1000])
+def test_get_channel_rejects_out_of_range_ids(channel):
+    """Out-of-range channel ids must raise a clear rogue.GeneralError up
+    front rather than overflowing inside the Filter ctor."""
+    obj = MagicMock()
+    obj._server = MagicMock()
+    with pytest.raises(rogue.GeneralError):
+        RoCEv2Server.getChannel(obj, channel)
+
+
 # ---------------------------------------------------------------------------
 # Hardware-gated tests (skipped when no ibverbs device is present)
 # ---------------------------------------------------------------------------
