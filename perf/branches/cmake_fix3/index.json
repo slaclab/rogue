@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "cmake_fix3",
+      "sha": "01ba25027fe096d8f74f7af03666af0ec51344c3",
+      "short_sha": "01ba250",
+      "published_at": "2026-06-22T21:17:38Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/27984309210",
+      "summary_url": "/rogue/perf/branches/cmake_fix3/history/01ba25027fe096d8f74f7af03666af0ec51344c3.json"
+    },
+    {
+      "ref_name": "cmake_fix3",
       "sha": "828470aaa84aba8ce6bdf28b87f21acb9f436499",
       "short_sha": "828470a",
       "published_at": "2026-06-22T18:44:50Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "cmake_fix3",
-    "sha": "828470aaa84aba8ce6bdf28b87f21acb9f436499",
-    "short_sha": "828470a",
-    "published_at": "2026-06-22T18:44:50Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/27975550442",
+    "sha": "01ba25027fe096d8f74f7af03666af0ec51344c3",
+    "short_sha": "01ba250",
+    "published_at": "2026-06-22T21:17:38Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/27984309210",
     "summary_url": "/rogue/perf/branches/cmake_fix3/latest.json"
   }
 }
