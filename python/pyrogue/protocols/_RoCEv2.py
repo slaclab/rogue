@@ -172,8 +172,10 @@ class RoCEv2ServerCfg:
     """Bring-up / transport configuration for :class:`RoCEv2Server`.
 
     Bundles the ibverbs + QP-tuning knobs so the ``RoCEv2Server(...)`` call
-    site stays compact.  Defaults mirror the historical ``RoCEv2Server``
-    constructor.
+    site stays compact.  Most defaults mirror the historical ``RoCEv2Server``
+    constructor; ``maxPayload`` now defaults to 4096 (one MTU_4096 PMTU)
+    rather than the C++ ``DefaultMaxPayload`` of 9000 — pass ``None`` to
+    restore the 9000-byte default.
 
     Parameters
     ----------
@@ -187,8 +189,9 @@ class RoCEv2ServerCfg:
         GID table index for the host NIC's RoCEv2 IPv4 address.  -1 (the
         default) auto-detects the index matching ``ip`` via ``ibv_devinfo``.
     maxPayload : int
-        Maximum bytes per RDMA WRITE.  Defaults to 4096 (one MTU_4096 PMTU);
-        pass None to use the C++ DefaultMaxPayload (9000).
+        Maximum payload bytes per RDMA SEND (the size of each pre-posted
+        receive slot).  Defaults to 4096 (one MTU_4096 PMTU); pass None to
+        use the C++ DefaultMaxPayload (9000).
     rxQueueDepth : int
         Number of pre-posted receive slots.  None (the default) uses the C++
         DefaultRxQueueDepth (256).
@@ -391,7 +394,7 @@ class RoCEv2Server(pr.Device):
 
         self.add(pr.LocalVariable(
             name        = 'MaxPayload',
-            description = 'Max payload bytes per RDMA WRITE slot',
+            description = 'Max payload bytes per RDMA SEND receive slot',
             mode        = 'RO',
             value       = maxPayload,
             typeStr     = 'UInt32',
@@ -605,7 +608,7 @@ class RoCEv2Server(pr.Device):
         self._log.info(f"  MinRnrTimer : {minRnrTimer} ({_MIN_RNR_TIMER_MS[minRnrTimer]}ms)")
         self._log.info(f"  RnrRetry    : {rnrRetry}")
         self._log.info(f"  RetryCount  : {retryCount}")
-        self._log.info("  RC connection established — ready to receive RDMA WRITEs")
+        self._log.info("  RC connection established — ready to receive RDMA SENDs")
         self._log.info("=" * 60)
 
     def _start(self) -> None:

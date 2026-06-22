@@ -500,8 +500,13 @@ void rpr::Server::runThread(std::weak_ptr<int> lockPtr) {
                 continue;
             }
             if (n < 0) {
-                log_->warning("ibv_poll_cq error");
-                continue;
+                // A negative return is an error condition, not a transient
+                // empty-CQ state; it will not clear by retrying.  Continuing
+                // would spin and flood the log, so stop the thread cleanly
+                // (matching the WR_FLUSH_ERR path below).
+                log_->error("ibv_poll_cq error (%d); exiting CQ poll thread", n);
+                threadEn_.store(false);
+                break;
             }
 
             // Process every completion drained in this batch.  Each is

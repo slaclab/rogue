@@ -112,8 +112,10 @@ The FPGA-side metadata-bus handshake is performed by
 ``surf.ethernet.roce.RoCEv2Engine``, instantiated as part of the FPGA
 register tree (e.g. under ``Core`` in the application device map), NOT by
 ``RoCEv2Server``. The application ``Root`` wires the two together:
-``engine.setupConnection(**server.getHostParams())`` followed by
-``server.completeConnection(...)``. The ``surf`` Python package MUST be on
+``engine.setupConnection(**server.getHostParams()._asdict(), ...)`` followed
+by ``server.completeConnection(...)``. (``getHostParams()`` returns a
+``RoCEv2HostParams`` NamedTuple, so ``._asdict()`` is required to expand it
+into keyword arguments.) The ``surf`` Python package MUST be on
 the Python path for the engine device.
 
 Python Example
