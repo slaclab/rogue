@@ -89,6 +89,7 @@ SET(CMAKE_SKIP_BUILD_RPATH TRUE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
+# >>> ROGUE_DEPENDENCY_DISCOVERY (keep byte-identical across CMakeLists.txt and templates/RogueConfig.cmake.in -- enforced by scripts/check_cmake_sync.sh)
 #####################################
 # Boost + Python
 #####################################
@@ -148,12 +149,10 @@ else()
    add_definitions( -DNO_PYTHON )
 endif()
 
-
 #####################################
 # BZIP2
 #####################################
 find_package(BZip2 QUIET REQUIRED)
-
 
 #####################################
 # ZeroMQ
@@ -204,6 +203,7 @@ if (NOT ZeroMQ_FOUND)
    endif()
 
 endif()
+# <<< ROGUE_DEPENDENCY_DISCOVERY
 
 ##########################################################
 # Generate version with GIT If Not Passed As -DVERSION
@@ -507,7 +507,6 @@ message("")
 if (NO_PYTHON)
    message("-- Compiling without boost & python!")
 else()
-   message("-- Found boost: ${Boost_INCLUDE_DIRS}")
    message("-- Found boost: ${Boost_LIBRARIES}")
    message("")
    message("-- Found python: ${Python3_LIBRARIES}")

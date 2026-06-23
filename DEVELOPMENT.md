@@ -447,6 +447,24 @@ When changing packaging behavior:
 - Be careful with version behavior; release tags, CMake configuration, Python
   package metadata, and docs all consume Rogue version information.
 
+### CMake dependency-block sync
+
+`CMakeLists.txt` and `templates/RogueConfig.cmake.in` intentionally duplicate the
+dependency-discovery logic (Boost + Python, numpy, BZip2, ZeroMQ): the top-level
+file uses it to build rogue, while the installed `RogueConfig.cmake` re-runs it so
+downstream `find_package(Rogue)` consumers rediscover the same dependencies. The
+duplicated region is delimited in both files by sentinel comments:
+
+```
+# >>> ROGUE_DEPENDENCY_DISCOVERY ...
+...
+# <<< ROGUE_DEPENDENCY_DISCOVERY
+```
+
+The lines between these markers must stay **byte-identical** in both files. Mirror
+any edit to the dependency block into both. `scripts/check_cmake_sync.sh` enforces
+this and runs as part of `scripts/run_linters.sh` in CI, failing the build on drift.
+
 ## Change Workflow
 
 Use this workflow for most tasks:
