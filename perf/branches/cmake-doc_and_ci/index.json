@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "cmake-doc_and_ci",
+      "sha": "22d1ed9ce957353eab3886b01441321a7c9069af",
+      "short_sha": "22d1ed9",
+      "published_at": "2026-06-23T19:29:41Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/28051178520",
+      "summary_url": "/rogue/perf/branches/cmake-doc_and_ci/history/22d1ed9ce957353eab3886b01441321a7c9069af.json"
+    },
+    {
+      "ref_name": "cmake-doc_and_ci",
       "sha": "af09f678234a810de2895da66e6d2db17fbd2d76",
       "short_sha": "af09f67",
       "published_at": "2026-06-23T19:14:27Z",
@@ -30,10 +38,10 @@
   ],
   "latest": {
     "ref_name": "cmake-doc_and_ci",
-    "sha": "af09f678234a810de2895da66e6d2db17fbd2d76",
-    "short_sha": "af09f67",
-    "published_at": "2026-06-23T19:14:27Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/28050304435",
+    "sha": "22d1ed9ce957353eab3886b01441321a7c9069af",
+    "short_sha": "22d1ed9",
+    "published_at": "2026-06-23T19:29:41Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/28051178520",
     "summary_url": "/rogue/perf/branches/cmake-doc_and_ci/latest.json"
   }
 }
