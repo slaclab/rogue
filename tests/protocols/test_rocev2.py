@@ -22,6 +22,8 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+import builtins
+import glob as _glob_mod
 import socket
 from unittest.mock import MagicMock
 
@@ -33,6 +35,7 @@ import pyrogue.protocols._RoCEv2 as _RoCEv2
 from pyrogue.protocols._RoCEv2 import (
     _ip_to_gid_bytes,
     _gid_bytes_to_str,
+    _host_ip_from_gid,
     RoCEv2Server,
     RoCEv2ServerCfg,
     RoCEv2TransportCfg,
@@ -118,6 +121,88 @@ def test_ip_to_gid_bytes_invalid_raises():
     (socket.error is an alias)."""
     with pytest.raises((OSError, socket.error)):
         _ip_to_gid_bytes("not-an-ip")
+
+
+# ---------------------------------------------------------------------------
+# _host_ip_from_gid — IPv4 extraction from an IPv4-mapped GID string
+# ---------------------------------------------------------------------------
+
+def test_host_ip_from_gid_round_trip():
+    """_host_ip_from_gid is the inverse of the _ip_to_gid_bytes ->
+    _gid_bytes_to_str pipeline used to render HostGid."""
+    for ip in ("10.0.0.1", "192.168.3.7", "255.255.255.255", "0.0.0.0"):
+        gid = _gid_bytes_to_str(_ip_to_gid_bytes(ip))
+        assert _host_ip_from_gid(gid) == ip
+
+
+@pytest.mark.parametrize("gid", [
+    "fe80:0000:0000:0000:0000:0000:0000:0001",  # link-local, no ffff marker
+    "0000:0000:0000:0000:0000:0000:0a00:0001",  # marker group not ffff
+    "0000:0000:0000:0000:ffff:0a00:0001",        # only 7 groups
+    "",                                          # empty
+    "0000:0000:0000:0000:0000:ffff:zzzz:0001",   # non-hex -> ValueError path
+])
+def test_host_ip_from_gid_rejects_non_ipv4_mapped(gid):
+    """Anything that is not a well-formed 8-group IPv4-mapped GID returns ''
+    (never raises) so HostIp degrades gracefully to an empty string."""
+    assert _host_ip_from_gid(gid) == ''
+
+
+# ---------------------------------------------------------------------------
+# detectGidIndex — sysfs RoCE v2 IPv4 GID-table scan (gidIndex=-1 path)
+# ---------------------------------------------------------------------------
+
+def _fake_sysfs(tmp_path, monkeypatch, device, ibPort, entries):
+    """Build a sysfs-like infiniband GID tree under tmp_path and redirect
+    detectGidIndex()'s hardcoded /sys/class/infiniband prefix to it.
+
+    entries: list of (index, type_str, gid_str). Files are written exactly
+    as the kernel exposes them so the real glob/open/parse path is tested.
+    """
+    SYS = '/sys/class/infiniband'
+    base = tmp_path / device / 'ports' / str(ibPort)
+    types_dir = base / 'gid_attrs' / 'types'
+    gids_dir  = base / 'gids'
+    types_dir.mkdir(parents=True)
+    gids_dir.mkdir(parents=True)
+    for idx, typ, gid in entries:
+        (types_dir / str(idx)).write_text(typ + '\n')
+        (gids_dir / str(idx)).write_text(gid + '\n')
+
+    def _redirect(path):
+        s = str(path)
+        return str(tmp_path) + s[len(SYS):] if s.startswith(SYS) else s
+
+    real_glob = _glob_mod.glob
+    real_open = builtins.open
+    monkeypatch.setattr(_glob_mod, 'glob',
+                        lambda pat, *a, **k: real_glob(_redirect(pat), *a, **k))
+    monkeypatch.setattr(builtins, 'open',
+                        lambda f, *a, **k: real_open(_redirect(f), *a, **k))
+
+
+def test_detect_gid_index_matches_roce_v2_on_subnet(tmp_path, monkeypatch):
+    """Returns the index of the RoCE v2 IPv4-mapped GID on the same /24 as
+    ``ip``, skipping the RoCE v1 slot that shares the IP and the link-local
+    v2 slot that is not IPv4-mapped."""
+    _fake_sysfs(tmp_path, monkeypatch, 'mlx5_0', 1, entries=[
+        # idx 0: RoCE v1 with the matching IP -> must be skipped (wrong type)
+        (0, 'IB/RoCE v1', '0000:0000:0000:0000:0000:ffff:0a00:020a'),
+        # idx 1: RoCE v2 but link-local (no ffff marker) -> skipped
+        (1, 'RoCE v2',    'fe80:0000:0000:0000:0000:0000:0000:0001'),
+        # idx 2: RoCE v2 IPv4-mapped 10.0.2.10 -> the match
+        (2, 'RoCE v2',    '0000:0000:0000:0000:0000:ffff:0a00:020a'),
+    ])
+    assert RoCEv2Server.detectGidIndex('mlx5_0', '10.0.2.50', 1) == 2
+
+
+def test_detect_gid_index_returns_none_when_off_subnet(tmp_path, monkeypatch):
+    """A RoCE v2 IPv4 GID on a different /24 is not a match; with no other
+    candidate the scan returns None so __init__ raises a clear error."""
+    _fake_sysfs(tmp_path, monkeypatch, 'mlx5_0', 1, entries=[
+        (0, 'RoCE v2', '0000:0000:0000:0000:0000:ffff:c0a8:0105'),  # 192.168.1.5
+    ])
+    assert RoCEv2Server.detectGidIndex('mlx5_0', '10.0.2.50', 1) is None
 
 
 # ---------------------------------------------------------------------------

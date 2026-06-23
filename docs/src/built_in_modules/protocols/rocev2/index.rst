@@ -71,13 +71,16 @@ When To Use
 Operational Requirements
 ========================
 
-Jumbo-frame MTU (9000 bytes)
------------------------------
+Jumbo-frame MTU
+---------------
 
-The RoCEv2 server defaults to a 9000-byte maximum payload per RDMA SEND
-(``DefaultMaxPayload`` in ``include/rogue/protocols/rocev2/Core.h``). The
-host NIC and every switch in the path MUST be configured for a 9000-byte
-(or larger) MTU — typically:
+The PyRogue wrapper's ``RoCEv2ServerCfg.maxPayload`` defaults to 4096 bytes
+(one ``MTU_4096`` PMTU) per RDMA SEND. Pass ``maxPayload=None`` to fall back to
+the C++ ``DefaultMaxPayload`` of 9000 bytes (``DefaultMaxPayload`` in
+``include/rogue/protocols/rocev2/Core.h``). Either way the host NIC and every
+switch in the path MUST be configured for an MTU large enough to carry the
+chosen payload plus the RoCEv2/UDP/IP headers — at least 4096 bytes at the
+default, or a 9000-byte jumbo MTU when opting into the C++ default — typically:
 
 .. code-block:: bash
 
@@ -85,7 +88,7 @@ host NIC and every switch in the path MUST be configured for a 9000-byte
    sudo ip link set dev enp1s0f0 mtu 9000
 
 If any hop along the path uses a 1500-byte MTU, the FPGA will see RDMA
-WRITEs silently dropped or NACK'd. There is no graceful auto-fallback.
+SENDs silently dropped or NACK'd. There is no graceful auto-fallback.
 
 SoftRoCE (rxe) development workflow
 -------------------------------------
@@ -262,7 +265,7 @@ before the FPGA engine is ever called; the surf
 invariant as a second line of defense. Either way the error is raised before
 any bus traffic, so the FPGA is never left with a partially-allocated
 resource. The default configuration
-(``maxPayload=9000``, ``rxQueueDepth=256``, product ~2.3 MB) is far below this
+(``maxPayload=4096``, ``rxQueueDepth=256``, product ~1.0 MB) is far below this
 limit; the guard protects against accidentally passing very large queue depths.
 
 QP state-machine enforcement

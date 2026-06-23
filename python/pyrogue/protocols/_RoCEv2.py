@@ -187,7 +187,9 @@ class RoCEv2ServerCfg:
         ibverbs port number (default: 1).
     gidIndex : int
         GID table index for the host NIC's RoCEv2 IPv4 address.  -1 (the
-        default) auto-detects the index matching ``ip`` via ``ibv_devinfo``.
+        default) auto-detects the index matching ``ip`` by scanning sysfs
+        (``/sys/class/infiniband/<dev>/ports/<port>/gid_attrs/types`` +
+        ``gids``); see :meth:`RoCEv2Server.detectGidIndex`.
     maxPayload : int | None
         Maximum payload bytes per RDMA SEND (the size of each pre-posted
         receive slot).  Defaults to 4096 (one MTU_4096 PMTU); pass None to
