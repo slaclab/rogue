@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-segfault-logging-gil",
+  "ref_slug": "fix-segfault-logging-gil",
+  "latest_url": "/rogue/perf/branches/fix-segfault-logging-gil/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-segfault-logging-gil",
+      "sha": "a0c435088fbe7ea4998a5e529b670852b40ea85b",
+      "short_sha": "a0c4350",
+      "published_at": "2026-06-24T21:04:15Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/28129143588",
+      "summary_url": "/rogue/perf/branches/fix-segfault-logging-gil/history/a0c435088fbe7ea4998a5e529b670852b40ea85b.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-segfault-logging-gil",
+    "sha": "a0c435088fbe7ea4998a5e529b670852b40ea85b",
+    "short_sha": "a0c4350",
+    "published_at": "2026-06-24T21:04:15Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/28129143588",
+    "summary_url": "/rogue/perf/branches/fix-segfault-logging-gil/latest.json"
+  }
+}
