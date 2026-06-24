@@ -228,7 +228,10 @@ class Root(pr.Device):
             pr.setUnifiedLogging(True)
 
         # Create log listener to add to SystemLog variable
-        formatter = logging.Formatter("%(msg)s")
+        # Use %(message)s (record.getMessage()) so printf-style logging args are
+        # interpolated; %(msg)s would emit the raw format string (e.g. a literal
+        # "Making device %s") whenever the record is rendered through this handler.
+        formatter = logging.Formatter("%(message)s")
         handler = RootLogHandler(root=self)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
