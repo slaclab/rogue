@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-segfault-logging-gil",
+      "sha": "92457b27ababc0d8c6fa6d6eac5deb53cd1137ed",
+      "short_sha": "92457b2",
+      "published_at": "2026-06-24T22:13:10Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/28132738632",
+      "summary_url": "/rogue/perf/branches/fix-segfault-logging-gil/history/92457b27ababc0d8c6fa6d6eac5deb53cd1137ed.json"
+    },
+    {
+      "ref_name": "fix-segfault-logging-gil",
       "sha": "4c3237926379300dd184a5bc11ff3fc457b525df",
       "short_sha": "4c32379",
       "published_at": "2026-06-24T21:42:53Z",
@@ -30,10 +38,10 @@
   ],
   "latest": {
     "ref_name": "fix-segfault-logging-gil",
-    "sha": "4c3237926379300dd184a5bc11ff3fc457b525df",
-    "short_sha": "4c32379",
-    "published_at": "2026-06-24T21:42:53Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/28131244141",
+    "sha": "92457b27ababc0d8c6fa6d6eac5deb53cd1137ed",
+    "short_sha": "92457b2",
+    "published_at": "2026-06-24T22:13:10Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/28132738632",
     "summary_url": "/rogue/perf/branches/fix-segfault-logging-gil/latest.json"
   }
 }
