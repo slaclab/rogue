@@ -23,6 +23,11 @@ from typing import Any
 class ZmqServer(rogue.interfaces.ZmqServer):
     """ZMQ server for exposing a PyRogue root to remote clients.
 
+    Request/reply operations are serialized with ``root.operationLock()`` so
+    multiple clients do not interleave tree operations with each other or with
+    local root-level operations such as YAML configuration loads. Variable
+    update publishing remains independently batched by the Root update path.
+
     Parameters
     ----------
     root : object
@@ -88,7 +93,9 @@ class ZmqServer(rogue.interfaces.ZmqServer):
     def _doRequest(self, data: bytes) -> bytes:
         """Handle a pickle-serialized request and return serialized response."""
         try:
-            return pickle.dumps(self._doOperation(pickle.loads(data)))
+            d = pickle.loads(data)
+            with self._root.operationLock():
+                return pickle.dumps(self._doOperation(d))
         except Exception as msg:
             exc_type = type(msg)
             exc_name = getattr(exc_type, "__qualname__", exc_type.__name__)
@@ -101,7 +108,8 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             d = json.loads(data)
             if 'args' in d:
                 d['args'] = tuple(d['args'])
-            return str(self._doOperation(d))
+            with self._root.operationLock():
+                return str(self._doOperation(d))
         except Exception as msg:
             return "EXCEPTION: " + str(msg)
 

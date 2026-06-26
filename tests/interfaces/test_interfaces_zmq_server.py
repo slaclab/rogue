@@ -10,6 +10,8 @@
 
 import json
 import pickle
+import threading
+from contextlib import contextmanager
 
 import pyrogue.interfaces._ZmqServer as zmq_server_mod
 
@@ -18,12 +20,20 @@ class FakeRoot:
     def __init__(self, node_map):
         self.node_map = node_map
         self.listeners = []
+        self._opLock = threading.RLock()
+        self.operationEntries = 0
 
     def addVarListener(self, **kwargs):
         self.listeners.append(kwargs)
 
     def getNode(self, path):
         return self.node_map.get(path)
+
+    @contextmanager
+    def operationLock(self):
+        with self._opLock:
+            self.operationEntries += 1
+            yield
 
 
 class FakeNode:
@@ -97,6 +107,7 @@ def test_zmq_server_operation_request_and_string_paths(monkeypatch, capsys):
     assert server._doString(json.dumps({"path": "root.Node", "attr": "value"})) == "node-value"
     assert server._doString(json.dumps({"path": "root.Node", "attr": "multiply", "args": [2], "kwargs": {"rhs": 4}})) == "8"
     assert server._doString("{bad json") == "EXCEPTION: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+    assert root.operationEntries == 5
 
     published = []
     server._publish = lambda payload: published.append(pickle.loads(payload))
@@ -110,3 +121,47 @@ def test_zmq_server_operation_request_and_string_paths(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert server._started is True
     assert "Started zmqServer on ports 9200-9202" in out
+
+
+def test_zmq_server_binary_and_string_requests_share_operation_lock(monkeypatch):
+    monkeypatch.setattr(zmq_server_mod.rogue.interfaces.ZmqServer, "__init__", lambda self, addr, port: setattr(self, "_port", port))
+
+    started = threading.Event()
+    release = threading.Event()
+    binary_results = []
+    string_results = []
+
+    class BlockingNode(FakeNode):
+        def wait_for_release(self):
+            started.set()
+            assert release.wait(timeout=5.0)
+            return "released"
+
+    node = BlockingNode()
+    root = FakeRoot({"root.Node": node})
+    server = zmq_server_mod.ZmqServer(root=root, addr="127.0.0.1", port=9300)
+
+    def binary_request():
+        request = pickle.dumps({"path": "root.Node", "attr": "wait_for_release"})
+        binary_results.append(pickle.loads(server._doRequest(request)))
+
+    def string_request():
+        string_results.append(server._doString(json.dumps({"path": "root.Node", "attr": "value"})))
+
+    binary_thread = threading.Thread(target=binary_request)
+    binary_thread.start()
+    assert started.wait(timeout=1.0)
+
+    string_thread = threading.Thread(target=string_request)
+    string_thread.start()
+    string_thread.join(timeout=0.1)
+    assert string_thread.is_alive()
+
+    release.set()
+    binary_thread.join(timeout=5.0)
+    string_thread.join(timeout=5.0)
+
+    assert not binary_thread.is_alive()
+    assert not string_thread.is_alive()
+    assert binary_results == ["released"]
+    assert string_results == ["node-value"]

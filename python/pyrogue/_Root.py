@@ -252,6 +252,7 @@ class Root(pr.Device):
         self._updateThread = None
         self._updateLock   = threading.Lock()
         self._updateTrack  = {}
+        self._opLock       = threading.RLock()
 
         # Init
         pr.Device.__init__(self, name=name, description=description, expand=expand)
@@ -569,6 +570,20 @@ class Root(pr.Device):
         self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
     @contextmanager
+    def operationLock(self) -> Iterator[None]:
+        """Serialize root-level operations that must not interleave.
+
+        The lock is reentrant so built-in helpers can compose safely. Root
+        read/write helpers, lifecycle helpers, YAML import/export helpers, and
+        ZMQ request handlers acquire this lock automatically. Application code
+        can use it around custom multi-step root operations that must not run
+        concurrently with remote client requests or other serialized root
+        operations.
+        """
+        with self._opLock:
+            yield
+
+    @contextmanager
     def updateGroup(self, period: float = 0) -> Iterator[None]:
         """Get a context manager within which many Variable updates will be broadcast as one.
 
@@ -653,14 +668,36 @@ class Root(pr.Device):
             if not self._running:
                 return
 
+    def initialize(self) -> None:
+        """Generate an initialize operation on all devices.
+
+        Serialized with :meth:`operationLock` so local lifecycle operations do
+        not interleave with YAML configuration loads, root read/write
+        operations, or ZMQ client requests.
+        """
+        with self.operationLock():
+            super().initialize()
+
     def hardReset(self) -> None:
         """Generate a hard reset on all devices.
 
-        Called recursively on the entire tree.
-
+        Serialized with :meth:`operationLock` so local lifecycle operations do
+        not interleave with YAML configuration loads, root read/write
+        operations, or ZMQ client requests.
         """
-        super().hardReset()
-        self._clearLog()
+        with self.operationLock():
+            super().hardReset()
+            self._clearLog()
+
+    def countReset(self) -> None:
+        """Generate a count reset on all devices.
+
+        Serialized with :meth:`operationLock` so local lifecycle operations do
+        not interleave with YAML configuration loads, root read/write
+        operations, or ZMQ client requests.
+        """
+        with self.operationLock():
+            super().countReset()
 
     def __reduce__(self) -> tuple[Any, tuple[dict]]:
         """Return reduced state used by virtual-client serialization."""
@@ -839,27 +876,29 @@ class Root(pr.Device):
 
     def _write(self) -> bool:
         """Write, verify, and wait for block transactions to complete."""
-        self._log.info("Start root write (forceWrite=%s)", self.ForceWrite.value())
-        with self.pollBlock(), self.updateGroup():
-            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-            self._log.info("Verify root write with readback")
-            self.verifyBlocks(recurse=True)
-            self._log.info("Wait for verified root write transactions")
-            self.waitBlocks(recurse=True)
+        with self.operationLock():
+            self._log.info("Start root write (forceWrite=%s)", self.ForceWrite.value())
+            with self.pollBlock(), self.updateGroup():
+                self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
+                self._log.info("Verify root write with readback")
+                self.verifyBlocks(recurse=True)
+                self._log.info("Wait for verified root write transactions")
+                self.waitBlocks(recurse=True)
 
-        self._log.info("Done root write")
-        return True
+            self._log.info("Done root write")
+            return True
 
     def _read(self) -> bool:
         """Read blocks and wait for read transactions to complete."""
-        self._log.info("Start root read")
-        with self.pollBlock(), self.updateGroup():
-            self.readBlocks(recurse=True)
-            self._log.info("Wait for root read transactions")
-            self.waitBlocks(recurse=True)
+        with self.operationLock():
+            self._log.info("Start root read")
+            with self.pollBlock(), self.updateGroup():
+                self.readBlocks(recurse=True)
+                self._log.info("Wait for root read transactions")
+                self.waitBlocks(recurse=True)
 
-        self._log.info("Done root read")
-        return True
+            self._log.info("Done root read")
+            return True
 
     def loadYaml(
         self,
@@ -891,20 +930,26 @@ class Root(pr.Device):
         -------
         bool
             Returns ``True`` when load completes.
+
+        Notes
+        -----
+        Serialized with :meth:`operationLock` so it does not interleave with
+        other root-level operations or ZMQ client requests.
         """
-        result = super().loadYaml(
-            name=name,
-            writeEach=writeEach,
-            modes=modes,
-            incGroups=incGroups,
-            excGroups=excGroups,
-        )
+        with self.operationLock():
+            result = super().loadYaml(
+                name=name,
+                writeEach=writeEach,
+                modes=modes,
+                incGroups=incGroups,
+                excGroups=excGroups,
+            )
 
-        if self.InitAfterConfig.value():
-            self._log.info("Running initialize() after YAML config load")
-            self.initialize()
+            if self.InitAfterConfig.value():
+                self._log.info("Running initialize() after YAML config load")
+                self.initialize()
 
-        return result
+            return result
 
     def treeDict(
         self,
@@ -990,18 +1035,24 @@ class Root(pr.Device):
             Group name or group names to include.
         excGroups : str or list[str], optional
             Group name or group names to exclude.
-        """
-        super().setYaml(
-            yml=yml,
-            writeEach=writeEach,
-            modes=modes,
-            incGroups=incGroups,
-            excGroups=excGroups,
-        )
 
-        if self.InitAfterConfig.value():
-            self._log.info("Running initialize() after YAML text config")
-            self.initialize()
+        Notes
+        -----
+        Serialized with :meth:`operationLock` so it does not interleave with
+        other root-level operations or ZMQ client requests.
+        """
+        with self.operationLock():
+            super().setYaml(
+                yml=yml,
+                writeEach=writeEach,
+                modes=modes,
+                incGroups=incGroups,
+                excGroups=excGroups,
+            )
+
+            if self.InitAfterConfig.value():
+                self._log.info("Running initialize() after YAML text config")
+                self.initialize()
 
     def remoteVariableDump(
         self,
@@ -1025,21 +1076,27 @@ class Root(pr.Device):
         -------
         bool
             Returns ``True`` when dump completes.
+
+        Notes
+        -----
+        Serialized with :meth:`operationLock` so it does not interleave with
+        other root-level operations or ZMQ client requests.
         """
+        with self.operationLock():
 
-        # Auto generate name if no arg
-        if name is None or name == '':
-            name = datetime.datetime.now().strftime("regdump_%Y%m%d_%H%M%S.txt")
+            # Auto generate name if no arg
+            if name is None or name == '':
+                name = datetime.datetime.now().strftime("regdump_%Y%m%d_%H%M%S.txt")
 
-        if readFirst:
-            self._read()
+            if readFirst:
+                self._read()
 
-        with open(name,'w') as f:
-            for v in self.variableList:
-                if hasattr(v,'_getDumpValue') and v.mode in modes:
-                    f.write(v._getDumpValue(False))
+            with open(name,'w') as f:
+                for v in self.variableList:
+                    if hasattr(v,'_getDumpValue') and v.mode in modes:
+                        f.write(v._getDumpValue(False))
 
-        return True
+            return True
 
     def _applyYamlDict(
         self,

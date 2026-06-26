@@ -24,6 +24,27 @@ From the client perspective, this gives access to the same tree content
 available inside the Root process: read/write Variables, execute Commands, and
 monitor value updates.
 
+Request Serialization
+=====================
+
+ZMQ request/reply operations are serialized through the server Root's
+``operationLock()``. This means multiple remote clients do not execute tree
+operations concurrently with each other, and they also wait behind local
+root-level operations such as YAML configuration loads, ``ReadAll``, or
+``WriteAll``. Root lifecycle operations such as ``Initialize``, ``HardReset``,
+and ``CountReset`` also use the same lock.
+
+This is usually the desired behavior for control applications: a client should
+not read or write the tree halfway through a long ``LoadConfig`` operation.
+The tradeoff is that remote requests can wait while a long serialized operation
+is in progress. Client-side request/retry logging is intentionally throttled so
+those waits are visible without logging every socket-timeout interval.
+
+Asynchronous variable update publishing is still handled by the Root update
+queue and the server's publish socket. The operation lock serializes the
+request/reply execution path; it is not a replacement for lower-level memory
+transaction locking.
+
 Common Usage Pattern
 ====================
 

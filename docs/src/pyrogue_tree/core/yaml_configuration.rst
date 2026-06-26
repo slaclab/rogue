@@ -41,6 +41,26 @@ These APIs also back the built-in hidden Root commands:
 The command wrappers mainly pre-select useful defaults for modes and group
 filters.
 
+Operation Serialization
+=======================
+
+YAML helpers operate on a live tree attached to a ``Root``. PyRogue serializes
+``getYaml``, ``saveYaml``, ``loadYaml``, and ``setYaml`` with the
+``Root.operationLock()`` context. This prevents YAML snapshots and
+configuration loads from interleaving with other root-level operations, such as
+``ReadAll``, ``WriteAll``, ``Initialize``, ``HardReset``, ``CountReset``,
+another YAML operation, or a request from a ZMQ client.
+
+For most applications this is automatic and no user code is needed. It matters
+when designing custom application commands: if a command performs a coordinated
+multi-step operation that must not overlap with YAML loads or remote client
+requests, wrap that command body in ``Root.operationLock()``. See
+:doc:`/pyrogue_tree/core/root` for the broader operation-lock model.
+
+Calling YAML helpers on detached ``Device`` or ``Node`` objects is not a
+supported configuration path. Build the tree under a ``Root`` first, then call
+YAML APIs on the Root or on devices in that rooted tree.
+
 Configuration Vs State Filters
 ==============================
 

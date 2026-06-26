@@ -9,6 +9,7 @@
 #-----------------------------------------------------------------------------
 
 import zipfile
+import threading
 from pathlib import Path
 
 import pyrogue as pr
@@ -84,6 +85,187 @@ def test_root_poll_block_restores_counter_on_exception():
                 raise RuntimeError("boom")
 
         assert root._pollQueue.blockCount == 0
+
+
+def test_root_operation_lock_is_reentrant_and_blocks_other_threads():
+    root = pr.Root(name="root", pollEn=False)
+    acquired = threading.Event()
+
+    def worker():
+        with root.operationLock():
+            acquired.set()
+
+    with root.operationLock():
+        with root.operationLock():
+            pass
+
+        thread = threading.Thread(target=worker)
+        thread.start()
+        thread.join(timeout=0.1)
+        assert thread.is_alive()
+        assert not acquired.is_set()
+
+    assert acquired.wait(timeout=1.0)
+    thread.join(timeout=1.0)
+    assert not thread.is_alive()
+
+
+def test_root_lifecycle_operations_wait_for_operation_lock():
+    with IoRoot() as root:
+        for method_name in ("initialize", "hardReset", "countReset"):
+            child_called = threading.Event()
+            done = threading.Event()
+            errors = []
+
+            setattr(root.Top, method_name, lambda child_called=child_called: child_called.set())
+
+            def call_root_method():
+                try:
+                    getattr(root, method_name)()
+                except Exception as exc:
+                    errors.append(exc)
+                finally:
+                    done.set()
+
+            with root.operationLock():
+                thread = threading.Thread(target=call_root_method)
+                thread.start()
+                assert not child_called.wait(timeout=0.1)
+                assert not done.wait(timeout=0.1)
+
+            assert done.wait(timeout=5.0)
+            thread.join(timeout=1.0)
+            assert not thread.is_alive()
+            assert child_called.is_set()
+            assert errors == []
+
+
+def test_yaml_operations_require_root(tmp_path):
+    config = tmp_path / "detached.yml"
+    config.write_text("Detached:\n  LocalCfg: 3\n")
+
+    node = pr.Device(name="Detached")
+    node.add(pr.LocalVariable(name="LocalCfg", value=1, mode="RW"))
+
+    with pytest.raises(pr.NodeError, match="Detached is not attached to a Root"):
+        node.getYaml(readFirst=False, modes=["RW"])
+
+    with pytest.raises(pr.NodeError, match="Detached is not attached to a Root"):
+        node.saveYaml(name=str(tmp_path / "detached_out.yml"), readFirst=False, modes=["RW"])
+
+    with pytest.raises(pr.NodeError, match="Detached is not attached to a Root"):
+        node.loadYaml(name=str(config), writeEach=False, modes=["RW"])
+
+    with pytest.raises(pr.NodeError, match="Detached is not attached to a Root"):
+        node.setYaml(yml="Detached:\n  LocalCfg: 4\n", writeEach=False, modes=["RW"])
+
+
+def test_root_load_yaml_waits_for_operation_lock(tmp_path):
+    config = tmp_path / "locked_load.yml"
+    config.write_text("root.Top:\n  RemoteValue: 17\n")
+
+    with IoRoot() as root:
+        done = threading.Event()
+        errors = []
+
+        def load_config():
+            try:
+                root.loadYaml(name=str(config), writeEach=False, modes=["RW"])
+            except Exception as exc:
+                errors.append(exc)
+            finally:
+                done.set()
+
+        with root.operationLock():
+            thread = threading.Thread(target=load_config)
+            thread.start()
+            assert not done.wait(timeout=0.1)
+
+        assert done.wait(timeout=5.0)
+        thread.join(timeout=1.0)
+        assert not thread.is_alive()
+        assert errors == []
+        assert root.Top.RemoteValue.value() == 17
+
+
+def test_device_yaml_import_waits_for_operation_lock(tmp_path):
+    config = tmp_path / "locked_subtree_load.yml"
+    config.write_text("Top:\n  RemoteValue: 23\n")
+
+    with IoRoot() as root:
+        load_done = threading.Event()
+        set_done = threading.Event()
+        errors = []
+
+        def load_subtree_yaml():
+            try:
+                root.Top.loadYaml(name=str(config), writeEach=False, modes=["RW"])
+            except Exception as exc:
+                errors.append(exc)
+            finally:
+                load_done.set()
+
+        def set_subtree_yaml():
+            try:
+                root.Top.setYaml(yml="Top:\n  PolledCfg: 11\n", writeEach=False, modes=["RW"])
+            except Exception as exc:
+                errors.append(exc)
+            finally:
+                set_done.set()
+
+        with root.operationLock():
+            load_thread = threading.Thread(target=load_subtree_yaml)
+            set_thread = threading.Thread(target=set_subtree_yaml)
+            load_thread.start()
+            set_thread.start()
+            assert not load_done.wait(timeout=0.1)
+            assert not set_done.wait(timeout=0.1)
+
+        assert load_done.wait(timeout=5.0)
+        assert set_done.wait(timeout=5.0)
+        load_thread.join(timeout=1.0)
+        set_thread.join(timeout=1.0)
+
+        assert not load_thread.is_alive()
+        assert not set_thread.is_alive()
+        assert errors == []
+        assert root.Top.RemoteValue.value() == 23
+        assert root.Top.PolledCfg.value() == 11
+
+
+def test_device_yaml_export_waits_for_operation_lock(tmp_path):
+    out = tmp_path / "subtree.yml"
+
+    with IoRoot() as root:
+        yaml_done = threading.Event()
+        save_done = threading.Event()
+        yaml_results = []
+
+        def get_subtree_yaml():
+            yaml_results.append(root.Top.getYaml(readFirst=False, modes=["RW"]))
+            yaml_done.set()
+
+        def save_subtree_yaml():
+            root.Top.saveYaml(name=str(out), readFirst=False, modes=["RW"])
+            save_done.set()
+
+        with root.operationLock():
+            yaml_thread = threading.Thread(target=get_subtree_yaml)
+            save_thread = threading.Thread(target=save_subtree_yaml)
+            yaml_thread.start()
+            save_thread.start()
+            assert not yaml_done.wait(timeout=0.1)
+            assert not save_done.wait(timeout=0.1)
+
+        assert yaml_done.wait(timeout=5.0)
+        assert save_done.wait(timeout=5.0)
+        yaml_thread.join(timeout=1.0)
+        save_thread.join(timeout=1.0)
+
+        assert not yaml_thread.is_alive()
+        assert not save_thread.is_alive()
+        assert "Top:" in yaml_results[0]
+        assert out.exists()
 
 
 def test_root_wait_on_update_and_clear_log(wait_until):
