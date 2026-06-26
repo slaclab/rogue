@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prbs &mdash; Rogue v6.14.1-6-gcf84d55c1 documentation</title>
+  <title>Prbs &mdash; Rogue v6.14.1-10-ga61eb1638 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a9b00d78"></script>
+      <script src="../../../../../_static/documentation_options.js?v=05936e7b"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -478,7 +478,7 @@
 <span class="sig-name descname"><span class="pre">_sendFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6Master9sendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="rogue::interfaces::stream::Master::sendFrame"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master::sendFrame()</span></code></a></p>
 <p>Sends a frame to all attached slaves.</p>
-<p>This method sends the passed Frame to all of the attached Slave objects by calling their acceptFrame() method. First the secondary Slaves are called in order of attachment, followed last by the primary Slave. If the Frame is a zero copy frame it will most likely be empty when the sendFrame() method returns Exposed as <code class="docutils literal notranslate"><span class="pre">_sendFrame()</span></code> in Python.</p>
+<p>This method sends the passed Frame to all of the attached Slave objects by calling their acceptFrame() method. First the secondary Slaves are called in order of attachment, followed last by the primary Slave. If the Frame is a zero copy frame it will most likely be empty when the sendFrame() method returns GIL note: <code class="docutils literal notranslate"><span class="pre">sendFrame()</span></code> releases the Python GIL only briefly, while it snapshots the attached-slave list under <code class="docutils literal notranslate"><span class="pre">slaveMtx_</span></code> (see <code class="docutils literal notranslate"><span class="pre">rogue::GilRelease</span></code>). The subsequent <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> dispatch is not wrapped in that release; it runs with whatever GIL state the calling thread holds. Because stream frames are frequently sent from pure-C++ worker threads (DMA/receiver/file/network paths) that do not hold the GIL, attached slaves can be invoked without it. See <code class="docutils literal notranslate"><span class="pre">Slave::acceptFrame()</span></code> for the GIL contract that downstream consumers touching Python-wrapped objects must follow. Exposed as <code class="docutils literal notranslate"><span class="pre">_sendFrame()</span></code> in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>frame</strong> – Frame to send.</p>

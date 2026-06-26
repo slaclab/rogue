@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Receiving Frames &mdash; Rogue v6.14.1-6-gcf84d55c1 documentation</title>
+  <title>Receiving Frames &mdash; Rogue v6.14.1-10-ga61eb1638 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=a9b00d78"></script>
+      <script src="../_static/documentation_options.js?v=05936e7b"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -211,6 +211,19 @@ necessarily a single contiguous block of memory.</p>
 <p>This is usually the right choice when the receiver is performance-sensitive,
 when it must do substantial processing in C++, or when it needs tight control
 over how bytes are copied or interpreted.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Rogue does not hold the Python GIL when it invokes a C++ <code class="docutils literal notranslate"><span class="pre">acceptFrame</span></code>
+override. Frames are frequently sent from pure-C++ worker threads (DMA,
+receiver, file, and network paths) that never acquire the GIL, so a C++
+<code class="docutils literal notranslate"><span class="pre">Slave</span></code> must not assume the GIL is held. A pure-C++ override like the one
+below needs no action. An override that constructs, manipulates, or destroys
+Python-wrapped objects (Boost.Python, pybind11, or NumPy) — either inside
+<code class="docutils literal notranslate"><span class="pre">acceptFrame</span></code> or on its own worker threads that outlive the call — must
+hold the GIL while doing so, for example with <code class="docutils literal notranslate"><span class="pre">rogue::ScopedGil</span></code>. Touching
+Python objects without the GIL races CPython’s allocator and can segfault.
+See <a class="reference internal" href="../api/cpp/interfaces/stream/slave.html"><span class="doc">Slave</span></a> for the full contract.</p>
+</div>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Slave.h&quot;</span>
