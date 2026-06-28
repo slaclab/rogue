@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T04:18:26Z",
+  "generated_at": "2026-06-28T19:09:36Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -280,6 +280,29 @@
         "published_at": "2026-06-26T04:18:26Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/28216637818",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "conda-python3.14",
+      "ref_slug": "conda-python3.14",
+      "latest_url": "/rogue/perf/branches/conda-python3.14/latest.json",
+      "history": [
+        {
+          "ref_name": "conda-python3.14",
+          "sha": "bca81bc21a12e26c6544cc650582dbb474cad1ab",
+          "short_sha": "bca81bc",
+          "published_at": "2026-06-28T19:09:36Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/28332758589",
+          "summary_url": "/rogue/perf/branches/conda-python3.14/history/bca81bc21a12e26c6544cc650582dbb474cad1ab.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "conda-python3.14",
+        "sha": "bca81bc21a12e26c6544cc650582dbb474cad1ab",
+        "short_sha": "bca81bc",
+        "published_at": "2026-06-28T19:09:36Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/28332758589",
+        "summary_url": "/rogue/perf/branches/conda-python3.14/latest.json"
       }
     },
     {
