@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Module Source &mdash; Rogue v6.14.1-23-gdb8ac3dfe documentation</title>
+  <title>Custom Module Source &mdash; Rogue v6.14.1-28-gc4833f76a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6b55c201"></script>
+      <script src="../_static/documentation_options.js?v=035aa74c"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -77,6 +77,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Custom Module Source</a></li>
 <li class="toctree-l3"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rogueconfig.html">The RogueConfig.cmake Package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
 </ul>
@@ -121,192 +122,141 @@
              
   <section id="custom-module-source">
 <span id="custom-sourcefile"></span><h1>Custom Module Source<a class="headerlink" href="#custom-module-source" title="Link to this heading"></a></h1>
-<p>The example source file below implements a custom stream transmitter and
-receiver like the ones discussed in the stream interface documentation. It also
-exposes a small amount of status to Python so the wrapped module can publish
-counters through PyRogue.</p>
-<p>Wrapping these classes in PyRogue <code class="docutils literal notranslate"><span class="pre">Device</span></code> objects is covered in
-<a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a>.</p>
+<p>The example below implements a custom stream “base type” that inverts every
+payload byte (a bitwise NOT, <code class="docutils literal notranslate"><span class="pre">byte</span> <span class="pre">^</span> <span class="pre">0xFF</span></code>) of each frame it receives and
+forwards the result downstream. It subclasses both
+<code class="docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master</span></code> and <code class="docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave</span></code>,
+exactly like Rogue’s own <code class="docutils literal notranslate"><span class="pre">Filter</span></code>, so it can sit in the middle of a stream
+pipeline: <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">&gt;&gt;</span> <span class="pre">inverter</span> <span class="pre">&gt;&gt;</span> <span class="pre">sink</span></code>.</p>
+<p>This is the same source compiled by Rogue’s own continuous integration as a
+downstream <code class="docutils literal notranslate"><span class="pre">find_package(Rogue)</span></code> smoke test (<code class="docutils literal notranslate"><span class="pre">tests/downstream/</span></code>), so the
+example here is guaranteed to compile and behave as shown.</p>
+<p>Wrapping the class in a PyRogue <code class="docutils literal notranslate"><span class="pre">Device</span></code> is covered in <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a>.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../stream_interface/sending.html#interfaces-stream-sending"><span class="std std-ref">Sending Frames</span></a></p></li>
 <li><p><a class="reference internal" href="../stream_interface/receiving.html#interfaces-stream-receiving"><span class="std std-ref">Receiving Frames</span></a></p></li>
 </ul>
 <p>Build this module with the <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> described in this section.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Source for MyModule.cpp</span>
+<p>The source uses a few key patterns worth noting:</p>
+<ul class="simple">
+<li><p>A static <code class="docutils literal notranslate"><span class="pre">create()</span></code> factory returns the object wrapped in a
+<code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> – the ownership model Rogue uses throughout its graph.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> is the single ingress hook. It acquires the frame lock,
+walks the payload with a <code class="docutils literal notranslate"><span class="pre">FrameIterator</span></code> (which transparently spans the
+frame’s underlying buffers), mutates the bytes in place, releases the lock,
+and calls <code class="docutils literal notranslate"><span class="pre">sendFrame()</span></code> (inherited from <code class="docutils literal notranslate"><span class="pre">Master</span></code>) to forward to every
+connected slave.</p></li>
+<li><p>The Python bindings are guarded with <code class="docutils literal notranslate"><span class="pre">#ifndef</span> <span class="pre">NO_PYTHON</span></code> so the identical
+source also compiles into a Python-free C++ build.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BOOST_PYTHON_MODULE</span></code> just registers the bindings and lets Boost.Python
+propagate any error as a normal import failure; Rogue manages the GIL in its
+own bindings, so no explicit thread initialization is needed.</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Source for BitInverter.cpp</span>
 
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Slave.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Master.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdint.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;memory&gt;</span>
+
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Frame.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/FrameLock.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/FrameIterator.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/FrameLock.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Master.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Slave.h&gt;</span>
 
-<span class="c1">// Custom stream slave class</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomSlave</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="w"> </span><span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
 
-<span class="w">      </span><span class="c1">// Total frame counter, exposed to Python</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">frameCount_</span><span class="p">;</span>
+<span class="cp">#ifndef NO_PYTHON</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;boost/python.hpp&gt;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">bp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">boost</span><span class="o">::</span><span class="nn">python</span><span class="p">;</span>
+<span class="cp">#endif</span>
 
-<span class="w">      </span><span class="c1">// Total byte count, exposed to Python</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">byteCount_</span><span class="p">;</span>
-
+<span class="c1">// Custom stream element: inverts every payload byte and forwards the frame.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BitInverter</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="w"> </span><span class="p">{</span>
 <span class="w">   </span><span class="k">public</span><span class="o">:</span>
 
-<span class="w">      </span><span class="c1">// Create a static class creator to return our custom class wrapped with a shared pointer</span>
-<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="k">static</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="w">         </span><span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
+<span class="w">      </span><span class="c1">// Shared-pointer factory (preferred construction path)</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">      </span><span class="p">}</span>
 
-<span class="w">      </span><span class="c1">// Return received frame counter</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">getFrameCount</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">frameCount_</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="n">BitInverter</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="p">(),</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">      </span><span class="o">~</span><span class="n">BitInverter</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
 
-<span class="w">      </span><span class="c1">// Return total bytes received</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">getTotalBytes</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">byteCount_</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="c1">// Receive a frame, invert each payload byte in place, forward downstream</span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">acceptFrame</span><span class="p">(</span><span class="n">ris</span><span class="o">::</span><span class="n">FramePtr</span><span class="w"> </span><span class="n">frame</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">      </span><span class="n">MyCustomSlave</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="n">frameCount_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">         </span><span class="n">byteCount_</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
+<span class="w">         </span><span class="c1">// Hold the frame lock for the duration of the byte access</span>
+<span class="w">         </span><span class="n">ris</span><span class="o">::</span><span class="n">FrameLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
 
-<span class="w">      </span><span class="c1">// Receive a frame</span>
-<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">acceptFrame</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Frame</span><span class="o">&gt;</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="c1">// XOR every payload byte with 0xFF (bitwise inversion)</span>
+<span class="w">         </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="n">it</span><span class="w"> </span><span class="o">^=</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">;</span>
 
-<span class="w">         </span><span class="c1">// Acquire lock on frame. Will be release when lock class goes out of scope</span>
-<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">         </span><span class="c1">// Release the lock before handing the frame to downstream slaves</span>
+<span class="w">         </span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
 
-<span class="w">         </span><span class="c1">// Increment frame counter</span>
-<span class="w">         </span><span class="n">frameCount_</span><span class="o">++</span><span class="p">;</span>
-
-<span class="w">         </span><span class="c1">// Increment byte  counter</span>
-<span class="w">         </span><span class="n">byteCount_</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">getPayload</span><span class="p">();</span>
-<span class="w">      </span><span class="p">}</span>
-
-<span class="w">      </span><span class="c1">// Expose methods to python</span>
-<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">setup_python</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="n">boost</span><span class="o">::</span><span class="n">python</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="p">,</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">                                              </span><span class="n">boost</span><span class="o">::</span><span class="n">python</span><span class="o">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">                                              </span><span class="n">boost</span><span class="o">::</span><span class="n">noncopyable</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;MyCustomSlave&quot;</span><span class="p">,</span>
-<span class="w">                                              </span><span class="n">boost</span><span class="o">::</span><span class="n">python</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">())</span>
-<span class="w">            </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;getFrameCount&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">getFrameCount</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;getTotalBytes&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">getTotalBytes</span><span class="p">)</span>
-<span class="w">         </span><span class="p">;</span>
-<span class="w">         </span><span class="n">boost</span><span class="o">::</span><span class="n">python</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">                                              </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">SlavePtr</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="w">      </span><span class="p">};</span>
-<span class="p">};</span>
-
-<span class="c1">// Custom stream master class</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomMaster</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Master</span><span class="w"> </span><span class="p">{</span>
-
-<span class="w">      </span><span class="c1">// Total frame counter, exposed to Python</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">frameCount_</span><span class="p">;</span>
-
-<span class="w">      </span><span class="c1">// Total byte count, exposed to Python</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">byteCount_</span><span class="p">;</span>
-
-<span class="w">      </span><span class="c1">// Frame size configuration</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">frameSize_</span><span class="p">;</span>
-
-<span class="w">   </span><span class="k">public</span><span class="o">:</span>
-
-<span class="w">      </span><span class="c1">// Create a static class creator to return our custom class wrapped with a shared pointer</span>
-<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="k">static</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="w">         </span><span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
-<span class="w">      </span><span class="p">}</span>
-
-<span class="w">      </span><span class="c1">// Standard class creator which is called by create</span>
-<span class="w">      </span><span class="n">MyCustomMaster</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Master</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="n">frameCount_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">         </span><span class="n">byteCount_</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">         </span><span class="n">frameSize_</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
-
-<span class="w">      </span><span class="c1">// Return received frame counter</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">getFrameCount</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">frameCount_</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
-
-<span class="w">      </span><span class="c1">// Return total bytes received</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">getTotalBytes</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">byteCount_</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
-
-<span class="w">      </span><span class="c1">// Set frame size</span>
-<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">setFrameSize</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="n">frameSize_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
-
-<span class="w">      </span><span class="c1">// Get frame size</span>
-<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">getFrameSize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">frameSize_</span><span class="p">;</span>
-<span class="w">      </span><span class="p">}</span>
-
-<span class="w">      </span><span class="c1">// Generate and send a frame</span>
-<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">myFrameGen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FramePtr</span><span class="w"> </span><span class="n">frame</span><span class="p">;</span>
-<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameIterator</span><span class="w"> </span><span class="n">it</span><span class="p">;</span>
-<span class="w">         </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
-
-<span class="w">         </span><span class="c1">// Here we request a frame capable of holding 100 bytes</span>
-<span class="w">         </span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqFrame</span><span class="p">(</span><span class="n">frameSize_</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
-
-<span class="w">         </span><span class="c1">// Unlike the python API we must now specify the new payload size</span>
-<span class="w">         </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="n">frameSize_</span><span class="p">);</span>
-
-<span class="w">         </span><span class="c1">// Set an incrementing value to the first 10 locations</span>
-<span class="w">         </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-<span class="w">         </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="o">=</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">it</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">;</span>
-
-<span class="w">         </span><span class="c1">//Send frame</span>
 <span class="w">         </span><span class="n">sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
-
-<span class="w">         </span><span class="c1">// Increment frame counter</span>
-<span class="w">         </span><span class="n">frameCount_</span><span class="o">++</span><span class="p">;</span>
-
-<span class="w">         </span><span class="c1">// Increment byte  counter</span>
-<span class="w">         </span><span class="n">byteCount_</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">frameSize_</span><span class="p">;</span>
 <span class="w">      </span><span class="p">}</span>
 
-<span class="w">      </span><span class="c1">// Expose methods to python</span>
+<span class="cp">#ifndef NO_PYTHON</span>
+<span class="w">      </span><span class="c1">// Expose to Python as the BitInverter type</span>
 <span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">setup_python</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">         </span><span class="n">boost</span><span class="o">::</span><span class="n">python</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="p">,</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">                                               </span><span class="n">boost</span><span class="o">::</span><span class="n">python</span><span class="o">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Master</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">                                               </span><span class="n">boost</span><span class="o">::</span><span class="n">noncopyable</span><span class="w"> </span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;MyCustomMaster&quot;</span><span class="p">,</span>
-<span class="w">                                               </span><span class="n">boost</span><span class="o">::</span><span class="n">python</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">())</span>
-<span class="w">            </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;getFrameCount&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">getFrameCount</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;getTotalBytes&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">getTotalBytes</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;setFrameSize&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">setFrameSize</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;getFrameSize&quot;</span><span class="p">,</span><span class="w">  </span><span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">getFrameSize</span><span class="p">)</span>
-<span class="w">            </span><span class="p">.</span><span class="n">def</span><span class="p">(</span><span class="s">&quot;myFrameGen&quot;</span><span class="p">,</span><span class="w">    </span><span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">myFrameGen</span><span class="p">)</span>
-<span class="w">         </span><span class="p">;</span>
-<span class="w">         </span><span class="n">boost</span><span class="o">::</span><span class="n">python</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">                                               </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">MasterPtr</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="w">      </span><span class="p">};</span>
+<span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">bp</span><span class="o">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">boost</span><span class="o">::</span><span class="n">noncopyable</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;BitInverter&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bp</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">());</span>
+<span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">SlavePtr</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">MasterPtr</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="cp">#endif</span>
 <span class="p">};</span>
 
-<span class="c1">// Setup this module in python</span>
-<span class="n">BOOST_PYTHON_MODULE</span><span class="p">(</span><span class="n">MyModule</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">   </span><span class="n">PyEval_InitThreads</span><span class="p">();</span>
-<span class="w">   </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">setup_python</span><span class="p">();</span>
-<span class="w">      </span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">setup_python</span><span class="p">();</span>
-<span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(...)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Failed to load module. import rogue first</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-<span class="w">   </span><span class="p">}</span>
-<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Loaded my module</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-<span class="p">};</span>
+<span class="cp">#ifndef NO_PYTHON</span>
+<span class="c1">// Setup this module in python: import BitInverter (import rogue first)</span>
+<span class="n">BOOST_PYTHON_MODULE</span><span class="p">(</span><span class="n">BitInverter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="n">BitInverter</span><span class="o">::</span><span class="n">setup_python</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Once built and on <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code>, the module is driven from Python by connecting
+it between a source and a sink, sending a frame, and checking the bytes come out
+inverted:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">BitInverter</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FrameSource</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sendData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CaptureSink</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_acceptFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">getBa</span><span class="p">()))</span>
+
+<span class="n">source</span>   <span class="o">=</span> <span class="n">FrameSource</span><span class="p">()</span>
+<span class="n">inverter</span> <span class="o">=</span> <span class="n">BitInverter</span><span class="o">.</span><span class="n">BitInverter</span><span class="p">()</span>
+<span class="n">sink</span>     <span class="o">=</span> <span class="n">CaptureSink</span><span class="p">()</span>
+
+<span class="c1"># source -&gt; inverter -&gt; sink</span>
+<span class="n">source</span> <span class="o">&gt;&gt;</span> <span class="n">inverter</span> <span class="o">&gt;&gt;</span> <span class="n">sink</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0xFF</span><span class="p">,</span> <span class="mh">0xAA</span><span class="p">,</span> <span class="mh">0x55</span><span class="p">]</span>
+<span class="n">source</span><span class="o">.</span><span class="n">sendData</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">sink</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">b</span> <span class="o">^</span> <span class="mh">0xFF</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="what-to-explore-next">
 <h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Building the shared library: <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a></p></li>
-<li><p>Wrapping the C++ classes as PyRogue Devices: <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a></p></li>
+<li><p>Variables exported by <code class="docutils literal notranslate"><span class="pre">RogueConfig.cmake</span></code>: <a class="reference internal" href="rogueconfig.html#custom-rogueconfig"><span class="std std-ref">The RogueConfig.cmake Package</span></a></p></li>
+<li><p>Wrapping the C++ class as a PyRogue Device: <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a></p></li>
 </ul>
 </section>
 </section>

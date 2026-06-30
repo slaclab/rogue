@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Testing The Custom Module &mdash; Rogue v6.14.1-23-gdb8ac3dfe documentation</title>
+  <title>Testing The Custom Module &mdash; Rogue v6.14.1-28-gc4833f76a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6b55c201"></script>
+      <script src="../_static/documentation_options.js?v=035aa74c"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -77,6 +77,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
 <li class="toctree-l3"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rogueconfig.html">The RogueConfig.cmake Package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Testing The Custom Module</a></li>
 </ul>
@@ -122,8 +123,9 @@
   <section id="testing-the-custom-module">
 <span id="custom-testing"></span><h1>Testing The Custom Module<a class="headerlink" href="#testing-the-custom-module" title="Link to this heading"></a></h1>
 <p>The following script tests the <code class="docutils literal notranslate"><span class="pre">MyModule</span></code> and <code class="docutils literal notranslate"><span class="pre">MyWrapper</span></code>
-implementations created by the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a>,
-<a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a>, and <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a> steps.</p>
+implementations from the <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> and <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a>
+steps (the fuller status-exposing classes introduced in <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a>,
+built the same way as the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a> example).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myTest.py</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>

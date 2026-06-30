@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The RogueConfig.cmake Package &mdash; Rogue v6.14.1-28-gc4833f76a documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=035aa74c"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=51977998"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Wrapping Custom Module With PyRogue Device" href="wrapper.html" />
+    <link rel="prev" title="Building The Custom Module" href="makefile.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/connecting.html">Connecting Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/frame_model.html">Frame Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/sending.html">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/built_in_modules.html">Built-in Stream Modules</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">The RogueConfig.cmake Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../stream_interface/index.html">Stream Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Creating Custom Modules</a></li>
+      <li class="breadcrumb-item active">The RogueConfig.cmake Package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/custom_module/rogueconfig.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-rogueconfig-cmake-package">
+<span id="custom-rogueconfig"></span><h1>The RogueConfig.cmake Package<a class="headerlink" href="#the-rogueconfig-cmake-package" title="Link to this heading"></a></h1>
+<p>When Rogue is built, it generates a CMake package configuration file,
+<code class="docutils literal notranslate"><span class="pre">RogueConfig.cmake</span></code>, and installs it into <code class="docutils literal notranslate"><span class="pre">&lt;install&gt;/lib</span></code>. Downstream
+projects load it with <code class="docutils literal notranslate"><span class="pre">find_package(Rogue)</span></code> (see <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a>) to
+compile and link against an existing Rogue installation without hard-coding any
+paths.</p>
+<p>This page documents the variables that <code class="docutils literal notranslate"><span class="pre">RogueConfig.cmake</span></code> defines so you can
+choose the right ones for your project.</p>
+<section id="what-it-does">
+<h2>What It Does<a class="headerlink" href="#what-it-does" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RogueConfig.cmake</span></code> re-runs the same dependency discovery that Rogue itself
+uses at build time. It locates:</p>
+<ul class="simple">
+<li><p>Python 3 and NumPy (skipped if Rogue was built with <code class="docutils literal notranslate"><span class="pre">-DNO_PYTHON=1</span></code>)</p></li>
+<li><p>Boost (including the Boost.Python component)</p></li>
+<li><p>ZeroMQ</p></li>
+<li><p>BZip2</p></li>
+</ul>
+<p>It then exposes the results through the variables below.</p>
+</section>
+<section id="exported-variables">
+<h2>Exported Variables<a class="headerlink" href="#exported-variables" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28.0%" />
+<col style="width: 72.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ROGUE_INCLUDE_DIRS</span></code></p></td>
+<td><p>Rogue’s own include directory <strong>plus</strong> the include directories of every
+dependency (Boost, Python, NumPy, ZeroMQ, BZip2). Use this for
+<code class="docutils literal notranslate"><span class="pre">include_directories()</span></code> in the common case.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ROGUE_LIBRARIES</span></code></p></td>
+<td><p>The Rogue core library <strong>plus</strong> every dependency library. Use this for
+<code class="docutils literal notranslate"><span class="pre">target_link_libraries()</span></code> in the common case.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ROGUE_INCLUDE_ONLY</span></code></p></td>
+<td><p>Only Rogue’s own include directory, without dependency includes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ROGUE_LIBRARIES_ONLY</span></code></p></td>
+<td><p>Only the Rogue core library, without dependency libraries.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ROGUE_DIR</span></code></p></td>
+<td><p>The Rogue installation directory.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ROGUE_VERSION</span></code></p></td>
+<td><p>The installed Rogue version string (from the git tag at build time).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NO_PYTHON</span></code></p></td>
+<td><p>Set when Rogue was built with <code class="docutils literal notranslate"><span class="pre">-DNO_PYTHON=1</span></code>. When true, Boost/Python
+discovery is skipped and <code class="docutils literal notranslate"><span class="pre">-DNO_PYTHON</span></code> is added to the compile
+definitions so your sources can guard Python bindings with
+<code class="docutils literal notranslate"><span class="pre">#ifndef</span> <span class="pre">NO_PYTHON</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="which-variables-to-use">
+<h2>Which Variables To Use<a class="headerlink" href="#which-variables-to-use" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Python-loadable modules and full applications</strong> (the usual case): use
+<code class="docutils literal notranslate"><span class="pre">ROGUE_INCLUDE_DIRS</span></code> and <code class="docutils literal notranslate"><span class="pre">ROGUE_LIBRARIES</span></code>. They carry everything needed to
+compile against Rogue headers and link the full stack.</p></li>
+<li><p><strong>Linking against only the Rogue core</strong> (for example when your project already
+manages Boost/Python/ZeroMQ/BZip2 itself, or for a <code class="docutils literal notranslate"><span class="pre">-DNO_PYTHON</span></code> C++ build):
+use <code class="docutils literal notranslate"><span class="pre">ROGUE_INCLUDE_ONLY</span></code> and <code class="docutils literal notranslate"><span class="pre">ROGUE_LIBRARIES_ONLY</span></code> and add the
+dependencies you need explicitly.</p></li>
+</ul>
+</section>
+<section id="locating-the-config-file">
+<h2>Locating the Config File<a class="headerlink" href="#locating-the-config-file" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">find_package(Rogue)</span></code> needs to know which directory holds
+<code class="docutils literal notranslate"><span class="pre">RogueConfig.cmake</span></code> (always <code class="docutils literal notranslate"><span class="pre">&lt;install&gt;/lib</span></code>). Set <code class="docutils literal notranslate"><span class="pre">Rogue_DIR</span></code> to that
+directory, or set the <code class="docutils literal notranslate"><span class="pre">ROGUE_DIR</span></code> environment variable to the install root.
+<code class="docutils literal notranslate"><span class="pre">setup_rogue.sh</span></code> (generated for local and custom installs) exports
+<code class="docutils literal notranslate"><span class="pre">ROGUE_DIR</span></code> for you; conda and system installs are found through
+<code class="docutils literal notranslate"><span class="pre">CMAKE_PREFIX_PATH</span></code>.</p>
+<p>If configuration fails with <code class="docutils literal notranslate"><span class="pre">Could</span> <span class="pre">not</span> <span class="pre">find</span> <span class="pre">a</span> <span class="pre">package</span> <span class="pre">configuration</span> <span class="pre">file</span>
+<span class="pre">provided</span> <span class="pre">by</span> <span class="pre">&quot;Rogue&quot;</span></code>, set one of those variables explicitly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Either point at the install root via the environment variable...</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ROGUE_DIR</span><span class="o">=</span>/path/to/rogue
+
+<span class="c1"># ...or pass the lib directory directly to cmake:</span>
+cmake<span class="w"> </span>..<span class="w"> </span>-DRogue_DIR<span class="o">=</span>/path/to/rogue/lib
+</pre></div>
+</div>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The downstream <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> that consumes these variables: <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a></p></li>
+<li><p>Custom module source structure: <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="makefile.html" class="btn btn-neutral float-left" title="Building The Custom Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="wrapper.html" class="btn btn-neutral float-right" title="Wrapping Custom Module With PyRogue Device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

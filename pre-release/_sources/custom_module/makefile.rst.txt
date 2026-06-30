@@ -44,13 +44,16 @@ subdirectory. That directory needs to be included in ``PYTHONPATH``.
 
    # C/C++
    enable_language(CXX)
-   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated")
    add_definitions(-D__STDC_FORMAT_MACROS)
 
-   SET(CMAKE_CXX_STANDARD 14)
-   SET(CMAKE_SKIP_BUILD_RPATH TRUE)
-   SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-   SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+   # Rogue is built as C++14; match it so the ABI is compatible. Do not also
+   # pass a -std= flag in CMAKE_CXX_FLAGS -- CMAKE_CXX_STANDARD is the single
+   # source of truth for the language standard.
+   set(CMAKE_CXX_STANDARD 14)
+   set(CMAKE_SKIP_BUILD_RPATH TRUE)
+   set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
    #####################################
    # Find Rogue & Support Libraries
@@ -79,8 +82,37 @@ subdirectory. That directory needs to be included in ``PYTHONPATH``.
    # Link to rogue core
    TARGET_LINK_LIBRARIES(MyModule LINK_PUBLIC ${ROGUE_LIBRARIES})
 
+How ``find_package(Rogue)`` Works
+=================================
+
+``find_package(Rogue)`` loads ``RogueConfig.cmake``, which Rogue generates and
+installs into ``<install>/lib`` at build time. That file rediscovers Rogue's own
+dependencies (Boost, Python, NumPy, ZeroMQ, BZip2) and then defines the variables
+this ``CMakeLists.txt`` consumes:
+
+- ``ROGUE_INCLUDE_DIRS`` -- Rogue headers **plus** all dependency include paths.
+- ``ROGUE_LIBRARIES`` -- the Rogue core library **plus** all dependency libraries.
+
+Use those two for the common case (a Python-loadable module or an application
+that links the full stack). Variants that expose only Rogue itself
+(``ROGUE_INCLUDE_ONLY`` / ``ROGUE_LIBRARIES_ONLY``), along with ``ROGUE_DIR`` and
+``ROGUE_VERSION``, are documented in :ref:`custom_rogueconfig`.
+
+``Rogue_DIR`` tells CMake which directory contains ``RogueConfig.cmake``. The
+example resolves it from the ``ROGUE_DIR`` environment variable (set by
+``setup_rogue.sh``) or from ``CMAKE_PREFIX_PATH`` for conda/system installs.
+
+.. note::
+
+   If configuration fails with ``Could not find a package configuration file
+   provided by "Rogue"``, point CMake at the install explicitly, e.g.
+   ``export ROGUE_DIR=/path/to/rogue`` (the directory whose ``lib`` subdirectory
+   holds ``RogueConfig.cmake``), or pass ``-DRogue_DIR=/path/to/rogue/lib`` on
+   the ``cmake`` command line.
+
 What To Explore Next
 ====================
 
+- Variables exported by ``RogueConfig.cmake``: :ref:`custom_rogueconfig`
 - Custom module source structure: :ref:`custom_sourcefile`
 - Wrapping the resulting module in PyRogue: :ref:`custom_wrapper`

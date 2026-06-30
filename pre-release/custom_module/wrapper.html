@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v6.14.1-23-gdb8ac3dfe documentation</title>
+  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v6.14.1-28-gc4833f76a documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6b55c201"></script>
+      <script src="../_static/documentation_options.js?v=035aa74c"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -26,7 +26,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Testing The Custom Module" href="testing.html" />
-    <link rel="prev" title="Building The Custom Module" href="makefile.html" />
+    <link rel="prev" title="The RogueConfig.cmake Package" href="rogueconfig.html" />
    
   <script>
     window.ROGUE_DOCS = {
@@ -77,6 +77,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
 <li class="toctree-l3"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rogueconfig.html">The RogueConfig.cmake Package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Wrapping Custom Module With PyRogue Device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
 </ul>
@@ -121,9 +122,12 @@
              
   <section id="wrapping-custom-module-with-pyrogue-device">
 <span id="custom-wrapper"></span><h1>Wrapping Custom Module With PyRogue Device<a class="headerlink" href="#wrapping-custom-module-with-pyrogue-device" title="Link to this heading"></a></h1>
-<p>The example below wraps the classes from <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a> in PyRogue
-<code class="docutils literal notranslate"><span class="pre">Device</span></code> objects. That wrapper is what exposes Variables, Commands, and
-stream connection hooks to the rest of the PyRogue management layer.</p>
+<p>The example below builds on <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a> to show how a PyRogue
+<code class="docutils literal notranslate"><span class="pre">Device</span></code> wraps a custom C++ stream element. The <code class="docutils literal notranslate"><span class="pre">BitInverter</span></code> from the
+source example is intentionally minimal, so this page uses a slightly fuller
+pair of classes (<code class="docutils literal notranslate"><span class="pre">MyCustomSlave</span></code> / <code class="docutils literal notranslate"><span class="pre">MyCustomMaster</span></code> in a module <code class="docutils literal notranslate"><span class="pre">MyModule</span></code>)
+that also expose status counters – demonstrating how C++ accessor methods
+become PyRogue Variables and Commands, alongside the stream connection hooks.</p>
 <p>In practice, this file can be created as <code class="docutils literal notranslate"><span class="pre">MyWrapper.py</span></code> in the same Python
 directory as the shared library produced by <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source Code For MyWrapper.py</span>
@@ -212,7 +216,7 @@ directory as the shared library produced by <a class="reference internal" href="
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="makefile.html" class="btn btn-neutral float-left" title="Building The Custom Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rogueconfig.html" class="btn btn-neutral float-left" title="The RogueConfig.cmake Package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="testing.html" class="btn btn-neutral float-right" title="Testing The Custom Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
