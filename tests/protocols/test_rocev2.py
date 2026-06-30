@@ -4,11 +4,12 @@
 # Description:
 #   Unit and hardware-gated tests for pyrogue.protocols._RoCEv2.
 #
-#   Two tiers of tests live here:
-#     1. Hardware-free (run in every CI matrix) — pure Python arithmetic on
-#        the metadata bus encoders/decoders, GID helpers, _ROCEV2_AVAILABLE
-#        guard, _send_meta / _wait_resp / _roce_teardown (MagicMock engine),
-#        and getChannel() wiring.
+#   The FPGA-facing metadata-bus codec (PD/MR/QP encoders/decoders and the
+#   _roce_setup_connection / _roce_teardown transport helpers) now lives in
+#   surf (surf.ethernet.roce._RoCEv2Protocol / _RoCEv2Engine) and is tested
+#   there. What remains host-side in rogue — and is covered here — is:
+#     1. Hardware-free (run in every CI matrix) — GID helpers, the
+#        _ROCEV2_AVAILABLE guard, pmtu validation, and getChannel() wiring.
 #     2. Hardware-gated (@pytest.mark.rocev2) — require an ibverbs device.
 #        Skipped with a clear reason string when no device is present, never
 #        silently passing.
@@ -21,7 +22,10 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-from unittest.mock import MagicMock, call
+import builtins
+import glob as _glob_mod
+import socket
+from unittest.mock import MagicMock
 
 import pytest
 
@@ -31,40 +35,11 @@ import pyrogue.protocols._RoCEv2 as _RoCEv2
 from pyrogue.protocols._RoCEv2 import (
     _ip_to_gid_bytes,
     _gid_bytes_to_str,
-    _mk_bus,
-    _encode_alloc_pd,
-    _encode_alloc_mr,
-    _encode_create_qp,
-    _encode_modify_qp,
-    _encode_err_qp,
-    _encode_destroy_qp,
-    _encode_dealloc_pd,
-    _encode_dealloc_mr,
-    _decode_resp_type,
-    _decode_pd_resp,
-    _decode_mr_resp,
-    _decode_qp_resp,
-    _send_meta,
-    _wait_resp,
-    _roce_setup_connection,
-    _roce_teardown,
+    _host_ip_from_gid,
     RoCEv2Server,
-    _METADATA_PD_T,
-    _METADATA_MR_T,
-    _METADATA_QP_T,
-    _META_DATA_TX_BITS,
-    _PD_KEY_B,
-    _PD_HANDLER_B,
-    _MR_KEY_B,
-    _IBV_QPS_INIT,
-    _IBV_QPS_RTR,
-    _IBV_QPS_RTS,
+    RoCEv2ServerCfg,
+    RoCEv2TransportCfg,
 )
-# Response-word builders shared with tests/protocols/test_rocev2_corner_cases.py
-# (hoisted to conftest.py to eliminate drift). pytest adds the conftest's
-# directory to sys.path during collection, so the bare `conftest` import
-# works without a package __init__.py.
-from conftest import _pack_pd_ok, _pack_mr_ok, _pack_qp_ok
 
 
 # xdist_group serializes all tests in this file onto one worker. Combined
@@ -121,143 +96,113 @@ def test_gid_round_trip():
     assert groups[-1] == '0001'
 
 
-# ---------------------------------------------------------------------------
-# _mk_bus low-level
-# ---------------------------------------------------------------------------
-
-def test_mk_bus_type_tag_position():
-    # QP type = 2 (binary 10); bit 302 = 1, bit 301 = 0
-    bus_qp = _mk_bus(_METADATA_QP_T, (0, 10))
-    assert (bus_qp >> 302) & 1 == 1
-    assert (bus_qp >> 301) & 1 == 0
-    # PD type = 0; bits 302:301 = 00
-    bus_pd = _mk_bus(_METADATA_PD_T, (0, 10))
-    assert (bus_pd >> 301) & 0x3 == _METADATA_PD_T
-    # MR type = 1; bits 302:301 = 01
-    bus_mr = _mk_bus(_METADATA_MR_T, (0, 10))
-    assert (bus_mr >> 301) & 0x3 == _METADATA_MR_T
+def test_ip_to_gid_bytes_zero_address():
+    """IPv4 0.0.0.0 maps to an IPv4-in-IPv6 GID with zeros in the last
+    four bytes; the leading 10 zero bytes and the 0xFFFF marker stay
+    put so the GID is well-formed even for an all-zero IPv4."""
+    gid = _ip_to_gid_bytes("0.0.0.0")
+    assert len(gid) == 16
+    assert gid[0:10]  == b'\x00' * 10
+    assert gid[10:12] == b'\xff\xff'
+    assert gid[12:16] == b'\x00\x00\x00\x00'
 
 
-def test_mk_bus_overflow_raises():
-    # 302 bits of payload leaves only 1 bit for the 2-bit bus type tag
-    with pytest.raises(rogue.GeneralError) as excinfo:
-        _mk_bus(_METADATA_PD_T, (0, 302))
-    assert "Bus type cannot fit" in str(excinfo.value)
+def test_ip_to_gid_bytes_max_address():
+    """IPv4 255.255.255.255 maps to all-ones in the last four bytes.
+    A successful round-trip proves the helper doesn't sign-extend or
+    truncate high bytes."""
+    gid = _ip_to_gid_bytes("255.255.255.255")
+    assert gid[12:16] == b'\xff\xff\xff\xff'
 
 
-# ---------------------------------------------------------------------------
-# TX encoders
-# ---------------------------------------------------------------------------
-
-def test_encode_alloc_pd_fits_in_303_bits():
-    bus = _encode_alloc_pd(0xDEADBEEF)
-    assert bus < (1 << _META_DATA_TX_BITS)
-
-
-def test_encode_alloc_pd_bus_type():
-    bus = _encode_alloc_pd(0xABCDEF01)
-    assert (bus >> 301) & 0x3 == _METADATA_PD_T
-
-
-def test_encode_alloc_mr_bus_type_and_fits():
-    bus = _encode_alloc_mr(
-        pd_handler=0x11, laddr=0x2000, length=4096,
-        lkey_part=0x3, rkey_part=0x4,
-    )
-    assert (bus >> 301) & 0x3 == _METADATA_MR_T
-    assert bus < (1 << _META_DATA_TX_BITS)
-
-
-def test_encode_create_qp_bus_type_and_fits():
-    bus = _encode_create_qp(pd_handler=0x55)
-    assert (bus >> 301) & 0x3 == _METADATA_QP_T
-    assert bus < (1 << _META_DATA_TX_BITS)
-
-
-def test_encode_modify_qp_bus_type_and_fits():
-    bus = _encode_modify_qp(
-        qpn=0x1234, attr_mask=0x1, qp_state=1, pmtu=5,
-    )
-    assert (bus >> 301) & 0x3 == _METADATA_QP_T
-    assert bus < (1 << _META_DATA_TX_BITS)
-
-
-def test_encode_err_qp_bus_type_and_fits():
-    bus = _encode_err_qp(qpn=0x5678)
-    assert (bus >> 301) & 0x3 == _METADATA_QP_T
-    assert bus < (1 << _META_DATA_TX_BITS)
-
-
-def test_encode_destroy_qp_bus_type_and_fits():
-    bus = _encode_destroy_qp(qpn=0x9ABC)
-    assert (bus >> 301) & 0x3 == _METADATA_QP_T
-    assert bus < (1 << _META_DATA_TX_BITS)
-
-
-def test_encode_dealloc_pd_and_mr_fit():
-    assert _encode_dealloc_pd(0x1234) < (1 << _META_DATA_TX_BITS)
-    assert _encode_dealloc_mr(0x1234, 0xAABB, 0xCCDD) < (1 << _META_DATA_TX_BITS)
+def test_ip_to_gid_bytes_invalid_raises():
+    """Passing a non-IPv4 string (domain name, garbage, IPv6) must raise
+    — the helper delegates to socket.inet_aton which raises OSError
+    (socket.error is an alias)."""
+    with pytest.raises((OSError, socket.error)):
+        _ip_to_gid_bytes("not-an-ip")
 
 
 # ---------------------------------------------------------------------------
-# RX decoders
+# _host_ip_from_gid — IPv4 extraction from an IPv4-mapped GID string
 # ---------------------------------------------------------------------------
 
-def test_decode_resp_type_matches_encoder():
-    # The TX bus writes bus-type at [302:301]; the RX bus (276 bits) keeps
-    # the same two-bit field at [275:274]. Shifting TX>>27 aligns TX with RX.
-    shift = _META_DATA_TX_BITS - 276  # == 27
-    assert _decode_resp_type(_encode_alloc_pd(0xABCDEF01) >> shift) \
-        == _METADATA_PD_T
-    assert _decode_resp_type(_encode_alloc_mr(0, 0, 0, 0, 0) >> shift) \
-        == _METADATA_MR_T
-    assert _decode_resp_type(_encode_create_qp(0) >> shift) \
-        == _METADATA_QP_T
+def test_host_ip_from_gid_round_trip():
+    """_host_ip_from_gid is the inverse of the _ip_to_gid_bytes ->
+    _gid_bytes_to_str pipeline used to render HostGid."""
+    for ip in ("10.0.0.1", "192.168.3.7", "255.255.255.255", "0.0.0.0"):
+        gid = _gid_bytes_to_str(_ip_to_gid_bytes(ip))
+        assert _host_ip_from_gid(gid) == ip
 
 
-def test_decode_pd_resp_success_and_handler():
-    # Layout (LSB convention, matches _RoCEv2.py comments):
-    #   bits [31:0]   = pdKey
-    #   bits [63:32]  = pdHandler
-    #   bit  [64]     = successOrNot
-    pd_handler = 0xDEADBEEF
-    rx = (1 << (_PD_KEY_B + _PD_HANDLER_B)) | (pd_handler << _PD_KEY_B)
-    success, handler = _decode_pd_resp(rx)
-    assert success is True
-    assert handler == pd_handler
+@pytest.mark.parametrize("gid", [
+    "fe80:0000:0000:0000:0000:0000:0000:0001",  # link-local, no ffff marker
+    "0000:0000:0000:0000:0000:0000:0a00:0001",  # marker group not ffff
+    "0000:0000:0000:0000:ffff:0a00:0001",        # only 7 groups
+    "",                                          # empty
+    "0000:0000:0000:0000:0000:ffff:zzzz:0001",   # non-hex -> ValueError path
+])
+def test_host_ip_from_gid_rejects_non_ipv4_mapped(gid):
+    """Anything that is not a well-formed 8-group IPv4-mapped GID returns ''
+    (never raises) so HostIp degrades gracefully to an empty string."""
+    assert _host_ip_from_gid(gid) == ''
 
 
-def test_decode_pd_resp_failure():
-    # Same rx but success bit cleared
-    rx = 0
-    success, _ = _decode_pd_resp(rx)
-    assert success is False
+# ---------------------------------------------------------------------------
+# detectGidIndex — sysfs RoCE v2 IPv4 GID-table scan (gidIndex=-1 path)
+# ---------------------------------------------------------------------------
+
+def _fake_sysfs(tmp_path, monkeypatch, device, ibPort, entries):
+    """Build a sysfs-like infiniband GID tree under tmp_path and redirect
+    detectGidIndex()'s hardcoded /sys/class/infiniband prefix to it.
+
+    entries: list of (index, type_str, gid_str). Files are written exactly
+    as the kernel exposes them so the real glob/open/parse path is tested.
+    """
+    SYS = '/sys/class/infiniband'
+    base = tmp_path / device / 'ports' / str(ibPort)
+    types_dir = base / 'gid_attrs' / 'types'
+    gids_dir  = base / 'gids'
+    types_dir.mkdir(parents=True)
+    gids_dir.mkdir(parents=True)
+    for idx, typ, gid in entries:
+        (types_dir / str(idx)).write_text(typ + '\n')
+        (gids_dir / str(idx)).write_text(gid + '\n')
+
+    def _redirect(path):
+        s = str(path)
+        return str(tmp_path) + s[len(SYS):] if s.startswith(SYS) else s
+
+    real_glob = _glob_mod.glob
+    real_open = builtins.open
+    monkeypatch.setattr(_glob_mod, 'glob',
+                        lambda pat, *a, **k: real_glob(_redirect(pat), *a, **k))
+    monkeypatch.setattr(builtins, 'open',
+                        lambda f, *a, **k: real_open(_redirect(f), *a, **k))
 
 
-def test_decode_mr_resp_success_and_keys():
-    # Layout: rKey [31:0], lKey [63:32], successOrNot at the high end
-    lkey = 0xABCD1234
-    rkey = 0x5678DEAD
-    # success_bit offset is computed in _RoCEv2._decode_mr_resp; reproduce:
-    #   _MR_KEY_B + _MR_KEY_B + _MR_RKEYPART_B + _MR_LKEYPART_B
-    #   + _MR_PDHANDLER_B + _MR_ACCFLAGS_B + _MR_LEN_B + _MR_LADDR_B
-    success_bit = 32 + 32 + 31 + 31 + 32 + 8 + 32 + 64
-    rx = (1 << success_bit) | (lkey << _MR_KEY_B) | rkey
-    success, got_lkey, got_rkey = _decode_mr_resp(rx)
-    assert success is True
-    assert got_lkey == lkey
-    assert got_rkey == rkey
+def test_detect_gid_index_matches_roce_v2_on_subnet(tmp_path, monkeypatch):
+    """Returns the index of the RoCE v2 IPv4-mapped GID on the same /24 as
+    ``ip``, skipping the RoCE v1 slot that shares the IP and the link-local
+    v2 slot that is not IPv4-mapped."""
+    _fake_sysfs(tmp_path, monkeypatch, 'mlx5_0', 1, entries=[
+        # idx 0: RoCE v1 with the matching IP -> must be skipped (wrong type)
+        (0, 'IB/RoCE v1', '0000:0000:0000:0000:0000:ffff:0a00:020a'),
+        # idx 1: RoCE v2 but link-local (no ffff marker) -> skipped
+        (1, 'RoCE v2',    'fe80:0000:0000:0000:0000:0000:0000:0001'),
+        # idx 2: RoCE v2 IPv4-mapped 10.0.2.10 -> the match
+        (2, 'RoCE v2',    '0000:0000:0000:0000:0000:ffff:0a00:020a'),
+    ])
+    assert RoCEv2Server.detectGidIndex('mlx5_0', '10.0.2.50', 1) == 2
 
 
-def test_decode_qp_resp_success_and_qpn_and_state():
-    # Layout: successOrNot bit 273, qpn [272:249] (24b), qpaQpState [216:213] (4b)
-    qpn = 0x0ABCDE
-    qp_state = _IBV_QPS_RTS  # 3
-    rx = (1 << 273) | (qpn << 249) | (qp_state << 213)
-    success, got_qpn, got_state = _decode_qp_resp(rx)
-    assert success is True
-    assert got_qpn == qpn
-    assert got_state == qp_state
+def test_detect_gid_index_returns_none_when_off_subnet(tmp_path, monkeypatch):
+    """A RoCE v2 IPv4 GID on a different /24 is not a match; with no other
+    candidate the scan returns None so __init__ raises a clear error."""
+    _fake_sysfs(tmp_path, monkeypatch, 'mlx5_0', 1, entries=[
+        (0, 'RoCE v2', '0000:0000:0000:0000:0000:ffff:c0a8:0105'),  # 192.168.1.5
+    ])
+    assert RoCEv2Server.detectGidIndex('mlx5_0', '10.0.2.50', 1) is None
 
 
 # ---------------------------------------------------------------------------
@@ -272,8 +217,7 @@ def test_rocev2server_raises_import_error_when_unavailable(monkeypatch):
     monkeypatch.setattr(_RoCEv2, '_ROCEV2_AVAILABLE', False)
     with pytest.raises(ImportError) as excinfo:
         _RoCEv2.RoCEv2Server(
-            ip='192.168.1.1',
-            deviceName='dummy',
+            rocev2Cfg=RoCEv2ServerCfg(ip='192.168.1.1', deviceName='dummy'),
             name='test',
         )
     msg = str(excinfo.value)
@@ -282,82 +226,21 @@ def test_rocev2server_raises_import_error_when_unavailable(monkeypatch):
 
 
 @pytest.mark.parametrize("bad_pmtu", [-1, 0, 6, 7, 100])
-def test_rocev2server_rejects_out_of_range_pmtu(monkeypatch, bad_pmtu):
-    # Force the early-exit path so we exercise pmtu validation before any
-    # ibverbs call.  pmtu validation runs after the _ROCEV2_AVAILABLE check
-    # — pinning _ROCEV2_AVAILABLE to True keeps the validation reachable on
-    # hosts without ibverbs.
-    monkeypatch.setattr(_RoCEv2, '_ROCEV2_AVAILABLE', True)
+def test_transport_cfg_rejects_out_of_range_pmtu(bad_pmtu):
+    # pmtu validation lives in RoCEv2TransportCfg.__post_init__ (mirroring
+    # completeConnection's invariant) so a bad cfg fails loudly at
+    # construction — no ibverbs device needed.
     with pytest.raises(rogue.GeneralError) as excinfo:
-        _RoCEv2.RoCEv2Server(
-            ip='192.168.1.1',
-            deviceName='dummy',
-            pmtu=bad_pmtu,
-            name='test',
-        )
+        RoCEv2TransportCfg(pmtu=bad_pmtu)
     assert "pmtu" in str(excinfo.value)
 
 
-# ---------------------------------------------------------------------------
-# Transport helpers (MagicMock RoceEngine)
-# ---------------------------------------------------------------------------
-
-def test_send_meta_rising_edge_sequence():
-    engine = MagicMock()
-    _send_meta(engine, 0xABCD)
-    assert engine.SendMetaData.set.call_args_list == [
-        call(0), call(1), call(0),
-    ]
-    assert engine.MetaDataTx.set.call_args == call(0xABCD)
-
-
-def test_wait_resp_returns_rx_value():
-    engine = MagicMock()
-    engine.RecvMetaData.get.return_value = 1
-    engine.MetaDataRx.get.return_value = 0xDEADBEEF
-    assert _wait_resp(engine, timeout_s=0.5) == 0xDEADBEEF
-
-
-def test_wait_resp_timeout_raises():
-    engine = MagicMock()
-    engine.RecvMetaData.get.return_value = 0
-    with pytest.raises(rogue.GeneralError) as excinfo:
-        _wait_resp(engine, timeout_s=0.1)
-    assert "Timeout" in str(excinfo.value)
-
-
-# ---------------------------------------------------------------------------
-# Teardown
-# ---------------------------------------------------------------------------
-
-def test_roce_teardown_calls_all_four_steps():
-    engine = MagicMock()
-    engine.RecvMetaData.get.return_value = 1
-    # QP success decode: bit 273 set; MR success decode: bit at
-    # 32+32+31+31+32+8+32+64 = 262 set; PD success decode: bit 64 set.
-    # We want all teardown steps to report ok=True so none warn.
-    engine.MetaDataRx.get.return_value = (
-        (1 << 273) | (1 << 262) | (1 << 64)
-    )
-    _roce_teardown(
-        engine,
-        fpga_qpn=0x001234,
-        pd_handler=0x55,
-        lkey=0x66,
-        rkey=0x77,
-    )
-    # 4 metadata TX writes: ERR, DESTROY, MR-dealloc, PD-dealloc
-    assert engine.MetaDataTx.set.call_count == 4
-    assert engine.SendMetaData.set.called
-
-
-def test_roce_teardown_skips_mr_pd_when_pd_handler_zero():
-    engine = MagicMock()
-    engine.RecvMetaData.get.return_value = 1
-    engine.MetaDataRx.get.return_value = (1 << 273)
-    _roce_teardown(engine, fpga_qpn=0x001234, pd_handler=0)
-    # Only QP ERR + QP DESTROY when pd_handler == 0
-    assert engine.MetaDataTx.set.call_count == 2
+@pytest.mark.parametrize("valid_pmtu", [1, 2, 3, 4, 5])
+def test_transport_cfg_accepts_valid_pmtu(valid_pmtu):
+    # Pin the accept side of the boundary so a future off-by-one in the
+    # validator is caught.
+    cfg = RoCEv2TransportCfg(pmtu=valid_pmtu)
+    assert cfg.pmtu == valid_pmtu
 
 
 # ---------------------------------------------------------------------------
@@ -374,6 +257,26 @@ def test_get_channel_creates_filter_and_wires_server():
     assert isinstance(result, rogue.interfaces.stream.Filter)
     # self._server >> filt must have invoked __rshift__ on _server
     assert obj._server.__rshift__.called
+
+
+@pytest.mark.parametrize("channel", [0, 255])
+def test_get_channel_accepts_edge_ids(channel):
+    """The valid channel range is the 8-bit immediate field 0..255; both
+    extremes must construct a Filter without raising."""
+    obj = MagicMock()
+    obj._server = MagicMock()
+    result = RoCEv2Server.getChannel(obj, channel)
+    assert isinstance(result, rogue.interfaces.stream.Filter)
+
+
+@pytest.mark.parametrize("channel", [-1, 256, 1000])
+def test_get_channel_rejects_out_of_range_ids(channel):
+    """Out-of-range channel ids must raise a clear rogue.GeneralError up
+    front rather than overflowing inside the Filter ctor."""
+    obj = MagicMock()
+    obj._server = MagicMock()
+    with pytest.raises(rogue.GeneralError):
+        RoCEv2Server.getChannel(obj, channel)
 
 
 # ---------------------------------------------------------------------------
@@ -409,94 +312,6 @@ def test_rxe_server_fixture_is_live(rxe_server):
     assert rxe_server.getQpn() != 0
 
 
-@pytest.mark.skip(
-    reason="deferred — hardware skip-marker did not fire on GHA runner without "
-           "rdma_rxe; revisit once a self-hosted runner with rdma_rxe is available."
-)
-@pytest.mark.rocev2
-@rocev2_hw
-def test_rocev2_server_init_with_mock_engine_and_live_device():
-    """Construct RoCEv2Server against the real rxe0 device, with
-    roceEngine=MagicMock() to bypass the surf.ethernet.roce._RoceEngine
-    import inside RoCEv2Server.__init__.  Verifies the ibverbs setup path
-    (Server.create via Boost.Python) runs end-to-end.
-    """
-    srv = RoCEv2Server(
-        ip          ='10.0.0.1',        # arbitrary; not exercised without a peer bring-up
-        deviceName  ='rxe0',
-        ibPort      =1,
-        gidIndex    =0,
-        maxPayload  =9000,
-        rxQueueDepth=256,
-        roceEngine  =MagicMock(),
-        name        ='test_rocev2_server_init',
-    )
-    try:
-        # Smoke-level asserts: the server is built and exposes the expected
-        # ibverbs-derived accessors. Do NOT assert specific GID / QPN values
-        # — GID is MAC-derived and flaky across runner images.
-        assert srv._server is not None
-        assert srv._server.getQpn() != 0
-        assert srv._server.getMrAddr() != 0
-        assert srv._server.getMrRkey() != 0
-    finally:
-        # Best-effort teardown of the real ibverbs resources
-        try:
-            srv._server.stop()
-        except Exception:
-            pass
-
-
-@pytest.mark.rocev2
-@rocev2_hw
-def test_roce_setup_connection_full_flow_against_live_server(rxe_server):
-    """Drive the full 6-step PD/MR/QP metadata-bus setup against a
-    MagicMock RoceEngine, using the live rxe_server fixture's real
-    host_qpn/host_rq_psn/host_sq_psn/mr_laddr/mr_len values.
-    """
-    engine = MagicMock()
-    engine.RecvMetaData.get.return_value = 1
-
-    # Prefer a callable side_effect over a list — avoids StopIteration
-    # masking the real decoder error.
-    responses = [
-        _pack_pd_ok(),
-        _pack_mr_ok(),
-        _pack_qp_ok(state=_IBV_QPS_INIT),
-        _pack_qp_ok(state=_IBV_QPS_INIT),
-        _pack_qp_ok(state=_IBV_QPS_RTR),
-        _pack_qp_ok(state=_IBV_QPS_RTS),
-    ]
-    calls = {"n": 0}
-
-    def _rx(*args, **kwargs):
-        calls["n"] += 1
-        if not responses:
-            raise AssertionError(
-                f"unexpected RX call #{calls['n']} — script exhausted "
-                f"(setup_connection asked for more responses than PD/MR/QP*4)")
-        return responses.pop(0)
-
-    engine.MetaDataRx.get.side_effect = _rx
-
-    fpga_qpn, lkey, pd_handler, rkey = _roce_setup_connection(
-        engine,
-        host_qpn   =rxe_server.getQpn(),
-        host_rq_psn=rxe_server.getRqPsn(),
-        host_sq_psn=rxe_server.getSqPsn(),
-        mr_laddr   =rxe_server.getMrAddr(),
-        mr_len     =9000 * 256,
-        pmtu       =5,
-    )
-    # 6 TX writes, one per round-trip
-    assert engine.MetaDataTx.set.call_count == 6
-    # Values unpacked from our scripted responses
-    assert fpga_qpn == 0x123456
-    assert lkey     == 0xABCD1234
-    assert rkey     == 0x5678DEAD
-    assert pd_handler == 0xDEADBEEF
-
-
 @pytest.mark.rocev2
 @rocev2_hw
 def test_get_channel_with_live_server(rxe_server):
@@ -505,42 +320,8 @@ def test_get_channel_with_live_server(rxe_server):
     path. Multiple channel indices keep the Filter constructor out of a
     single-index happy path.
     """
-    # Use RoCEv2Server.getChannel as an unbound descriptor on a shim that
-    # holds the live server in _server (matches the hardware-free test
-    # at lines 333-342 but with rxe_server in place of MagicMock).
     shim = MagicMock()
     shim._server = rxe_server
     for channel_id in (0, 3, 15):
         filt = RoCEv2Server.getChannel(shim, channel_id)
         assert isinstance(filt, rogue.interfaces.stream.Filter)
-    # Real server path: channel count is not directly observable on the Filter;
-    # existence + type already proves the getChannel path executed.
-
-
-@pytest.mark.rocev2
-@rocev2_hw
-def test_roce_teardown_with_live_server_resources(rxe_server):
-    """Drive the 4-step teardown using real qpn/mr_addr/mr_rkey values
-    from the live rxe_server, scripted MagicMock engine for the FPGA
-    side. Mirrors the existing hardware-free
-    test_roce_teardown_calls_all_four_steps at line 299 but with live
-    resource values in place of the 0x001234/0x55/0x66/0x77 constants.
-    """
-    engine = MagicMock()
-    engine.RecvMetaData.get.return_value = 1
-    # All four teardown decode steps pass: QP ok (bit 273), MR ok (bit 262),
-    # PD ok (bit 64) — same bit layout as existing hardware-free test
-    # lines 305-307.
-    engine.MetaDataRx.get.return_value = (
-        (1 << 273) | (1 << 262) | (1 << 64)
-    )
-    _roce_teardown(
-        engine,
-        fpga_qpn   =rxe_server.getQpn(),
-        pd_handler =0x55,          # host-side PD handler bookkeeping — opaque to teardown
-        lkey       =0x66,          # host-side MR lkey bookkeeping
-        rkey       =rxe_server.getMrRkey(),
-    )
-    # All four meta-bus rounds performed: QP-ERR, QP-DESTROY, MR-dealloc, PD-dealloc
-    assert engine.MetaDataTx.set.call_count == 4
-    assert engine.SendMetaData.set.called

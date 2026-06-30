@@ -143,6 +143,41 @@ def test_root_log_handler_ignores_system_log_bookkeeping_records():
             logger.addHandler(existing)
 
 
+def test_root_log_handler_formatter_interpolates_args():
+    # Regression: Root must install a %(message)s formatter on its RootLogHandler
+    # (not %(msg)s) so printf-style logging args are interpolated instead of
+    # rendering the raw format string (e.g. a literal "Making device %s").
+    #
+    # Format through the handler that Root actually attaches to the global
+    # 'pyrogue' logger. A RootLogHandler built in isolation has no formatter set,
+    # so logging.Handler.format() falls back to the default %(message)s and would
+    # pass even if Root regressed to %(msg)s, masking the regression.
+    logger = logging.getLogger('pyrogue')
+    old_handlers = list(logger.handlers)
+
+    record = logging.LogRecord(
+        'pyrogue.Device.TenGigEthReg.EthPhy[0]', logging.INFO,
+        '<rogue>', 0, 'Making device %s', ('EthPhy0',), None)
+
+    with pr.Root(name='root', pollEn=False):
+        handlers = [h for h in logger.handlers
+                    if isinstance(h, RootLogHandler) and h not in old_handlers]
+
+        assert handlers, 'Root did not attach a RootLogHandler to the pyrogue logger'
+
+        for handler in handlers:
+            # Assert the formatter is explicitly configured (not the default
+            # fallback) and that it interpolates printf-style args.
+            assert handler.formatter is not None, \
+                'Root left RootLogHandler without an explicit formatter'
+            assert handler.format(record) == 'Making device EthPhy0'
+
+    # Root.stop() does not detach the handler; restore the logger for isolation.
+    for handler in list(logger.handlers):
+        if handler not in old_handlers:
+            logger.removeHandler(handler)
+
+
 def test_root_debug_logging_does_not_feedback_through_system_log(monkeypatch):
     logger = logging.getLogger('pyrogue')
     trigger_logger = logging.getLogger('pyrogue.test.feedback')
