@@ -57,7 +57,7 @@ Class Reference
       :param deviceName: ibverbs device name (e.g. ``rxe0``, ``mlx5_0``)
       :param ibPort: ibverbs port number (almost always ``1``)
       :param gidIndex: GID table index for the host NIC's RoCEv2 entry
-      :param maxPayload: maximum bytes per RDMA WRITE (default: 9000)
+      :param maxPayload: maximum bytes per RDMA SEND (default: 9000)
       :param rxQueueDepth: number of pre-posted receive slots (default: 256)
       :returns: ``ServerPtr`` (shared pointer to the new server)
 
@@ -117,7 +117,7 @@ Class Reference
 
    .. cpp:function:: uint64_t getMrAddr() const
 
-      :returns: Host MR virtual base address. The FPGA RDMA-WRITEs at this address.
+      :returns: Host MR virtual base address registered for RDMA access.
 
    .. cpp:function:: uint32_t getMrRkey() const
 
