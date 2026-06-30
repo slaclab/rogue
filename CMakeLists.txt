@@ -89,6 +89,7 @@ SET(CMAKE_SKIP_BUILD_RPATH TRUE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
+# >>> ROGUE_DEPENDENCY_DISCOVERY (keep byte-identical across CMakeLists.txt and templates/RogueConfig.cmake.in -- enforced by scripts/check_cmake_sync.sh)
 #####################################
 # Boost + Python
 #####################################
@@ -122,11 +123,11 @@ if ( NOT NO_PYTHON )
 
    # Loop through potential Boost Python component names
    set(BOOST_PYTHON_CANDIDATES
-       "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"      # e.g. python38
+       "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"      # e.g. python313
        "python${Python3_VERSION_MAJOR}"                              # e.g. python3
        "python"                                                      # e.g. python
-       "python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"   # e.g. python-py38
-       "python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"  # e.g. python3-py38
+       "python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"   # e.g. python-py313
+       "python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"  # e.g. python3-py313
    )
 
    foreach(COMPONENT_NAME ${BOOST_PYTHON_CANDIDATES})
@@ -148,12 +149,10 @@ else()
    add_definitions( -DNO_PYTHON )
 endif()
 
-
 #####################################
 # BZIP2
 #####################################
 find_package(BZip2 QUIET REQUIRED)
-
 
 #####################################
 # ZeroMQ
@@ -204,6 +203,7 @@ if (NOT ZeroMQ_FOUND)
    endif()
 
 endif()
+# <<< ROGUE_DEPENDENCY_DISCOVERY
 
 ##########################################################
 # Generate version with GIT If Not Passed As -DVERSION

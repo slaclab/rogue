@@ -156,6 +156,66 @@ jobs:
 
 # ----------------------------------------------------------------------------
 
+  external_build_test:
+    name: External Build Test
+    runs-on: ubuntu-24.04
+    steps:
+
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.12
+          cache: 'pip'
+          cache-dependency-path: |
+            pip_requirements_ci.txt
+
+      - name: Install dependencies
+        run: |
+          ./scripts/ci_install_deps.sh
+          python -m pip install -r pip_requirements_ci.txt
+
+      # Exercises templates/RogueConfig.cmake.in: build an installed rogue, then
+      # consume it from a standalone project purely through find_package(Rogue).
+      # The fixture is a custom stream "base type" that inverts every payload
+      # byte; both consumer styles assert the inversion is correct.
+
+      # Style 1: boost.python loadable module (the common downstream use case).
+      - name: Build + install rogue (python-enabled, local)
+        run: |
+          cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=OFF
+          cmake --build build -j$(nproc)
+          cmake --build build --target install
+
+      - name: Build downstream module via find_package(Rogue) and verify inversion
+        run: |
+          source build/setup_rogue.sh
+          cmake -S tests/downstream -B build_downstream_py
+          cmake --build build_downstream_py -j$(nproc)
+          PYTHONPATH="$PWD/build_downstream_py:$PYTHONPATH" \
+            python tests/downstream/verify_bit_inversion.py
+
+      # Style 2: standalone C++ executable against a NO_PYTHON / static rogue.
+      - name: Build + install rogue (NO_PYTHON, static)
+        run: |
+          cmake -S . -B build_nopy -DROGUE_INSTALL=custom -DNO_PYTHON=1 -DSTATIC_LIB=1 \
+            -DROGUE_DIR=$PWD/install_nopy
+          cmake --build build_nopy -j$(nproc)
+          cmake --build build_nopy --target install
+
+      - name: Build downstream C++ exe via find_package(Rogue) and verify inversion
+        run: |
+          ROGUE_DIR=$PWD/install_nopy \
+            cmake -S tests/downstream -B build_downstream_cpp -DDOWNSTREAM_NO_PYTHON=ON
+          cmake --build build_downstream_cpp -j$(nproc)
+          LD_LIBRARY_PATH="$PWD/install_nopy/lib:$LD_LIBRARY_PATH" \
+            ./build_downstream_cpp/bit_inverter_check
+
+
+# ----------------------------------------------------------------------------
+
   macos_arm64_build_test:
     name: macOS arm64 Build Test
     runs-on: macos-15
@@ -282,7 +342,7 @@ jobs:
 # ----------------------------------------------------------------------------
 
   gen_release:
-    needs: [full_build_test, small_build_test]
+    needs: [full_build_test, small_build_test, external_build_test]
     uses: slaclab/ruckus/.github/workflows/gen_release.yml@main
     with:
       version: '1.0.0'
@@ -292,7 +352,7 @@ jobs:
 # ----------------------------------------------------------------------------
 
   conda_build_lib:
-    needs: [full_build_test, small_build_test]
+    needs: [full_build_test, small_build_test, external_build_test]
     uses: slaclab/ruckus/.github/workflows/conda_build_lib.yml@main
     with:
       version: '1.0.0'
@@ -302,7 +362,7 @@ jobs:
 # ----------------------------------------------------------------------------
 
   docker_build_rogue:
-    needs: [full_build_test, small_build_test]
+    needs: [full_build_test, small_build_test, external_build_test]
     uses: slaclab/ruckus/.github/workflows/docker_build.yml@main
     with:
       gh_username: slacrherbst
