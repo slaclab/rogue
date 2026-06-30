@@ -149,6 +149,15 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
      * order of attachment, followed last by the primary Slave. If the Frame is a
      * zero copy frame it will most likely be empty when the sendFrame() method returns
      *
+     * GIL note: `sendFrame()` releases the Python GIL only briefly, while it
+     * snapshots the attached-slave list under `slaveMtx_` (see `rogue::GilRelease`).
+     * The subsequent `acceptFrame()` dispatch is not wrapped in that release; it
+     * runs with whatever GIL state the calling thread holds. Because stream frames
+     * are frequently sent from pure-C++ worker threads (DMA/receiver/file/network
+     * paths) that do not hold the GIL, attached slaves can be invoked without it.
+     * See `Slave::acceptFrame()` for the GIL contract that downstream consumers
+     * touching Python-wrapped objects must follow.
+     *
      * Exposed as `_sendFrame()` in Python.
      *
      * @param frame Frame to send.

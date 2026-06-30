@@ -112,6 +112,19 @@ This is usually the right choice when the receiver is performance-sensitive,
 when it must do substantial processing in C++, or when it needs tight control
 over how bytes are copied or interpreted.
 
+.. warning::
+
+   Rogue does not hold the Python GIL when it invokes a C++ ``acceptFrame``
+   override. Frames are frequently sent from pure-C++ worker threads (DMA,
+   receiver, file, and network paths) that never acquire the GIL, so a C++
+   ``Slave`` must not assume the GIL is held. A pure-C++ override like the one
+   below needs no action. An override that constructs, manipulates, or destroys
+   Python-wrapped objects (Boost.Python, pybind11, or NumPy) — either inside
+   ``acceptFrame`` or on its own worker threads that outlive the call — must
+   hold the GIL while doing so, for example with ``rogue::ScopedGil``. Touching
+   Python objects without the GIL races CPython's allocator and can segfault.
+   See :doc:`/api/cpp/interfaces/stream/slave` for the full contract.
+
 .. code-block:: cpp
 
    #include <algorithm>
