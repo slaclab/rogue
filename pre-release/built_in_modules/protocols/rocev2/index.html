@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RoCEv2 Protocol &mdash; Rogue v6.14.1-12-gac4b32b24 documentation</title>
+  <title>RoCEv2 Protocol &mdash; Rogue v6.14.1-23-gdb8ac3dfe documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=a6f5b2eb"></script>
+      <script src="../../../_static/documentation_options.js?v=6b55c201"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -132,12 +132,14 @@
 over Converged Ethernet v2 (RoCEv2). <code class="docutils literal notranslate"><span class="pre">Core</span></code> opens an ibverbs device and
 allocates a shared Protection Domain (PD); <code class="docutils literal notranslate"><span class="pre">Server</span></code> creates the Completion
 Queue, Queue Pair (type <code class="docutils literal notranslate"><span class="pre">IBV_QPT_RC</span></code>), and Memory Region, then polls for
-incoming RDMA WRITEs and forwards them as Rogue stream frames.</p>
+incoming RDMA SENDs and forwards them as Rogue stream frames.</p>
 <p>The user-facing entry point is <code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.RoCEv2Server</span></code> — a
-<code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code> wrapper that owns the C++ server and the surf-side
-<code class="docutils literal notranslate"><span class="pre">RoceEngine</span></code> register block. It manages the QP handshake with the FPGA,
-exposes 15 <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> status/configuration fields, and integrates
-cleanly into the standard PyRogue device tree via <code class="docutils literal notranslate"><span class="pre">Root.addInterface()</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code> wrapper that owns the C++ server. It exposes 15
+<code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> status/configuration fields and integrates cleanly into
+the standard PyRogue device tree via <code class="docutils literal notranslate"><span class="pre">Root.addInterface()</span></code>. The FPGA-side
+QP handshake is driven by the surf <code class="docutils literal notranslate"><span class="pre">RoCEv2Engine</span></code> device (a separate node
+in the tree, not a child of the server); the application <code class="docutils literal notranslate"><span class="pre">Root</span></code> sequences
+the host↔FPGA bring-up and teardown.</p>
 <section id="where-rocev2-fits-in-the-stack">
 <h2>Where RoCEv2 Fits In The Stack<a class="headerlink" href="#where-rocev2-fits-in-the-stack" title="Link to this heading"></a></h2>
 <p>Typical protocol stack:</p>
@@ -146,12 +148,16 @@ cleanly into the standard PyRogue device tree via <code class="docutils literal 
                                         Rogue stream graph (channels via getChannel())
 </pre></div>
 </div>
-<p>The FPGA side runs a <code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce._RoceEngine.RoceEngine</span></code> block that
-drives a metadata bus. <code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> reads QP parameters from that metadata
-bus during <code class="docutils literal notranslate"><span class="pre">_start()</span></code> to complete the RC connection setup. Once the QP
-reaches <code class="docutils literal notranslate"><span class="pre">IBV_QPS_RTS</span></code>, the FPGA issues RDMA WRITEs directly into the host
-Memory Region and the C++ completion-queue polling thread reassembles frames
-for the Rogue stream graph.</p>
+<p>The FPGA side runs a <code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce.RoCEv2Engine</span></code> block that drives a
+metadata bus. The application <code class="docutils literal notranslate"><span class="pre">Root</span></code> reads the host QP parameters from
+<code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> (<code class="docutils literal notranslate"><span class="pre">getHostParams</span></code>), runs <code class="docutils literal notranslate"><span class="pre">engine.setupConnection()</span></code> over
+that metadata bus, and finishes the host side with
+<code class="docutils literal notranslate"><span class="pre">server.completeConnection()</span></code>. Once the QP reaches <code class="docutils literal notranslate"><span class="pre">IBV_QPS_RTS</span></code>, the FPGA
+issues RDMA-SEND-with-immediate frames that land in the host’s pre-posted
+receive slots and the C++ completion-queue polling thread reassembles frames
+for the Rogue stream graph. Because RDMA-SEND is two-sided, the host receive
+queue itself is the flow-control mechanism: when it drains, the NIC RNR-NAKs
+the FPGA, which self-throttles to the poll thread’s re-post rate.</p>
 </section>
 <section id="key-classes">
 <h2>Key Classes<a class="headerlink" href="#key-classes" title="Link to this heading"></a></h2>
@@ -163,9 +169,11 @@ and <code class="docutils literal notranslate"><span class="pre">Slave</span></c
 <code class="docutils literal notranslate"><span class="pre">IBV_QPT_RC</span></code>), and Memory Region (MR), runs the RX completion-queue
 polling thread, and re-posts receive work requests as frames are returned
 by downstream consumers (zero-copy slab).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.RoCEv2Server</span></code>: the PyRogue <code class="docutils literal notranslate"><span class="pre">Device</span></code> wrapper. Adds the
-<code class="docutils literal notranslate"><span class="pre">RoceEngine</span></code> child device (from <code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce._RoceEngine</span></code>) and 15
-<code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> fields for status and configuration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.RoCEv2Server</span></code>: the PyRogue <code class="docutils literal notranslate"><span class="pre">Device</span></code> wrapper around
+the C++ server. Exposes 15 <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> fields for status and
+configuration. The FPGA-side <code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce.RoCEv2Engine</span></code> is a
+separate tree node (not a child of the server); the <code class="docutils literal notranslate"><span class="pre">Root</span></code> drives the
+handshake between the two.</p></li>
 </ul>
 </section>
 <section id="when-to-use">
@@ -180,18 +188,21 @@ are developing against SoftRoCE (<code class="docutils literal notranslate"><spa
 </section>
 <section id="operational-requirements">
 <h2>Operational Requirements<a class="headerlink" href="#operational-requirements" title="Link to this heading"></a></h2>
-<section id="jumbo-frame-mtu-9000-bytes">
-<h3>Jumbo-frame MTU (9000 bytes)<a class="headerlink" href="#jumbo-frame-mtu-9000-bytes" title="Link to this heading"></a></h3>
-<p>The RoCEv2 server defaults to a 9000-byte maximum payload per RDMA WRITE
-(<code class="docutils literal notranslate"><span class="pre">DefaultMaxPayload</span></code> in <code class="docutils literal notranslate"><span class="pre">include/rogue/protocols/rocev2/Core.h</span></code>). The
-host NIC and every switch in the path MUST be configured for a 9000-byte
-(or larger) MTU — typically:</p>
+<section id="jumbo-frame-mtu">
+<h3>Jumbo-frame MTU<a class="headerlink" href="#jumbo-frame-mtu" title="Link to this heading"></a></h3>
+<p>The PyRogue wrapper’s <code class="docutils literal notranslate"><span class="pre">RoCEv2ServerCfg.maxPayload</span></code> defaults to 4096 bytes
+(one <code class="docutils literal notranslate"><span class="pre">MTU_4096</span></code> PMTU) per RDMA SEND. Pass <code class="docutils literal notranslate"><span class="pre">maxPayload=None</span></code> to fall back to
+the C++ <code class="docutils literal notranslate"><span class="pre">DefaultMaxPayload</span></code> of 9000 bytes (<code class="docutils literal notranslate"><span class="pre">DefaultMaxPayload</span></code> in
+<code class="docutils literal notranslate"><span class="pre">include/rogue/protocols/rocev2/Core.h</span></code>). Either way the host NIC and every
+switch in the path MUST be configured for an MTU large enough to carry the
+chosen payload plus the RoCEv2/UDP/IP headers — at least 4096 bytes at the
+default, or a 9000-byte jumbo MTU when opting into the C++ default — typically:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Host NIC (replace with your interface)</span>
 sudo<span class="w"> </span>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>dev<span class="w"> </span>enp1s0f0<span class="w"> </span>mtu<span class="w"> </span><span class="m">9000</span>
 </pre></div>
 </div>
 <p>If any hop along the path uses a 1500-byte MTU, the FPGA will see RDMA
-WRITEs silently dropped or NACK’d. There is no graceful auto-fallback.</p>
+SENDs silently dropped or NACK’d. There is no graceful auto-fallback.</p>
 </section>
 <section id="softroce-rxe-development-workflow">
 <h3>SoftRoCE (rxe) development workflow<a class="headerlink" href="#softroce-rxe-development-workflow" title="Link to this heading"></a></h3>
@@ -208,45 +219,92 @@ ibv_devices<span class="w">    </span><span class="c1"># confirm rxe0 appears</s
 functional bring-up and CI but does not deliver the throughput of a
 hardware RoCEv2 NIC.</p>
 </section>
-<section id="surf-roceengine-dependency">
-<h3>surf RoceEngine dependency<a class="headerlink" href="#surf-roceengine-dependency" title="Link to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> constructs a child device of type
-<code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce._RoceEngine.RoceEngine</span></code> to drive the FPGA-side
-metadata-bus handshake. The <code class="docutils literal notranslate"><span class="pre">surf</span></code> Python package MUST be on the
-Python path. Pass <code class="docutils literal notranslate"><span class="pre">roceEngine=&lt;existing</span> <span class="pre">instance&gt;</span></code> if your tree
-already instantiates the engine elsewhere; otherwise pass
-<code class="docutils literal notranslate"><span class="pre">roceEngineOffset</span></code> and <code class="docutils literal notranslate"><span class="pre">roceMemBase</span></code> so <code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> can build
-its own.</p>
+<section id="surf-rocev2engine-dependency">
+<h3>surf RoCEv2Engine dependency<a class="headerlink" href="#surf-rocev2engine-dependency" title="Link to this heading"></a></h3>
+<p>The FPGA-side metadata-bus handshake is performed by
+<code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce.RoCEv2Engine</span></code>, instantiated as part of the FPGA
+register tree (e.g. under <code class="docutils literal notranslate"><span class="pre">Core</span></code> in the application device map), NOT by
+<code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code>. The application <code class="docutils literal notranslate"><span class="pre">Root</span></code> wires the two together:
+<code class="docutils literal notranslate"><span class="pre">engine.setupConnection(**server.getHostParams()._asdict(),</span> <span class="pre">...)</span></code> followed
+by <code class="docutils literal notranslate"><span class="pre">server.completeConnection(...)</span></code>. (<code class="docutils literal notranslate"><span class="pre">getHostParams()</span></code> returns a
+<code class="docutils literal notranslate"><span class="pre">RoCEv2HostParams</span></code> NamedTuple, so <code class="docutils literal notranslate"><span class="pre">._asdict()</span></code> is required to expand it
+into keyword arguments.) The <code class="docutils literal notranslate"><span class="pre">surf</span></code> Python package MUST be on
+the Python path for the engine device.</p>
 </section>
 </section>
 <section id="python-example">
 <h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<p>The application <code class="docutils literal notranslate"><span class="pre">Root</span></code> owns both the host <code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> and the FPGA
+<code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce.RoCEv2Engine</span></code> register block, and sequences the
+host↔FPGA QP bring-up inside its own <code class="docutils literal notranslate"><span class="pre">start()</span></code>. The two configuration
+dataclasses are passed in at construction: <code class="docutils literal notranslate"><span class="pre">RoCEv2ServerCfg</span></code> carries the
+host-NIC knobs, and a single <code class="docutils literal notranslate"><span class="pre">RoCEv2TransportCfg</span></code> is forwarded into BOTH
+<code class="docutils literal notranslate"><span class="pre">engine.setupConnection()</span></code> and <code class="docutils literal notranslate"><span class="pre">server.completeConnection()</span></code> so the FPGA
+and host sides cannot drift on <code class="docutils literal notranslate"><span class="pre">pmtu</span></code> / <code class="docutils literal notranslate"><span class="pre">minRnrTimer</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">RoCEv2Server</span><span class="p">,</span> <span class="n">RoCEv2ServerCfg</span><span class="p">,</span> <span class="n">RoCEv2TransportCfg</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rocev2Cfg</span><span class="p">,</span> <span class="n">transportCfg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># SRP memBase for the RoceEngine register block</span>
-        <span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transportCfg</span> <span class="o">=</span> <span class="n">transportCfg</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">RoCEv2Server</span><span class="p">(</span>
-            <span class="n">name</span>             <span class="o">=</span> <span class="s1">&#39;RoCEv2&#39;</span><span class="p">,</span>
-            <span class="n">ip</span>               <span class="o">=</span> <span class="s1">&#39;10.0.0.1&#39;</span><span class="p">,</span>     <span class="c1"># FPGA IP</span>
-            <span class="n">deviceName</span>       <span class="o">=</span> <span class="s1">&#39;rxe0&#39;</span><span class="p">,</span>          <span class="c1"># SoftRoCE or &#39;mlx5_0&#39;</span>
-            <span class="n">ibPort</span>           <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">gidIndex</span>         <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">maxPayload</span>       <span class="o">=</span> <span class="mi">9000</span><span class="p">,</span>            <span class="c1"># jumbo-frame MTU</span>
-            <span class="n">rxQueueDepth</span>     <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-            <span class="n">roceEngineOffset</span> <span class="o">=</span> <span class="mh">0x00000000</span><span class="p">,</span>
-            <span class="n">roceMemBase</span>      <span class="o">=</span> <span class="n">srp</span><span class="p">,</span>
-        <span class="p">))</span>
+        <span class="c1"># FPGA register tree (carries surf.ethernet.roce.RoCEv2Engine).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyFpgaCore</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=...</span><span class="p">))</span>
+
+        <span class="c1"># The host-side RX server. The FPGA-side RoCEv2Engine is a</span>
+        <span class="c1"># separate node (self.Core.RoCEv2Engine), not a child of the server.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">RoCEv2Server</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;RoCEv2&#39;</span><span class="p">,</span> <span class="n">rocev2Cfg</span><span class="o">=</span><span class="n">rocev2Cfg</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RoCEv2</span><span class="p">)</span>
 
-        <span class="c1"># Channel-filtered view (channel id = immediate value bits [7:0])</span>
-        <span class="n">data_ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RoCEv2</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Drive the host&lt;-&gt;FPGA QP handshake once transport is up.</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RoCEv2</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Core</span><span class="o">.</span><span class="n">RoCEv2Engine</span>          <span class="c1"># surf.ethernet.roce.RoCEv2Engine</span>
+        <span class="n">xport</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transportCfg</span>
+
+        <span class="c1"># Host params (hostQpn/hostRqPsn/hostSqPsn/mrAddr/mrLen) feed the FPGA;</span>
+        <span class="c1"># the engine returns a RoCEv2FpgaParams (fpgaQpn/lkey/...) to finish</span>
+        <span class="c1"># the host side.</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">getHostParams</span><span class="p">()</span>
+        <span class="n">fpga</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">setupConnection</span><span class="p">(</span>
+            <span class="o">**</span><span class="n">params</span><span class="o">.</span><span class="n">_asdict</span><span class="p">(),</span>
+            <span class="n">pmtu</span>        <span class="o">=</span> <span class="n">xport</span><span class="o">.</span><span class="n">pmtu</span><span class="p">,</span>
+            <span class="n">minRnrTimer</span> <span class="o">=</span> <span class="n">xport</span><span class="o">.</span><span class="n">minRnrTimer</span><span class="p">,</span>
+            <span class="n">rnrRetry</span>    <span class="o">=</span> <span class="n">xport</span><span class="o">.</span><span class="n">rnrRetry</span><span class="p">,</span>
+            <span class="n">retryCount</span>  <span class="o">=</span> <span class="n">xport</span><span class="o">.</span><span class="n">retryCount</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">completeConnection</span><span class="p">(</span>
+            <span class="n">fpga</span><span class="o">.</span><span class="n">fpgaQpn</span><span class="p">,</span>
+            <span class="n">fpgaLkey</span>    <span class="o">=</span> <span class="n">fpga</span><span class="o">.</span><span class="n">lkey</span><span class="p">,</span>
+            <span class="n">pmtu</span>        <span class="o">=</span> <span class="n">xport</span><span class="o">.</span><span class="n">pmtu</span><span class="p">,</span>
+            <span class="n">minRnrTimer</span> <span class="o">=</span> <span class="n">xport</span><span class="o">.</span><span class="n">minRnrTimer</span><span class="p">,</span>
+            <span class="n">rnrRetry</span>    <span class="o">=</span> <span class="n">xport</span><span class="o">.</span><span class="n">rnrRetry</span><span class="p">,</span>
+            <span class="n">retryCount</span>  <span class="o">=</span> <span class="n">xport</span><span class="o">.</span><span class="n">retryCount</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">printConnInfo</span><span class="p">()</span>
+
+<span class="c1"># Construct with the two cfg bundles (mirrors rocev2PrbsTest.py):</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">MyRoot</span><span class="p">(</span>
+    <span class="n">rocev2Cfg</span> <span class="o">=</span> <span class="n">RoCEv2ServerCfg</span><span class="p">(</span>
+        <span class="n">ip</span>         <span class="o">=</span> <span class="s1">&#39;192.168.2.10&#39;</span><span class="p">,</span>   <span class="c1"># FPGA IP</span>
+        <span class="n">deviceName</span> <span class="o">=</span> <span class="s1">&#39;mlx5_0&#39;</span><span class="p">,</span>          <span class="c1"># HW NIC (&#39;rxe0&#39; for SoftRoCE)</span>
+        <span class="n">gidIndex</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>                <span class="c1"># auto-detect the RoCE v2 IPv4 GID</span>
+    <span class="p">),</span>
+    <span class="n">transportCfg</span> <span class="o">=</span> <span class="n">RoCEv2TransportCfg</span><span class="p">(</span>  <span class="c1"># proven acceptance-gate defaults</span>
+        <span class="n">minRnrTimer</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">with</span> <span class="n">root</span><span class="p">:</span>
+    <span class="c1"># Root.start() already ran the bring-up; the QP is connected here.</span>
+    <span class="c1"># Channel-filtered view (channel id = immediate value bits [7:0]).</span>
+    <span class="n">data_ch</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">RoCEv2</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -292,8 +350,8 @@ handshake failures, and RC connection state transitions.</p>
 <h3>Stale FPGA resources after a crash<a class="headerlink" href="#stale-fpga-resources-after-a-crash" title="Link to this heading"></a></h3>
 <p>If a previous session crashed or was killed without a clean <code class="docutils literal notranslate"><span class="pre">Root.stop()</span></code>,
 the FPGA RoCEv2 engine may still hold a PD, MR, or QP from that session.
-The next <code class="docutils literal notranslate"><span class="pre">_start()</span></code> call will fail with a <code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code> whose
-message includes:</p>
+The next <code class="docutils literal notranslate"><span class="pre">engine.setupConnection()</span></code> call (driven by the <code class="docutils literal notranslate"><span class="pre">Root</span></code> during
+<code class="docutils literal notranslate"><span class="pre">start()</span></code>) will fail with a <code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code> whose message includes:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>FPGA PD allocation failed — the FPGA RoCEv2 engine likely has stale
 resources from a previous session that crashed without a clean teardown.
 Reprogram the FPGA bitfile to reset its state.
@@ -305,28 +363,28 @@ advance, so a reprogram is the only reliable recovery path.</p>
 </section>
 <section id="mr-length-exceeds-32-bit-metadata-bus-field">
 <h3>MR length exceeds 32-bit metadata-bus field<a class="headerlink" href="#mr-length-exceeds-32-bit-metadata-bus-field" title="Link to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">RoCEv2Server._start()</span></code> computes the FPGA-side Memory Region length as
-<code class="docutils literal notranslate"><span class="pre">maxPayload</span> <span class="pre">*</span> <span class="pre">rxQueueDepth</span></code>. If this product is &gt;= 2<sup>32</sup> (4 GiB),
-the value cannot be represented in the 32-bit <code class="docutils literal notranslate"><span class="pre">length</span></code> field of the
-metadata bus and <code class="docutils literal notranslate"><span class="pre">_start()</span></code> raises a <code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code>:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>FPGA MR length ... bytes (... GiB) exceeds the 32-bit field of the
-metadata bus. Reduce --roceMaxPay (...) or --roceQDepth (...).
-</pre></div>
-</div>
-<p>The default configuration (<code class="docutils literal notranslate"><span class="pre">maxPayload=9000</span></code>, <code class="docutils literal notranslate"><span class="pre">rxQueueDepth=256</span></code>,
-product ~2.3 MB) is four orders of magnitude below this limit. The guard
-protects against accidentally passing very large queue depths.</p>
+<p>The FPGA-side Memory Region length is <code class="docutils literal notranslate"><span class="pre">maxPayload</span> <span class="pre">*</span> <span class="pre">rxQueueDepth</span></code>. If this
+product is too large for the 32-bit <code class="docutils literal notranslate"><span class="pre">length</span></code> field of the metadata bus, the
+host-side <code class="docutils literal notranslate"><span class="pre">RoCEv2Server.getHostParams()</span></code> raises a <code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code>
+before the FPGA engine is ever called; the surf
+<code class="docutils literal notranslate"><span class="pre">RoCEv2Engine.setupConnection()</span></code> argument validation enforces the same
+invariant as a second line of defense. Either way the error is raised before
+any bus traffic, so the FPGA is never left with a partially-allocated
+resource. The default configuration
+(<code class="docutils literal notranslate"><span class="pre">maxPayload=4096</span></code>, <code class="docutils literal notranslate"><span class="pre">rxQueueDepth=256</span></code>, product ~1.0 MB) is far below this
+limit; the guard protects against accidentally passing very large queue depths.</p>
 </section>
 <section id="qp-state-machine-enforcement">
 <h3>QP state-machine enforcement<a class="headerlink" href="#qp-state-machine-enforcement" title="Link to this heading"></a></h3>
-<p>The Python metadata-bus encoders (<code class="docutils literal notranslate"><span class="pre">_encode_modify_qp</span></code>,
-<code class="docutils literal notranslate"><span class="pre">_encode_err_qp</span></code>, <code class="docutils literal notranslate"><span class="pre">_encode_destroy_qp</span></code>) are stateless — they will
-encode and send any QP transition without checking whether it is valid.
-The <strong>FPGA state machine is the single source of truth</strong>: illegal
-transitions return <code class="docutils literal notranslate"><span class="pre">success=False</span></code>, which is raised as a
-<code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code> on the setup path and logged as a warning on the
-teardown path. No Python-side state mirror is maintained because it would
-become stale after a crash and block legitimate teardown attempts.</p>
+<p>The metadata-bus codec now lives in surf
+(<code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce._RoCEv2Protocol</span></code>). Its encoders are stateless — they
+encode and send any QP transition without checking whether it is valid. The
+<strong>FPGA state machine is the single source of truth</strong>: illegal transitions
+return <code class="docutils literal notranslate"><span class="pre">success=False</span></code>, which <code class="docutils literal notranslate"><span class="pre">RoCEv2Engine.setupConnection()</span></code> raises as a
+<code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code> on the setup path and logs as a warning on the
+<code class="docutils literal notranslate"><span class="pre">teardownConnection()</span></code> path. No Python-side state mirror is maintained
+because it would become stale after a crash and block legitimate teardown
+attempts.</p>
 </section>
 </section>
 <section id="related-topics">

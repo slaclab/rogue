@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols._RoCEv2 &mdash; Rogue v6.14.1-12-gac4b32b24 documentation</title>
+  <title>pyrogue.protocols._RoCEv2 &mdash; Rogue v6.14.1-23-gdb8ac3dfe documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=a6f5b2eb"></script>
+      <script src="../../../_static/documentation_options.js?v=6b55c201"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -121,15 +121,18 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_random</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RoCEv2Server&#39;</span><span class="p">,</span> <span class="s1">&#39;RoCEv2ServerCfg&#39;</span><span class="p">,</span> <span class="s1">&#39;RoCEv2TransportCfg&#39;</span><span class="p">,</span> <span class="s1">&#39;RoCEv2Mtu&#39;</span><span class="p">,</span> <span class="s1">&#39;RoCEv2RnrTimer&#39;</span><span class="p">]</span>
+
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rocev2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_cpp_rocev2</span>  <span class="c1"># noqa: F401</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rocev2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_cpp_rocev2</span>
     <span class="n">_ROCEV2_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">_ROCEV2_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
@@ -150,656 +153,230 @@
     <span class="k">return</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s1">04x</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">)</span>
 
 
-<span class="c1"># ---------------------------------------------------------------------------</span>
-<span class="c1"># Constants — must match BSVSettings.py / BusStructs.py in the firmware repo</span>
-<span class="c1"># ---------------------------------------------------------------------------</span>
-
-<span class="n">_META_DATA_TX_BITS</span>   <span class="o">=</span> <span class="mi">303</span>
-<span class="n">_META_DATA_RX_BITS</span>   <span class="o">=</span> <span class="mi">276</span>   <span class="c1"># informational only; actual bus may be shorter</span>
-
-<span class="c1"># Bus type tags</span>
-<span class="n">_METADATA_PD_T</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">_METADATA_MR_T</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">_METADATA_QP_T</span> <span class="o">=</span> <span class="mi">2</span>
-
-<span class="c1"># QP request types</span>
-<span class="n">_REQ_QP_CREATE</span>  <span class="o">=</span> <span class="mi">0</span>
-<span class="n">_REQ_QP_DESTROY</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">_REQ_QP_MODIFY</span>  <span class="o">=</span> <span class="mi">2</span>
-<span class="n">_REQ_QP_QUERY</span>   <span class="o">=</span> <span class="mi">3</span>   <span class="c1"># kept for completeness, not currently used</span>
-
-<span class="c1"># QP types / states</span>
-<span class="n">_IBV_QPT_RC</span>    <span class="o">=</span> <span class="mi">2</span>
-<span class="n">_IBV_QPS_RESET</span>  <span class="o">=</span> <span class="mi">0</span>
-<span class="n">_IBV_QPS_INIT</span>   <span class="o">=</span> <span class="mi">1</span>
-<span class="n">_IBV_QPS_RTR</span>    <span class="o">=</span> <span class="mi">2</span>
-<span class="n">_IBV_QPS_RTS</span>    <span class="o">=</span> <span class="mi">3</span>
-<span class="n">_IBV_QPS_SQD</span>    <span class="o">=</span> <span class="mi">4</span>
-<span class="n">_IBV_QPS_ERR</span>    <span class="o">=</span> <span class="mi">6</span>
-<span class="n">_IBV_QPS_CREATE</span> <span class="o">=</span> <span class="mi">8</span>
-
-<span class="c1"># QP attribute mask bits</span>
-<span class="n">_IBV_QP_STATE</span>             <span class="o">=</span> <span class="mi">1</span>
-<span class="n">_IBV_QP_ACCESS_FLAGS</span>      <span class="o">=</span> <span class="mi">8</span>
-<span class="n">_IBV_QP_PKEY_INDEX</span>        <span class="o">=</span> <span class="mi">16</span>
-<span class="n">_IBV_QP_PATH_MTU</span>          <span class="o">=</span> <span class="mi">256</span>
-<span class="n">_IBV_QP_TIMEOUT</span>           <span class="o">=</span> <span class="mi">512</span>
-<span class="n">_IBV_QP_RETRY_CNT</span>         <span class="o">=</span> <span class="mi">1024</span>
-<span class="n">_IBV_QP_RNR_RETRY</span>         <span class="o">=</span> <span class="mi">2048</span>
-<span class="n">_IBV_QP_RQ_PSN</span>            <span class="o">=</span> <span class="mi">4096</span>
-<span class="n">_IBV_QP_MAX_QP_RD_ATOMIC</span>  <span class="o">=</span> <span class="mi">8192</span>
-<span class="n">_IBV_QP_MIN_RNR_TIMER</span>     <span class="o">=</span> <span class="mi">32768</span>
-<span class="n">_IBV_QP_SQ_PSN</span>            <span class="o">=</span> <span class="mi">65536</span>
-<span class="n">_IBV_QP_MAX_DEST_RD_ATOMIC</span> <span class="o">=</span> <span class="mi">131072</span>
-<span class="n">_IBV_QP_DEST_QPN</span>          <span class="o">=</span> <span class="mi">1048576</span>
-
-<span class="c1"># Field widths — derived from BSVSettings.py with MAX_PD=1, MAX_MR=2</span>
-<span class="n">_PD_ALLOC_OR_NOT_B</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">_PD_INDEX_B</span>        <span class="o">=</span> <span class="mi">0</span>    <span class="c1"># int(log2(MAX_PD=1)) = 0</span>
-<span class="n">_PD_HANDLER_B</span>      <span class="o">=</span> <span class="mi">32</span>
-<span class="n">_PD_KEY_B</span>          <span class="o">=</span> <span class="mi">32</span>   <span class="c1"># PD_HANDLER_B - PD_INDEX_B = 32</span>
-
-<span class="n">_MR_ALLOC_OR_NOT_B</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">_MR_INDEX_B</span>        <span class="o">=</span> <span class="mi">1</span>    <span class="c1"># int(log2(MAX_MR/MAX_PD = 2)) = 1</span>
-<span class="n">_MR_LADDR_B</span>        <span class="o">=</span> <span class="mi">64</span>
-<span class="n">_MR_LEN_B</span>          <span class="o">=</span> <span class="mi">32</span>
-<span class="n">_MR_ACCFLAGS_B</span>     <span class="o">=</span> <span class="mi">8</span>
-<span class="n">_MR_PDHANDLER_B</span>    <span class="o">=</span> <span class="mi">32</span>
-<span class="n">_MR_KEY_B</span>          <span class="o">=</span> <span class="mi">32</span>
-<span class="n">_MR_LKEYPART_B</span>     <span class="o">=</span> <span class="mi">31</span>   <span class="c1"># MR_KEY_B - MR_INDEX_B = 31</span>
-<span class="n">_MR_RKEYPART_B</span>     <span class="o">=</span> <span class="mi">31</span>   <span class="c1"># MR_KEY_B - MR_INDEX_B = 31</span>
-<span class="n">_MR_LKEYORNOT_B</span>    <span class="o">=</span> <span class="mi">1</span>
-
-<span class="n">_QPI_TYPE_B</span>        <span class="o">=</span> <span class="mi">4</span>
-<span class="n">_QPI_SQSIGALL_B</span>    <span class="o">=</span> <span class="mi">1</span>
-
-<span class="n">_QPA_QPSTATE_B</span>     <span class="o">=</span> <span class="mi">4</span>
-<span class="n">_QPA_CURRQPSTATE_B</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">_QPA_PMTU_B</span>        <span class="o">=</span> <span class="mi">3</span>
-<span class="n">_QPA_QKEY_B</span>        <span class="o">=</span> <span class="mi">32</span>
-<span class="n">_QPA_RQPSN_B</span>       <span class="o">=</span> <span class="mi">24</span>
-<span class="n">_QPA_SQPSN_B</span>       <span class="o">=</span> <span class="mi">24</span>
-<span class="n">_QPA_DQPN_B</span>        <span class="o">=</span> <span class="mi">24</span>
-<span class="n">_QPA_QPACCFLAGS_B</span>  <span class="o">=</span> <span class="mi">8</span>
-<span class="n">_QPA_CAP_B</span>         <span class="o">=</span> <span class="mi">40</span>
-<span class="n">_QPA_PKEY_B</span>        <span class="o">=</span> <span class="mi">16</span>
-<span class="n">_QPA_SQDRAINING_B</span>  <span class="o">=</span> <span class="mi">1</span>
-<span class="n">_QPA_MAXREADATOMIC_B</span>  <span class="o">=</span> <span class="mi">8</span>
-<span class="n">_QPA_MAXDESTRD_B</span>      <span class="o">=</span> <span class="mi">8</span>
-<span class="n">_QPA_RNRTIMER_B</span>    <span class="o">=</span> <span class="mi">5</span>
-<span class="n">_QPA_TIMEOUT_B</span>     <span class="o">=</span> <span class="mi">5</span>
-<span class="n">_QPA_RETRYCNT_B</span>    <span class="o">=</span> <span class="mi">3</span>
-<span class="n">_QPA_RNRRETRY_B</span>    <span class="o">=</span> <span class="mi">3</span>
-
-<span class="n">_QP_REQTYPE_B</span>      <span class="o">=</span> <span class="mi">2</span>
-<span class="n">_QP_PDHANDLER_B</span>    <span class="o">=</span> <span class="mi">32</span>
-<span class="n">_QP_QPN_B</span>          <span class="o">=</span> <span class="mi">24</span>
-<span class="n">_QP_ATTRMASK_B</span>     <span class="o">=</span> <span class="mi">26</span>
-
-<span class="c1"># Default QP tuning values</span>
-<span class="n">_ACC_PERM</span>          <span class="o">=</span> <span class="mh">0x0F</span>   <span class="c1"># local_write | remote_write | remote_read | remote_atomic</span>
-<span class="n">_DEFAULT_RETRY_NUM</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">_DEFAULT_RNR_TIMER</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">_DEFAULT_TIMEOUT</span>   <span class="o">=</span> <span class="mi">14</span>
-<span class="n">_MAX_QP_RD_ATOM</span>    <span class="o">=</span> <span class="mi">16</span>
-<span class="n">_CAP_VALUE</span>         <span class="o">=</span> <span class="mh">0x2020010100</span>   <span class="c1"># from Utils4Test.bsv</span>
-
-
-<span class="c1"># ---------------------------------------------------------------------------</span>
-<span class="c1"># TX bus encoders — pure-int arithmetic, no external dependencies</span>
-<span class="c1">#</span>
-<span class="c1"># Pattern (mirrors BusStructs.py getBus() semantics):</span>
-<span class="c1">#   Fields are concatenated LSB-aligned at bit 0 of the returned integer:</span>
-<span class="c1">#   the last field&#39;s LSB lands at bit 0, the first field&#39;s MSB lands at</span>
-<span class="c1">#   bit (used_bits-1).  Within this used region the first-listed field</span>
-<span class="c1">#   is at the top and the last-listed field is at the bottom — i.e.</span>
-<span class="c1">#   relative order is MSB-first within the used window, but the window</span>
-<span class="c1">#   itself is NOT left-aligned in the 301-bit payload region; bits</span>
-<span class="c1">#   [300:used_bits] are zero-padded.  The 2-bit bus type is written at</span>
-<span class="c1">#   the TOP 2 bits (bits 302:301) of the 303-bit bus.  This matches the</span>
-<span class="c1">#   FPGA BusStructs.py layout and the RX decoder offsets below (e.g.</span>
-<span class="c1">#   _decode_resp_type extracts (rx &gt;&gt; 274) &amp; 0x3 from a 276-bit RX bus,</span>
-<span class="c1">#   _decode_pd_resp reads successOrNot at bit 64, pd_handler at 63:32,</span>
-<span class="c1">#   pd_key at 31:0 — same LSB-aligned-in-used-region convention).</span>
-<span class="c1"># ---------------------------------------------------------------------------</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_mk_bus</span><span class="p">(</span><span class="n">bus_type</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a 303-bit TX metadata bus integer from (value, width) fields.</span>
-
-<span class="sd">    Fields are concatenated LSB-aligned at bit 0 of the returned integer:</span>
-<span class="sd">    the last field&#39;s LSB is at bit 0 and the first field&#39;s MSB is at bit</span>
-<span class="sd">    ``used_bits-1``.  Within the used window the first-listed field sits</span>
-<span class="sd">    at the top and the last-listed at the bottom (MSB-first ordering),</span>
-<span class="sd">    but the window itself is right-aligned at bit 0 — bits</span>
-<span class="sd">    ``[300:used_bits]`` are zero-padded, not occupied by a shifted</span>
-<span class="sd">    payload.  The 2-bit bus type is written at the TOP 2 bits</span>
-<span class="sd">    (bits 302:301) of the 303-bit bus, matching the FPGA BusStructs.py</span>
-<span class="sd">    layout and the RX-side ``_decode_*`` helpers, which all read fields</span>
-<span class="sd">    at fixed offsets counted from bit 0 (e.g. ``_decode_resp_type``</span>
-<span class="sd">    extracts ``(rx &gt;&gt; 274) &amp; 0x3`` from a 276-bit RX bus).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">acc</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">used_bits</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">width</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">width</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="n">acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">acc</span> <span class="o">&lt;&lt;</span> <span class="n">width</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span>
-        <span class="n">used_bits</span> <span class="o">+=</span> <span class="n">width</span>
-
-    <span class="k">if</span> <span class="n">_META_DATA_TX_BITS</span> <span class="o">-</span> <span class="n">used_bits</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-            <span class="s2">&quot;_mk_bus&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;Bus type cannot fit: fields consume </span><span class="si">{</span><span class="n">used_bits</span><span class="si">}</span><span class="s2"> of &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_META_DATA_TX_BITS</span><span class="si">}</span><span class="s2"> bits, need 2 reserved for bus type&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Low `used_bits` bits hold the meta payload; bus type at [302:301].</span>
-    <span class="n">full</span> <span class="o">=</span> <span class="n">acc</span> <span class="o">|</span> <span class="p">((</span><span class="n">bus_type</span> <span class="o">&amp;</span> <span class="mh">0x3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">_META_DATA_TX_BITS</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">full</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_alloc_pd</span><span class="p">(</span><span class="n">pd_key</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;reqPd.getBus(): allocOrNot(1) + pdKey(32) + pdHandler(32)&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_mk_bus</span><span class="p">(</span><span class="n">_METADATA_PD_T</span><span class="p">,</span>
-        <span class="p">(</span><span class="mi">1</span><span class="p">,</span>      <span class="n">_PD_ALLOC_OR_NOT_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">pd_key</span><span class="p">,</span> <span class="n">_PD_KEY_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>      <span class="n">_PD_HANDLER_B</span><span class="p">),</span>       <span class="c1"># pdHandler don&#39;t-care in request</span>
-    <span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_alloc_mr</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">,</span> <span class="n">laddr</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">lkey_part</span><span class="p">,</span> <span class="n">rkey_part</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;reqMr.getBus(): allocOrNot + mrLAddr + mrLen + mrAccFlags + mrPdHandler</span>
-<span class="sd">                       + mrLKeyPart + mrRKeyPart + lKeyOrNot + lKey + rKey&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_mk_bus</span><span class="p">(</span><span class="n">_METADATA_MR_T</span><span class="p">,</span>
-        <span class="p">(</span><span class="mi">1</span><span class="p">,</span>           <span class="n">_MR_ALLOC_OR_NOT_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">laddr</span><span class="p">,</span>       <span class="n">_MR_LADDR_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">length</span><span class="p">,</span>      <span class="n">_MR_LEN_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">_ACC_PERM</span><span class="p">,</span>   <span class="n">_MR_ACCFLAGS_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">pd_handler</span><span class="p">,</span>  <span class="n">_MR_PDHANDLER_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">lkey_part</span><span class="p">,</span>   <span class="n">_MR_LKEYPART_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">rkey_part</span><span class="p">,</span>   <span class="n">_MR_RKEYPART_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>           <span class="n">_MR_LKEYORNOT_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>           <span class="n">_MR_KEY_B</span><span class="p">),</span>       <span class="c1"># lKey don&#39;t-care</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>           <span class="n">_MR_KEY_B</span><span class="p">),</span>       <span class="c1"># rKey don&#39;t-care</span>
-    <span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_create_qp</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;reqQp.getBus() for CREATE: all QPA fields + qpiType + qpiSqSigAll&quot;&quot;&quot;</span>
-    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="n">_REQ_QP_CREATE</span><span class="p">,</span> <span class="n">_QP_REQTYPE_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">pd_handler</span><span class="p">,</span>     <span class="n">_QP_PDHANDLER_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>              <span class="n">_QP_QPN_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>              <span class="n">_QP_ATTRMASK_B</span><span class="p">),</span>
-    <span class="p">]</span>
-    <span class="c1"># All QPA fields don&#39;t-care for CREATE</span>
-    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_QPA_QPSTATE_B</span><span class="p">,</span> <span class="n">_QPA_CURRQPSTATE_B</span><span class="p">,</span> <span class="n">_QPA_PMTU_B</span><span class="p">,</span>
-              <span class="n">_QPA_QKEY_B</span><span class="p">,</span> <span class="n">_QPA_RQPSN_B</span><span class="p">,</span> <span class="n">_QPA_SQPSN_B</span><span class="p">,</span> <span class="n">_QPA_DQPN_B</span><span class="p">,</span>
-              <span class="n">_QPA_QPACCFLAGS_B</span><span class="p">,</span> <span class="n">_QPA_CAP_B</span><span class="p">,</span> <span class="n">_QPA_PKEY_B</span><span class="p">,</span>
-              <span class="n">_QPA_SQDRAINING_B</span><span class="p">,</span> <span class="n">_QPA_MAXREADATOMIC_B</span><span class="p">,</span> <span class="n">_QPA_MAXDESTRD_B</span><span class="p">,</span>
-              <span class="n">_QPA_RNRTIMER_B</span><span class="p">,</span> <span class="n">_QPA_TIMEOUT_B</span><span class="p">,</span> <span class="n">_QPA_RETRYCNT_B</span><span class="p">,</span> <span class="n">_QPA_RNRRETRY_B</span><span class="p">]:</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
-    <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">_IBV_QPT_RC</span><span class="p">,</span> <span class="n">_QPI_TYPE_B</span><span class="p">))</span>
-    <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span>           <span class="n">_QPI_SQSIGALL_B</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">_mk_bus</span><span class="p">(</span><span class="n">_METADATA_QP_T</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_modify_qp</span><span class="p">(</span><span class="n">qpn</span><span class="p">,</span> <span class="n">attr_mask</span><span class="p">,</span> <span class="n">qp_state</span><span class="p">,</span> <span class="n">pmtu</span><span class="p">,</span>
-                      <span class="n">dqpn</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rq_psn</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sq_psn</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                      <span class="n">min_rnr_timer</span><span class="o">=</span><span class="n">_DEFAULT_RNR_TIMER</span><span class="p">,</span>
-                      <span class="n">rnr_retry</span><span class="o">=</span><span class="n">_DEFAULT_RETRY_NUM</span><span class="p">,</span>
-                      <span class="n">retry_count</span><span class="o">=</span><span class="n">_DEFAULT_RETRY_NUM</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;reqQp.getBus() for MODIFY — same field order as CREATE.&quot;&quot;&quot;</span>
-    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="n">_REQ_QP_MODIFY</span><span class="p">,</span> <span class="n">_QP_REQTYPE_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>              <span class="n">_QP_PDHANDLER_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">qpn</span><span class="p">,</span>            <span class="n">_QP_QPN_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">attr_mask</span><span class="p">,</span>      <span class="n">_QP_ATTRMASK_B</span><span class="p">),</span>
-    <span class="p">]</span>
-    <span class="c1"># QPA fields in reqQp.getBus() order</span>
-    <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">width</span> <span class="ow">in</span> <span class="p">[</span>
-        <span class="p">(</span><span class="n">qp_state</span><span class="p">,</span>           <span class="n">_QPA_QPSTATE_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>                  <span class="n">_QPA_CURRQPSTATE_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">pmtu</span><span class="p">,</span>               <span class="n">_QPA_PMTU_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>                  <span class="n">_QPA_QKEY_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">rq_psn</span><span class="p">,</span>             <span class="n">_QPA_RQPSN_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">sq_psn</span><span class="p">,</span>             <span class="n">_QPA_SQPSN_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">dqpn</span><span class="p">,</span>               <span class="n">_QPA_DQPN_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mh">0x0E</span><span class="p">,</span>               <span class="n">_QPA_QPACCFLAGS_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">_CAP_VALUE</span><span class="p">,</span>         <span class="n">_QPA_CAP_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mh">0xFFFF</span><span class="p">,</span>             <span class="n">_QPA_PKEY_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>                  <span class="n">_QPA_SQDRAINING_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">_MAX_QP_RD_ATOM</span><span class="p">,</span>    <span class="n">_QPA_MAXREADATOMIC_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">_MAX_QP_RD_ATOM</span><span class="p">,</span>    <span class="n">_QPA_MAXDESTRD_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">min_rnr_timer</span><span class="p">,</span>      <span class="n">_QPA_RNRTIMER_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">_DEFAULT_TIMEOUT</span><span class="p">,</span>   <span class="n">_QPA_TIMEOUT_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">retry_count</span><span class="p">,</span>        <span class="n">_QPA_RETRYCNT_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">rnr_retry</span><span class="p">,</span>          <span class="n">_QPA_RNRRETRY_B</span><span class="p">),</span>
-    <span class="p">]:</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">width</span><span class="p">))</span>
-    <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">_IBV_QPT_RC</span><span class="p">,</span> <span class="n">_QPI_TYPE_B</span><span class="p">))</span>
-    <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span>           <span class="n">_QPI_SQSIGALL_B</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">_mk_bus</span><span class="p">(</span><span class="n">_METADATA_QP_T</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">)</span>
-
-
-<span class="c1"># ---------------------------------------------------------------------------</span>
-<span class="c1"># RX bus decoders — mirror BusStructs.py slice_vec / get_bool exactly</span>
-<span class="c1">#</span>
-<span class="c1"># Convention: bit 0 = LSB of the response integer.</span>
-<span class="c1"># Fields extracted as: (rx &gt;&gt; lsb) &amp; ((1 &lt;&lt; width) - 1)</span>
-<span class="c1">#</span>
-<span class="c1"># respPd layout (from BusStructs.py):</span>
-<span class="c1">#   bits [PD_KEY_B-1 : 0]                = pdKey      [31:0]</span>
-<span class="c1">#   bits [PD_KEY_B+PD_HANDLER_B-1 : 32]  = pdHandler  [63:32]</span>
-<span class="c1">#   bit  [PD_KEY_B+PD_HANDLER_B]         = successOrNot  bit 64</span>
-<span class="c1">#   bits [275:274]                        = busType</span>
-<span class="c1">#</span>
-<span class="c1"># respMr layout:</span>
-<span class="c1">#   bits [31:0]   = rKey</span>
-<span class="c1">#   bits [63:32]  = lKey</span>
-<span class="c1">#   ...more fields...</span>
-<span class="c1">#   bit  [success_bit]  = successOrNot</span>
-<span class="c1">#   bits [275:274]      = busType</span>
-<span class="c1">#</span>
-<span class="c1"># respQp layout:</span>
-<span class="c1">#   bit  273      = successOrNot</span>
-<span class="c1">#   bits [272:249] = qpn</span>
-<span class="c1">#   bits [216:213] = qpaQpState</span>
-<span class="c1">#   bits [275:274] = busType</span>
-<span class="c1"># ---------------------------------------------------------------------------</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_decode_resp_type</span><span class="p">(</span><span class="n">rx</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract busType from bits [275:274] (LSB convention).&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">rx</span> <span class="o">&gt;&gt;</span> <span class="mi">274</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x3</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_decode_pd_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decode PD allocation response.</span>
-<span class="sd">    Returns (success: bool, pd_handler: int).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">success</span>    <span class="o">=</span> <span class="nb">bool</span><span class="p">((</span><span class="n">rx</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">_PD_KEY_B</span> <span class="o">+</span> <span class="n">_PD_HANDLER_B</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">pd_handler</span> <span class="o">=</span> <span class="p">(</span><span class="n">rx</span> <span class="o">&gt;&gt;</span> <span class="n">_PD_KEY_B</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">_PD_HANDLER_B</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">success</span><span class="p">,</span> <span class="n">pd_handler</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_decode_mr_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decode MR allocation response.</span>
-<span class="sd">    Returns (success: bool, lkey: int, rkey: int).</span>
-<span class="sd">    From respMr.__init__: rKey at [31:0], lKey at [63:32].</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">success_bit</span> <span class="o">=</span> <span class="p">(</span><span class="n">_MR_KEY_B</span> <span class="o">+</span> <span class="n">_MR_KEY_B</span> <span class="o">+</span> <span class="n">_MR_RKEYPART_B</span> <span class="o">+</span> <span class="n">_MR_LKEYPART_B</span> <span class="o">+</span>
-                   <span class="n">_MR_PDHANDLER_B</span> <span class="o">+</span> <span class="n">_MR_ACCFLAGS_B</span> <span class="o">+</span> <span class="n">_MR_LEN_B</span> <span class="o">+</span> <span class="n">_MR_LADDR_B</span><span class="p">)</span>
-    <span class="n">success</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">((</span><span class="n">rx</span> <span class="o">&gt;&gt;</span> <span class="n">success_bit</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">rkey</span>    <span class="o">=</span> <span class="n">rx</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">_MR_KEY_B</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">lkey</span>    <span class="o">=</span> <span class="p">(</span><span class="n">rx</span> <span class="o">&gt;&gt;</span> <span class="n">_MR_KEY_B</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">_MR_KEY_B</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">success</span><span class="p">,</span> <span class="n">lkey</span><span class="p">,</span> <span class="n">rkey</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_decode_qp_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decode QP create/modify response.</span>
-<span class="sd">    Returns (success: bool, qpn: int, qp_state: int).</span>
-<span class="sd">    From respQp.__init__: successOrNot at bit 273, qpn at [272:249],</span>
-<span class="sd">    qpaQpState at [216:213].</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">success</span>  <span class="o">=</span> <span class="nb">bool</span><span class="p">((</span><span class="n">rx</span> <span class="o">&gt;&gt;</span> <span class="mi">273</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">qpn</span>      <span class="o">=</span> <span class="p">(</span><span class="n">rx</span> <span class="o">&gt;&gt;</span> <span class="mi">249</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">qp_state</span> <span class="o">=</span> <span class="p">(</span><span class="n">rx</span> <span class="o">&gt;&gt;</span> <span class="mi">213</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xF</span>
-    <span class="k">return</span> <span class="n">success</span><span class="p">,</span> <span class="n">qpn</span><span class="p">,</span> <span class="n">qp_state</span>
-
-
-<span class="c1"># ---------------------------------------------------------------------------</span>
-<span class="c1"># Metadata bus transport helpers</span>
-<span class="c1"># ---------------------------------------------------------------------------</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">bus_value</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Send a metadata bus message via any RoceEngine-compatible object.</span>
-
-<span class="sd">    The firmware triggers on the RISING EDGE of metaDataIsSet (0→1).</span>
-<span class="sd">    Writing 0 first ensures a clean rising edge every time.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">engine</span><span class="o">.</span><span class="n">SendMetaData</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">engine</span><span class="o">.</span><span class="n">MetaDataTx</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">bus_value</span><span class="p">)</span>
-    <span class="n">engine</span><span class="o">.</span><span class="n">SendMetaData</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">engine</span><span class="o">.</span><span class="n">SendMetaData</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">5.0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wait for firmware to process the request and return MetaDataRx value.</span>
-
-<span class="sd">    The firmware clears metaDataIsReady on rising edge, sets it back when done.</span>
-<span class="sd">    Processing takes microseconds so the 0 state may be too brief to observe.</span>
-<span class="sd">    We briefly try to catch the 0, then wait for the 1.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">deadline</span>      <span class="o">=</span> <span class="n">_time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout_s</span>
-    <span class="n">zero_deadline</span> <span class="o">=</span> <span class="n">_time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.02</span>
-
-    <span class="c1"># Try briefly to observe RecvMetaData → 0 (firmware started). The 0 pulse</span>
-    <span class="c1"># can be shorter than Python&#39;s polling resolution, so do not wait long here</span>
-    <span class="c1"># when the response is already back to 1.</span>
-    <span class="k">while</span> <span class="n">engine</span><span class="o">.</span><span class="n">RecvMetaData</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">_time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">zero_deadline</span><span class="p">:</span>
-            <span class="k">break</span>
-        <span class="n">_time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>
-
-    <span class="c1"># Wait for RecvMetaData → 1 (response ready)</span>
-    <span class="k">while</span> <span class="n">engine</span><span class="o">.</span><span class="n">RecvMetaData</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">_time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">deadline</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s1">&#39;_wait_resp&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;Timeout waiting for RoceEngine response &#39;</span>
-                <span class="s1">&#39;(RecvMetaData never went to 1)&#39;</span><span class="p">)</span>
-        <span class="n">_time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">engine</span><span class="o">.</span><span class="n">MetaDataRx</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-
-
-<span class="c1"># ---------------------------------------------------------------------------</span>
-<span class="c1"># QP teardown / reconnect helpers</span>
-<span class="c1"># ---------------------------------------------------------------------------</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_dealloc_mr</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">,</span> <span class="n">lkey</span><span class="p">,</span> <span class="n">rkey</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dealloc MR: allocOrNot=0, same field layout as alloc.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_mk_bus</span><span class="p">(</span><span class="n">_METADATA_MR_T</span><span class="p">,</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_MR_ALLOC_OR_NOT_B</span><span class="p">),</span>  <span class="c1"># allocOrNot=0</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_MR_LADDR_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_MR_LEN_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_MR_ACCFLAGS_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">pd_handler</span><span class="p">,</span> <span class="n">_MR_PDHANDLER_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_MR_LKEYPART_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_MR_RKEYPART_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_MR_LKEYORNOT_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">lkey</span><span class="p">,</span>       <span class="n">_MR_KEY_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">rkey</span><span class="p">,</span>       <span class="n">_MR_KEY_B</span><span class="p">),</span>
-    <span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_dealloc_pd</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dealloc PD: allocOrNot=0.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_mk_bus</span><span class="p">(</span><span class="n">_METADATA_PD_T</span><span class="p">,</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_PD_ALLOC_OR_NOT_B</span><span class="p">),</span>  <span class="c1"># allocOrNot=0</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>          <span class="n">_PD_KEY_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">pd_handler</span><span class="p">,</span> <span class="n">_PD_HANDLER_B</span><span class="p">),</span>
-    <span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_err_qp</span><span class="p">(</span><span class="n">qpn</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;REQ_QP_MODIFY → IBV_QPS_ERR — only IBV_QP_STATE in attr mask.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_encode_modify_qp</span><span class="p">(</span><span class="n">qpn</span><span class="p">,</span> <span class="n">_IBV_QP_STATE</span><span class="p">,</span> <span class="n">_IBV_QPS_ERR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_encode_destroy_qp</span><span class="p">(</span><span class="n">qpn</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;REQ_QP_DESTROY — only valid from ERR state.&quot;&quot;&quot;</span>
-    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="n">_REQ_QP_DESTROY</span><span class="p">,</span> <span class="n">_QP_REQTYPE_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>               <span class="n">_QP_PDHANDLER_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">qpn</span><span class="p">,</span>             <span class="n">_QP_QPN_B</span><span class="p">),</span>
-        <span class="p">(</span><span class="mi">0</span><span class="p">,</span>               <span class="n">_QP_ATTRMASK_B</span><span class="p">),</span>
-    <span class="p">]</span>
-    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_QPA_QPSTATE_B</span><span class="p">,</span> <span class="n">_QPA_CURRQPSTATE_B</span><span class="p">,</span> <span class="n">_QPA_PMTU_B</span><span class="p">,</span>
-              <span class="n">_QPA_QKEY_B</span><span class="p">,</span> <span class="n">_QPA_RQPSN_B</span><span class="p">,</span> <span class="n">_QPA_SQPSN_B</span><span class="p">,</span> <span class="n">_QPA_DQPN_B</span><span class="p">,</span>
-              <span class="n">_QPA_QPACCFLAGS_B</span><span class="p">,</span> <span class="n">_QPA_CAP_B</span><span class="p">,</span> <span class="n">_QPA_PKEY_B</span><span class="p">,</span>
-              <span class="n">_QPA_SQDRAINING_B</span><span class="p">,</span> <span class="n">_QPA_MAXREADATOMIC_B</span><span class="p">,</span> <span class="n">_QPA_MAXDESTRD_B</span><span class="p">,</span>
-              <span class="n">_QPA_RNRTIMER_B</span><span class="p">,</span> <span class="n">_QPA_TIMEOUT_B</span><span class="p">,</span> <span class="n">_QPA_RETRYCNT_B</span><span class="p">,</span>
-              <span class="n">_QPA_RNRRETRY_B</span><span class="p">,</span> <span class="n">_QPI_TYPE_B</span><span class="p">,</span> <span class="n">_QPI_SQSIGALL_B</span><span class="p">]:</span>
-        <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">_mk_bus</span><span class="p">(</span><span class="n">_METADATA_QP_T</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_roce_teardown</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">fpga_qpn</span><span class="p">,</span> <span class="n">pd_handler</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lkey</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rkey</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Full FPGA resource teardown: QP ERR → DESTROY → MR dealloc → PD dealloc.</span>
-
-<span class="sd">    Sends all requests unconditionally — the firmware rejects them with</span>
-<span class="sd">    successOrNot=False if resources are already freed, which we ignore.</span>
-<span class="sd">    All errors are caught and logged as warnings.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">info</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-    <span class="n">engine</span><span class="o">.</span><span class="n">SendMetaData</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">_time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-
-    <span class="c1"># Step 1: QP → ERR</span>
-    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: teardown — sending ERR for QP 0x</span><span class="si">{</span><span class="n">fpga_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_err_qp</span><span class="p">(</span><span class="n">fpga_qpn</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_host_ip_from_gid</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the IPv4 from an IPv4-mapped GID string (inverse of</span>
+<span class="sd">    ``_ip_to_gid_bytes``). Returns &#39;&#39; if ``gid`` is not a valid 8-group</span>
+<span class="sd">    IPv4-mapped (``...:ffff:HHHH:LLLL``) GID.&quot;&quot;&quot;</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">gid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span> <span class="ow">or</span> <span class="n">groups</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;ffff&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
-        <span class="n">ok</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">_decode_qp_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: ERR response ok=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2"> state=</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;RoceEngine: ERR timed out — proceeding anyway&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Step 2: QP DESTROY</span>
-    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: teardown — sending DESTROY for QP 0x</span><span class="si">{</span><span class="n">fpga_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_destroy_qp</span><span class="p">(</span><span class="n">fpga_qpn</span><span class="p">))</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
-        <span class="n">ok</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_decode_qp_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: DESTROY response ok=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;RoceEngine: DESTROY timed out — proceeding anyway&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Step 3: MR dealloc (only if we have the keys)</span>
-    <span class="k">if</span> <span class="n">pd_handler</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: teardown — dealloc MR lkey=0x</span><span class="si">{</span><span class="n">lkey</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_dealloc_mr</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">,</span> <span class="n">lkey</span><span class="p">,</span> <span class="n">rkey</span><span class="p">))</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
-            <span class="n">ok</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_decode_mr_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-            <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: MR dealloc response ok=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;RoceEngine: MR dealloc timed out — proceeding anyway&quot;</span><span class="p">)</span>
-
-        <span class="c1"># Step 4: PD dealloc</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: teardown — dealloc PD handler=0x</span><span class="si">{</span><span class="n">pd_handler</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_dealloc_pd</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">))</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
-            <span class="n">ok</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_decode_pd_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-            <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: PD dealloc response ok=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;RoceEngine: PD dealloc timed out — proceeding anyway&quot;</span><span class="p">)</span>
-
-    <span class="n">_time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">groups</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
-<span class="c1"># Full FPGA connection sequence</span>
+<span class="c1"># Transport-knob vocabulary — host-side enums + code→value maps referenced by</span>
+<span class="c1"># completeConnection()&#39;s validation and summary log, and exported in __all__.</span>
+<span class="c1"># The FPGA-facing metadata-bus codec that used to live here has been relocated</span>
+<span class="c1"># to surf (surf/ethernet/roce/_RoCEv2Protocol.py + _RoCEv2Engine.py), which is</span>
+<span class="c1"># now the single source of truth for it.</span>
 <span class="c1"># ---------------------------------------------------------------------------</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_roce_setup_connection</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">host_qpn</span><span class="p">,</span> <span class="n">host_rq_psn</span><span class="p">,</span> <span class="n">host_sq_psn</span><span class="p">,</span>
-                           <span class="n">mr_laddr</span><span class="p">,</span> <span class="n">mr_len</span><span class="p">,</span> <span class="n">pmtu</span><span class="p">,</span> <span class="n">min_rnr_timer</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                           <span class="n">rnr_retry</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">retry_count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Drive any RoceEngine-compatible object (surf or our own) through:</span>
-<span class="sd">    PD alloc → MR alloc → QP create → INIT → RTR → RTS.</span>
+<div class="viewcode-block" id="RoCEv2Mtu">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Mtu">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2Mtu</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Path MTU codes (libibverbs ibv_mtu enum).&quot;&quot;&quot;</span>
+    <span class="n">MTU_256</span>  <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">MTU_512</span>  <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MTU_1024</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">MTU_2048</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">MTU_4096</span> <span class="o">=</span> <span class="mi">5</span></div>
 
-<span class="sd">    The FPGA is expected to be in a clean state (QP destroyed, PD freed)</span>
-<span class="sd">    before this is called. Teardown is handled in _stop() so the firmware</span>
-<span class="sd">    is always clean when rogue exits.</span>
 
-<span class="sd">    Any failure in stages 2-6 triggers a reverse-order rollback of every</span>
-<span class="sd">    resource that was successfully allocated before the failure, so the</span>
-<span class="sd">    FPGA is never left with a stranded PD / MR / QP when setup aborts</span>
-<span class="sd">    partway through.  The original exception re-raises after rollback.</span>
 
-<span class="sd">    Returns (fpga_qpn, lkey, pd_handler, rkey).</span>
+<span class="c1"># Path MTU code -&gt; payload size in bytes.</span>
+<span class="n">_PMTU_BYTES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">RoCEv2Mtu</span><span class="o">.</span><span class="n">MTU_256</span><span class="p">:</span>  <span class="mi">256</span><span class="p">,</span>
+    <span class="n">RoCEv2Mtu</span><span class="o">.</span><span class="n">MTU_512</span><span class="p">:</span>  <span class="mi">512</span><span class="p">,</span>
+    <span class="n">RoCEv2Mtu</span><span class="o">.</span><span class="n">MTU_1024</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="n">RoCEv2Mtu</span><span class="o">.</span><span class="n">MTU_2048</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span>
+    <span class="n">RoCEv2Mtu</span><span class="o">.</span><span class="n">MTU_4096</span><span class="p">:</span> <span class="mi">4096</span><span class="p">,</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="RoCEv2RnrTimer">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2RnrTimer</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;IB-spec Min RNR NAK Timer Field codes (IBA Vol1 Table 45).  Member</span>
+<span class="sd">    name encodes the RNR wait in milliseconds; code 0 is the special</span>
+<span class="sd">    655.36ms slot.&quot;&quot;&quot;</span>
+    <span class="n">MS_655_36</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MS_0_01</span>   <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">MS_0_02</span>   <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MS_0_03</span>   <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">MS_0_04</span>   <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">MS_0_06</span>   <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">MS_0_08</span>   <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">MS_0_12</span>   <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">MS_0_16</span>   <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">MS_0_24</span>   <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">MS_0_32</span>   <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">MS_0_48</span>   <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">MS_0_64</span>   <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">MS_0_96</span>   <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">MS_1_28</span>   <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">MS_1_92</span>   <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">MS_2_56</span>   <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">MS_3_84</span>   <span class="o">=</span> <span class="mi">17</span>
+    <span class="n">MS_5_12</span>   <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">MS_7_68</span>   <span class="o">=</span> <span class="mi">19</span>
+    <span class="n">MS_10_24</span>  <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">MS_15_36</span>  <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">MS_20_48</span>  <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">MS_30_72</span>  <span class="o">=</span> <span class="mi">23</span>
+    <span class="n">MS_40_96</span>  <span class="o">=</span> <span class="mi">24</span>
+    <span class="n">MS_61_44</span>  <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">MS_81_92</span>  <span class="o">=</span> <span class="mi">26</span>
+    <span class="n">MS_122_88</span> <span class="o">=</span> <span class="mi">27</span>
+    <span class="n">MS_163_84</span> <span class="o">=</span> <span class="mi">28</span>
+    <span class="n">MS_245_76</span> <span class="o">=</span> <span class="mi">29</span>
+    <span class="n">MS_327_68</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">MS_491_52</span> <span class="o">=</span> <span class="mi">31</span></div>
+
+
+
+<span class="c1"># RNR timer code -&gt; RNR wait in milliseconds.</span>
+<span class="n">_MIN_RNR_TIMER_MS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_655_36</span><span class="p">:</span> <span class="mf">655.36</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_01</span><span class="p">:</span>    <span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_02</span><span class="p">:</span>     <span class="mf">0.02</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_03</span><span class="p">:</span>    <span class="mf">0.03</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_04</span><span class="p">:</span>     <span class="mf">0.04</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_06</span><span class="p">:</span>    <span class="mf">0.06</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_08</span><span class="p">:</span>     <span class="mf">0.08</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_12</span><span class="p">:</span>    <span class="mf">0.12</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_16</span><span class="p">:</span>     <span class="mf">0.16</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_24</span><span class="p">:</span>    <span class="mf">0.24</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_32</span><span class="p">:</span>     <span class="mf">0.32</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_48</span><span class="p">:</span>    <span class="mf">0.48</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_64</span><span class="p">:</span>     <span class="mf">0.64</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_0_96</span><span class="p">:</span>    <span class="mf">0.96</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_1_28</span><span class="p">:</span>     <span class="mf">1.28</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_1_92</span><span class="p">:</span>    <span class="mf">1.92</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_2_56</span><span class="p">:</span>     <span class="mf">2.56</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_3_84</span><span class="p">:</span>    <span class="mf">3.84</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_5_12</span><span class="p">:</span>     <span class="mf">5.12</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_7_68</span><span class="p">:</span>    <span class="mf">7.68</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_10_24</span><span class="p">:</span>   <span class="mf">10.24</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_15_36</span><span class="p">:</span>  <span class="mf">15.36</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_20_48</span><span class="p">:</span>   <span class="mf">20.48</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_30_72</span><span class="p">:</span>  <span class="mf">30.72</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_40_96</span><span class="p">:</span>   <span class="mf">40.96</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_61_44</span><span class="p">:</span>  <span class="mf">61.44</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_81_92</span><span class="p">:</span>   <span class="mf">81.92</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_122_88</span><span class="p">:</span> <span class="mf">122.88</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_163_84</span><span class="p">:</span> <span class="mf">163.84</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_245_76</span><span class="p">:</span> <span class="mf">245.76</span><span class="p">,</span>
+    <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_327_68</span><span class="p">:</span> <span class="mf">327.68</span><span class="p">,</span> <span class="n">RoCEv2RnrTimer</span><span class="o">.</span><span class="n">MS_491_52</span><span class="p">:</span> <span class="mf">491.52</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Public result type — the host-side params the FPGA engine needs to call</span>
+<span class="c1"># setupConnection(). Returned by RoCEv2Server.getHostParams(), the</span>
+<span class="c1"># host-side mirror of surf&#39;s RoCEv2FpgaParams.</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2HostParams</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Host-side params produced by getHostParams() for the FPGA hand-off.&quot;&quot;&quot;</span>
+    <span class="n">hostQpn</span><span class="p">:</span>   <span class="nb">int</span>
+    <span class="n">hostRqPsn</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">hostSqPsn</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">mrAddr</span><span class="p">:</span>    <span class="nb">int</span>
+    <span class="n">mrLen</span><span class="p">:</span>     <span class="nb">int</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># RoCEv2ServerCfg — bring-up / transport configuration</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="RoCEv2ServerCfg">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2ServerCfg">[docs]</a>
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2ServerCfg</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bring-up / transport configuration for :class:`RoCEv2Server`.</span>
+
+<span class="sd">    Bundles the ibverbs + QP-tuning knobs so the ``RoCEv2Server(...)`` call</span>
+<span class="sd">    site stays compact.  Most defaults mirror the historical ``RoCEv2Server``</span>
+<span class="sd">    constructor; ``maxPayload`` now defaults to 4096 (one MTU_4096 PMTU)</span>
+<span class="sd">    rather than the C++ ``DefaultMaxPayload`` of 9000 — pass ``None`` to</span>
+<span class="sd">    restore the 9000-byte default.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ip : str</span>
+<span class="sd">        FPGA IP address. Used to derive the FPGA GID (IPv4-mapped IPv6).</span>
+<span class="sd">    deviceName : str</span>
+<span class="sd">        ibverbs device name (e.g. &#39;rxe0&#39; for softRoCE, &#39;mlx5_0&#39; for HW NIC).</span>
+<span class="sd">    ibPort : int</span>
+<span class="sd">        ibverbs port number (default: 1).</span>
+<span class="sd">    gidIndex : int</span>
+<span class="sd">        GID table index for the host NIC&#39;s RoCEv2 IPv4 address.  -1 (the</span>
+<span class="sd">        default) auto-detects the index matching ``ip`` by scanning sysfs</span>
+<span class="sd">        (``/sys/class/infiniband/&lt;dev&gt;/ports/&lt;port&gt;/gid_attrs/types`` +</span>
+<span class="sd">        ``gids``); see :meth:`RoCEv2Server.detectGidIndex`.</span>
+<span class="sd">    maxPayload : int | None</span>
+<span class="sd">        Maximum payload bytes per RDMA SEND (the size of each pre-posted</span>
+<span class="sd">        receive slot).  Defaults to 4096 (one MTU_4096 PMTU); pass None to</span>
+<span class="sd">        use the C++ DefaultMaxPayload (9000).</span>
+<span class="sd">    rxQueueDepth : int | None</span>
+<span class="sd">        Number of pre-posted receive slots.  None (the default) uses the C++</span>
+<span class="sd">        DefaultRxQueueDepth (256).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">info</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="n">ip</span><span class="p">:</span>           <span class="nb">str</span>
+    <span class="n">deviceName</span><span class="p">:</span>   <span class="nb">str</span>
+    <span class="n">ibPort</span><span class="p">:</span>       <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">gidIndex</span><span class="p">:</span>     <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">maxPayload</span><span class="p">:</span>   <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">4096</span>
+    <span class="n">rxQueueDepth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_rollback_step</span><span class="p">(</span><span class="n">encoder_args</span><span class="p">,</span> <span class="n">wait_timeout_s</span><span class="p">):</span>
-        <span class="c1"># Best-effort teardown step: send the encoded request, swallow any</span>
-        <span class="c1"># response failure (timeout / StopIteration in tests / decode error).</span>
-        <span class="c1"># We never want rollback failures to mask the original exception.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">encoder_args</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: rollback _send_meta failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">wait_timeout_s</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">pass</span>
 
-    <span class="c1"># Ensure SendMetaData starts at 0 for a clean first rising edge</span>
-    <span class="n">engine</span><span class="o">.</span><span class="n">SendMetaData</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">_time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># RoCEv2TransportCfg — transport / QP-tuning configuration</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
 
-    <span class="c1"># 1. Alloc PD — nothing to roll back if this stage itself fails.</span>
-    <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_alloc_pd</span><span class="p">(</span><span class="n">_random</span><span class="o">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="n">_PD_KEY_B</span><span class="p">)))</span>
-    <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
-    <span class="n">actual_type</span> <span class="o">=</span> <span class="n">_decode_resp_type</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">actual_type</span> <span class="o">!=</span> <span class="n">_METADATA_PD_T</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-            <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;Expected PD response (type=0), got type=</span><span class="si">{</span><span class="n">actual_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">ok</span><span class="p">,</span> <span class="n">pd_handler</span> <span class="o">=</span> <span class="n">_decode_pd_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-            <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;FPGA PD allocation failed — the FPGA RoCEv2 engine likely has &quot;</span>
-            <span class="s2">&quot;stale resources from a previous session that crashed without a &quot;</span>
-            <span class="s2">&quot;clean teardown. Reprogram the FPGA bitfile to reset its state.&quot;</span>
-        <span class="p">)</span>
-    <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: PD allocated handler=0x</span><span class="si">{</span><span class="n">pd_handler</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="RoCEv2TransportCfg">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2TransportCfg">[docs]</a>
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2TransportCfg</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transport / QP-tuning configuration for the RoCEv2 RC connection.</span>
 
-    <span class="c1"># Past stage 1, every subsequent failure must release the PD (and any</span>
-    <span class="c1"># MR / QP allocated since) before re-raising.  Track allocation state</span>
-    <span class="c1"># so rollback only deallocs what actually exists on the FPGA.</span>
-    <span class="n">lkey</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">rkey</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">fpga_qpn</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">mr_allocated</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">qp_created</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="sd">    Symmetric companion to :class:`RoCEv2ServerCfg` — that one carries the</span>
+<span class="sd">    host-NIC config, this one carries the four transport/QP-tuning knobs that</span>
+<span class="sd">    are NOT held by either the stateless surf engine or the host-side server.</span>
+<span class="sd">    A single instance is forwarded by the orchestrating ``Root`` into BOTH</span>
+<span class="sd">    ``engine.setupConnection(...)`` and ``server.completeConnection(...)`` so</span>
+<span class="sd">    the FPGA and host sides stay in sync on ``pmtu``/``minRnrTimer``.  Note</span>
+<span class="sd">    that ``rnrRetry``/``retryCount`` are applied FPGA-side only — the host</span>
+<span class="sd">    server accepts them for call-site symmetry but does not program them into</span>
+<span class="sd">    the host QP (see :meth:`RoCEv2Server.completeConnection`), so those two</span>
+<span class="sd">    knobs govern only the FPGA&#39;s retry behavior.</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># 2. Alloc MR</span>
-        <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_alloc_mr</span><span class="p">(</span>
-            <span class="n">pd_handler</span> <span class="o">=</span> <span class="n">pd_handler</span><span class="p">,</span>
-            <span class="n">laddr</span>      <span class="o">=</span> <span class="n">mr_laddr</span><span class="p">,</span>
-            <span class="n">length</span>     <span class="o">=</span> <span class="n">mr_len</span><span class="p">,</span>
-            <span class="n">lkey_part</span>  <span class="o">=</span> <span class="n">_random</span><span class="o">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="n">_MR_LKEYPART_B</span><span class="p">),</span>
-            <span class="n">rkey_part</span>  <span class="o">=</span> <span class="n">_random</span><span class="o">.</span><span class="n">getrandbits</span><span class="p">(</span><span class="n">_MR_RKEYPART_B</span><span class="p">),</span>
-        <span class="p">))</span>
-        <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
-        <span class="n">actual_type</span> <span class="o">=</span> <span class="n">_decode_resp_type</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">actual_type</span> <span class="o">!=</span> <span class="n">_METADATA_MR_T</span><span class="p">:</span>
+<span class="sd">    Defaults match the proven acceptance-gate config in ``rocev2PrbsTest.py``:</span>
+<span class="sd">    the same invariants that :meth:`RoCEv2Server.completeConnection`</span>
+<span class="sd">    enforces are mirrored here as ``__post_init__`` validation so a bad cfg</span>
+<span class="sd">    fails loudly at construction.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pmtu : int</span>
+<span class="sd">        Path MTU code (a :class:`RoCEv2Mtu` value).  Defaults to</span>
+<span class="sd">        ``RoCEv2Mtu.MTU_4096`` (5).</span>
+<span class="sd">    minRnrTimer : int</span>
+<span class="sd">        IB Min RNR NAK timer code 0..31 (a :class:`RoCEv2RnrTimer` value).</span>
+<span class="sd">        Defaults to 12 — the documented measured clean-validation value.</span>
+<span class="sd">    rnrRetry : int</span>
+<span class="sd">        RNR retry count.  Defaults to 7.</span>
+<span class="sd">    retryCount : int</span>
+<span class="sd">        Transport retry count.  Defaults to 3.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pmtu</span><span class="p">:</span>        <span class="nb">int</span> <span class="o">=</span> <span class="n">RoCEv2Mtu</span><span class="o">.</span><span class="n">MTU_4096</span>
+    <span class="n">minRnrTimer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">rnrRetry</span><span class="p">:</span>    <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">retryCount</span><span class="p">:</span>  <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pmtu</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_PMTU_BYTES</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;Expected MR response (type=1), got type=</span><span class="si">{</span><span class="n">actual_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">ok</span><span class="p">,</span> <span class="n">lkey</span><span class="p">,</span> <span class="n">rkey</span> <span class="o">=</span> <span class="n">_decode_mr_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;FPGA MR allocation failed — the FPGA RoCEv2 engine likely has &quot;</span>
-                <span class="s2">&quot;stale resources from a previous session that crashed without a &quot;</span>
-                <span class="s2">&quot;clean teardown. Reprogram the FPGA bitfile to reset its state.&quot;</span>
+                <span class="s2">&quot;RoCEv2TransportCfg.__post_init__&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;pmtu must be a valid RoCEv2Mtu code &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">_PMTU_BYTES</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">); &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pmtu</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="n">mr_allocated</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: MR allocated lkey=0x</span><span class="si">{</span><span class="n">lkey</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2"> rkey=0x</span><span class="si">{</span><span class="n">rkey</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># 3. Create QP (RC)</span>
-        <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_create_qp</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">))</span>
-        <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
-        <span class="n">actual_type</span> <span class="o">=</span> <span class="n">_decode_resp_type</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">actual_type</span> <span class="o">!=</span> <span class="n">_METADATA_QP_T</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">minRnrTimer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_MIN_RNR_TIMER_MS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;Expected QP response (type=2), got type=</span><span class="si">{</span><span class="n">actual_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">ok</span><span class="p">,</span> <span class="n">fpga_qpn</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_decode_qp_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;FPGA QP creation failed — the FPGA RoCEv2 engine likely has &quot;</span>
-                <span class="s2">&quot;stale resources from a previous session that crashed without a &quot;</span>
-                <span class="s2">&quot;clean teardown. Reprogram the FPGA bitfile to reset its state.&quot;</span>
-            <span class="p">)</span>
-        <span class="n">qp_created</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: QP created fpga_qpn=0x</span><span class="si">{</span><span class="n">fpga_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;RoCEv2TransportCfg.__post_init__&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;minRnrTimer must be an IB RNR timer code 0..31 &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(see _MIN_RNR_TIMER_MS); got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
-        <span class="c1"># 4. QP → INIT</span>
-        <span class="n">init_mask</span> <span class="o">=</span> <span class="n">_IBV_QP_STATE</span> <span class="o">|</span> <span class="n">_IBV_QP_PKEY_INDEX</span> <span class="o">|</span> <span class="n">_IBV_QP_ACCESS_FLAGS</span>
-        <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_modify_qp</span><span class="p">(</span><span class="n">fpga_qpn</span><span class="p">,</span> <span class="n">init_mask</span><span class="p">,</span> <span class="n">_IBV_QPS_INIT</span><span class="p">,</span> <span class="n">pmtu</span><span class="p">))</span>
-        <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
-        <span class="n">ok</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">_decode_qp_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ok</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="n">_IBV_QPS_INIT</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;FPGA QP→INIT failed (ok=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2"> state=</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-        <span class="n">info</span><span class="p">(</span><span class="s2">&quot;RoceEngine: QP → INIT&quot;</span><span class="p">)</span>
-
-        <span class="c1"># 5. QP → RTR</span>
-        <span class="n">rtr_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">_IBV_QP_STATE</span> <span class="o">|</span> <span class="n">_IBV_QP_PATH_MTU</span> <span class="o">|</span> <span class="n">_IBV_QP_DEST_QPN</span> <span class="o">|</span>
-                    <span class="n">_IBV_QP_RQ_PSN</span> <span class="o">|</span> <span class="n">_IBV_QP_MAX_DEST_RD_ATOMIC</span> <span class="o">|</span> <span class="n">_IBV_QP_MIN_RNR_TIMER</span><span class="p">)</span>
-        <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_modify_qp</span><span class="p">(</span>
-            <span class="n">fpga_qpn</span><span class="p">,</span> <span class="n">rtr_mask</span><span class="p">,</span> <span class="n">_IBV_QPS_RTR</span><span class="p">,</span> <span class="n">pmtu</span><span class="p">,</span>
-            <span class="n">dqpn</span><span class="o">=</span><span class="n">host_qpn</span><span class="p">,</span> <span class="n">rq_psn</span><span class="o">=</span><span class="n">host_rq_psn</span><span class="p">,</span>
-            <span class="n">min_rnr_timer</span><span class="o">=</span><span class="n">min_rnr_timer</span><span class="p">))</span>
-        <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
-        <span class="n">ok</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">_decode_qp_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ok</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="n">_IBV_QPS_RTR</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;FPGA QP→RTR failed (ok=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2"> state=</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-        <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoceEngine: QP → RTR targeting host qpn=0x</span><span class="si">{</span><span class="n">host_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># 6. QP → RTS</span>
-        <span class="n">rts_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">_IBV_QP_STATE</span> <span class="o">|</span> <span class="n">_IBV_QP_SQ_PSN</span> <span class="o">|</span> <span class="n">_IBV_QP_TIMEOUT</span> <span class="o">|</span>
-                    <span class="n">_IBV_QP_RETRY_CNT</span> <span class="o">|</span> <span class="n">_IBV_QP_RNR_RETRY</span> <span class="o">|</span> <span class="n">_IBV_QP_MAX_QP_RD_ATOMIC</span><span class="p">)</span>
-        <span class="n">_send_meta</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">_encode_modify_qp</span><span class="p">(</span>
-            <span class="n">fpga_qpn</span><span class="p">,</span> <span class="n">rts_mask</span><span class="p">,</span> <span class="n">_IBV_QPS_RTS</span><span class="p">,</span> <span class="n">pmtu</span><span class="p">,</span>
-            <span class="n">sq_psn</span><span class="o">=</span><span class="n">host_sq_psn</span><span class="p">,</span> <span class="n">min_rnr_timer</span><span class="o">=</span><span class="n">min_rnr_timer</span><span class="p">,</span>
-            <span class="n">rnr_retry</span><span class="o">=</span><span class="n">rnr_retry</span><span class="p">,</span> <span class="n">retry_count</span><span class="o">=</span><span class="n">retry_count</span><span class="p">))</span>
-        <span class="n">rx</span> <span class="o">=</span> <span class="n">_wait_resp</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
-        <span class="n">ok</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">_decode_qp_resp</span><span class="p">(</span><span class="n">rx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">ok</span> <span class="ow">and</span> <span class="n">state</span> <span class="o">==</span> <span class="n">_IBV_QPS_RTS</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;_roce_setup_connection&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;FPGA QP→RTS failed (ok=</span><span class="si">{</span><span class="n">ok</span><span class="si">}</span><span class="s2"> state=</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-        <span class="n">info</span><span class="p">(</span><span class="s2">&quot;RoceEngine: QP → RTS — FPGA ready to send RDMA WRITEs&quot;</span><span class="p">)</span>
-
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="c1"># Reverse-order rollback of everything that was allocated so far.</span>
-        <span class="c1"># Uses the same metadata-bus encoders as _roce_teardown but skips</span>
-        <span class="c1"># stages whose resources were never allocated, so the rollback&#39;s</span>
-        <span class="c1"># TX-write count matches the allocation count exactly.</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;RoceEngine: rolling back partial setup&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">qp_created</span><span class="p">:</span>
-            <span class="n">_rollback_step</span><span class="p">(</span><span class="n">_encode_err_qp</span><span class="p">(</span><span class="n">fpga_qpn</span><span class="p">),</span>       <span class="mf">3.0</span><span class="p">)</span>
-            <span class="n">_rollback_step</span><span class="p">(</span><span class="n">_encode_destroy_qp</span><span class="p">(</span><span class="n">fpga_qpn</span><span class="p">),</span>   <span class="mf">5.0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mr_allocated</span><span class="p">:</span>
-            <span class="n">_rollback_step</span><span class="p">(</span><span class="n">_encode_dealloc_mr</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">,</span> <span class="n">lkey</span><span class="p">,</span> <span class="n">rkey</span><span class="p">),</span> <span class="mf">3.0</span><span class="p">)</span>
-        <span class="n">_rollback_step</span><span class="p">(</span><span class="n">_encode_dealloc_pd</span><span class="p">(</span><span class="n">pd_handler</span><span class="p">),</span> <span class="mf">3.0</span><span class="p">)</span>
-        <span class="k">raise</span>
-
-    <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RoCEv2 FPGA connection summary&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA QPN    : 0x</span><span class="si">{</span><span class="n">fpga_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA lkey   : 0x</span><span class="si">{</span><span class="n">lkey</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  FPGA state  : RTS (ready to send RDMA WRITEs)&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host QPN    : 0x</span><span class="si">{</span><span class="n">host_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host RQ PSN : 0x</span><span class="si">{</span><span class="n">host_rq_psn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host SQ PSN : 0x</span><span class="si">{</span><span class="n">host_sq_psn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR addr     : 0x</span><span class="si">{</span><span class="n">mr_laddr</span><span class="si">:</span><span class="s2">016x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR length   : </span><span class="si">{</span><span class="n">mr_len</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Path MTU    : </span><span class="si">{</span><span class="n">pmtu</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="p">[</span><span class="mi">256</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1024</span><span class="p">,</span><span class="mi">2048</span><span class="p">,</span><span class="mi">4096</span><span class="p">][</span><span class="n">pmtu</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">fpga_qpn</span><span class="p">,</span> <span class="n">lkey</span><span class="p">,</span> <span class="n">pd_handler</span><span class="p">,</span> <span class="n">rkey</span>
 
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
@@ -817,55 +394,15 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    ip : str</span>
-<span class="sd">        FPGA IP address. Used to derive the FPGA GID (IPv4-mapped IPv6).</span>
-<span class="sd">    deviceName : str</span>
-<span class="sd">        ibverbs device name (e.g. &#39;rxe0&#39; for softRoCE, &#39;mlx5_0&#39; for HW NIC).</span>
-<span class="sd">    ibPort : int</span>
-<span class="sd">        ibverbs port number (default: 1).</span>
-<span class="sd">    gidIndex : int</span>
-<span class="sd">        GID table index for the host NIC&#39;s RoCEv2 IPv4 address.</span>
-<span class="sd">    maxPayload : int</span>
-<span class="sd">        Maximum bytes per RDMA WRITE (default: 9000).</span>
-<span class="sd">    rxQueueDepth : int</span>
-<span class="sd">        Number of pre-posted receive slots (default: 256).</span>
-<span class="sd">    roceEngineOffset : int</span>
-<span class="sd">        AXI-lite offset of the RoCEv2 engine register block.</span>
-<span class="sd">    roceMemBase : object</span>
-<span class="sd">        memBase for the RoceEngine child device (the SRP object).</span>
-<span class="sd">    roceEngine : object</span>
-<span class="sd">        Pass an existing RoceEngine instance to avoid duplicate address mapping.</span>
-<span class="sd">        When set, no child RoceEngine device is created.</span>
-<span class="sd">    pmtu : int</span>
-<span class="sd">        Path MTU enum: 1=256 2=512 3=1024 4=2048 5=4096 (default: 5).</span>
-<span class="sd">    minRnrTimer : int</span>
-<span class="sd">        IB-spec RNR NAK timer code embedded in the QP attributes on RTR.</span>
-<span class="sd">        1=0.01ms, 14=1ms, 18=4ms, 22=16ms, 31=491ms (default: 31).</span>
-<span class="sd">    rnrRetry : int</span>
-<span class="sd">        FPGA QP RNR retry count. 7 means &quot;retry indefinitely&quot; (default: 7).</span>
-<span class="sd">    retryCount : int</span>
-<span class="sd">        FPGA QP retry count for non-RNR transport errors (default: 3).</span>
-<span class="sd">    pollInterval : int</span>
-<span class="sd">        Poll interval in seconds for status variables (default: 1).</span>
+<span class="sd">    rocev2Cfg : RoCEv2ServerCfg</span>
+<span class="sd">        Bring-up / host-NIC configuration (ip, deviceName, ibPort, gidIndex,</span>
+<span class="sd">        maxPayload, rxQueueDepth).  See :class:`RoCEv2ServerCfg`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">ip</span><span class="p">:</span>               <span class="nb">str</span><span class="p">,</span>
-        <span class="n">deviceName</span><span class="p">:</span>       <span class="nb">str</span><span class="p">,</span>
-        <span class="n">ibPort</span><span class="p">:</span>           <span class="nb">int</span>    <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">gidIndex</span><span class="p">:</span>         <span class="nb">int</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">maxPayload</span><span class="p">:</span>       <span class="nb">int</span>    <span class="o">=</span> <span class="mi">9000</span><span class="p">,</span>
-        <span class="n">rxQueueDepth</span><span class="p">:</span>     <span class="nb">int</span>    <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
-        <span class="n">roceEngineOffset</span><span class="p">:</span> <span class="nb">int</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">roceMemBase</span>               <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">roceEngine</span>                <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">pmtu</span><span class="p">:</span>             <span class="nb">int</span>    <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-        <span class="n">minRnrTimer</span><span class="p">:</span>      <span class="nb">int</span>    <span class="o">=</span> <span class="mi">31</span><span class="p">,</span>   <span class="c1"># IB spec: 31 = 491ms, 1 = 0.01ms</span>
-        <span class="n">rnrRetry</span><span class="p">:</span>         <span class="nb">int</span>    <span class="o">=</span> <span class="mi">7</span><span class="p">,</span>    <span class="c1"># FPGA RNR retry count (7 = infinite)</span>
-        <span class="n">retryCount</span><span class="p">:</span>       <span class="nb">int</span>    <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>    <span class="c1"># FPGA retry count for other errors</span>
-        <span class="n">pollInterval</span><span class="p">:</span>     <span class="nb">int</span>    <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">rocev2Cfg</span><span class="p">:</span>    <span class="n">RoCEv2ServerCfg</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_ROCEV2_AVAILABLE</span><span class="p">:</span>
@@ -877,42 +414,55 @@
                 <span class="s2">&quot;or `apt install libibverbs-dev`) and rebuild rogue on Linux &quot;</span>
                 <span class="s2">&quot;without -DNO_ROCEV2 and with those libraries available.&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">pmtu</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;RoCEv2Server.__init__&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;pmtu must be in the range 1..5 (1=256 2=512 3=1024 &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;4=2048 5=4096); got </span><span class="si">{</span><span class="n">pmtu</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Unpack the config bundle into the locals the body below expects.</span>
+        <span class="n">ip</span>           <span class="o">=</span> <span class="n">rocev2Cfg</span><span class="o">.</span><span class="n">ip</span>
+        <span class="n">deviceName</span>   <span class="o">=</span> <span class="n">rocev2Cfg</span><span class="o">.</span><span class="n">deviceName</span>
+        <span class="n">ibPort</span>       <span class="o">=</span> <span class="n">rocev2Cfg</span><span class="o">.</span><span class="n">ibPort</span>
+        <span class="n">gidIndex</span>     <span class="o">=</span> <span class="n">rocev2Cfg</span><span class="o">.</span><span class="n">gidIndex</span>
+        <span class="n">maxPayload</span>   <span class="o">=</span> <span class="n">rocev2Cfg</span><span class="o">.</span><span class="n">maxPayload</span>
+        <span class="n">rxQueueDepth</span> <span class="o">=</span> <span class="n">rocev2Cfg</span><span class="o">.</span><span class="n">rxQueueDepth</span>
+
+        <span class="c1"># Resolve the sentinel defaults shared by every application Root:</span>
+        <span class="c1">#   maxPayload/rxQueueDepth None  -&gt; C++ Default* constants</span>
+        <span class="c1">#   gidIndex -1                   -&gt; auto-detect the RoCE v2 IPv4 GID</span>
+        <span class="k">if</span> <span class="n">maxPayload</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">maxPayload</span> <span class="o">=</span> <span class="n">_cpp_rocev2</span><span class="o">.</span><span class="n">DefaultMaxPayload</span>
+        <span class="k">if</span> <span class="n">rxQueueDepth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rxQueueDepth</span> <span class="o">=</span> <span class="n">_cpp_rocev2</span><span class="o">.</span><span class="n">DefaultRxQueueDepth</span>
+        <span class="k">if</span> <span class="n">gidIndex</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">detected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detectGidIndex</span><span class="p">(</span><span class="n">deviceName</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">ibPort</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">detected</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
+                    <span class="s2">&quot;RoCEv2Server.__init__&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;could not auto-detect a RoCE v2 IPv4 GID on &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2"> matching </span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">&#39;s subnet — pass gidIndex &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;explicitly (see: ibv_devinfo -v -d </span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">gidIndex</span> <span class="o">=</span> <span class="n">detected</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;RoCEv2 &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: device=</span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2">  ibPort=</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s2">  &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;gidIndex=</span><span class="si">{</span><span class="n">gidIndex</span><span class="si">}</span><span class="s2">  &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;maxPayload=</span><span class="si">{</span><span class="n">maxPayload</span><span class="si">}</span><span class="s2">  rxQueueDepth=</span><span class="si">{</span><span class="n">rxQueueDepth</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_deviceName</span>    <span class="o">=</span> <span class="n">deviceName</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ibPort</span>        <span class="o">=</span> <span class="n">ibPort</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gidIndex</span>      <span class="o">=</span> <span class="n">gidIndex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span>    <span class="o">=</span> <span class="n">maxPayload</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span>  <span class="o">=</span> <span class="n">rxQueueDepth</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pmtu</span>          <span class="o">=</span> <span class="n">pmtu</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_minRnrTimer</span>   <span class="o">=</span> <span class="n">minRnrTimer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rnrRetry</span>      <span class="o">=</span> <span class="n">rnrRetry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_retryCount</span>    <span class="o">=</span> <span class="n">retryCount</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_extRoceEngine</span> <span class="o">=</span> <span class="n">roceEngine</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_qpn</span>        <span class="o">=</span> <span class="mi">0</span>   <span class="c1"># set after successful connection</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_pd_handler</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_lkey</span>       <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_rkey</span>       <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fpgaGidBytes</span>  <span class="o">=</span> <span class="n">_ip_to_gid_bytes</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
 
         <span class="c1"># C++ RC server — ibverbs resources up to QP INIT</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rocev2</span><span class="o">.</span><span class="n">Server</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">deviceName</span><span class="p">,</span> <span class="n">ibPort</span><span class="p">,</span> <span class="n">gidIndex</span><span class="p">,</span> <span class="n">maxPayload</span><span class="p">,</span> <span class="n">rxQueueDepth</span><span class="p">)</span>
 
-        <span class="c1"># Add RoceEngine child only if no external engine was provided</span>
-        <span class="k">if</span> <span class="n">roceEngine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">surf.ethernet.roce._RoceEngine</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoceEngine</span> <span class="k">as</span> <span class="n">_RE</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">_RE</span><span class="p">(</span>
-                <span class="n">name</span>    <span class="o">=</span> <span class="s1">&#39;RoceEngine&#39;</span><span class="p">,</span>
-                <span class="n">offset</span>  <span class="o">=</span> <span class="n">roceEngineOffset</span><span class="p">,</span>
-                <span class="n">memBase</span> <span class="o">=</span> <span class="n">roceMemBase</span><span class="p">,</span>
-            <span class="p">))</span>
+        <span class="c1"># Push the (static, ip-derived) FPGA GID once at construction so</span>
+        <span class="c1"># _start() stays a host-side no-op. setFpgaGid touches the</span>
+        <span class="c1"># host C++ server only — not an FPGA register access.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">setFpgaGid</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fpgaGidBytes</span><span class="p">))</span>
 
         <span class="c1"># Status variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
@@ -935,34 +485,35 @@
             <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host GID (NIC RoCEv2 address)&#39;</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;HostIp&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">_host_ip_from_gid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getGid</span><span class="p">()),</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host IPv4 derived from the IPv4-mapped HostGid&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MrAddr&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrAddr</span><span class="p">(),</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host MR virtual address (FPGA writes here)&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host MR virtual address (base of the pre-posted RDMA SEND receive buffers)&#39;</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MrRkey&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrRkey</span><span class="p">(),</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host MR rkey (given to FPGA)&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host MR rkey (local registration; not used by the RDMA SEND receive path)&#39;</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RxFrameCount&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getFrameCount</span><span class="p">(),</span>
-            <span class="n">pollInterval</span><span class="o">=</span><span class="n">pollInterval</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total frames received&#39;</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RxByteCount&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getByteCount</span><span class="p">(),</span>
-            <span class="n">pollInterval</span><span class="o">=</span><span class="n">pollInterval</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total bytes received&#39;</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ConnectionState&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;Disconnected&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RC connection state&#39;</span><span class="p">))</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
             <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;MaxPayload&#39;</span><span class="p">,</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Max payload bytes per RDMA WRITE slot&#39;</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Max payload bytes per RDMA SEND receive slot&#39;</span><span class="p">,</span>
             <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="n">maxPayload</span><span class="p">,</span>
             <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
@@ -1010,6 +561,46 @@
             <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
         <span class="p">))</span>
 
+<div class="viewcode-block" id="RoCEv2Server.detectGidIndex">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.detectGidIndex">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detectGidIndex</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ibPort</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve the host&#39;s RoCE v2 IPv4 GID-table index from sysfs.</span>
+
+<span class="sd">        The mlx5 GID-table index of the RoCE v2 IPv4 GID drifts across NIC /</span>
+<span class="sd">        FPGA reloads, so callers that pass ``gidIndex=-1`` resolve it fresh</span>
+<span class="sd">        each session.  Matches the entry whose type is &#39;RoCE v2&#39; AND whose</span>
+<span class="sd">        IPv4-mapped GID (``::ffff:a.b.c.d``) is on the same /24 as ``ip`` —</span>
+<span class="sd">        this skips the RoCE v1 slot that shares the same IP.</span>
+
+<span class="sd">        Returns the integer index, or None if no matching GID is found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+        <span class="n">subnet</span>  <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span>
+        <span class="n">typ_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/sys/class/infiniband/</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">/ports/</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s1">/gid_attrs/types&#39;</span>
+        <span class="n">gid_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/sys/class/infiniband/</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">/ports/</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s1">/gids&#39;</span>
+        <span class="k">for</span> <span class="n">tpath</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typ_dir</span><span class="si">}</span><span class="s1">/*&#39;</span><span class="p">),</span>
+                            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">p</span><span class="p">))):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">tpath</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;RoCE v2&#39;</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">gid_dir</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">groups</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># IPv4-mapped GID: 0000:0000:0000:0000:0000:ffff:HHHH:LLLL</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span> <span class="ow">or</span> <span class="n">groups</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;ffff&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="mi">16</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
+            <span class="n">ipv4</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">hi</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">8</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">hi</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">lo</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">8</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">lo</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">if</span> <span class="n">ipv4</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subnet</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">idx</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Direct access to the C++ stream master — receives every channel</span>
@@ -1023,10 +614,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">getChannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a channel-filtered view (channel id from immediate value bits [7:0]).</span>
 
-<span class="sd">        The RDMA WRITE-with-Immediate carries the channel id in the low 8</span>
+<span class="sd">        The RDMA SEND-with-Immediate carries the channel id in the low 8</span>
 <span class="sd">        bits of the immediate value (Server.cpp runThread decodes</span>
-<span class="sd">        `wc.imm_data &amp; 0xFF`), so valid channel ids are 0..255.  Out-of-</span>
-<span class="sd">        range values would previously blow up with `OverflowError` inside</span>
+<span class="sd">        `ntohl(wc.imm_data) &amp; 0xFF`), so valid channel ids are 0..255.  Out-</span>
+<span class="sd">        of-range values would previously blow up with `OverflowError` inside</span>
 <span class="sd">        the Filter ctor — validate up front and raise a clear</span>
 <span class="sd">        `rogue.GeneralError` instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1041,12 +632,36 @@
         <span class="k">return</span> <span class="n">filt</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ConnectionState</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Connecting&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="RoCEv2Server.printConnInfo">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.printConnInfo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">printConnInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the RC connection summary (QP/GID/MR + buffer sizing).&quot;&quot;&quot;</span>
+        <span class="n">max_payload</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxPayload</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">rx_queue_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RxQueueDepth</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;--- RoCEv2 connection info ---</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  Host QPN        : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">HostQpn</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  Host GID        : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">HostGid</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  MR addr         : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MrAddr</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  MR rkey         : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MrRkey</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  FPGA lkey       : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FpgaLkey</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  MaxPayload      : </span><span class="si">{</span><span class="n">max_payload</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  RxQueueDepth    : </span><span class="si">{</span><span class="n">rx_queue_depth</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  MrLen           : </span><span class="si">{</span><span class="n">max_payload</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rx_queue_depth</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;------------------------------&quot;</span>
+        <span class="p">)</span></div>
 
-        <span class="c1"># Push FPGA GID to C++ server</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">setFpgaGid</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fpgaGidBytes</span><span class="p">))</span>
 
+<div class="viewcode-block" id="RoCEv2Server.getHostParams">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.getHostParams">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getHostParams</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoCEv2HostParams</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the host RC QP params for the FPGA hand-off.</span>
+
+<span class="sd">        Returns the five flat values the FPGA engine&#39;s setupConnection()</span>
+<span class="sd">        consumes (hostQpn, hostRqPsn, hostSqPsn, mrAddr, mrLen) as a</span>
+<span class="sd">        RoCEv2HostParams, so the Root can call</span>
+<span class="sd">        ``engine.setupConnection(**server.getHostParams()._asdict(), pmtu=..., ...)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">host_qpn</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getQpn</span><span class="p">()</span>
         <span class="n">host_rq_psn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getRqPsn</span><span class="p">()</span>
         <span class="n">host_sq_psn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getSqPsn</span><span class="p">()</span>
@@ -1055,113 +670,93 @@
 
         <span class="k">if</span> <span class="n">mr_len</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
+                <span class="s2">&quot;RoCEv2Server.getHostParams&quot;</span><span class="p">,</span>
                 <span class="sa">f</span><span class="s2">&quot;FPGA MR length </span><span class="si">{</span><span class="n">mr_len</span><span class="si">}</span><span class="s2"> bytes (</span><span class="si">{</span><span class="n">mr_len</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GiB) exceeds &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;the 32-bit field of the metadata bus. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Reduce --roceMaxPay (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="si">}</span><span class="s2">) or --roceQDepth (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Reduce maxPayload (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="si">}</span><span class="s2">) or rxQueueDepth (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2">).&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;RoCEv2 &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: QPN=0x</span><span class="si">{</span><span class="n">host_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;GID=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getGid</span><span class="p">()</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;MR=0x</span><span class="si">{</span><span class="n">mr_addr</span><span class="si">:</span><span class="s2">016x</span><span class="si">}</span><span class="s2"> rkey=0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrRkey</span><span class="p">()</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;FPGA GID=</span><span class="si">{</span><span class="n">_gid_bytes_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fpgaGidBytes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">RoCEv2HostParams</span><span class="p">(</span>
+            <span class="n">hostQpn</span>   <span class="o">=</span> <span class="n">host_qpn</span><span class="p">,</span>
+            <span class="n">hostRqPsn</span> <span class="o">=</span> <span class="n">host_rq_psn</span><span class="p">,</span>
+            <span class="n">hostSqPsn</span> <span class="o">=</span> <span class="n">host_sq_psn</span><span class="p">,</span>
+            <span class="n">mrAddr</span>    <span class="o">=</span> <span class="n">mr_addr</span><span class="p">,</span>
+            <span class="n">mrLen</span>     <span class="o">=</span> <span class="n">mr_len</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
-        <span class="n">_engine</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_extRoceEngine</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extRoceEngine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                   <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">RoceEngine</span><span class="p">)</span>
 
-        <span class="n">fpga_qpn</span><span class="p">,</span> <span class="n">fpga_lkey</span><span class="p">,</span> <span class="n">fpga_pd_handler</span><span class="p">,</span> <span class="n">fpga_rkey</span> <span class="o">=</span> <span class="n">_roce_setup_connection</span><span class="p">(</span>
-            <span class="n">engine</span>        <span class="o">=</span> <span class="n">_engine</span><span class="p">,</span>
-            <span class="n">host_qpn</span>      <span class="o">=</span> <span class="n">host_qpn</span><span class="p">,</span>
-            <span class="n">host_rq_psn</span>   <span class="o">=</span> <span class="n">host_rq_psn</span><span class="p">,</span>
-            <span class="n">host_sq_psn</span>   <span class="o">=</span> <span class="n">host_sq_psn</span><span class="p">,</span>
-            <span class="n">mr_laddr</span>      <span class="o">=</span> <span class="n">mr_addr</span><span class="p">,</span>
-            <span class="n">mr_len</span>        <span class="o">=</span> <span class="n">mr_len</span><span class="p">,</span>
-            <span class="n">pmtu</span>          <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmtu</span><span class="p">,</span>
-            <span class="n">min_rnr_timer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minRnrTimer</span><span class="p">,</span>
-            <span class="n">rnr_retry</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rnrRetry</span><span class="p">,</span>
-            <span class="n">retry_count</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retryCount</span><span class="p">,</span>
-            <span class="n">log</span>           <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span>
-        <span class="p">)</span>
+<div class="viewcode-block" id="RoCEv2Server.completeConnection">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.completeConnection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">completeConnection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpgaQpn</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pmtu</span><span class="p">,</span> <span class="n">minRnrTimer</span><span class="p">,</span>
+                           <span class="n">rnrRetry</span><span class="p">,</span> <span class="n">retryCount</span><span class="p">,</span> <span class="n">fpgaLkey</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finish the host RC QP once the FPGA side is up.</span>
 
-        <span class="c1"># Capture shadow state immediately after the FPGA-side resources</span>
-        <span class="c1"># are live so teardownFpgaQp() can reach them even if the host-side</span>
-        <span class="c1"># completeConnection() below raises (otherwise the FPGA&#39;s PD / MR /</span>
-        <span class="c1"># QP would leak — _roce_teardown&#39;s internal rollback only covers</span>
-        <span class="c1"># failures inside _roce_setup_connection itself).</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_qpn</span>        <span class="o">=</span> <span class="n">fpga_qpn</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_pd_handler</span> <span class="o">=</span> <span class="n">fpga_pd_handler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_lkey</span>       <span class="o">=</span> <span class="n">fpga_lkey</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_rkey</span>       <span class="o">=</span> <span class="n">fpga_rkey</span>
+<span class="sd">        The Root calls this with the FPGA result (fpgaQpn/fpgaLkey from the</span>
+<span class="sd">        engine&#39;s RoCEv2FpgaParams) plus the transport knobs. Validates the</span>
+<span class="sd">        transport knobs at call time (the invariant displaced from __init__),</span>
+<span class="sd">        derives fpgaRqPsn internally, drives the C++ server, and sets the</span>
+<span class="sd">        FPGA status vars.</span>
+<span class="sd">        ``rnrRetry``/``retryCount`` are accepted for symmetry with the engine</span>
+<span class="sd">        call site but are not forwarded to the C++ surface.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pmtu</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_PMTU_BYTES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
+                <span class="s2">&quot;RoCEv2Server.completeConnection&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;pmtu must be a valid RoCEv2Mtu code &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">_PMTU_BYTES</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">); &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">pmtu</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">minRnrTimer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_MIN_RNR_TIMER_MS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
+                <span class="s2">&quot;RoCEv2Server.completeConnection&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;minRnrTimer must be an IB RNR timer code 0..31 &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(see _MIN_RNR_TIMER_MS); got </span><span class="si">{</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">fpgaRqPsn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getSqPsn</span><span class="p">()</span>   <span class="c1"># host SQ PSN == FPGA RQ PSN</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">completeConnection</span><span class="p">(</span>
-            <span class="n">fpgaQpn</span>     <span class="o">=</span> <span class="n">fpga_qpn</span><span class="p">,</span>
-            <span class="n">fpgaRqPsn</span>   <span class="o">=</span> <span class="n">host_sq_psn</span><span class="p">,</span>
-            <span class="n">pmtu</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmtu</span><span class="p">,</span>
-            <span class="n">minRnrTimer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_minRnrTimer</span><span class="p">,</span>
+            <span class="n">fpgaQpn</span>     <span class="o">=</span> <span class="n">fpgaQpn</span><span class="p">,</span>
+            <span class="n">fpgaRqPsn</span>   <span class="o">=</span> <span class="n">fpgaRqPsn</span><span class="p">,</span>
+            <span class="n">pmtu</span>        <span class="o">=</span> <span class="n">pmtu</span><span class="p">,</span>
+            <span class="n">minRnrTimer</span> <span class="o">=</span> <span class="n">minRnrTimer</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">FpgaQpn</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">fpga_qpn</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FpgaLkey</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">fpga_lkey</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ConnectionState</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Connected&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FpgaQpn</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">fpgaQpn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FpgaLkey</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">fpgaLkey</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RoCEv2 host RC connection summary&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Device      : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_deviceName</span><span class="si">}</span><span class="s2">  port=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ibPort</span><span class="si">}</span><span class="s2">  GID idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_gidIndex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host QPN    : 0x</span><span class="si">{</span><span class="n">host_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host QPN    : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getQpn</span><span class="p">()</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host GID    : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getGid</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  Host state  : RTS&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR addr     : 0x</span><span class="si">{</span><span class="n">mr_addr</span><span class="si">:</span><span class="s2">016x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR addr     : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrAddr</span><span class="p">()</span><span class="si">:</span><span class="s2">016x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR rkey     : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrRkey</span><span class="p">()</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR size     : </span><span class="si">{</span><span class="n">mr_len</span><span class="si">}</span><span class="s2"> bytes  (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2"> slots x </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA QPN    : 0x</span><span class="si">{</span><span class="n">fpga_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA lkey   : 0x</span><span class="si">{</span><span class="n">fpga_lkey</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR size     : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2"> bytes  (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2"> slots x </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA QPN    : 0x</span><span class="si">{</span><span class="n">fpgaQpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA lkey   : 0x</span><span class="si">{</span><span class="n">fpgaLkey</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA GID    : </span><span class="si">{</span><span class="n">_gid_bytes_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fpgaGidBytes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Path MTU    : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_pmtu</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="p">[</span><span class="mi">256</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">1024</span><span class="p">,</span><span class="mi">2048</span><span class="p">,</span><span class="mi">4096</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_pmtu</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MinRnrTimer : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_minRnrTimer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RnrRetry    : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rnrRetry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RetryCount  : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_retryCount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  RC connection established — ready to receive RDMA WRITEs&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Path MTU    : </span><span class="si">{</span><span class="n">pmtu</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">_PMTU_BYTES</span><span class="p">[</span><span class="n">pmtu</span><span class="p">]</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MinRnrTimer : </span><span class="si">{</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">_MIN_RNR_TIMER_MS</span><span class="p">[</span><span class="n">minRnrTimer</span><span class="p">]</span><span class="si">}</span><span class="s2">ms)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RnrRetry    : </span><span class="si">{</span><span class="n">rnrRetry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RetryCount  : </span><span class="si">{</span><span class="n">retryCount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  RC connection established — ready to receive RDMA SENDs&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Host-side no-op: all FPGA bring-up (getHostParams →</span>
+        <span class="c1"># engine.setupConnection → completeConnection) is driven externally by</span>
+        <span class="c1"># the Root. The FPGA GID was already pushed once at construction.</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
 
-<div class="viewcode-block" id="RoCEv2Server.teardownFpgaQp">
-<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.teardownFpgaQp">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">teardownFpgaQp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Tear down the FPGA QP via the metadata bus.</span>
-<span class="sd">        Called explicitly from Root.stop() before the transport is torn down.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fpga_qpn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_qpn</span>
-        <span class="k">if</span> <span class="n">fpga_qpn</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="n">_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extRoceEngine</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extRoceEngine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">RoceEngine</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;RoCEv2 &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: tearing down FPGA QP 0x</span><span class="si">{</span><span class="n">fpga_qpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">_roce_teardown</span><span class="p">(</span><span class="n">_engine</span><span class="p">,</span> <span class="n">fpga_qpn</span><span class="p">,</span>
-                           <span class="n">pd_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_pd_handler</span><span class="p">,</span>
-                           <span class="n">lkey</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_lkey</span><span class="p">,</span>
-                           <span class="n">rkey</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_rkey</span><span class="p">,</span>
-                           <span class="n">log</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_qpn</span>        <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_pd_handler</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_lkey</span>       <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fpga_rkey</span>       <span class="o">=</span> <span class="mi">0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">FpgaQpn</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">FpgaLkey</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;RoCEv2 teardown failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Tear down the FPGA QP before stopping the host-side server or</span>
-        <span class="c1"># propagating stop() to children — RoceEngine must still be alive</span>
-        <span class="c1"># to drive the metadata bus. teardownFpgaQp() is a no-op when the</span>
-        <span class="c1"># FPGA QPN is 0 (never connected or already torn down).</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">teardownFpgaQp</span><span class="p">()</span>
+        <span class="c1"># Host-side teardown only: stop the C++ server, then propagate stop()</span>
+        <span class="c1"># to children. The FPGA QP teardown is now the Root&#39;s responsibility —</span>
+        <span class="c1"># it calls engine.teardownConnection() (surf) while transport is still</span>
+        <span class="c1"># up, BEFORE super().stop() reaches this hook.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ConnectionState</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;Disconnected&#39;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span></div>
 
 </pre></div>

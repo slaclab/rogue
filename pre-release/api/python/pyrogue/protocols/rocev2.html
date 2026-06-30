@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RoCEv2Server &mdash; Rogue v6.14.1-12-gac4b32b24 documentation</title>
+  <title>RoCEv2Server &mdash; Rogue v6.14.1-23-gdb8ac3dfe documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=a6f5b2eb"></script>
+      <script src="../../../../_static/documentation_options.js?v=6b55c201"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -179,43 +179,51 @@
 <p>This Python API is implemented directly in PyRogue. It is a thin
 <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code> wrapper that owns a Boost.Python-exported
 <code class="docutils literal notranslate"><span class="pre">rogue.protocols.rocev2.Server</span></code> (see
-<a class="reference internal" href="../../rogue/protocols/rocev2/server.html"><span class="doc">Server</span></a>) and adds the
-<code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce._RoceEngine.RoceEngine</span></code> child device for the
-FPGA-side metadata-bus handshake.</p>
+<a class="reference internal" href="../../rogue/protocols/rocev2/server.html"><span class="doc">Server</span></a>). The FPGA-side
+metadata-bus handshake lives in surf
+(<code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce.RoCEv2Engine</span></code>); the application <code class="docutils literal notranslate"><span class="pre">Root</span></code> drives
+the host↔FPGA bring-up (<code class="docutils literal notranslate"><span class="pre">getHostParams</span></code> → <code class="docutils literal notranslate"><span class="pre">engine.setupConnection</span></code>
+→ <code class="docutils literal notranslate"><span class="pre">completeConnection</span></code>) — it is no longer a child device of this
+server.</p>
 <p>The 15 <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> status/configuration fields (<code class="docutils literal notranslate"><span class="pre">FpgaIp</span></code>,
-<code class="docutils literal notranslate"><span class="pre">FpgaGid</span></code>, <code class="docutils literal notranslate"><span class="pre">HostQpn</span></code>, <code class="docutils literal notranslate"><span class="pre">HostGid</span></code>, <code class="docutils literal notranslate"><span class="pre">MrAddr</span></code>, <code class="docutils literal notranslate"><span class="pre">MrRkey</span></code>,
-<code class="docutils literal notranslate"><span class="pre">RxFrameCount</span></code>, <code class="docutils literal notranslate"><span class="pre">RxByteCount</span></code>, <code class="docutils literal notranslate"><span class="pre">ConnectionState</span></code>, <code class="docutils literal notranslate"><span class="pre">MaxPayload</span></code>,
+<code class="docutils literal notranslate"><span class="pre">FpgaGid</span></code>, <code class="docutils literal notranslate"><span class="pre">HostQpn</span></code>, <code class="docutils literal notranslate"><span class="pre">HostGid</span></code>, <code class="docutils literal notranslate"><span class="pre">HostIp</span></code>, <code class="docutils literal notranslate"><span class="pre">MrAddr</span></code>,
+<code class="docutils literal notranslate"><span class="pre">MrRkey</span></code>, <code class="docutils literal notranslate"><span class="pre">RxFrameCount</span></code>, <code class="docutils literal notranslate"><span class="pre">RxByteCount</span></code>, <code class="docutils literal notranslate"><span class="pre">MaxPayload</span></code>,
 <code class="docutils literal notranslate"><span class="pre">RxQueueDepth</span></code>, <code class="docutils literal notranslate"><span class="pre">HostRqPsn</span></code>, <code class="docutils literal notranslate"><span class="pre">HostSqPsn</span></code>, <code class="docutils literal notranslate"><span class="pre">FpgaQpn</span></code>,
 <code class="docutils literal notranslate"><span class="pre">FpgaLkey</span></code>) are auto-rendered by <code class="docutils literal notranslate"><span class="pre">autoclass</span></code> below from the
 docstrings in <code class="docutils literal notranslate"><span class="pre">python/pyrogue/protocols/_RoCEv2.py</span></code>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Server">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.protocols.</span></span><span class="sig-name descname"><span class="pre">RoCEv2Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deviceName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ibPort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gidIndex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxPayload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rxQueueDepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roceEngineOffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roceMemBase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roceEngine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmtu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minRnrTimer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">31</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnrRetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retryCount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pollInterval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.protocols.</span></span><span class="sig-name descname"><span class="pre">RoCEv2Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">rocev2Cfg</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server" title="Link to this definition"></a></dt>
 <dd><p>RoCEv2 RC receive server — pyrogue Device.</p>
 <p>Mirrors the interface of UdpRssiPack so the two can be used
 interchangeably inside a Root.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rocev2Cfg</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#pyrogue.protocols.RoCEv2ServerCfg" title="pyrogue.protocols._RoCEv2.RoCEv2ServerCfg"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2ServerCfg</span></code></a></span>) – Bring-up / host-NIC configuration (ip, deviceName, ibPort, gidIndex,
+maxPayload, rxQueueDepth).  See <a class="reference internal" href="#pyrogue.protocols.RoCEv2ServerCfg" title="pyrogue.protocols.RoCEv2ServerCfg"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2ServerCfg</span></code></a>.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Server.detectGidIndex">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">detectGidIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ibPort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Server.detectGidIndex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server.detectGidIndex" title="Link to this definition"></a></dt>
+<dd><p>Resolve the host’s RoCE v2 IPv4 GID-table index from sysfs.</p>
+<p>The mlx5 GID-table index of the RoCE v2 IPv4 GID drifts across NIC /
+FPGA reloads, so callers that pass <code class="docutils literal notranslate"><span class="pre">gidIndex=-1</span></code> resolve it fresh
+each session.  Matches the entry whose type is ‘RoCE v2’ AND whose
+IPv4-mapped GID (<code class="docutils literal notranslate"><span class="pre">::ffff:a.b.c.d</span></code>) is on the same /24 as <code class="docutils literal notranslate"><span class="pre">ip</span></code> —
+this skips the RoCE v1 slot that shares the same IP.</p>
+<p>Returns the integer index, or None if no matching GID is found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ip</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – FPGA IP address. Used to derive the FPGA GID (IPv4-mapped IPv6).</p></li>
-<li><p><strong>deviceName</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – ibverbs device name (e.g. ‘rxe0’ for softRoCE, ‘mlx5_0’ for HW NIC).</p></li>
-<li><p><strong>ibPort</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">1</span></code>) – ibverbs port number (default: 1).</p></li>
-<li><p><strong>gidIndex</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">0</span></code>) – GID table index for the host NIC’s RoCEv2 IPv4 address.</p></li>
-<li><p><strong>maxPayload</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">9000</span></code>) – Maximum bytes per RDMA WRITE (default: 9000).</p></li>
-<li><p><strong>rxQueueDepth</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">256</span></code>) – Number of pre-posted receive slots (default: 256).</p></li>
-<li><p><strong>roceEngineOffset</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">0</span></code>) – AXI-lite offset of the RoCEv2 engine register block.</p></li>
-<li><p><strong>roceMemBase</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – memBase for the RoceEngine child device (the SRP object).</p></li>
-<li><p><strong>roceEngine</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Pass an existing RoceEngine instance to avoid duplicate address mapping.
-When set, no child RoceEngine device is created.</p></li>
-<li><p><strong>pmtu</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">5</span></code>) – Path MTU enum: 1=256 2=512 3=1024 4=2048 5=4096 (default: 5).</p></li>
-<li><p><strong>minRnrTimer</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">31</span></code>) – IB-spec RNR NAK timer code embedded in the QP attributes on RTR.
-1=0.01ms, 14=1ms, 18=4ms, 22=16ms, 31=491ms (default: 31).</p></li>
-<li><p><strong>rnrRetry</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">7</span></code>) – FPGA QP RNR retry count. 7 means “retry indefinitely” (default: 7).</p></li>
-<li><p><strong>retryCount</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">3</span></code>) – FPGA QP retry count for non-RNR transport errors (default: 3).</p></li>
-<li><p><strong>pollInterval</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">1</span></code>) – Poll interval in seconds for status variables (default: 1).</p></li>
+<li><p><strong>device</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>ip</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>ibPort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Server.stream">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">stream</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server.stream" title="Link to this definition"></a></dt>
@@ -229,10 +237,10 @@ analogue of <code class="docutils literal notranslate"><span class="pre">UdpRssi
 <dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Server.getChannel">
 <span class="sig-name descname"><span class="pre">getChannel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Server.getChannel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server.getChannel" title="Link to this definition"></a></dt>
 <dd><p>Return a channel-filtered view (channel id from immediate value bits [7:0]).</p>
-<p>The RDMA WRITE-with-Immediate carries the channel id in the low 8
+<p>The RDMA SEND-with-Immediate carries the channel id in the low 8
 bits of the immediate value (Server.cpp runThread decodes
-<cite>wc.imm_data &amp; 0xFF</cite>), so valid channel ids are 0..255.  Out-of-
-range values would previously blow up with <cite>OverflowError</cite> inside
+<cite>ntohl(wc.imm_data) &amp; 0xFF</cite>), so valid channel ids are 0..255.  Out-
+of-range values would previously blow up with <cite>OverflowError</cite> inside
 the Filter ctor — validate up front and raise a clear
 <cite>rogue.GeneralError</cite> instead.</p>
 <dl class="field-list simple">
@@ -243,10 +251,42 @@ the Filter ctor — validate up front and raise a clear
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Server.teardownFpgaQp">
-<span class="sig-name descname"><span class="pre">teardownFpgaQp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Server.teardownFpgaQp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server.teardownFpgaQp" title="Link to this definition"></a></dt>
-<dd><p>Tear down the FPGA QP via the metadata bus.
-Called explicitly from Root.stop() before the transport is torn down.</p>
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Server.printConnInfo">
+<span class="sig-name descname"><span class="pre">printConnInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Server.printConnInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server.printConnInfo" title="Link to this definition"></a></dt>
+<dd><p>Print the RC connection summary (QP/GID/MR + buffer sizing).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Server.getHostParams">
+<span class="sig-name descname"><span class="pre">getHostParams</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Server.getHostParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server.getHostParams" title="Link to this definition"></a></dt>
+<dd><p>Read the host RC QP params for the FPGA hand-off.</p>
+<p>Returns the five flat values the FPGA engine’s setupConnection()
+consumes (hostQpn, hostRqPsn, hostSqPsn, mrAddr, mrLen) as a
+RoCEv2HostParams, so the Root can call
+<code class="docutils literal notranslate"><span class="pre">engine.setupConnection(**server.getHostParams()._asdict(),</span> <span class="pre">pmtu=...,</span> <span class="pre">...)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2HostParams</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Server.completeConnection">
+<span class="sig-name descname"><span class="pre">completeConnection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fpgaQpn</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmtu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minRnrTimer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnrRetry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retryCount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fpgaLkey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Server.completeConnection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Server.completeConnection" title="Link to this definition"></a></dt>
+<dd><p>Finish the host RC QP once the FPGA side is up.</p>
+<p>The Root calls this with the FPGA result (fpgaQpn/fpgaLkey from the
+engine’s RoCEv2FpgaParams) plus the transport knobs. Validates the
+transport knobs at call time (the invariant displaced from __init__),
+derives fpgaRqPsn internally, drives the C++ server, and sets the
+FPGA status vars.
+<code class="docutils literal notranslate"><span class="pre">rnrRetry</span></code>/<code class="docutils literal notranslate"><span class="pre">retryCount</span></code> are accepted for symmetry with the engine
+call site but are not forwarded to the C++ surface.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -1248,6 +1288,276 @@ variables with nonzero poll interval are updated.</p></li>
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="configuration-dataclasses">
+<h2>Configuration dataclasses<a class="headerlink" href="#configuration-dataclasses" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> takes its host-NIC bring-up config as a
+<a class="reference internal" href="#pyrogue.protocols.RoCEv2ServerCfg" title="pyrogue.protocols.RoCEv2ServerCfg"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2ServerCfg</span></code></a>. The transport / QP-tuning knobs
+shared between the FPGA <code class="docutils literal notranslate"><span class="pre">engine.setupConnection()</span></code> and the host
+<code class="docutils literal notranslate"><span class="pre">server.completeConnection()</span></code> calls are bundled in
+<a class="reference internal" href="#pyrogue.protocols.RoCEv2TransportCfg" title="pyrogue.protocols.RoCEv2TransportCfg"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2TransportCfg</span></code></a>. The <code class="docutils literal notranslate"><span class="pre">pmtu</span></code> and
+<code class="docutils literal notranslate"><span class="pre">minRnrTimer</span></code> fields take values from the <a class="reference internal" href="#pyrogue.protocols.RoCEv2Mtu" title="pyrogue.protocols.RoCEv2Mtu"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2Mtu</span></code></a>
+and <a class="reference internal" href="#pyrogue.protocols.RoCEv2RnrTimer" title="pyrogue.protocols.RoCEv2RnrTimer"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2RnrTimer</span></code></a> enums.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2ServerCfg">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.protocols.</span></span><span class="sig-name descname"><span class="pre">RoCEv2ServerCfg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deviceName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ibPort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gidIndex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxPayload</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4096</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rxQueueDepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2ServerCfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2ServerCfg" title="Link to this definition"></a></dt>
+<dd><p>Bring-up / transport configuration for <a class="reference internal" href="#pyrogue.protocols.RoCEv2Server" title="pyrogue.protocols.RoCEv2Server"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2Server</span></code></a>.</p>
+<p>Bundles the ibverbs + QP-tuning knobs so the <code class="docutils literal notranslate"><span class="pre">RoCEv2Server(...)</span></code> call
+site stays compact.  Most defaults mirror the historical <code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code>
+constructor; <code class="docutils literal notranslate"><span class="pre">maxPayload</span></code> now defaults to 4096 (one MTU_4096 PMTU)
+rather than the C++ <code class="docutils literal notranslate"><span class="pre">DefaultMaxPayload</span></code> of 9000 — pass <code class="docutils literal notranslate"><span class="pre">None</span></code> to
+restore the 9000-byte default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ip</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – FPGA IP address. Used to derive the FPGA GID (IPv4-mapped IPv6).</p></li>
+<li><p><strong>deviceName</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – ibverbs device name (e.g. ‘rxe0’ for softRoCE, ‘mlx5_0’ for HW NIC).</p></li>
+<li><p><strong>ibPort</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">1</span></code>) – ibverbs port number (default: 1).</p></li>
+<li><p><strong>gidIndex</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>) – GID table index for the host NIC’s RoCEv2 IPv4 address.  -1 (the
+default) auto-detects the index matching <code class="docutils literal notranslate"><span class="pre">ip</span></code> by scanning sysfs
+(<code class="docutils literal notranslate"><span class="pre">/sys/class/infiniband/&lt;dev&gt;/ports/&lt;port&gt;/gid_attrs/types</span></code> +
+<code class="docutils literal notranslate"><span class="pre">gids</span></code>); see <a class="reference internal" href="#pyrogue.protocols.RoCEv2Server.detectGidIndex" title="pyrogue.protocols.RoCEv2Server.detectGidIndex"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RoCEv2Server.detectGidIndex()</span></code></a>.</p></li>
+<li><p><strong>maxPayload</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">4096</span></code>) – Maximum payload bytes per RDMA SEND (the size of each pre-posted
+receive slot).  Defaults to 4096 (one MTU_4096 PMTU); pass None to
+use the C++ DefaultMaxPayload (9000).</p></li>
+<li><p><strong>rxQueueDepth</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Number of pre-posted receive slots.  None (the default) uses the C++
+DefaultRxQueueDepth (256).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2TransportCfg">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.protocols.</span></span><span class="sig-name descname"><span class="pre">RoCEv2TransportCfg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pmtu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">RoCEv2Mtu.MTU_4096</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minRnrTimer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnrRetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retryCount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2TransportCfg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2TransportCfg" title="Link to this definition"></a></dt>
+<dd><p>Transport / QP-tuning configuration for the RoCEv2 RC connection.</p>
+<p>Symmetric companion to <a class="reference internal" href="#pyrogue.protocols.RoCEv2ServerCfg" title="pyrogue.protocols.RoCEv2ServerCfg"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2ServerCfg</span></code></a> — that one carries the
+host-NIC config, this one carries the four transport/QP-tuning knobs that
+are NOT held by either the stateless surf engine or the host-side server.
+A single instance is forwarded by the orchestrating <code class="docutils literal notranslate"><span class="pre">Root</span></code> into BOTH
+<code class="docutils literal notranslate"><span class="pre">engine.setupConnection(...)</span></code> and <code class="docutils literal notranslate"><span class="pre">server.completeConnection(...)</span></code> so
+the FPGA and host sides stay in sync on <code class="docutils literal notranslate"><span class="pre">pmtu</span></code>/<code class="docutils literal notranslate"><span class="pre">minRnrTimer</span></code>.  Note
+that <code class="docutils literal notranslate"><span class="pre">rnrRetry</span></code>/<code class="docutils literal notranslate"><span class="pre">retryCount</span></code> are applied FPGA-side only — the host
+server accepts them for call-site symmetry but does not program them into
+the host QP (see <a class="reference internal" href="#pyrogue.protocols.RoCEv2Server.completeConnection" title="pyrogue.protocols.RoCEv2Server.completeConnection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RoCEv2Server.completeConnection()</span></code></a>), so those two
+knobs govern only the FPGA’s retry behavior.</p>
+<p>Defaults match the proven acceptance-gate config in <code class="docutils literal notranslate"><span class="pre">rocev2PrbsTest.py</span></code>:
+the same invariants that <a class="reference internal" href="#pyrogue.protocols.RoCEv2Server.completeConnection" title="pyrogue.protocols.RoCEv2Server.completeConnection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RoCEv2Server.completeConnection()</span></code></a>
+enforces are mirrored here as <code class="docutils literal notranslate"><span class="pre">__post_init__</span></code> validation so a bad cfg
+fails loudly at construction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pmtu</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">&lt;RoCEv2Mtu.MTU_4096:</span> <span class="pre">5&gt;</span></code>) – Path MTU code (a <a class="reference internal" href="#pyrogue.protocols.RoCEv2Mtu" title="pyrogue.protocols.RoCEv2Mtu"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2Mtu</span></code></a> value).  Defaults to
+<code class="docutils literal notranslate"><span class="pre">RoCEv2Mtu.MTU_4096</span></code> (5).</p></li>
+<li><p><strong>minRnrTimer</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">12</span></code>) – IB Min RNR NAK timer code 0..31 (a <a class="reference internal" href="#pyrogue.protocols.RoCEv2RnrTimer" title="pyrogue.protocols.RoCEv2RnrTimer"><code class="xref py py-class docutils literal notranslate"><span class="pre">RoCEv2RnrTimer</span></code></a> value).
+Defaults to 12 — the documented measured clean-validation value.</p></li>
+<li><p><strong>rnrRetry</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">7</span></code>) – RNR retry count.  Defaults to 7.</p></li>
+<li><p><strong>retryCount</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">3</span></code>) – Transport retry count.  Defaults to 3.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Mtu">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.protocols.</span></span><span class="sig-name descname"><span class="pre">RoCEv2Mtu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2Mtu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2Mtu" title="Link to this definition"></a></dt>
+<dd><p>Path MTU codes (libibverbs ibv_mtu enum).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Mtu.MTU_1024">
+<span class="sig-name descname"><span class="pre">MTU_1024</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2Mtu.MTU_1024" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Mtu.MTU_2048">
+<span class="sig-name descname"><span class="pre">MTU_2048</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2Mtu.MTU_2048" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Mtu.MTU_256">
+<span class="sig-name descname"><span class="pre">MTU_256</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2Mtu.MTU_256" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Mtu.MTU_4096">
+<span class="sig-name descname"><span class="pre">MTU_4096</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2Mtu.MTU_4096" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2Mtu.MTU_512">
+<span class="sig-name descname"><span class="pre">MTU_512</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2Mtu.MTU_512" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.protocols.</span></span><span class="sig-name descname"><span class="pre">RoCEv2RnrTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/protocols/_RoCEv2.html#RoCEv2RnrTimer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer" title="Link to this definition"></a></dt>
+<dd><p>IB-spec Min RNR NAK Timer Field codes (IBA Vol1 Table 45).  Member
+name encodes the RNR wait in milliseconds; code 0 is the special
+655.36ms slot.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_01">
+<span class="sig-name descname"><span class="pre">MS_0_01</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_01" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_02">
+<span class="sig-name descname"><span class="pre">MS_0_02</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_02" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_03">
+<span class="sig-name descname"><span class="pre">MS_0_03</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_03" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_04">
+<span class="sig-name descname"><span class="pre">MS_0_04</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_04" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_06">
+<span class="sig-name descname"><span class="pre">MS_0_06</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_06" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_08">
+<span class="sig-name descname"><span class="pre">MS_0_08</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_08" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_12">
+<span class="sig-name descname"><span class="pre">MS_0_12</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_12" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_16">
+<span class="sig-name descname"><span class="pre">MS_0_16</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_16" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_24">
+<span class="sig-name descname"><span class="pre">MS_0_24</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_24" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_32">
+<span class="sig-name descname"><span class="pre">MS_0_32</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_32" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_48">
+<span class="sig-name descname"><span class="pre">MS_0_48</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_48" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_64">
+<span class="sig-name descname"><span class="pre">MS_0_64</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_64" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_0_96">
+<span class="sig-name descname"><span class="pre">MS_0_96</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">13</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_0_96" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_10_24">
+<span class="sig-name descname"><span class="pre">MS_10_24</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">20</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_10_24" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_122_88">
+<span class="sig-name descname"><span class="pre">MS_122_88</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">27</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_122_88" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_15_36">
+<span class="sig-name descname"><span class="pre">MS_15_36</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">21</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_15_36" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_163_84">
+<span class="sig-name descname"><span class="pre">MS_163_84</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">28</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_163_84" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_1_28">
+<span class="sig-name descname"><span class="pre">MS_1_28</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">14</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_1_28" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_1_92">
+<span class="sig-name descname"><span class="pre">MS_1_92</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_1_92" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_20_48">
+<span class="sig-name descname"><span class="pre">MS_20_48</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">22</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_20_48" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_245_76">
+<span class="sig-name descname"><span class="pre">MS_245_76</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">29</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_245_76" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_2_56">
+<span class="sig-name descname"><span class="pre">MS_2_56</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_2_56" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_30_72">
+<span class="sig-name descname"><span class="pre">MS_30_72</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">23</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_30_72" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_327_68">
+<span class="sig-name descname"><span class="pre">MS_327_68</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">30</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_327_68" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_3_84">
+<span class="sig-name descname"><span class="pre">MS_3_84</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">17</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_3_84" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_40_96">
+<span class="sig-name descname"><span class="pre">MS_40_96</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">24</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_40_96" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_491_52">
+<span class="sig-name descname"><span class="pre">MS_491_52</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">31</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_491_52" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_5_12">
+<span class="sig-name descname"><span class="pre">MS_5_12</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">18</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_5_12" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_61_44">
+<span class="sig-name descname"><span class="pre">MS_61_44</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">25</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_61_44" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_655_36">
+<span class="sig-name descname"><span class="pre">MS_655_36</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_655_36" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_7_68">
+<span class="sig-name descname"><span class="pre">MS_7_68</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">19</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_7_68" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.protocols.RoCEv2RnrTimer.MS_81_92">
+<span class="sig-name descname"><span class="pre">MS_81_92</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">26</span></span><a class="headerlink" href="#pyrogue.protocols.RoCEv2RnrTimer.MS_81_92" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

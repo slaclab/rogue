@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Server &mdash; Rogue v6.14.1-12-gac4b32b24 documentation</title>
+  <title>Server &mdash; Rogue v6.14.1-23-gdb8ac3dfe documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=a6f5b2eb"></script>
+      <script src="../../../../_static/documentation_options.js?v=6b55c201"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -183,7 +183,7 @@ as frames are returned by downstream consumers (zero-copy slab).</p>
 <li><p><strong>deviceName</strong> – ibverbs device name (e.g. <code class="docutils literal notranslate"><span class="pre">rxe0</span></code>, <code class="docutils literal notranslate"><span class="pre">mlx5_0</span></code>)</p></li>
 <li><p><strong>ibPort</strong> – ibverbs port number (almost always <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
 <li><p><strong>gidIndex</strong> – GID table index for the host NIC’s RoCEv2 entry</p></li>
-<li><p><strong>maxPayload</strong> – maximum bytes per RDMA WRITE (default: 9000)</p></li>
+<li><p><strong>maxPayload</strong> – maximum bytes per RDMA SEND (default: 9000)</p></li>
 <li><p><strong>rxQueueDepth</strong> – number of pre-posted receive slots (default: 256)</p></li>
 </ul>
 </dd>
@@ -294,7 +294,7 @@ the FPGA’s QPN and RQ PSN.</p>
 <span id="_CPPv3NK5rogue9protocols6rocev26Server9getMrAddrEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server9getMrAddrEv"></span><span id="rogue::protocols::rocev2::Server::getMrAddrC"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMrAddr</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server9getMrAddrEv" title="Link to this definition"></a><br /></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Host MR virtual base address. The FPGA RDMA-WRITEs at this address.</p>
+<dd class="field-odd"><p>Host MR virtual base address registered for RDMA access.</p>
 </dd>
 </dl>
 </dd></dl>

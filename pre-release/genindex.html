@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; Rogue v6.14.1-12-gac4b32b24 documentation</title>
+  <title>Index &mdash; Rogue v6.14.1-23-gdb8ac3dfe documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/slac-favicon-192.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=a6f5b2eb"></script>
+      <script src="_static/documentation_options.js?v=6b55c201"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -986,8 +986,12 @@
         <li><a href="api/python/pyrogue/utilities/prbs/prbstx.html#pyrogue.utilities.prbs.PrbsTx.commandsByGroup">(pyrogue.utilities.prbs.PrbsTx method)</a>
 </li>
       </ul></li>
-      <li><a href="api/python/rogue/protocols/rocev2/server.html#rogue.protocols.rocev2.Server.completeConnection">completeConnection() (rogue.protocols.rocev2.Server method)</a>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.completeConnection">completeConnection() (pyrogue.protocols.RoCEv2Server method)</a>
+
+      <ul>
+        <li><a href="api/python/rogue/protocols/rocev2/server.html#rogue.protocols.rocev2.Server.completeConnection">(rogue.protocols.rocev2.Server method)</a>
 </li>
+      </ul></li>
       <li><a href="api/python/pyrogue/utilities/fileio/filereader.html#pyrogue.utilities.fileio.FileReader.configDict">configDict (pyrogue.utilities.fileio.FileReader property)</a>
 </li>
       <li><a href="api/python/pyrogue/utilities/fileio/filereader.html#pyrogue.utilities.fileio.FileReader.configValue">configValue() (pyrogue.utilities.fileio.FileReader method)</a>
@@ -1222,6 +1226,8 @@
         <li><a href="api/python/pyrogue/utilities/prbs/prbstx.html#pyrogue.utilities.prbs.PrbsTx.description">(pyrogue.utilities.prbs.PrbsTx property)</a>
 </li>
       </ul></li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.detectGidIndex">detectGidIndex() (pyrogue.protocols.RoCEv2Server static method)</a>
+</li>
       <li><a href="api/python/rogue/version.html#rogue.Version.devel">devel() (rogue.Version method)</a>
 </li>
       <li><a href="api/python/pyrogue/device.html#pyrogue.Device">Device (class in pyrogue)</a>
@@ -2017,6 +2023,8 @@
       <li><a href="api/python/rogue/protocols/rocev2/server.html#rogue.protocols.rocev2.Server.getGid">getGid() (rogue.protocols.rocev2.Server method)</a>
 </li>
       <li><a href="api/python/rogue/hardware/axi/axistreamdma.html#rogue.hardware.axi.AxiStreamDma.getGitVersion">getGitVersion() (rogue.hardware.axi.AxiStreamDma method)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.getHostParams">getHostParams() (pyrogue.protocols.RoCEv2Server method)</a>
 </li>
       <li><a href="api/python/rogue/interfaces/stream/frame.html#rogue.interfaces.stream.Frame.getLastUser">getLastUser() (rogue.interfaces.stream.Frame method)</a>
 </li>
@@ -3192,8 +3200,6 @@
         <li><a href="api/python/pyrogue/remotevariable.html#pyrogue.RemoteVariable.maximum">(pyrogue.RemoteVariable property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/python/rogue/protocols/rocev2/core.html#rogue.protocols.rocev2.Core.maxPayload">maxPayload() (rogue.protocols.rocev2.Core method)</a>
 
       <ul>
@@ -3236,6 +3242,8 @@
 </li>
       <li><a href="api/python/rogue/hardware/memmap.html#rogue.hardware.MemMap">MemMap (class in rogue.hardware)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.minimum">minimum (pyrogue.BaseCommand property)</a>
 
       <ul>
@@ -3303,6 +3311,80 @@
 </li>
       </ul></li>
       <li><a href="api/python/pyrogue/model.html#pyrogue.Model">Model (class in pyrogue)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_01">MS_0_01 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_02">MS_0_02 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_03">MS_0_03 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_04">MS_0_04 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_06">MS_0_06 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_08">MS_0_08 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_12">MS_0_12 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_16">MS_0_16 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_24">MS_0_24 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_32">MS_0_32 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_48">MS_0_48 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_64">MS_0_64 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_0_96">MS_0_96 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_10_24">MS_10_24 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_122_88">MS_122_88 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_15_36">MS_15_36 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_163_84">MS_163_84 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_1_28">MS_1_28 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_1_92">MS_1_92 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_20_48">MS_20_48 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_245_76">MS_245_76 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_2_56">MS_2_56 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_30_72">MS_30_72 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_327_68">MS_327_68 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_3_84">MS_3_84 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_40_96">MS_40_96 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_491_52">MS_491_52 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_5_12">MS_5_12 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_61_44">MS_61_44 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_655_36">MS_655_36 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_7_68">MS_7_68 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer.MS_81_92">MS_81_92 (pyrogue.protocols.RoCEv2RnrTimer attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Mtu.MTU_1024">MTU_1024 (pyrogue.protocols.RoCEv2Mtu attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Mtu.MTU_2048">MTU_2048 (pyrogue.protocols.RoCEv2Mtu attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Mtu.MTU_256">MTU_256 (pyrogue.protocols.RoCEv2Mtu attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Mtu.MTU_4096">MTU_4096 (pyrogue.protocols.RoCEv2Mtu attribute)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Mtu.MTU_512">MTU_512 (pyrogue.protocols.RoCEv2Mtu attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -3920,6 +4002,8 @@
         <li><a href="api/python/pyrogue/remotevariable.html#pyrogue.RemoteVariable.precision">(pyrogue.RemoteVariable property)</a>
 </li>
       </ul></li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.printConnInfo">printConnInfo() (pyrogue.protocols.RoCEv2Server method)</a>
+</li>
       <li><a href="api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.printYaml">printYaml() (pyrogue.BaseCommand method)</a>
 
       <ul>
@@ -4246,7 +4330,15 @@
       </ul></li>
       <li><a href="api/python/pyrogue/reversebits.html#pyrogue.reverseBits">reverseBits() (in module pyrogue)</a>
 </li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Mtu">RoCEv2Mtu (class in pyrogue.protocols)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer">RoCEv2RnrTimer (class in pyrogue.protocols)</a>
+</li>
       <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server">RoCEv2Server (class in pyrogue.protocols)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2ServerCfg">RoCEv2ServerCfg (class in pyrogue.protocols)</a>
+</li>
+      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2TransportCfg">RoCEv2TransportCfg (class in pyrogue.protocols)</a>
 </li>
       <li><a href="api/cpp/generalerror.html#_CPPv4N5rogue12GeneralErrorE">rogue::GeneralError (C++ class)</a>
 </li>
@@ -5288,12 +5380,12 @@
 </li>
       <li><a href="api/cpp/logging.html#_CPPv4N5rogue7Logging11logThreadIdEv">rogue::Logging::logThreadId (C++ function)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/cpp/logging.html#_CPPv4NK5rogue7Logging4nameEv">rogue::Logging::name (C++ function)</a>
 </li>
       <li><a href="api/cpp/logging.html#_CPPv4N5rogue7Logging13normalizeNameERKNSt6stringE">rogue::Logging::normalizeName (C++ function)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/cpp/logging.html#_CPPv4N5rogue7Logging13setEmitStdoutEb">rogue::Logging::setEmitStdout (C++ function)</a>
 </li>
       <li><a href="api/cpp/logging.html#_CPPv4N5rogue7Logging9setFilterERKNSt6stringE8uint32_t">rogue::Logging::setFilter (C++ function)</a>
@@ -7136,8 +7228,6 @@
         <li><a href="api/python/rogue/interfaces/stream/tcpserver.html#rogue.interfaces.stream.TcpServer">(class in rogue.interfaces.stream)</a>
 </li>
       </ul></li>
-      <li><a href="api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.teardownFpgaQp">teardownFpgaQp() (pyrogue.protocols.RoCEv2Server method)</a>
-</li>
       <li><a href="api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32">TensorFloat32 (class in pyrogue)</a>
 </li>
       <li><a href="api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32BE">TensorFloat32BE (class in pyrogue)</a>
