@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "main",
+      "sha": "bbc6382387d0f7889a6f354dce4d0554ba3c43ee",
+      "short_sha": "bbc6382",
+      "published_at": "2026-06-30T20:26:45Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/28473108666",
+      "summary_url": "/rogue/perf/branches/main/history/bbc6382387d0f7889a6f354dce4d0554ba3c43ee.json"
+    },
+    {
+      "ref_name": "main",
       "sha": "c3157a845b7b8a47a0cd91b2d271dd88e616aa1b",
       "short_sha": "c3157a8",
       "published_at": "2026-06-18T18:09:43Z",
@@ -78,10 +86,10 @@
   ],
   "latest": {
     "ref_name": "main",
-    "sha": "c3157a845b7b8a47a0cd91b2d271dd88e616aa1b",
-    "short_sha": "c3157a8",
-    "published_at": "2026-06-18T18:09:43Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/27776918819",
+    "sha": "bbc6382387d0f7889a6f354dce4d0554ba3c43ee",
+    "short_sha": "bbc6382",
+    "published_at": "2026-06-30T20:26:45Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/28473108666",
     "summary_url": "/rogue/perf/branches/main/latest.json"
   }
 }
