@@ -1,0 +1,23 @@
+{
+  "ref_name": "Server-stop",
+  "ref_slug": "Server-stop",
+  "latest_url": "/rogue/perf/branches/Server-stop/latest.json",
+  "history": [
+    {
+      "ref_name": "Server-stop",
+      "sha": "aa4eaf6708d57f0688202fe2afd5165be8f1bc7d",
+      "short_sha": "aa4eaf6",
+      "published_at": "2026-07-02T23:17:56Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/28627438759",
+      "summary_url": "/rogue/perf/branches/Server-stop/history/aa4eaf6708d57f0688202fe2afd5165be8f1bc7d.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "Server-stop",
+    "sha": "aa4eaf6708d57f0688202fe2afd5165be8f1bc7d",
+    "short_sha": "aa4eaf6",
+    "published_at": "2026-07-02T23:17:56Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/28627438759",
+    "summary_url": "/rogue/perf/branches/Server-stop/latest.json"
+  }
+}
