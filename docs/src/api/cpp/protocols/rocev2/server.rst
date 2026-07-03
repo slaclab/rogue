@@ -72,16 +72,24 @@ Class Reference
 
    .. cpp:function:: ~Server()
 
-      Calls ``stop()``; ``stop()`` releases the slab MR and CQ/QP
-      resources, and the inherited ``Core`` destructor releases the PD
-      and ibverbs context.
+      Calls ``stop()`` to release the CQ/QP and MR resources, then frees
+      the RX slab **last**. The slab is deliberately freed here rather than
+      in ``stop()``: it is this ``Pool``'s buffer backing, and every
+      zero-copy ``Buffer`` handed downstream holds a ``shared_ptr`` to this
+      ``Server``, so the destructor cannot run until the last outstanding
+      frame is released — the slab is therefore never freed while a
+      downstream frame still references it. The inherited ``Core``
+      destructor then releases the PD and ibverbs context.
 
    .. cpp:function:: void stop()
 
       Signals the receive thread to exit, joins and deletes it, then
-      releases the ibverbs resources owned by ``Server``: destroys the
-      QP and CQ, deregisters the MR, and frees the slab. Idempotent —
-      safe to call multiple times (also called by ``~Server()``).
+      releases the external ibverbs resources owned by ``Server``: destroys
+      the QP and CQ and deregisters the MR. Does **not** free the RX slab —
+      that is the ``Pool`` buffer backing and is freed by ``~Server()`` (see
+      above), so a zero-copy ``Buffer`` still held downstream is never
+      stranded. Idempotent — safe to call multiple times (also called by
+      ``~Server()``).
 
    .. cpp:function:: void setFpgaGid(const std::string& gidBytes)
 
