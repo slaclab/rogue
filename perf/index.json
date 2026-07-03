@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-03T00:21:52Z",
+  "generated_at": "2026-07-03T00:40:11Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -297,6 +297,14 @@
       "history": [
         {
           "ref_name": "Server-stop",
+          "sha": "cb093cda523ed00dac5f08a199ae25caa450f0d0",
+          "short_sha": "cb093cd",
+          "published_at": "2026-07-03T00:40:11Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/28630506165",
+          "summary_url": "/rogue/perf/branches/Server-stop/history/cb093cda523ed00dac5f08a199ae25caa450f0d0.json"
+        },
+        {
+          "ref_name": "Server-stop",
           "sha": "4a5390013041492dab32a05a53035b94ff0cdf92",
           "short_sha": "4a53900",
           "published_at": "2026-07-03T00:21:52Z",
@@ -322,10 +330,10 @@
       ],
       "latest": {
         "ref_name": "Server-stop",
-        "sha": "4a5390013041492dab32a05a53035b94ff0cdf92",
-        "short_sha": "4a53900",
-        "published_at": "2026-07-03T00:21:52Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/28629854942",
+        "sha": "cb093cda523ed00dac5f08a199ae25caa450f0d0",
+        "short_sha": "cb093cd",
+        "published_at": "2026-07-03T00:40:11Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/28630506165",
         "summary_url": "/rogue/perf/branches/Server-stop/latest.json"
       }
     },
