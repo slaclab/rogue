@@ -102,6 +102,13 @@ rpr::Server::Server(const std::string& deviceName,
     memset(fpgaGid_, 0, 16);
     wakeFd_[0] = wakeFd_[1] = -1;
 
+    // Release the GIL for the ibverbs bring-up below (open device, reg_mr, create
+    // CQ/QP, modify to INIT, query GID) — blocking syscalls run while the Python
+    // caller holds the GIL.  Matches AxiStreamDma's constructor.  On a throw,
+    // GilRelease's destructor re-acquires the GIL before the boost.python
+    // exception translator runs.
+    rogue::GilRelease noGil;
+
     // The destructor does NOT run on a partially-constructed object, so any
     // throw between here and the end of the body would leak slab_ / mr_ /
     // cq_ / qp_.  Wrap the body in try/catch and call cleanupResources() on
@@ -281,15 +288,29 @@ rpr::Server::Server(const std::string& deviceName,
         log_->info("RC QP ready: qpn=0x%06x rqPsn=0x%06x sqPsn=0x%06x",
                    hostQpn_, hostRqPsn_, hostSqPsn_);
     } catch (...) {
+        // Failed construction: the destructor does NOT run on a partially
+        // constructed object, so release the ibverbs resources and free the slab
+        // here.  No zero-copy Buffer exists yet, so freeing the slab is safe.
         cleanupResources();
+        if (slab_) {
+            free(slab_);
+            slab_ = nullptr;
+        }
         throw;
     }
 }
 
 // ---------------------------------------------------------------------------
-// cleanupResources — release every ibverbs / heap resource owned by Server,
-// in reverse order of allocation.  Idempotent (safe to call from both the
-// failed-construction path and stop()).
+// cleanupResources — release the EXTERNAL ibverbs resources owned by Server
+// (QP, CQ, comp-channel, MR registration, wake pipe), in reverse order of
+// allocation.  Idempotent.
+//
+// The RX slab is deliberately NOT freed here: it is this Pool's buffer backing,
+// and per the base Pool convention (ris::Pool::~Pool) its lifetime is the Server
+// object's.  Freeing it in stop() would be a use-after-free for any zero-copy
+// Buffer still held downstream (each points into slab_ and keeps this Server
+// alive via shared_ptr<Pool>).  ~Server frees the slab; the failed-construction
+// path frees it explicitly (the destructor does not run on a partial object).
 // ---------------------------------------------------------------------------
 void rpr::Server::cleanupResources() {
     if (qp_) {
@@ -308,10 +329,8 @@ void rpr::Server::cleanupResources() {
         ibv_dereg_mr(mr_);
         mr_ = nullptr;
     }
-    if (slab_) {
-        free(slab_);
-        slab_ = nullptr;
-    }
+    // slab_ is intentionally NOT freed here — it is the Pool buffer backing (see
+    // the comment above); ~Server and the failed-construction path free it.
     for (int i = 0; i < 2; ++i) {
         if (wakeFd_[i] >= 0) {
             close(wakeFd_[i]);
@@ -337,6 +356,11 @@ void rpr::Server::setFpgaGid(const std::string& gidBytes) {
 // ---------------------------------------------------------------------------
 void rpr::Server::completeConnection(uint32_t fpgaQpn, uint32_t fpgaRqPsn,
                                      uint32_t pmtu, uint32_t minRnrTimer) {
+    // Release the GIL for the ibverbs bring-up (two ibv_modify_qp transitions and
+    // the recv-WR pre-post loop) — blocking syscalls run from Python with the GIL
+    // held.  Mirrors the GIL handling in AxiStreamDma's construction/bring-up.
+    rogue::GilRelease noGil;
+
     // Single-use: a second call would reassign thread_ and orphan the
     // original std::thread.  Real misuse would also be caught by
     // ibv_modify_qp rejecting INIT→RTR when the QP is already in RTS,
@@ -495,6 +519,11 @@ void rpr::Server::postRecvWr(uint32_t slot) {
 // meta lower 24 bits = slot index (set in createBuffer() call in runThread)
 // ---------------------------------------------------------------------------
 void rpr::Server::retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize) {
+    // retBuffer runs from Buffer::~Buffer(), which can fire on a Python thread
+    // holding the GIL; release it around the ibv_post_recv re-post and decCounter
+    // (which locks).  Matches ris::Pool::retBuffer() and AxiStreamDma::retBuffer().
+    rogue::GilRelease noGil;
+
     uint32_t slot = meta & 0x00FFFFFF;
 
     log_->debug("retBuffer: re-posting slot=%u", slot);
@@ -729,6 +758,13 @@ void rpr::Server::acceptFrame(ris::FramePtr /*frame*/) {
 // stop / destructor
 // ---------------------------------------------------------------------------
 void rpr::Server::stop() {
+    // Release the GIL for the duration of teardown.  stop() is driven from Python
+    // (RoCEv2Server._stop) with the GIL held, and the receive thread re-acquires
+    // the GIL via ScopedGil inside sendFrame() when a downstream slave is Python;
+    // joining that thread below while holding the GIL would deadlock.  Matches
+    // AxiStreamDma::stop() / udp::Server::stop() / TcpCore::stop().
+    rogue::GilRelease noGil;
+
     // Signal the thread to exit if it is still running.  Always join /
     // delete thread_ when it is non-null: runThread() may have already
     // cleared threadEn_ itself (e.g. on IBV_WC_WR_FLUSH_ERR or a caught
@@ -749,10 +785,31 @@ void rpr::Server::stop() {
         delete thread_;
         thread_ = nullptr;
     }
+    // Release the external ibverbs resources now — QP/CQ/MR(dereg)/comp-channel
+    // and the wake pipe — mirroring AxiStreamDma::stop(), which releases its
+    // external kernel resources (DMA mmap + fd) at stop().  But NOT slab_: the RX
+    // slab is this Pool's buffer backing, and zero-copy Buffers handed downstream
+    // still point into it.  Per the base Pool contract (ris::Pool::~Pool() frees
+    // its buffer memory at destruction, and every Buffer holds a shared_ptr to
+    // its Pool), the slab's lifetime is the Server object's; it is freed in
+    // ~Server (below), after the last outstanding Buffer has released the Server.
     cleanupResources();
 }
 
-rpr::Server::~Server() { this->stop(); }
+rpr::Server::~Server() {
+    this->stop();
+
+    // Free the RX slab last, following the base Pool convention: ris::Pool::~Pool()
+    // frees its buffer backing (dataQ_) at destruction, never in a stop().  Every
+    // zero-copy Buffer created over slab_ holds a shared_ptr to this Server
+    // (Pool::createBuffer -> Buffer::source_), so the destructor cannot run until
+    // the last outstanding Buffer is gone — the slab is therefore safe to free
+    // here and is never freed while a downstream frame still references it.
+    if (slab_) {
+        free(slab_);
+        slab_ = nullptr;
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Python bindings

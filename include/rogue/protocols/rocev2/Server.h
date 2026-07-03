@@ -105,9 +105,12 @@ class Server : public rogue::protocols::rocev2::Core,
     // poll/drain loop in runThread() exits.
     void processCompletion(struct ibv_wc& wc);
 
-    // Idempotent helper that releases every ibverbs / heap resource owned by
-    // Server in reverse allocation order.  Called by stop() and from the
-    // failed-construction path in the constructor.
+    // Releases the external ibverbs resources owned by Server (QP, CQ,
+    // comp-channel, MR registration, wake pipe) in reverse allocation order.
+    // Idempotent.  Does NOT free the RX slab: that is this Pool's buffer backing
+    // and lives with the Server object (freed in ~Server, mirroring
+    // ris::Pool::~Pool), so a zero-copy Buffer still held downstream is never
+    // stranded.  The failed-construction path frees the slab explicitly.
     void cleanupResources();
 
   protected:
