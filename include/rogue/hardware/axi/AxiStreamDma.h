@@ -21,10 +21,10 @@
 #include <stdint.h>
 
 #include <atomic>
-#include <condition_variable>
 #include <map>
 #include <memory>
 #include <mutex>
+#include <shared_mutex>
 #include <string>
 #include <thread>
 
@@ -110,13 +110,7 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     std::atomic<bool> stopped_{false};
 
     // Serializes fd_ close against active driver calls and deferred zero-copy returns.
-    std::mutex fdMtx_;
-
-    // Number of public/API paths currently using fd_.
-    uint32_t fdUsers_ = 0;
-
-    // Wakes stop() after the last active fd_ user exits.
-    std::condition_variable fdCv_;
+    std::shared_timed_mutex fdMtx_;
 
     // Destination selector used when transmitting frames.
     uint32_t dest_;
@@ -155,21 +149,44 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     // RAII guard that pins fd_ open while a driver call runs.
     class FdGuard {
-        rogue::hardware::axi::AxiStreamDma* owner_;
-        int32_t fd_;
+        std::shared_lock<std::shared_timed_mutex> lock_;
+        int32_t fd_ = -1;
 
       public:
         FdGuard(rogue::hardware::axi::AxiStreamDma* owner,
                 const char* context,
                 bool throwOnStopped,
                 bool allowStopped = false);
-        ~FdGuard();
+        ~FdGuard() = default;
         FdGuard(const FdGuard&) = delete;
         FdGuard& operator=(const FdGuard&) = delete;
 
         int32_t fd() const { return fd_; }
         bool valid() const { return fd_ >= 0; }
     };
+
+    // Runs a void driver operation while fd_ is pinned open.
+    template <typename Func>
+    void withFd(const char* context, bool throwOnStopped, Func func, bool allowStopped = false) {
+        FdGuard fd(this, context, throwOnStopped, allowStopped);
+        if (fd.valid()) func(fd.fd());
+    }
+
+    // Runs a value-returning driver operation while fd_ is pinned open.
+    template <typename Result, typename Func>
+    Result withFd(const char* context, bool throwOnStopped, Result stoppedValue, Func func, bool allowStopped = false) {
+        FdGuard fd(this, context, throwOnStopped, allowStopped);
+        if (!fd.valid()) return stoppedValue;
+        return func(fd.fd());
+    }
+
+    template <typename Func>
+    uint32_t readFdValue(const char* context, Func func) {
+        return withFd<uint32_t>(context, false, 0, [func](int32_t fd) {
+            auto value = func(fd);
+            return (value < 0) ? 0 : static_cast<uint32_t>(value);
+        });
+    }
 
   public:
     /**

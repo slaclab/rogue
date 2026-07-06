@@ -53,34 +53,24 @@ static void throwStopped(const char* context) {
     throw rogue::GeneralError(context, "instance has been stopped or did not finish construction");
 }
 
-static uint32_t dmaValueOrZero(ssize_t value) {
-    return (value < 0) ? 0 : static_cast<uint32_t>(value);
-}
-
 rha::AxiStreamDma::FdGuard::FdGuard(rha::AxiStreamDma* owner,
                                     const char* context,
                                     bool throwOnStopped,
                                     bool allowStopped) {
-    std::lock_guard<std::mutex> lock(owner->fdMtx_);
-
-    if ((!allowStopped && owner->stopped_.load()) || owner->fd_ < 0) {
-        owner_ = NULL;
-        fd_    = -1;
+    if (!allowStopped && owner->stopped_.load()) {
         if (throwOnStopped) throwStopped(context);
         return;
     }
 
-    owner_ = owner;
-    fd_    = owner->fd_;
-    owner->fdUsers_++;
-}
+    lock_ = std::shared_lock<std::shared_timed_mutex>(owner->fdMtx_);
 
-rha::AxiStreamDma::FdGuard::~FdGuard() {
-    if (owner_ != NULL) {
-        std::lock_guard<std::mutex> lock(owner_->fdMtx_);
-        owner_->fdUsers_--;
-        if (owner_->fdUsers_ == 0) owner_->fdCv_.notify_all();
+    if ((!allowStopped && owner->stopped_.load()) || owner->fd_ < 0) {
+        lock_.unlock();
+        if (throwOnStopped) throwStopped(context);
+        return;
     }
+
+    fd_ = owner->fd_;
 }
 
 rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
@@ -359,8 +349,7 @@ void rha::AxiStreamDma::stop() {
     // open until ~AxiStreamDma() because zero-copy Rogue buffers can outlive a
     // user-initiated stop() and still point into desc_->rawBuff.
     {
-        std::unique_lock<std::mutex> lock(fdMtx_);
-        fdCv_.wait(lock, [this] { return fdUsers_ == 0; });
+        std::unique_lock<std::shared_timed_mutex> lock(fdMtx_);
         if (fd_ >= 0) {
             ::close(fd_);
             fd_ = -1;
@@ -379,14 +368,12 @@ void rha::AxiStreamDma::setTimeout(uint32_t timeout) {
 
 //! Set driver debug level
 void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
-    FdGuard fd(this, "AxiStreamDma::setDriverDebug", false);
-    if (fd.valid()) dmaSetDebug(fd.fd(), level);
+    withFd("AxiStreamDma::setDriverDebug", false, [level](int32_t fd) { dmaSetDebug(fd, level); });
 }
 
 //! Strobe ack line
 void rha::AxiStreamDma::dmaAck() {
-    FdGuard fd(this, "AxiStreamDma::dmaAck", false);
-    if (fd.valid()) axisReadAck(fd.fd());
+    withFd("AxiStreamDma::dmaAck", false, [](int32_t fd) { axisReadAck(fd); });
 }
 
 //! Generate a buffer. Called from master
@@ -425,10 +412,8 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
             // Keep trying since poll call can fire
             // but getIndex fails because we did not win the buffer lock
             do {
-                {
-                    FdGuard fd(this, "AxiStreamDma::acceptReq", true);
-
-                    pfd.fd      = fd.fd();
+                res = withFd<int32_t>("AxiStreamDma::acceptReq", true, -1, [&](int32_t fd) {
+                    pfd.fd      = fd;
                     pfd.events  = POLLOUT;
                     pfd.revents = 0;
 
@@ -449,13 +434,13 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
                                        ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.",
                                        timeout_.tv_sec,
                                        timeout_.tv_usec);
-                        res = -1;
+                        return -1;
                     } else {
                         // Attempt to get index.
                         // return of less than 0 is a failure to get a buffer
-                        res = dmaGetIndex(fd.fd());
+                        return dmaGetIndex(fd);
                     }
-                }
+                });
             } while (res < 0);
 
             // Mark zero copy meta with bit 31 set, lower bits are index
@@ -526,18 +511,16 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
 
             // Buffer is not already stale as indicates by bit 30
             if ((meta & 0x40000000) == 0) {
-                {
-                    FdGuard fd(this, "AxiStreamDma::acceptFrame", true);
-
+                withFd("AxiStreamDma::acceptFrame", true, [&](int32_t fd) {
                     // Write by passing (*it)er index to driver
-                    if (dmaWriteIndex(fd.fd(),
+                    if (dmaWriteIndex(fd,
                                       meta & 0x3FFFFFFF,
                                       (*it)->getPayload(),
                                       axisSetFlags(fuser, luser, cont),
                                       dest_) <= 0) {
                         throw(rogue::GeneralError("AxiStreamDma::acceptFrame", "AXIS Write Call Failed"));
                     }
-                }
+                });
 
                 // Mark (*it)er as stale
                 meta |= 0x40000000;
@@ -549,10 +532,8 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
             // Keep trying since poll call can fire
             // but write fails because we did not win the (*it)er lock
             do {
-                {
-                    FdGuard fd(this, "AxiStreamDma::acceptFrame", true);
-
-                    pfd.fd      = fd.fd();
+                res = withFd<int32_t>("AxiStreamDma::acceptFrame", true, 0, [&](int32_t fd) {
+                    pfd.fd      = fd;
                     pfd.events  = POLLOUT;
                     pfd.revents = 0;
 
@@ -573,18 +554,17 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
                                        ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.",
                                        timeout_.tv_sec,
                                        timeout_.tv_usec);
-                        res = 0;
+                        return 0;
                     } else {
                         // Write with (*it)er copy
-                        if ((res = dmaWrite(fd.fd(),
-                                            (*it)->begin(),
-                                            (*it)->getPayload(),
-                                            axisSetFlags(fuser, luser, 0),
-                                            dest_)) < 0) {
+                        ssize_t writeSize = dmaWrite(
+                            fd, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser, 0), dest_);
+                        if (writeSize < 0) {
                             throw(rogue::GeneralError("AxiStreamDma::acceptFrame", "AXIS Write Call Failed!!!!"));
                         }
+                        return static_cast<int32_t>(writeSize);
                     }
-                }
+                });
             } while (res == 0);  // Exit out if return flag was set false
         }
     }
@@ -601,9 +581,14 @@ void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
         // Device is open and buffer is not stale
         // Bit 30 indicates buffer has already been returned to hardware
         if ((meta & 0x40000000) == 0) {
-            FdGuard fd(this, "AxiStreamDma::retBuffer", false, true);
-            if (fd.valid() && dmaRetIndex(fd.fd(), meta & 0x3FFFFFFF) < 0)
-                throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
+            withFd(
+                "AxiStreamDma::retBuffer",
+                false,
+                [meta](int32_t fd) {
+                    if (dmaRetIndex(fd, meta & 0x3FFFFFFF) < 0)
+                        throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
+                },
+                true);
         }
         decCounter(size);
 
@@ -730,107 +715,77 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
 
 //! Get the DMA Driver's Git Version
 std::string rha::AxiStreamDma::getGitVersion() {
-    FdGuard fd(this, "AxiStreamDma::getGitVersion", false);
-    if (!fd.valid()) return "";
-    return dmaGetGitVersion(fd.fd());
+    return withFd<std::string>("AxiStreamDma::getGitVersion", false, std::string(), dmaGetGitVersion);
 }
 
 //! Get the DMA Driver's API Version
 uint32_t rha::AxiStreamDma::getApiVersion() {
-    FdGuard fd(this, "AxiStreamDma::getApiVersion", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetApiVersion(fd.fd()));
+    return readFdValue("AxiStreamDma::getApiVersion", dmaGetApiVersion);
 }
 
 //! Get the size of buffers (RX/TX)
 uint32_t rha::AxiStreamDma::getBuffSize() {
-    FdGuard fd(this, "AxiStreamDma::getBuffSize", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetBuffSize(fd.fd()));
+    return readFdValue("AxiStreamDma::getBuffSize", dmaGetBuffSize);
 }
 
 //! Get the number of RX buffers
 uint32_t rha::AxiStreamDma::getRxBuffCount() {
-    FdGuard fd(this, "AxiStreamDma::getRxBuffCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetRxBuffCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getRxBuffCount", dmaGetRxBuffCount);
 }
 
 //! Get RX buffer in User count
 uint32_t rha::AxiStreamDma::getRxBuffinUserCount() {
-    FdGuard fd(this, "AxiStreamDma::getRxBuffinUserCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetRxBuffinUserCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getRxBuffinUserCount", dmaGetRxBuffinUserCount);
 }
 
 //! Get RX buffer in HW count
 uint32_t rha::AxiStreamDma::getRxBuffinHwCount() {
-    FdGuard fd(this, "AxiStreamDma::getRxBuffinHwCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetRxBuffinHwCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getRxBuffinHwCount", dmaGetRxBuffinHwCount);
 }
 
 //! Get RX buffer in Pre-HW Queue count
 uint32_t rha::AxiStreamDma::getRxBuffinPreHwQCount() {
-    FdGuard fd(this, "AxiStreamDma::getRxBuffinPreHwQCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetRxBuffinPreHwQCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getRxBuffinPreHwQCount", dmaGetRxBuffinPreHwQCount);
 }
 
 //! Get RX buffer in SW Queue count
 uint32_t rha::AxiStreamDma::getRxBuffinSwQCount() {
-    FdGuard fd(this, "AxiStreamDma::getRxBuffinSwQCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetRxBuffinSwQCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getRxBuffinSwQCount", dmaGetRxBuffinSwQCount);
 }
 
 //! Get RX buffer missing count
 uint32_t rha::AxiStreamDma::getRxBuffMissCount() {
-    FdGuard fd(this, "AxiStreamDma::getRxBuffMissCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetRxBuffMissCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getRxBuffMissCount", dmaGetRxBuffMissCount);
 }
 
 //! Get the number of TX buffers
 uint32_t rha::AxiStreamDma::getTxBuffCount() {
-    FdGuard fd(this, "AxiStreamDma::getTxBuffCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetTxBuffCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getTxBuffCount", dmaGetTxBuffCount);
 }
 
 //! Get TX buffer in User count
 uint32_t rha::AxiStreamDma::getTxBuffinUserCount() {
-    FdGuard fd(this, "AxiStreamDma::getTxBuffinUserCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetTxBuffinUserCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getTxBuffinUserCount", dmaGetTxBuffinUserCount);
 }
 
 //! Get TX buffer in HW count
 uint32_t rha::AxiStreamDma::getTxBuffinHwCount() {
-    FdGuard fd(this, "AxiStreamDma::getTxBuffinHwCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetTxBuffinHwCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getTxBuffinHwCount", dmaGetTxBuffinHwCount);
 }
 
 //! Get TX buffer in Pre-HW Queue count
 uint32_t rha::AxiStreamDma::getTxBuffinPreHwQCount() {
-    FdGuard fd(this, "AxiStreamDma::getTxBuffinPreHwQCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetTxBuffinPreHwQCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getTxBuffinPreHwQCount", dmaGetTxBuffinPreHwQCount);
 }
 
 //! Get TX buffer in SW Queue count
 uint32_t rha::AxiStreamDma::getTxBuffinSwQCount() {
-    FdGuard fd(this, "AxiStreamDma::getTxBuffinSwQCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetTxBuffinSwQCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getTxBuffinSwQCount", dmaGetTxBuffinSwQCount);
 }
 
 //! Get TX buffer missing count
 uint32_t rha::AxiStreamDma::getTxBuffMissCount() {
-    FdGuard fd(this, "AxiStreamDma::getTxBuffMissCount", false);
-    if (!fd.valid()) return 0;
-    return dmaValueOrZero(dmaGetTxBuffMissCount(fd.fd()));
+    return readFdValue("AxiStreamDma::getTxBuffMissCount", dmaGetTxBuffMissCount);
 }
 
 void rha::AxiStreamDma::setup_python() {
