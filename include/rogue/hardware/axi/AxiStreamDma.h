@@ -23,6 +23,7 @@
 #include <atomic>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 
@@ -103,6 +104,9 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     // Process-local descriptor for TX/RX operations and dest mask programming.
     int32_t fd_;
+
+    // Serializes fd_ close against deferred zero-copy buffer returns.
+    std::mutex fdMtx_;
 
     // Destination selector used when transmitting frames.
     uint32_t dest_;
@@ -204,7 +208,14 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     /** @brief Destroys the interface and stops background activity. */
     ~AxiStreamDma();
 
-    /** @brief Stops RX thread and closes DMA file descriptors. */
+    /**
+     * @brief Stops RX thread and closes the per-instance DMA file descriptor.
+     *
+     * @details
+     * The shared zero-copy DMA mapping remains valid until destruction so
+     * downstream Rogue buffers retained after `stop()` do not reference
+     * unmapped memory.
+     */
     void stop();
 
     /**
