@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-06T20:44:29Z",
+  "generated_at": "2026-07-06T20:59:34Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -297,6 +297,14 @@
       "history": [
         {
           "ref_name": "axi-stream-dma-stop-lifetime",
+          "sha": "2341441da95027e02e8cf130c42807da2f98b368",
+          "short_sha": "2341441",
+          "published_at": "2026-07-06T20:59:34Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/28822512542",
+          "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/history/2341441da95027e02e8cf130c42807da2f98b368.json"
+        },
+        {
+          "ref_name": "axi-stream-dma-stop-lifetime",
           "sha": "31536443686b28ec32560c4a679c9f0f45196868",
           "short_sha": "3153644",
           "published_at": "2026-07-06T20:44:29Z",
@@ -322,10 +330,10 @@
       ],
       "latest": {
         "ref_name": "axi-stream-dma-stop-lifetime",
-        "sha": "31536443686b28ec32560c4a679c9f0f45196868",
-        "short_sha": "3153644",
-        "published_at": "2026-07-06T20:44:29Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/28821665739",
+        "sha": "2341441da95027e02e8cf130c42807da2f98b368",
+        "short_sha": "2341441",
+        "published_at": "2026-07-06T20:59:34Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/28822512542",
         "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/latest.json"
       }
     },
