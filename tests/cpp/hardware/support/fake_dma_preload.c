@@ -87,6 +87,7 @@ static int      g_release      = 0;
 static int      g_active_calls = 0;
 static int      g_close_during_driver_call = 0;
 static int      g_ret_index_count = 0;
+static int      g_tracking_overflow_count = 0;
 
 typedef int (*open_fn)(const char*, int, ...);
 typedef void* (*mmap_fn)(void*, size_t, int, int, int, off_t);
@@ -116,7 +117,11 @@ static int is_our_fd_locked(int fd) {
 }
 
 static void add_fd_locked(int fd) {
-    if (g_fd_n < MAX_FDS) g_fds[g_fd_n++] = fd;
+    if (g_fd_n < MAX_FDS) {
+        g_fds[g_fd_n++] = fd;
+    } else {
+        g_tracking_overflow_count++;
+    }
 }
 
 static void del_fd_locked(int fd) {
@@ -143,6 +148,8 @@ static void add_region_locked(void* addr, size_t len) {
         g_region_len[g_region_n]  = len;
         g_region_n++;
         g_mapped_count++;
+    } else {
+        g_tracking_overflow_count++;
     }
 }
 
@@ -410,6 +417,47 @@ int fakedma_mapped_count(void) {
     n = g_mapped_count;
     pthread_mutex_unlock(&g_lock);
     return n;
+}
+
+int fakedma_fd_count(void) {
+    int n;
+    pthread_mutex_lock(&g_lock);
+    n = g_fd_n;
+    pthread_mutex_unlock(&g_lock);
+    return n;
+}
+
+int fakedma_region_count(void) {
+    int n;
+    pthread_mutex_lock(&g_lock);
+    n = g_region_n;
+    pthread_mutex_unlock(&g_lock);
+    return n;
+}
+
+int fakedma_active_call_count(void) {
+    int n;
+    pthread_mutex_lock(&g_lock);
+    n = g_active_calls;
+    pthread_mutex_unlock(&g_lock);
+    return n;
+}
+
+int fakedma_tracking_overflow_count(void) {
+    int n;
+    pthread_mutex_lock(&g_lock);
+    n = g_tracking_overflow_count;
+    pthread_mutex_unlock(&g_lock);
+    return n;
+}
+
+int fakedma_is_clean(void) {
+    int clean;
+    pthread_mutex_lock(&g_lock);
+    clean = (g_fd_n == 0) && (g_region_n == 0) && (g_active_calls == 0) &&
+            (g_tracking_overflow_count == 0);
+    pthread_mutex_unlock(&g_lock);
+    return clean;
 }
 
 const char* fakedma_path(void) {

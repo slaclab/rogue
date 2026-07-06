@@ -29,37 +29,46 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#include <dlfcn.h>
-
 #include "doctest/doctest.h"
 #include "rogue/hardware/axi/AxiStreamDma.h"
 #include "rogue/interfaces/stream/Frame.h"
+#include "support/fake_dma_hooks.h"
 
 namespace rha = rogue::hardware::axi;
 
 namespace {
 
-// Sentinel path recognized by the fake_dma_preload LD_PRELOAD shim.
-const char* const kFakePath = "/tmp/rogue-fake-datadev";
+void requireFakeDmaClean() {
+    auto& fake = rogue_test::fakeDma();
+    INFO("fd_count=" << fake.fdCount());
+    INFO("region_count=" << fake.regionCount());
+    INFO("active_calls=" << fake.activeCallCount());
+    INFO("overflow_count=" << fake.overflowCount());
+    REQUIRE(fake.isClean());
+    REQUIRE_EQ(fake.mappedCount(), 0);
+}
 
-typedef int (*MappedCountFn)(void);
-
-// Resolve the shim's query hook. Non-null only when the shim is preloaded.
-MappedCountFn mappedCountHook() {
-    return reinterpret_cast<MappedCountFn>(dlsym(RTLD_DEFAULT, "fakedma_mapped_count"));
+void checkFakeDmaClean() {
+    auto& fake = rogue_test::fakeDma();
+    INFO("fd_count=" << fake.fdCount());
+    INFO("region_count=" << fake.regionCount());
+    INFO("active_calls=" << fake.activeCallCount());
+    INFO("overflow_count=" << fake.overflowCount());
+    CHECK(fake.isClean());
+    CHECK_EQ(fake.mappedCount(), 0);
 }
 
 }  // namespace
 
 TEST_CASE("AxiStreamDma keeps the shared DMA mapping alive across stop()") {
-    MappedCountFn mappedCount = mappedCountHook();
-    REQUIRE(mappedCount != nullptr);  // fake_dma_preload shim must be LD_PRELOAD'd
-    REQUIRE(mappedCount() == 0);
+    requireFakeDmaClean();
+    auto& fake = rogue_test::fakeDma();
+    fake.reset();
 
-    auto dma = rha::AxiStreamDma::create(kFakePath, 0, false);
+    auto dma = rha::AxiStreamDma::create(fake.path(), 0, false);
 
     // dmaMapDma() maps all shared zero-copy buffers at construction.
-    const int mappedAtCtor = mappedCount();
+    const int mappedAtCtor = fake.mappedCount();
     REQUIRE(mappedAtCtor > 0);
 
     // Obtain a zero-copy frame and retain it past stop(); its buffer points
@@ -73,14 +82,14 @@ TEST_CASE("AxiStreamDma keeps the shared DMA mapping alive across stop()") {
     // The fix keeps the shared mapping valid after stop() so the retained frame
     // does not dangle. Reverted code releases it inside stop(), dropping the
     // count to zero here.
-    CHECK_EQ(mappedCount(), mappedAtCtor);
+    CHECK_EQ(fake.mappedCount(), mappedAtCtor);
 
     // Returning the buffer post-stop() is a no-op on the driver (fd_ == -1); it
     // must not touch the still-mapped memory or throw.
     frame.reset();
-    CHECK_EQ(mappedCount(), mappedAtCtor);
+    CHECK_EQ(fake.mappedCount(), mappedAtCtor);
 
     // Destruction is the single point that releases the shared mapping.
     dma.reset();
-    CHECK_EQ(mappedCount(), 0);
+    checkFakeDmaClean();
 }
