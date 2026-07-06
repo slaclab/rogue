@@ -21,6 +21,7 @@
 #include <stdint.h>
 
 #include <atomic>
+#include <condition_variable>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -105,8 +106,17 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     // Process-local descriptor for TX/RX operations and dest mask programming.
     int32_t fd_;
 
-    // Serializes fd_ close against deferred zero-copy buffer returns.
+    // Set once stop() starts; public stream operations reject new work after it.
+    std::atomic<bool> stopped_{false};
+
+    // Serializes fd_ close against active driver calls and deferred zero-copy returns.
     std::mutex fdMtx_;
+
+    // Number of public/API paths currently using fd_.
+    uint32_t fdUsers_ = 0;
+
+    // Wakes stop() after the last active fd_ user exits.
+    std::condition_variable fdCv_;
 
     // Destination selector used when transmitting frames.
     uint32_t dest_;
@@ -142,6 +152,24 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     // Closes shared DMA mapping state when last user exits.
     static void closeShared(std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared>);
+
+    // RAII guard that pins fd_ open while a driver call runs.
+    class FdGuard {
+        rogue::hardware::axi::AxiStreamDma* owner_;
+        int32_t fd_;
+
+      public:
+        FdGuard(rogue::hardware::axi::AxiStreamDma* owner,
+                const char* context,
+                bool throwOnStopped,
+                bool allowStopped = false);
+        ~FdGuard();
+        FdGuard(const FdGuard&) = delete;
+        FdGuard& operator=(const FdGuard&) = delete;
+
+        int32_t fd() const { return fd_; }
+        bool valid() const { return fd_ >= 0; }
+    };
 
   public:
     /**
