@@ -18,10 +18,15 @@
 
 #include "rogue/protocols/rocev2/Server.h"
 
+#include <arpa/inet.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <infiniband/verbs.h>
 #include <inttypes.h>
 #include <stdint.h>
 #include <string.h>
+#include <sys/select.h>
+#include <unistd.h>
 
 #include <chrono>
 #include <cstdlib>
@@ -77,7 +82,7 @@ rpr::Server::Server(const std::string& deviceName,
     : rpr::Core(deviceName, ibPort, gidIndex, maxPayload),
       ris::Master(),
       ris::Slave(),
-      cq_(nullptr), qp_(nullptr), mr_(nullptr),
+      cq_(nullptr), qp_(nullptr), mr_(nullptr), comp_channel_(nullptr),
       slab_(nullptr),
       slabSize_(0),
       numBufs_(rxQueueDepth),
@@ -95,6 +100,7 @@ rpr::Server::Server(const std::string& deviceName,
     log_ = rogue::Logging::create("rocev2.Server");
     memset(hostGid_, 0, 16);
     memset(fpgaGid_, 0, 16);
+    wakeFd_[0] = wakeFd_[1] = -1;
 
     // The destructor does NOT run on a partially-constructed object, so any
     // throw between here and the end of the body would leak slab_ / mr_ /
@@ -142,11 +148,40 @@ rpr::Server::Server(const std::string& deviceName,
                    mrAddr_, mrRkey_, slabSize_);
 
         // -------------------------------------------------------------------
-        // 3. Create Completion Queue
+        // 3a. Completion channel + self-pipe (event-driven CQ, no busy-poll)
+        //     The CQ below is bound to comp_channel_ so each completion makes
+        //     the channel fd readable; runThread() blocks in select() on that
+        //     fd plus wakeFd_ (a self-pipe stop() writes to) for prompt,
+        //     sleepless shutdown. Both fds are non-blocking so the drain loops
+        //     terminate cleanly (ibv_get_cq_event returns EAGAIN when empty).
+        // -------------------------------------------------------------------
+        comp_channel_ = ibv_create_comp_channel(ctx_);
+        if (!comp_channel_)
+            throw(rogue::GeneralError::create("rocev2::Server::Server",
+                                              "ibv_create_comp_channel failed"));
+        {
+            int flags = fcntl(comp_channel_->fd, F_GETFL);
+            if (flags < 0 ||
+                fcntl(comp_channel_->fd, F_SETFL, flags | O_NONBLOCK) < 0)
+                throw(rogue::GeneralError::create("rocev2::Server::Server",
+                                                  "failed to set comp channel fd non-blocking"));
+        }
+
+        if (pipe(wakeFd_) != 0)
+            throw(rogue::GeneralError::create("rocev2::Server::Server",
+                                              "wake self-pipe creation failed"));
+        for (int i = 0; i < 2; ++i) {
+            int flags = fcntl(wakeFd_[i], F_GETFL);
+            if (flags >= 0) fcntl(wakeFd_[i], F_SETFL, flags | O_NONBLOCK);
+        }
+
+        // -------------------------------------------------------------------
+        // 3. Create Completion Queue (bound to comp_channel_ for event-driven
+        //    notification; cq_context = this)
         // -------------------------------------------------------------------
         cq_ = ibv_create_cq(ctx_,
                              static_cast<int>(numBufs_),
-                             nullptr, nullptr, 0);
+                             this, comp_channel_, 0);
         if (!cq_)
             throw(rogue::GeneralError::create("rocev2::Server::Server",
                                               "ibv_create_cq failed"));
@@ -265,6 +300,10 @@ void rpr::Server::cleanupResources() {
         ibv_destroy_cq(cq_);
         cq_ = nullptr;
     }
+    if (comp_channel_) {
+        ibv_destroy_comp_channel(comp_channel_);
+        comp_channel_ = nullptr;
+    }
     if (mr_) {
         ibv_dereg_mr(mr_);
         mr_ = nullptr;
@@ -272,6 +311,12 @@ void rpr::Server::cleanupResources() {
     if (slab_) {
         free(slab_);
         slab_ = nullptr;
+    }
+    for (int i = 0; i < 2; ++i) {
+        if (wakeFd_[i] >= 0) {
+            close(wakeFd_[i]);
+            wakeFd_[i] = -1;
+        }
     }
 }
 
@@ -363,7 +408,7 @@ void rpr::Server::completeConnection(uint32_t fpgaQpn, uint32_t fpgaRqPsn,
         attr.sq_psn        = hostSqPsn_;
         attr.timeout       = 14;
         attr.retry_cnt     = 3;
-        attr.rnr_retry     = 3;
+        attr.rnr_retry     = 7;  // infinite (host SQ never transmits; cosmetic consistency)
         attr.max_rd_atomic = 16;
 
         if (ibv_modify_qp(qp_, &attr,
@@ -377,7 +422,7 @@ void rpr::Server::completeConnection(uint32_t fpgaQpn, uint32_t fpgaRqPsn,
                                               "QP RTR→RTS failed"));
     }
 
-    log_->info("QP → RTS — ready to receive RDMA WRITEs");
+    log_->info("QP → RTS — ready to receive RDMA SENDs");
 
     // Start receive thread
     std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
@@ -466,119 +511,208 @@ void rpr::Server::retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize) {
 }
 
 // ---------------------------------------------------------------------------
-// runThread — CQ polling loop (zero-copy)
+// processCompletion — handle one receive completion (zero-copy).
+// Decodes the immediate, wraps the slab slot as a rogue Buffer, and forwards it
+// downstream; retBuffer() re-posts the slot's credit when downstream releases
+// the buffer. On IBV_WC_WR_FLUSH_ERR (QP in ERROR) it clears threadEn_ so the
+// caller's drain/poll loop exits.
+// ---------------------------------------------------------------------------
+void rpr::Server::processCompletion(struct ibv_wc& wc) {
+    uint32_t slot = static_cast<uint32_t>(wc.wr_id);
+
+    // Defensive: every posted WR sets wr_id = slot with slot < numBufs_; a
+    // corrupted wr_id must not be dereferenced as a slab offset below.
+    if (slot >= numBufs_) {
+        log_->warning("CQ returned out-of-range wr_id=%" PRIu64
+                      " (numBufs=%u); discarding",
+                      static_cast<uint64_t>(wc.wr_id), numBufs_);
+        return;
+    }
+
+    if (wc.status != IBV_WC_SUCCESS) {
+        log_->warning("CQ error: %s (slot=%u)", ibv_wc_status_str(wc.status), slot);
+
+        if (wc.status == IBV_WC_WR_FLUSH_ERR) {
+            // QP transitioned to ERROR; remaining posted WRs flush with this
+            // status.  Do NOT re-post — signal the poll loop to stop.
+            log_->error("QP in ERROR state (WR_FLUSH_ERR); exiting CQ poll thread");
+            threadEn_.store(false);
+            return;
+        }
+
+        postRecvWr(slot);
+        return;
+    }
+
+    // RDMA-SEND-with-immediate completes as IBV_WC_RECV with the IBV_WC_WITH_IMM
+    // flag set (RDMA-WRITE-with-immediate would have been IBV_WC_RECV_RDMA_WITH_IMM).
+    if (wc.opcode != IBV_WC_RECV || !(wc.wc_flags & IBV_WC_WITH_IMM)) {
+        log_->warning("Unexpected opcode %d / wc_flags 0x%x (slot=%u), re-posting",
+                      wc.opcode, wc.wc_flags, slot);
+        postRecvWr(slot);
+        return;
+    }
+
+    // Decode immediate value: bits [7:0] = channel id; bits [31:8] = the
+    // free-running ring position the FPGA stamped (addrCount, informational).
+    // With RDMA-SEND (two-sided) the payload landed in the CONSUMED recv-WR's
+    // SGE buffer (= slot). RoCE carries imm_data in network byte order.
+    uint32_t imm        = ntohl(wc.imm_data);
+    uint8_t  channel    = static_cast<uint8_t>(imm & 0xFF);
+    uint32_t dataSlot   = (imm >> 8) & 0x00FFFFFF;
+    uint32_t payloadLen = wc.byte_len;
+
+    if (payloadLen == 0 || payloadLen > bufSize_) {
+        log_->warning("Bad payload len=%u (slot=%u), re-posting", payloadLen, slot);
+        postRecvWr(slot);
+        return;
+    }
+
+    // Zero-copy: the SEND landed the payload at slab_ + slot*bufSize_; wrap it
+    // as a rogue Buffer. The meta is the same slot so retBuffer() re-posts THAT
+    // credit when downstream releases the buffer.
+    uint8_t* slotPtr = slab_ + (static_cast<uint64_t>(slot) * bufSize_);
+
+    ris::BufferPtr buff = createBuffer(slotPtr,
+                                       slot & 0x00FFFFFF,
+                                       payloadLen,
+                                       bufSize_);
+    buff->setPayload(payloadLen);
+
+    ris::FramePtr frame = ris::Frame::create();
+    frame->appendBuffer(buff);
+    frame->setChannel(channel);
+    frame->setFirstUser(SsiSof);
+    frame->setLastUser(0);
+
+    log_->debug("RX wrId=%u dataSlot=%u channel=%u len=%u",
+                slot, dataSlot, channel, payloadLen);
+
+    sendFrame(frame);
+
+    frameCount_.fetch_add(1, std::memory_order_relaxed);
+    byteCount_.fetch_add(payloadLen, std::memory_order_relaxed);
+}
+
+// ---------------------------------------------------------------------------
+// runThread — event-driven CQ completion loop (zero-copy, no busy-poll)
+//
+// Blocks in select() on the completion-channel fd (raised when the CQ delivers
+// an event) and the self-pipe wakeFd_ (raised by stop()).  On a CQ event it
+// drains the channel, RE-ARMS before draining the CQ — so a completion that
+// lands during the drain still raises a fresh event rather than being missed —
+// then processes every ready completion.  There is NO sleep(): the kernel
+// parks the thread until a completion or shutdown actually occurs, so the
+// receive rate is not capped by a fixed poll-then-sleep cadence.
 // ---------------------------------------------------------------------------
 void rpr::Server::runThread(std::weak_ptr<int> lockPtr) {
     while (!lockPtr.expired()) continue;
 
     log_->logThreadId();
-    log_->info("RoCEv2 receive thread started");
+    log_->info("RoCEv2 receive thread started (event-driven)");
 
     rogue::GilRelease noGil;   // Release GIL for the entire thread;
                                //  sendFrame() re-acquires via ScopedGil when
                                //  calling Python slaves.
 
-    struct ibv_wc wc;
+    constexpr int kPollBatch = 16;
+    struct ibv_wc wcArr[kPollBatch];
 
-    // The poll loop body is wrapped in try/catch so that an ibverbs failure
-    // (postRecvWr throws rogue::GeneralError on ibv_post_recv failure)
-    // shuts the thread down cleanly instead of escaping the thread entry
-    // point and triggering std::terminate.
+    const int cqFd   = comp_channel_->fd;
+    const int wakeFd = wakeFd_[0];
+    const int maxFd  = (cqFd > wakeFd ? cqFd : wakeFd) + 1;
+
+    // The loop body is wrapped in try/catch so that an ibverbs failure
+    // (postRecvWr throws rogue::GeneralError on ibv_post_recv failure) shuts the
+    // thread down cleanly instead of escaping the thread entry point and
+    // triggering std::terminate.
     try {
+        // Active-poll while completions are flowing — no sleep and no per-batch
+        // interrupt/event latency (ibv_poll_cq reads the CQ from memory). The
+        // RDMA-SEND flow control is closed-loop: the FPGA self-throttles to our
+        // recv-WR re-post rate, so any per-batch wait (a sleep OR a completion-
+        // event/interrupt that is subject to NIC coalescing) lengthens the
+        // credit-return latency, the FPGA delivers in bursts, the CQ empties
+        // between batches, and throughput collapses to a bursty half-rate
+        // equilibrium. Polling keeps the re-post latency low so the loop stays
+        // in the full-rate regime.
+        //
+        // Only when the CQ has stayed empty for a bounded spin budget (the
+        // source is genuinely idle, not a brief inter-batch gap) do we ARM the
+        // completion channel and block in select() — parking the thread with no
+        // CPU spin and no sleep until the next completion or a shutdown wake.
+        constexpr uint32_t kSpinBudget = 100000;  // empty polls (~sub-us each) before parking
+        uint32_t           idleSpins   = 0;
+
         while (threadEn_.load()) {
-            int n = ibv_poll_cq(cq_, 1, &wc);
-            if (n == 0) {
-                std::this_thread::sleep_for(std::chrono::microseconds(100));
-                continue;
-            }
+            int n = ibv_poll_cq(cq_, kPollBatch, wcArr);
             if (n < 0) {
-                log_->warning("ibv_poll_cq error");
+                log_->error("ibv_poll_cq error (%d); exiting CQ poll thread", n);
+                break;
+            }
+            if (n > 0) {
+                for (int k = 0; k < n; ++k) processCompletion(wcArr[k]);
+                idleSpins = 0;
                 continue;
             }
 
-            uint32_t slot = static_cast<uint32_t>(wc.wr_id);
+            // CQ empty: spin a bounded number of polls so a brief inter-batch
+            // gap does not pay the event-wake latency.
+            if (++idleSpins < kSpinBudget) continue;
+            idleSpins = 0;
 
-            // Defensive: every posted WR sets wr_id = slot with slot <
-            // numBufs_; a corrupted wr_id must not be dereferenced as a
-            // slab offset at line `slab_ + slot * bufSize_` below.  We
-            // cannot safely re-post either (the real slot is unknown),
-            // so drop the completion and keep polling.
-            if (slot >= numBufs_) {
-                log_->warning("CQ returned out-of-range wr_id=%" PRIu64
-                              " (numBufs=%u); discarding",
-                              static_cast<uint64_t>(wc.wr_id), numBufs_);
-                continue;
+            // Sustained idle: arm the channel, then re-check once (a completion
+            // may have landed between the last poll and the arm) before parking.
+            if (ibv_req_notify_cq(cq_, 0)) {
+                log_->error("ibv_req_notify_cq failed; exiting CQ poll thread");
+                break;
+            }
+            n = ibv_poll_cq(cq_, kPollBatch, wcArr);
+            if (n < 0) {
+                log_->error("ibv_poll_cq error (%d); exiting CQ poll thread", n);
+                break;
+            }
+            if (n > 0) {
+                for (int k = 0; k < n; ++k) processCompletion(wcArr[k]);
+                continue;  // armed; the pending event is consumed at the next park
             }
 
-            if (wc.status != IBV_WC_SUCCESS) {
-                log_->warning("CQ error: %s (slot=%u)",
-                              ibv_wc_status_str(wc.status), slot);
-
-                if (wc.status == IBV_WC_WR_FLUSH_ERR) {
-                    // QP transitioned to ERROR; every remaining posted
-                    // WR flushes with this status.  Do NOT re-post - stop the
-                    // thread gracefully.
-                    log_->error("QP in ERROR state (WR_FLUSH_ERR); exiting CQ poll thread");
-                    threadEn_.store(false);
-                    break;
-                }
-
-                postRecvWr(slot);
-                continue;
+            // Truly idle and armed: park until a completion event or a shutdown
+            // wake. No timeout — the self-pipe guarantees prompt, sleepless exit.
+            fd_set rfds;
+            FD_ZERO(&rfds);
+            FD_SET(cqFd, &rfds);
+            FD_SET(wakeFd, &rfds);
+            int s = select(maxFd, &rfds, nullptr, nullptr, nullptr);
+            if (s < 0) {
+                if (errno == EINTR) continue;
+                log_->error("select() failed (errno=%d); exiting CQ poll thread", errno);
+                break;
             }
-
-            if (wc.opcode != IBV_WC_RECV_RDMA_WITH_IMM) {
-                log_->warning("Unexpected opcode %d (slot=%u), re-posting",
-                              wc.opcode, slot);
-                postRecvWr(slot);
-                continue;
+            if (FD_ISSET(wakeFd, &rfds)) {
+                uint8_t drainBuf[64];
+                while (read(wakeFd, drainBuf, sizeof(drainBuf)) > 0) {}
+                break;
             }
-
-            // Decode immediate value: bits [7:0] = channel id
-            uint8_t  channel    = static_cast<uint8_t>(wc.imm_data & 0xFF);
-            uint32_t payloadLen = wc.byte_len;
-
-            if (payloadLen == 0 || payloadLen > bufSize_) {
-                log_->warning("Bad payload len=%u (slot=%u), re-posting",
-                              payloadLen, slot);
-                postRecvWr(slot);
-                continue;
+            if (FD_ISSET(cqFd, &rfds)) {
+                // Consume every queued CQ event (fd is non-blocking) and ack
+                // them as a batch so the channel fd clears, then resume polling.
+                struct ibv_cq* evCq;
+                void*          evCtx;
+                int            events = 0;
+                while (ibv_get_cq_event(comp_channel_, &evCq, &evCtx) == 0) ++events;
+                if (events) ibv_ack_cq_events(cq_, events);
             }
-
-            // Zero-copy: wrap the slab slot directly as a rogue Buffer.
-            // retBuffer() re-posts the slot when downstream releases it.
-            uint8_t* slotPtr = slab_ + (static_cast<uint64_t>(slot) * bufSize_);
-
-            ris::BufferPtr buff = createBuffer(slotPtr,
-                                               slot & 0x00FFFFFF,
-                                               payloadLen,
-                                               bufSize_);
-            buff->setPayload(payloadLen);
-
-            ris::FramePtr frame = ris::Frame::create();
-            frame->appendBuffer(buff);
-            frame->setChannel(channel);
-            frame->setFirstUser(SsiSof);
-            frame->setLastUser(0);
-
-            log_->debug("RX slot=%u channel=%u len=%u", slot, channel, payloadLen);
-
-            sendFrame(frame);
-
-            frameCount_.fetch_add(1, std::memory_order_relaxed);
-            byteCount_.fetch_add(payloadLen, std::memory_order_relaxed);
         }
     } catch (const rogue::GeneralError& e) {
         log_->error("RoCEv2 receive thread exiting on ibverbs error: %s", e.what());
-        threadEn_.store(false);
     } catch (const std::exception& e) {
         log_->error("RoCEv2 receive thread exiting on exception: %s", e.what());
-        threadEn_.store(false);
     } catch (...) {
         log_->error("RoCEv2 receive thread exiting on unknown exception");
-        threadEn_.store(false);
     }
 
+    threadEn_.store(false);
     log_->info("RoCEv2 receive thread stopped");
 }
 
@@ -601,6 +735,15 @@ void rpr::Server::stop() {
     // exception), which would otherwise leave thread_ joinable and cause
     // ~std::thread to terminate the process.
     threadEn_.store(false);
+
+    // Break the receive thread out of its blocking select() immediately by
+    // making wakeFd_[0] readable — no timeout/poll wait needed for shutdown.
+    if (wakeFd_[1] >= 0) {
+        const uint8_t one = 1;
+        ssize_t wr = write(wakeFd_[1], &one, 1);
+        (void)wr;  // best-effort; the thread also re-checks threadEn_
+    }
+
     if (thread_) {
         if (thread_->joinable()) thread_->join();
         delete thread_;

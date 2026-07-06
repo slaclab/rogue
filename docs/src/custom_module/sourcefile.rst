@@ -4,192 +4,144 @@
 Custom Module Source
 ====================
 
-The example source file below implements a custom stream transmitter and
-receiver like the ones discussed in the stream interface documentation. It also
-exposes a small amount of status to Python so the wrapped module can publish
-counters through PyRogue.
+The example below implements a custom stream "base type" that inverts every
+payload byte (a bitwise NOT, ``byte ^ 0xFF``) of each frame it receives and
+forwards the result downstream. It subclasses both
+``rogue::interfaces::stream::Master`` and ``rogue::interfaces::stream::Slave``,
+exactly like Rogue's own ``Filter``, so it can sit in the middle of a stream
+pipeline: ``source >> inverter >> sink``.
 
-Wrapping these classes in PyRogue ``Device`` objects is covered in
-:ref:`custom_wrapper`.
+This is the same source compiled by Rogue's own continuous integration as a
+downstream ``find_package(Rogue)`` smoke test (``tests/downstream/``), so the
+example here is guaranteed to compile and behave as shown.
+
+Wrapping the class in a PyRogue ``Device`` is covered in :ref:`custom_wrapper`.
 
 * :ref:`interfaces_stream_sending`
 * :ref:`interfaces_stream_receiving`
 
 Build this module with the :ref:`custom_makefile` described in this section.
 
+The source uses a few key patterns worth noting:
+
+- A static ``create()`` factory returns the object wrapped in a
+  ``std::shared_ptr`` -- the ownership model Rogue uses throughout its graph.
+- ``acceptFrame()`` is the single ingress hook. It acquires the frame lock,
+  walks the payload with a ``FrameIterator`` (which transparently spans the
+  frame's underlying buffers), mutates the bytes in place, releases the lock,
+  and calls ``sendFrame()`` (inherited from ``Master``) to forward to every
+  connected slave.
+- The Python bindings are guarded with ``#ifndef NO_PYTHON`` so the identical
+  source also compiles into a Python-free C++ build.
+- ``BOOST_PYTHON_MODULE`` just registers the bindings and lets Boost.Python
+  propagate any error as a normal import failure; Rogue manages the GIL in its
+  own bindings, so no explicit thread initialization is needed.
+
 .. code-block:: cpp
 
-   // Source for MyModule.cpp
+   // Source for BitInverter.cpp
 
-   #include <rogue/interfaces/stream/Slave.h>
-   #include <rogue/interfaces/stream/Master.h>
+   #include <stdint.h>
+
+   #include <memory>
+
    #include <rogue/interfaces/stream/Frame.h>
-   #include <rogue/interfaces/stream/FrameLock.h>
    #include <rogue/interfaces/stream/FrameIterator.h>
+   #include <rogue/interfaces/stream/FrameLock.h>
+   #include <rogue/interfaces/stream/Master.h>
+   #include <rogue/interfaces/stream/Slave.h>
 
-   // Custom stream slave class
-   class MyCustomSlave : public rogue::interfaces::stream::Slave {
+   namespace ris = rogue::interfaces::stream;
 
-         // Total frame counter, exposed to Python
-         uint32_t frameCount_;
+   #ifndef NO_PYTHON
+   #include <boost/python.hpp>
+   namespace bp = boost::python;
+   #endif
 
-         // Total byte count, exposed to Python
-         uint32_t byteCount_;
-
+   // Custom stream element: inverts every payload byte and forwards the frame.
+   class BitInverter : public ris::Master, public ris::Slave {
       public:
 
-         // Create a static class creator to return our custom class wrapped with a shared pointer
-         static boost::shared_ptr<MyCustomSlave> create() {
-            static boost::shared_ptr<MyCustomSlave> ret = boost::make_shared<MyCustomSlave>();
-            return(ret);
+         // Shared-pointer factory (preferred construction path)
+         static std::shared_ptr<BitInverter> create() {
+            return std::make_shared<BitInverter>();
          }
 
-         // Return received frame counter
-         uint32_t getFrameCount() {
-            return frameCount_;
-         }
+         BitInverter() : ris::Master(), ris::Slave() {}
+         ~BitInverter() {}
 
-         // Return total bytes received
-         uint32_t getTotalBytes() {
-            return byteCount_;
-         }
+         // Receive a frame, invert each payload byte in place, forward downstream
+         void acceptFrame(ris::FramePtr frame) override {
 
-         MyCustomSlave() : rogue::interfaces::stream::Slave() {
-            frameCount_ = 0;
-            byteCount_  = 0;
-         }
+            // Hold the frame lock for the duration of the byte access
+            ris::FrameLockPtr lock = frame->lock();
 
-         // Receive a frame
-         void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame ) {
+            // XOR every payload byte with 0xFF (bitwise inversion)
+            for (auto it = frame->begin(); it != frame->end(); ++it) *it ^= 0xFF;
 
-            // Acquire lock on frame. Will be release when lock class goes out of scope
-            rogue::interfaces::stream::FrameLockPtr lock = frame->lock();
+            // Release the lock before handing the frame to downstream slaves
+            lock->unlock();
 
-            // Increment frame counter
-            frameCount_++;
-
-            // Increment byte  counter
-            byteCount_ += frame->getPayload();
-         }
-
-         // Expose methods to python
-         static void setup_python() {
-            boost::python::class_<MyCustomSlave, boost::shared_ptr<MyCustomSlave>,
-                                                 boost::python::bases<rogue::interfaces::stream::Slave>,
-                                                 boost::noncopyable >("MyCustomSlave",
-                                                 boost::python::init<>())
-               .def("getFrameCount", &MyCustomSlave::getFrameCount)
-               .def("getTotalBytes", &MyCustomSlave::getTotalBytes)
-            ;
-            boost::python::implicitly_convertible<boost::shared_ptr<MyCustomSlave>,
-                                                 rogue::interfaces::stream::SlavePtr>();
-         };
-   };
-
-   // Custom stream master class
-   class MyCustomMaster : public rogue::interfaces::stream::Master {
-
-         // Total frame counter, exposed to Python
-         uint32_t frameCount_;
-
-         // Total byte count, exposed to Python
-         uint32_t byteCount_;
-
-         // Frame size configuration
-         uint32_t frameSize_;
-
-      public:
-
-         // Create a static class creator to return our custom class wrapped with a shared pointer
-         static boost::shared_ptr<MyCustomMaster> create() {
-            static boost::shared_ptr<MyCustomMaster> ret = boost::make_shared<MyCustomMaster>();
-            return(ret);
-         }
-
-         // Standard class creator which is called by create
-         MyCustomMaster() : rogue::interfaces::stream::Master() {
-            frameCount_ = 0;
-            byteCount_  = 0;
-            frameSize_  = 0;
-         }
-
-         // Return received frame counter
-         uint32_t getFrameCount() {
-            return frameCount_;
-         }
-
-         // Return total bytes received
-         uint32_t getTotalBytes() {
-            return byteCount_;
-         }
-
-         // Set frame size
-         void setFrameSize(uint32_t size) {
-            frameSize_ = size;
-         }
-
-         // Get frame size
-         uint32_t getFrameSize() {
-            return frameSize_;
-         }
-
-         // Generate and send a frame
-         void myFrameGen() {
-            rogue::interfaces::stream::FramePtr frame;
-            rogue::interfaces::stream::FrameIterator it;
-            uint32_t x;
-
-            // Here we request a frame capable of holding 100 bytes
-            frame = reqFrame(frameSize_,true);
-
-            // Unlike the python API we must now specify the new payload size
-            frame->setPayload(frameSize_);
-
-            // Set an incrementing value to the first 10 locations
-            x = 0;
-            for ( it=frame->begin(); it < frame->end(); ++it ) *it = x++;
-
-            //Send frame
             sendFrame(frame);
-
-            // Increment frame counter
-            frameCount_++;
-
-            // Increment byte  counter
-            byteCount_ += frameSize_;
          }
 
-         // Expose methods to python
+   #ifndef NO_PYTHON
+         // Expose to Python as the BitInverter type
          static void setup_python() {
-            boost::python::class_<MyCustomMaster, boost::shared_ptr<MyCustomMaster>,
-                                                  boost::python::bases<rogue::interfaces::stream::Master>,
-                                                  boost::noncopyable >("MyCustomMaster",
-                                                  boost::python::init<>())
-               .def("getFrameCount", &MyCustomMaster::getFrameCount)
-               .def("getTotalBytes", &MyCustomMaster::getTotalBytes)
-               .def("setFrameSize",  &MyCustomMaster::setFrameSize)
-               .def("getFrameSize",  &MyCustomMaster::getFrameSize)
-               .def("myFrameGen",    &MyCustomMaster::myFrameGen)
-            ;
-            boost::python::implicitly_convertible<boost::shared_ptr<MyCustomMaster>,
-                                                  rogue::interfaces::stream::MasterPtr>();
-         };
+            bp::class_<BitInverter, std::shared_ptr<BitInverter>,
+                       bp::bases<ris::Master, ris::Slave>,
+                       boost::noncopyable>("BitInverter", bp::init<>());
+            bp::implicitly_convertible<std::shared_ptr<BitInverter>, ris::SlavePtr>();
+            bp::implicitly_convertible<std::shared_ptr<BitInverter>, ris::MasterPtr>();
+         }
+   #endif
    };
 
-   // Setup this module in python
-   BOOST_PYTHON_MODULE(MyModule) {
-      PyEval_InitThreads();
-      try {
-         MyCustomSlave::setup_python();
-         MyCustomMaster::setup_python();
-      } catch (...) {
-         printf("Failed to load module. import rogue first\n");
-      }
-      printf("Loaded my module\n");
-   };
+   #ifndef NO_PYTHON
+   // Setup this module in python: import BitInverter (import rogue first)
+   BOOST_PYTHON_MODULE(BitInverter) {
+      BitInverter::setup_python();
+   }
+   #endif
+
+Once built and on ``PYTHONPATH``, the module is driven from Python by connecting
+it between a source and a sink, sending a frame, and checking the bytes come out
+inverted:
+
+.. code-block:: python
+
+   import rogue.interfaces.stream
+   import BitInverter
+
+   class FrameSource(rogue.interfaces.stream.Master):
+       def sendData(self, data):
+           frame = self._reqFrame(len(data), True)
+           frame.write(bytearray(data))
+           self._sendFrame(frame)
+
+   class CaptureSink(rogue.interfaces.stream.Slave):
+       def __init__(self):
+           super().__init__()
+           self.frames = []
+       def _acceptFrame(self, frame):
+           with frame.lock():
+               self.frames.append(bytes(frame.getBa()))
+
+   source   = FrameSource()
+   inverter = BitInverter.BitInverter()
+   sink     = CaptureSink()
+
+   # source -> inverter -> sink
+   source >> inverter >> sink
+
+   payload = [0x00, 0xFF, 0xAA, 0x55]
+   source.sendData(payload)
+
+   assert sink.frames[0] == bytes(b ^ 0xFF for b in payload)
 
 What To Explore Next
 ====================
 
 - Building the shared library: :ref:`custom_makefile`
-- Wrapping the C++ classes as PyRogue Devices: :ref:`custom_wrapper`
+- Variables exported by ``RogueConfig.cmake``: :ref:`custom_rogueconfig`
+- Wrapping the C++ class as a PyRogue Device: :ref:`custom_wrapper`

@@ -5,8 +5,9 @@ Testing The Custom Module
 =========================
 
 The following script tests the ``MyModule`` and ``MyWrapper``
-implementations created by the :ref:`custom_sourcefile`,
-:ref:`custom_makefile`, and :ref:`custom_wrapper` steps.
+implementations from the :ref:`custom_makefile` and :ref:`custom_wrapper`
+steps (the fuller status-exposing classes introduced in :ref:`custom_wrapper`,
+built the same way as the :ref:`custom_sourcefile` example).
 
 .. code:: python
 

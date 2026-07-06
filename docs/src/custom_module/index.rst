@@ -26,9 +26,11 @@ Recommended Reading Order
 
 1. Start with :doc:`sourcefile` to see the underlying C++ classes.
 2. Continue with :doc:`makefile` to build the shared library.
-3. Then read :doc:`wrapper` to expose the module through PyRogue ``Device``
+3. Refer to :doc:`rogueconfig` for the CMake variables ``find_package(Rogue)``
+   exports.
+4. Then read :doc:`wrapper` to expose the module through PyRogue ``Device``
    wrappers.
-4. Finish with :doc:`testing` to validate the module in a small working setup.
+5. Finish with :doc:`testing` to validate the module in a small working setup.
 
 .. toctree::
    :maxdepth: 1
@@ -36,6 +38,7 @@ Recommended Reading Order
 
    sourcefile
    makefile
+   rogueconfig
    wrapper
    testing
 

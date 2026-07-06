@@ -45,9 +45,10 @@ class Server : public rogue::protocols::rocev2::Core,
     // -----------------------------------------------------------------------
     // ibverbs resources
     // -----------------------------------------------------------------------
-    struct ibv_cq* cq_;
-    struct ibv_qp* qp_;
-    struct ibv_mr* mr_;
+    struct ibv_cq*           cq_;
+    struct ibv_qp*           qp_;
+    struct ibv_mr*           mr_;
+    struct ibv_comp_channel* comp_channel_;  // event-driven CQ notification channel
 
     // Contiguous slab — subdivided into numBufs_ fixed-size slots.
     // Registered with the HCA once; never copied from.
@@ -80,6 +81,11 @@ class Server : public rogue::protocols::rocev2::Core,
     std::thread*      thread_;
     std::atomic<bool> threadEn_;
 
+    // Self-pipe used to break the receive thread out of its blocking select()
+    // for prompt, sleepless shutdown. stop() writes one byte to wakeFd_[1];
+    // runThread() selects on wakeFd_[0]. Both ends are non-blocking.
+    int wakeFd_[2];
+
     // Intentional shadow: both Core and stream::Slave expose a `log_` member,
     // so any unqualified `log_` from inside Server would otherwise be
     // ambiguous.  Declaring our own `log_` here consolidates both names onto
@@ -93,6 +99,11 @@ class Server : public rogue::protocols::rocev2::Core,
 
     void postRecvWr(uint32_t slot);
     void runThread(std::weak_ptr<int> lockPtr);
+
+    // Process one receive completion (decode immediate, wrap zero-copy buffer,
+    // forward downstream). On IBV_WC_WR_FLUSH_ERR it clears threadEn_ so the
+    // poll/drain loop in runThread() exits.
+    void processCompletion(struct ibv_wc& wc);
 
     // Idempotent helper that releases every ibverbs / heap resource owned by
     // Server in reverse allocation order.  Called by stop() and from the

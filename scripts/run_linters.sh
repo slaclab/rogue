@@ -6,6 +6,9 @@ set -e
 
 SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 
+# Fail fast if the CMakeLists.txt / RogueConfig.cmake.in dependency block drifted
+bash "${SCRIPT_DIR}/check_cmake_sync.sh"
+
 cd ${SCRIPT_DIR}/..; python -m compileall -f ./python/
 cd ${SCRIPT_DIR}/..; flake8 --count ./python/
 cd ${SCRIPT_DIR}/..; python -m compileall -f ./tests

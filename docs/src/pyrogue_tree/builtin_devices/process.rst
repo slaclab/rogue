@@ -76,6 +76,7 @@ The built-in status Variables are:
 * ``Progress`` for fractional completion
 * ``Message`` for operator-facing status text
 * ``Step`` and ``TotalSteps`` for step-count style progress reporting
+* ``UpdatePeriod`` (hidden, default ``1.0`` s) for the ``updateGroup`` leak period
 
 If you provide ``argVariable`` and ``returnVariable``, they can be used to
 pass one tree-visible argument into the procedure and publish one result back
@@ -133,35 +134,34 @@ operator-facing settings and result storage, then updates ``Message``,
            ))
 
        def _process(self):
-           # Batch update notifications while the process runs. PyRogue still
-           # publishes changes during the block, but it coalesces them so GUIs
-           # and remote listeners do not get spammed on every individual write.
-           with self.root.updateGroup(period=0.25):
-               total = self.SampleCount.value()
-               captured = []
+           # The base _run() already wraps _process() in an updateGroup context.
+           # Tune the leak period via the inherited UpdatePeriod Variable instead
+           # of opening a nested context here.
+           total = self.SampleCount.value()
+           captured = []
 
-               # Initialize the built-in status Variables before starting work.
-               self.Message.setDisp('Running capture')
-               self.setTotalSteps(total)
-               self.setStep(0)
-               self.setProgress(0.0)
+           # Initialize the built-in status Variables before starting work.
+           self.Message.setDisp('Running capture')
+           self.setTotalSteps(total)
+           self.setStep(0)
+           self.setProgress(0.0)
 
-               for i in range(total):
-                   # Respect the built-in Stop command.
-                   if self._runEn is False:
-                       self.Message.setDisp('Stopped by user')
-                       return
+           for i in range(total):
+               # Respect the built-in Stop command.
+               if self._runEn is False:
+                   self.Message.setDisp('Stopped by user')
+                   return
 
-                   # Do one unit of hardware or software work.
-                   time.sleep(0.01)
-                   captured.append(i)
+               # Do one unit of hardware or software work.
+               time.sleep(0.01)
+               captured.append(i)
 
-                   # setStep() updates Step and recomputes Progress together.
-                   self.setStep(i + 1)
+               # setStep() updates Step and recomputes Progress together.
+               self.setStep(i + 1)
 
-               # Publish the final result back into the tree.
-               self.CaptureResult.set(captured)
-               self.Message.setDisp('Done')
+           # Publish the final result back into the tree.
+           self.CaptureResult.set(captured)
+           self.Message.setDisp('Done')
 
 Invocation Patterns
 ===================
@@ -187,8 +187,9 @@ Good ``Process`` implementations usually:
 * Add explicit input or result Variables when the procedure needs operator
   parameters or produces structured output
 * Check the stop condition when the work can be interrupted cleanly
-* Use ``root.updateGroup(...)`` when the body will publish many updates over
-  time
+* Rely on the base-class ``updateGroup`` context that wraps every ``_process()``
+  call; tune its leak period via the hidden ``UpdatePeriod`` Variable rather
+  than opening a redundant nested context
 
 Related Topics
 ==============

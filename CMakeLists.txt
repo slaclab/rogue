@@ -47,6 +47,8 @@ project (rogue)
 
 option(ROGUE_BUILD_TESTS "Build Rogue native C++ tests" OFF)
 option(ROGUE_COVERAGE    "Build rogue-core with gcov instrumentation (CI only)" OFF)
+option(NO_ROCEV2         "Disable RoCEv2 / libibverbs support" OFF)
+option(ROGUE_SKIP_PIP_INSTALL "Skip the cmake-driven pip install of the python package (for packaging systems that install it themselves into DESTDIR)" OFF)
 
 # Current Apple support target is arm64 only.
 if (APPLE AND NOT ((CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")))
@@ -54,23 +56,27 @@ if (APPLE AND NOT ((CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64") OR (CMAKE_SYSTEM_PR
 endif()
 
 #####################################
-# RoCEv2 / libibverbs (Linux only, always enabled)
+# RoCEv2 / libibverbs (Linux only, optional via -DNO_ROCEV2=ON)
 #####################################
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-   find_library(IBVERBS_LIBRARY NAMES ibverbs)
-   find_path(IBVERBS_INCLUDE_DIR NAMES infiniband/verbs.h)
-
-   if ((NOT IBVERBS_LIBRARY) OR (NOT IBVERBS_INCLUDE_DIR))
-      message(FATAL_ERROR
-         "RoCEv2 requires libibverbs which was not found.\n"
-         "Install rdma-core:\n"
-         "  Ubuntu/Debian:  sudo apt-get install libibverbs-dev rdma-core\n"
-         "  Fedora/RHEL:    sudo dnf install rdma-core-devel\n"
-         "  conda-forge:    conda install -c conda-forge rdma-core")
-   endif()
-
    add_definitions(-DROGUE_LINUX_BUILD)
-   include_directories(${IBVERBS_INCLUDE_DIR})
+
+   if (NOT NO_ROCEV2)
+      find_library(IBVERBS_LIBRARY NAMES ibverbs)
+      find_path(IBVERBS_INCLUDE_DIR NAMES infiniband/verbs.h)
+
+      if ((NOT IBVERBS_LIBRARY) OR (NOT IBVERBS_INCLUDE_DIR))
+         message(FATAL_ERROR
+            "RoCEv2 requires libibverbs which was not found.\n"
+            "Install rdma-core, or reconfigure with -DNO_ROCEV2=ON to build without RoCEv2:\n"
+            "  Ubuntu/Debian:  sudo apt-get install libibverbs-dev rdma-core\n"
+            "  Fedora/RHEL:    sudo dnf install rdma-core-devel\n"
+            "  conda-forge:    conda install -c conda-forge rdma-core")
+      endif()
+
+      add_definitions(-DROGUE_ROCEV2)
+      include_directories(${IBVERBS_INCLUDE_DIR})
+   endif()
 endif()
 
 # C/C++
@@ -83,6 +89,7 @@ SET(CMAKE_SKIP_BUILD_RPATH TRUE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
+# >>> ROGUE_DEPENDENCY_DISCOVERY (keep byte-identical across CMakeLists.txt and templates/RogueConfig.cmake.in -- enforced by scripts/check_cmake_sync.sh)
 #####################################
 # Boost + Python
 #####################################
@@ -116,11 +123,11 @@ if ( NOT NO_PYTHON )
 
    # Loop through potential Boost Python component names
    set(BOOST_PYTHON_CANDIDATES
-       "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"      # e.g. python38
+       "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"      # e.g. python313
        "python${Python3_VERSION_MAJOR}"                              # e.g. python3
        "python"                                                      # e.g. python
-       "python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"   # e.g. python-py38
-       "python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"  # e.g. python3-py38
+       "python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"   # e.g. python-py313
+       "python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"  # e.g. python3-py313
    )
 
    foreach(COMPONENT_NAME ${BOOST_PYTHON_CANDIDATES})
@@ -142,12 +149,10 @@ else()
    add_definitions( -DNO_PYTHON )
 endif()
 
-
 #####################################
 # BZIP2
 #####################################
 find_package(BZip2 QUIET REQUIRED)
-
 
 #####################################
 # ZeroMQ
@@ -198,6 +203,7 @@ if (NOT ZeroMQ_FOUND)
    endif()
 
 endif()
+# <<< ROGUE_DEPENDENCY_DISCOVERY
 
 ##########################################################
 # Generate version with GIT If Not Passed As -DVERSION
@@ -318,7 +324,7 @@ else()
    TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC rt)
 endif()
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT NO_ROCEV2)
    TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${IBVERBS_LIBRARY})
 endif()
 
@@ -349,7 +355,7 @@ if(STATIC_LIB)
        TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
     endif()
 
-    if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT NO_ROCEV2)
        TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${IBVERBS_LIBRARY})
     endif()
 
@@ -472,7 +478,9 @@ if (NOT NO_PYTHON)
 
    # Use pip with python3 for system or miniforge
    elseif ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-      install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install --no-deps --no-build-isolation ${PROJECT_BINARY_DIR}/ COMMAND_ERROR_IS_FATAL ANY)")
+      if (NOT ROGUE_SKIP_PIP_INSTALL)
+         install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install --no-deps --no-build-isolation ${PROJECT_BINARY_DIR}/ COMMAND_ERROR_IS_FATAL ANY)")
+      endif()
    endif()
 
    # Do byte compile for custom or local
@@ -499,7 +507,6 @@ message("")
 if (NO_PYTHON)
    message("-- Compiling without boost & python!")
 else()
-   message("-- Found boost: ${Boost_INCLUDE_DIRS}")
    message("-- Found boost: ${Boost_LIBRARIES}")
    message("")
    message("-- Found python: ${Python3_LIBRARIES}")
@@ -512,8 +519,10 @@ message("")
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
 message("")
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT NO_ROCEV2)
    message("-- RoCEv2 support: ENABLED (${IBVERBS_LIBRARY})")
+elseif (NO_ROCEV2)
+   message("-- RoCEv2 support: disabled (-DNO_ROCEV2=ON)")
 else()
    message("-- RoCEv2 support: disabled (Linux only)")
 endif()

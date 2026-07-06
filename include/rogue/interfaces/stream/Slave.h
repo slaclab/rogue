@@ -151,6 +151,26 @@ class Slave : public rogue::interfaces::stream::Pool,
      *
      * Re-implemented as `_acceptFrame()` in Python subclasses.
      *
+     * @warning
+     * GIL contract: Rogue does not acquire the Python GIL before invoking a
+     * C++ `acceptFrame()` override, nor does it release it around the dispatch.
+     * `Master::sendFrame()` drops the GIL only briefly while it snapshots its
+     * slave list (see `rogue::GilRelease`); the `acceptFrame()` call then runs
+     * with whatever GIL state the sending thread holds. Because frames are
+     * commonly sent from pure-C++ worker threads (DMA/receiver/file/network paths)
+     * that never hold the GIL, a C++ `acceptFrame()` override must not assume the
+     * GIL is held. Pure-C++ subclasses need no action. A subclass that constructs,
+     * manipulates, or destroys Python-wrapped objects (for example
+     * Boost.Python / pybind11 / NumPy objects) — either inside `acceptFrame()`
+     * or, critically, on its own worker threads that outlive this call — MUST
+     * hold the GIL while doing so, e.g. via `rogue::ScopedGil` (or
+     * `PyGILState_Ensure()` / `PyGILState_Release()`). Touching Python objects
+     * without the GIL races CPython's allocator/GC and can segfault (typically
+     * in `PyObject_GC_Del` during object teardown). The base `Slave::acceptFrame()`
+     * itself releases the GIL while it runs; Python subclasses that override
+     * `_acceptFrame()` are always invoked with the GIL held (via `rogue::ScopedGil`
+     * in the binding wrapper), so they need no action.
+     *
      * @param frame Frame pointer (FramePtr).
      */
     virtual void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);

@@ -17,7 +17,7 @@ add_subdirectory("udp")
 add_subdirectory("batcher")
 add_subdirectory("xilinx")
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT NO_ROCEV2)
    add_subdirectory("rocev2")
 endif()
 

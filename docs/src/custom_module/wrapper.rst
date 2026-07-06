@@ -4,9 +4,12 @@
 Wrapping Custom Module With PyRogue Device
 ==========================================
 
-The example below wraps the classes from :ref:`custom_sourcefile` in PyRogue
-``Device`` objects. That wrapper is what exposes Variables, Commands, and
-stream connection hooks to the rest of the PyRogue management layer.
+The example below builds on :ref:`custom_sourcefile` to show how a PyRogue
+``Device`` wraps a custom C++ stream element. The ``BitInverter`` from the
+source example is intentionally minimal, so this page uses a slightly fuller
+pair of classes (``MyCustomSlave`` / ``MyCustomMaster`` in a module ``MyModule``)
+that also expose status counters -- demonstrating how C++ accessor methods
+become PyRogue Variables and Commands, alongside the stream connection hooks.
 
 In practice, this file can be created as ``MyWrapper.py`` in the same Python
 directory as the shared library produced by :ref:`custom_makefile`.

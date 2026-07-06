@@ -111,6 +111,15 @@ class Process(pr.Device):
             localSet=self._updateProgress,
             description = "Total number of process steps. Prefer setTotalSteps()."))
 
+        self.add(pr.LocalVariable(
+            name='UpdatePeriod',
+            mode='RW',
+            value=1.0,
+            typeStr='float',
+            units='s',
+            hidden=True,
+            description='updateGroup leak period in seconds.'))
+
         # Add arg variable if not already added
         if self._argVar is not None and self._argVar not in self:
             self.add(self._argVar)
@@ -282,7 +291,7 @@ class Process(pr.Device):
         self.Running.set(True)
 
         try:
-            with self.root.updateGroup(period=1.0):
+            with self.root.updateGroup(period=self.UpdatePeriod.value()):
                 self._process()
         except Exception as e:
             pr.logException(self._log,e)

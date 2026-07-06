@@ -5,6 +5,7 @@
 # conda render conda-recipe --variants "{python: 3.11, python_abi: '3.11 *_cp311'}"
 # conda render conda-recipe --variants "{python: 3.12, python_abi: '3.12 *_cp312'}"
 # conda render conda-recipe --variants "{python: 3.13, python_abi: '3.13 *_cp313'}"
+# conda render conda-recipe --variants "{python: 3.14, python_abi: '3.14 *_cp314'}"
 ###############################################################################################
 
 # Define the python variants to be built
@@ -13,6 +14,7 @@ python:
   - 3.11
   - 3.12
   - 3.13
+  - 3.14
 
 # Lock to CPython ABI, not PyPy
 python_abi:
@@ -20,8 +22,9 @@ python_abi:
   - 3.11 *_cp311
   - 3.12 *_cp312
   - 3.13 *_cp313
+  - 3.14 *_cp314
 
-# Pair python and python_abi so we get 4 variants, not the 16-way cross product
+# Pair python and python_abi so we get 5 variants, not the 25-way cross product
 zip_keys:
   - - python
     - python_abi

@@ -47,6 +47,8 @@ Related Topics
 
 - Guided end-to-end workflows: :doc:`/tutorials/index`
 - PyRogue tree architecture and lifecycle: :doc:`/pyrogue_tree/index`
+- Building your own C++ extension against an installed Rogue:
+  :doc:`/custom_module/index`
 
 
 .. toctree::

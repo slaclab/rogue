@@ -177,6 +177,14 @@ Common CMake options:
 - `-DROGUE_INSTALL=conda`: install into the active conda environment.
 - `-DROGUE_BUILD_TESTS=ON`: build native C++ tests under `tests/cpp`.
 - `-DNO_PYTHON=1 -DSTATIC_LIB=1`: small static no-Python build.
+- `-DNO_ROCEV2=ON`: build without RoCEv2 / `libibverbs` (Linux). Skips ibverbs
+  discovery and linking and excludes the `rocev2` sources, so `rdma-core` is not
+  required. For cross-compiled / packaged builds that do not need RoCEv2.
+- `-DROGUE_SKIP_PIP_INSTALL=ON`: with `-DROGUE_INSTALL=system` (or `conda`), still
+  install the C++ libraries, headers, and `RogueConfig.cmake`, but skip the
+  cmake-driven `pip install` of the Python package. For packaging systems
+  (Yocto `setuptools3`, distro `%py_install`, etc.) that stage the Python package
+  into `DESTDIR` themselves.
 
 For day-to-day local builds, use one of two modes:
 
@@ -438,6 +446,24 @@ When changing packaging behavior:
 - Verify imports from the installed environment when package layout changes.
 - Be careful with version behavior; release tags, CMake configuration, Python
   package metadata, and docs all consume Rogue version information.
+
+### CMake dependency-block sync
+
+`CMakeLists.txt` and `templates/RogueConfig.cmake.in` intentionally duplicate the
+dependency-discovery logic (Boost + Python, numpy, BZip2, ZeroMQ): the top-level
+file uses it to build rogue, while the installed `RogueConfig.cmake` re-runs it so
+downstream `find_package(Rogue)` consumers rediscover the same dependencies. The
+duplicated region is delimited in both files by sentinel comments:
+
+```
+# >>> ROGUE_DEPENDENCY_DISCOVERY ...
+...
+# <<< ROGUE_DEPENDENCY_DISCOVERY
+```
+
+The lines between these markers must stay **byte-identical** in both files. Mirror
+any edit to the dependency block into both. `scripts/check_cmake_sync.sh` enforces
+this and runs as part of `scripts/run_linters.sh` in CI, failing the build on drift.
 
 ## Change Workflow
 
