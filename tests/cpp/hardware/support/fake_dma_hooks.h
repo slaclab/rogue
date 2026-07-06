@@ -74,6 +74,7 @@ class FakeDma {
   private:
     template <typename Func>
     Func load(const char* name) {
+        dlerror();
         void* sym = dlsym(RTLD_DEFAULT, name);
         if (sym == nullptr) {
             const char* err = dlerror();
