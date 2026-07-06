@@ -311,8 +311,13 @@ rpr::Server::Server(const std::string& deviceName,
 // Buffer still held downstream (each points into slab_ and keeps this Server
 // alive via shared_ptr<Pool>).  ~Server frees the slab; the failed-construction
 // path frees it explicitly (the destructor does not run on a partial object).
+//
+// Serialized with postRecvWr() so a deferred retBuffer() cannot re-post using
+// qp_/mr_ while stop() is destroying them.
 // ---------------------------------------------------------------------------
 void rpr::Server::cleanupResources() {
+    std::lock_guard<std::mutex> lock(resourcesMtx_);
+
     if (qp_) {
         ibv_destroy_qp(qp_);
         qp_ = nullptr;
@@ -478,6 +483,8 @@ std::string rpr::Server::getGid() const {
 // wr_id == slot index so no lookup is needed on completion
 // ---------------------------------------------------------------------------
 void rpr::Server::postRecvWr(uint32_t slot) {
+    std::lock_guard<std::mutex> lock(resourcesMtx_);
+
     // Defensive: slot indexes into slab_; a corrupted wr_id (from the CQ)
     // or meta (from retBuffer) must not produce an out-of-bounds slab
     // pointer.  Normal control flow keeps slot < numBufs_ because we set
@@ -487,6 +494,11 @@ void rpr::Server::postRecvWr(uint32_t slot) {
         throw(rogue::GeneralError::create("rocev2::Server::postRecvWr",
                                           "slot=%u out of range (numBufs=%u)",
                                           slot, numBufs_));
+
+    if (!qp_ || !mr_ || !slab_)
+        throw(rogue::GeneralError::create("rocev2::Server::postRecvWr",
+                                          "resources are not available for slot=%u",
+                                          slot));
 
     uint8_t* bufStart = slab_ + (static_cast<uint64_t>(slot) * bufSize_);
 
@@ -528,7 +540,7 @@ void rpr::Server::retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize) {
 
     log_->debug("retBuffer: re-posting slot=%u", slot);
 
-    if (threadEn_.load() && qp_) {
+    if (threadEn_.load()) {
         try {
             postRecvWr(slot);
         } catch (...) {
@@ -786,13 +798,14 @@ void rpr::Server::stop() {
         thread_ = nullptr;
     }
     // Release the external ibverbs resources now — QP/CQ/MR(dereg)/comp-channel
-    // and the wake pipe — mirroring AxiStreamDma::stop(), which releases its
-    // external kernel resources (DMA mmap + fd) at stop().  But NOT slab_: the RX
-    // slab is this Pool's buffer backing, and zero-copy Buffers handed downstream
-    // still point into it.  Per the base Pool contract (ris::Pool::~Pool() frees
-    // its buffer memory at destruction, and every Buffer holds a shared_ptr to
-    // its Pool), the slab's lifetime is the Server object's; it is freed in
-    // ~Server (below), after the last outstanding Buffer has released the Server.
+    // and the wake pipe — mirroring AxiStreamDma::stop(), which closes its
+    // per-instance fd while leaving zero-copy backing memory alive until
+    // destruction.  The RX slab is this Pool's buffer backing, and zero-copy
+    // Buffers handed downstream still point into it.  Per the base Pool contract
+    // (ris::Pool::~Pool() frees its buffer memory at destruction, and every
+    // Buffer holds a shared_ptr to its Pool), the slab's lifetime is the Server
+    // object's; it is freed in ~Server (below), after the last outstanding Buffer
+    // has released the Server.
     cleanupResources();
 }
 

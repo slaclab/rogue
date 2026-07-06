@@ -24,6 +24,7 @@
 
 #include <atomic>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
@@ -85,6 +86,9 @@ class Server : public rogue::protocols::rocev2::Core,
     // for prompt, sleepless shutdown. stop() writes one byte to wakeFd_[1];
     // runThread() selects on wakeFd_[0]. Both ends are non-blocking.
     int wakeFd_[2];
+
+    // Serializes ibverbs resource teardown against deferred buffer re-posts.
+    std::mutex resourcesMtx_;
 
     // Intentional shadow: both Core and stream::Slave expose a `log_` member,
     // so any unqualified `log_` from inside Server would otherwise be
