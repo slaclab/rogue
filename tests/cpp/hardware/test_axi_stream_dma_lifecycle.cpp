@@ -197,7 +197,7 @@ TEST_CASE("AxiStreamDma stop waits for in-flight zero-copy allocation and return
         frame = dma->acceptReq(64, true);
     });
 
-    REQUIRE(frame);
+    REQUIRE(static_cast<bool>(frame));
     REQUIRE_EQ(frame->bufferCount(), 1U);
     frame->clear();
     frame.reset();
@@ -207,7 +207,7 @@ TEST_CASE("AxiStreamDma stop waits for in-flight zero-copy allocation and return
     fakeDma().reset();
     dma   = makeDma();
     frame = dma->acceptReq(64, true);
-    REQUIRE(frame);
+    REQUIRE(static_cast<bool>(frame));
 
     checkStopWaitsForBlockedDriverCall(dma, FakeDmaBlockRetIndex, [&] {
         frame->clear();
