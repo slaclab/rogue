@@ -56,6 +56,7 @@ add_subdirectory(core)
 add_subdirectory(memory)
 add_subdirectory(stream)
 add_subdirectory(protocols)
+add_subdirectory(hardware)
 
 if (NOT NO_PYTHON)
    add_subdirectory(smoke)
