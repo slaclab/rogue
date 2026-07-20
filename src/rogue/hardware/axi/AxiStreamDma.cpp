@@ -49,30 +49,6 @@ std::map<std::string, std::shared_ptr<rha::AxiStreamDmaShared> > rha::AxiStreamD
 // Protect sharedBuffers_ against concurrent AxiStreamDma construction.
 static std::mutex sharedBuffersMtx;
 
-static void throwStopped(const char* context) {
-    throw rogue::GeneralError(context, "instance has been stopped or did not finish construction");
-}
-
-rha::AxiStreamDma::FdGuard::FdGuard(rha::AxiStreamDma* owner,
-                                    const char* context,
-                                    bool throwOnStopped,
-                                    bool allowStopped) {
-    if (!allowStopped && owner->stopped_.load()) {
-        if (throwOnStopped) throwStopped(context);
-        return;
-    }
-
-    lock_ = std::shared_lock<std::shared_timed_mutex>(owner->fdMtx_);
-
-    if ((!allowStopped && owner->stopped_.load()) || owner->fd_ < 0) {
-        lock_.unlock();
-        if (throwOnStopped) throwStopped(context);
-        return;
-    }
-
-    fd_ = owner->fd_;
-}
-
 rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
     this->fd        = -1;
     this->path      = path;
@@ -328,14 +304,12 @@ rha::AxiStreamDma::~AxiStreamDma() {
 void rha::AxiStreamDma::stop() {
     rogue::GilRelease noGil;
 
-    stopped_.store(true);
-
     // Signal the worker to exit; idempotent so stop() can be called multiple
     // times (user-initiated stop() followed by ~AxiStreamDma()).
     threadEn_ = false;
 
-    // Join based on thread state, not threadEn_.  runThread() can exit on its
-    // own (for example after a poll fd error) by setting threadEn_ = false and
+    // Join based on thread state, not threadEn_.  runThread() can now exit on
+    // its own (e.g. the in-loop fd_ guard) by setting threadEn_ = false and
     // returning, so gating cleanup on threadEn_ here would skip the join and
     // ~unique_ptr<std::thread> on a still-joinable thread would call
     // std::terminate().  Joining via joinable() handles both that early-exit
@@ -349,7 +323,7 @@ void rha::AxiStreamDma::stop() {
     // open until ~AxiStreamDma() because zero-copy Rogue buffers can outlive a
     // user-initiated stop() and still point into desc_->rawBuff.
     {
-        std::unique_lock<std::shared_timed_mutex> lock(fdMtx_);
+        std::lock_guard<std::mutex> lock(fdMtx_);
         if (fd_ >= 0) {
             ::close(fd_);
             fd_ = -1;
@@ -368,12 +342,12 @@ void rha::AxiStreamDma::setTimeout(uint32_t timeout) {
 
 //! Set driver debug level
 void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
-    withFd("AxiStreamDma::setDriverDebug", false, [level](int32_t fd) { dmaSetDebug(fd, level); });
+    dmaSetDebug(fd_, level);
 }
 
 //! Strobe ack line
 void rha::AxiStreamDma::dmaAck() {
-    withFd("AxiStreamDma::dmaAck", false, [](int32_t fd) { axisReadAck(fd); });
+    if (fd_ >= 0) axisReadAck(fd_);
 }
 
 //! Generate a buffer. Called from master
@@ -387,7 +361,9 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
 
     // Reject use after stop()/teardown.  stop() closes the per-instance fd,
     // and destruction releases the shared descriptor.
-    if (!desc_ || stopped_.load()) throwStopped("AxiStreamDma::acceptReq");
+    if (!desc_ || fd_ < 0)
+        throw rogue::GeneralError("AxiStreamDma::acceptReq",
+                                  "instance has been stopped or did not finish construction");
 
     //! Adjust allocation size
     if (size > desc_->bSize)
@@ -412,35 +388,38 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
             // Keep trying since poll call can fire
             // but getIndex fails because we did not win the buffer lock
             do {
-                res = withFd<int32_t>("AxiStreamDma::acceptReq", true, -1, [&](int32_t fd) {
-                    pfd.fd      = fd;
-                    pfd.events  = POLLOUT;
-                    pfd.revents = 0;
+                // Re-check fd validity before using it in poll() and the driver call.
+                // poll() imposes no FD_SETSIZE ceiling, so large fd values are fine.
+                if (fd_ < 0)
+                    throw rogue::GeneralError::create(
+                        "AxiStreamDma::acceptReq",
+                        "fd_=%d invalid; instance was stop()'d or never finished construction",
+                        fd_);
+                pfd.fd      = fd_;
+                pfd.events  = POLLOUT;
+                pfd.revents = 0;
 
-                    // Round up µs->ms so sub-ms timeouts do not collapse to a non-blocking poll().
-                    int rc = poll(&pfd, 1, (timeout_.tv_sec * 1000) + ((timeout_.tv_usec + 999) / 1000));
-                    if (stopped_.load()) throwStopped("AxiStreamDma::acceptReq");
-
-                    // POLLERR/POLLHUP/POLLNVAL can be reported with POLLOUT also set on a fd in
-                    // error state; surface that as a clear error instead of feeding a known-bad
-                    // fd into dmaGetIndex() and looping on its return value.
-                    if (rc > 0 && (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)))
-                        throw rogue::GeneralError::create(
-                            "AxiStreamDma::acceptReq",
-                            "poll() reported fd error revents=0x%x; fd may be closed or in error state",
-                            pfd.revents);
-                    if (rc <= 0 || !(pfd.revents & POLLOUT)) {
-                        log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %" PRIuLEAST32
-                                       ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.",
-                                       timeout_.tv_sec,
-                                       timeout_.tv_usec);
-                        return -1;
-                    } else {
-                        // Attempt to get index.
-                        // return of less than 0 is a failure to get a buffer
-                        return dmaGetIndex(fd);
-                    }
-                });
+                // Round up µs->ms so sub-ms timeouts do not collapse to a non-blocking poll().
+                int rc = poll(&pfd, 1, (timeout_.tv_sec * 1000) + ((timeout_.tv_usec + 999) / 1000));
+                // POLLERR/POLLHUP/POLLNVAL can be reported with POLLOUT also set on a fd in
+                // error state; surface that as a clear error instead of feeding a known-bad
+                // fd into dmaGetIndex() and looping on its return value.
+                if (rc > 0 && (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)))
+                    throw rogue::GeneralError::create(
+                        "AxiStreamDma::acceptReq",
+                        "poll() reported fd error revents=0x%x; fd may be closed or in error state",
+                        pfd.revents);
+                if (rc <= 0 || !(pfd.revents & POLLOUT)) {
+                    log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %" PRIuLEAST32
+                                   ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.",
+                                   timeout_.tv_sec,
+                                   timeout_.tv_usec);
+                    res = -1;
+                } else {
+                    // Attempt to get index.
+                    // return of less than 0 is a failure to get a buffer
+                    res = dmaGetIndex(fd_);
+                }
             } while (res < 0);
 
             // Mark zero copy meta with bit 31 set, lower bits are index
@@ -462,11 +441,11 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
     uint32_t cont;
     bool emptyFrame;
 
-    // Reject use after stop()/teardown.  The inner-loop fd guard would still
-    // catch this, but that fires only after frame->lock() and buffer iteration
-    // have already run.  Fail-fast at entry for a cleaner error path, mirroring
-    // acceptReq().
-    if (!desc_ || stopped_.load()) throwStopped("AxiStreamDma::acceptFrame");
+    // Reject use after stop()/teardown before locking or iterating the frame,
+    // mirroring acceptReq().
+    if (!desc_ || fd_ < 0)
+        throw rogue::GeneralError("AxiStreamDma::acceptFrame",
+                                  "instance has been stopped or did not finish construction");
 
     rogue::GilRelease noGil;
     ris::FrameLockPtr lock = frame->lock();
@@ -511,16 +490,14 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
 
             // Buffer is not already stale as indicates by bit 30
             if ((meta & 0x40000000) == 0) {
-                withFd("AxiStreamDma::acceptFrame", true, [&](int32_t fd) {
-                    // Write by passing (*it)er index to driver
-                    if (dmaWriteIndex(fd,
-                                      meta & 0x3FFFFFFF,
-                                      (*it)->getPayload(),
-                                      axisSetFlags(fuser, luser, cont),
-                                      dest_) <= 0) {
-                        throw(rogue::GeneralError("AxiStreamDma::acceptFrame", "AXIS Write Call Failed"));
-                    }
-                });
+                // Write by passing (*it)er index to driver
+                if (dmaWriteIndex(fd_,
+                                  meta & 0x3FFFFFFF,
+                                  (*it)->getPayload(),
+                                  axisSetFlags(fuser, luser, cont),
+                                  dest_) <= 0) {
+                    throw(rogue::GeneralError("AxiStreamDma::acceptFrame", "AXIS Write Call Failed"));
+                }
 
                 // Mark (*it)er as stale
                 meta |= 0x40000000;
@@ -532,39 +509,41 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
             // Keep trying since poll call can fire
             // but write fails because we did not win the (*it)er lock
             do {
-                res = withFd<int32_t>("AxiStreamDma::acceptFrame", true, 0, [&](int32_t fd) {
-                    pfd.fd      = fd;
-                    pfd.events  = POLLOUT;
-                    pfd.revents = 0;
+                // Re-check fd validity before using it in poll() and the driver call.
+                // poll() imposes no FD_SETSIZE ceiling, so large fd values are fine.
+                if (fd_ < 0)
+                    throw rogue::GeneralError::create(
+                        "AxiStreamDma::acceptFrame",
+                        "fd_=%d invalid; instance was stop()'d or never finished construction",
+                        fd_);
+                pfd.fd      = fd_;
+                pfd.events  = POLLOUT;
+                pfd.revents = 0;
 
-                    // Round up µs->ms so sub-ms timeouts do not collapse to a non-blocking poll().
-                    int rc = poll(&pfd, 1, (timeout_.tv_sec * 1000) + ((timeout_.tv_usec + 999) / 1000));
-                    if (stopped_.load()) throwStopped("AxiStreamDma::acceptFrame");
-
-                    // POLLERR/POLLHUP/POLLNVAL can be reported with POLLOUT also set on a fd in
-                    // error state; surface that as a clear error instead of feeding a known-bad
-                    // fd into dmaWrite() and reporting a generic "AXIS Write Call Failed".
-                    if (rc > 0 && (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)))
-                        throw rogue::GeneralError::create(
-                            "AxiStreamDma::acceptFrame",
-                            "poll() reported fd error revents=0x%x; fd may be closed or in error state",
-                            pfd.revents);
-                    if (rc <= 0 || !(pfd.revents & POLLOUT)) {
-                        log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %" PRIuLEAST32
-                                       ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.",
-                                       timeout_.tv_sec,
-                                       timeout_.tv_usec);
-                        return 0;
-                    } else {
-                        // Write with (*it)er copy
-                        ssize_t writeSize = dmaWrite(
-                            fd, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser, 0), dest_);
-                        if (writeSize < 0) {
-                            throw(rogue::GeneralError("AxiStreamDma::acceptFrame", "AXIS Write Call Failed!!!!"));
-                        }
-                        return static_cast<int32_t>(writeSize);
+                // Round up µs->ms so sub-ms timeouts do not collapse to a non-blocking poll().
+                int rc = poll(&pfd, 1, (timeout_.tv_sec * 1000) + ((timeout_.tv_usec + 999) / 1000));
+                // POLLERR/POLLHUP/POLLNVAL can be reported with POLLOUT also set on a fd in
+                // error state; surface that as a clear error instead of feeding a known-bad
+                // fd into dmaWrite() and reporting a generic "AXIS Write Call Failed".
+                if (rc > 0 && (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)))
+                    throw rogue::GeneralError::create(
+                        "AxiStreamDma::acceptFrame",
+                        "poll() reported fd error revents=0x%x; fd may be closed or in error state",
+                        pfd.revents);
+                if (rc <= 0 || !(pfd.revents & POLLOUT)) {
+                    log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %" PRIuLEAST32
+                                   ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.",
+                                   timeout_.tv_sec,
+                                   timeout_.tv_usec);
+                    res = 0;
+                } else {
+                    // Write with (*it)er copy
+                    if ((res =
+                             dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser, 0), dest_)) <
+                        0) {
+                        throw(rogue::GeneralError("AxiStreamDma::acceptFrame", "AXIS Write Call Failed!!!!"));
                     }
-                });
+                }
             } while (res == 0);  // Exit out if return flag was set false
         }
     }
@@ -581,14 +560,9 @@ void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
         // Device is open and buffer is not stale
         // Bit 30 indicates buffer has already been returned to hardware
         if ((meta & 0x40000000) == 0) {
-            withFd(
-                "AxiStreamDma::retBuffer",
-                false,
-                [meta](int32_t fd) {
-                    if (dmaRetIndex(fd, meta & 0x3FFFFFFF) < 0)
-                        throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
-                },
-                true);
+            std::lock_guard<std::mutex> lock(fdMtx_);
+            if (fd_ >= 0 && dmaRetIndex(fd_, meta & 0x3FFFFFFF) < 0)
+                throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
         }
         decCounter(size);
 
@@ -628,8 +602,9 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
 
     while (threadEn_) {
         // runThread() has no top-level catch, so a throw here would call
-        // std::terminate. Log and exit cleanly if the descriptor was never
-        // opened or has already been closed by an earlier stop() call.
+        // std::terminate.  This in-loop check only fires if stop()/close()
+        // races with the worker and toggles fd_ to -1; log and exit the worker
+        // cleanly so stop() can complete instead of crashing the process.
         // poll() imposes no FD_SETSIZE ceiling, so large fd values are fine.
         if (fd_ < 0) {
             log_->error("AxiStreamDma::runThread: fd_ value %d invalid; exiting worker", fd_);
@@ -715,77 +690,77 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
 
 //! Get the DMA Driver's Git Version
 std::string rha::AxiStreamDma::getGitVersion() {
-    return withFd<std::string>("AxiStreamDma::getGitVersion", false, std::string(), dmaGetGitVersion);
+    return dmaGetGitVersion(fd_);
 }
 
 //! Get the DMA Driver's API Version
 uint32_t rha::AxiStreamDma::getApiVersion() {
-    return readFdValue("AxiStreamDma::getApiVersion", dmaGetApiVersion);
+    return dmaGetApiVersion(fd_);
 }
 
 //! Get the size of buffers (RX/TX)
 uint32_t rha::AxiStreamDma::getBuffSize() {
-    return readFdValue("AxiStreamDma::getBuffSize", dmaGetBuffSize);
+    return dmaGetBuffSize(fd_);
 }
 
 //! Get the number of RX buffers
 uint32_t rha::AxiStreamDma::getRxBuffCount() {
-    return readFdValue("AxiStreamDma::getRxBuffCount", dmaGetRxBuffCount);
+    return dmaGetRxBuffCount(fd_);
 }
 
 //! Get RX buffer in User count
 uint32_t rha::AxiStreamDma::getRxBuffinUserCount() {
-    return readFdValue("AxiStreamDma::getRxBuffinUserCount", dmaGetRxBuffinUserCount);
+    return dmaGetRxBuffinUserCount(fd_);
 }
 
 //! Get RX buffer in HW count
 uint32_t rha::AxiStreamDma::getRxBuffinHwCount() {
-    return readFdValue("AxiStreamDma::getRxBuffinHwCount", dmaGetRxBuffinHwCount);
+    return dmaGetRxBuffinHwCount(fd_);
 }
 
 //! Get RX buffer in Pre-HW Queue count
 uint32_t rha::AxiStreamDma::getRxBuffinPreHwQCount() {
-    return readFdValue("AxiStreamDma::getRxBuffinPreHwQCount", dmaGetRxBuffinPreHwQCount);
+    return dmaGetRxBuffinPreHwQCount(fd_);
 }
 
 //! Get RX buffer in SW Queue count
 uint32_t rha::AxiStreamDma::getRxBuffinSwQCount() {
-    return readFdValue("AxiStreamDma::getRxBuffinSwQCount", dmaGetRxBuffinSwQCount);
+    return dmaGetRxBuffinSwQCount(fd_);
 }
 
 //! Get RX buffer missing count
 uint32_t rha::AxiStreamDma::getRxBuffMissCount() {
-    return readFdValue("AxiStreamDma::getRxBuffMissCount", dmaGetRxBuffMissCount);
+    return dmaGetRxBuffMissCount(fd_);
 }
 
 //! Get the number of TX buffers
 uint32_t rha::AxiStreamDma::getTxBuffCount() {
-    return readFdValue("AxiStreamDma::getTxBuffCount", dmaGetTxBuffCount);
+    return dmaGetTxBuffCount(fd_);
 }
 
 //! Get TX buffer in User count
 uint32_t rha::AxiStreamDma::getTxBuffinUserCount() {
-    return readFdValue("AxiStreamDma::getTxBuffinUserCount", dmaGetTxBuffinUserCount);
+    return dmaGetTxBuffinUserCount(fd_);
 }
 
 //! Get TX buffer in HW count
 uint32_t rha::AxiStreamDma::getTxBuffinHwCount() {
-    return readFdValue("AxiStreamDma::getTxBuffinHwCount", dmaGetTxBuffinHwCount);
+    return dmaGetTxBuffinHwCount(fd_);
 }
 
 //! Get TX buffer in Pre-HW Queue count
 uint32_t rha::AxiStreamDma::getTxBuffinPreHwQCount() {
-    return readFdValue("AxiStreamDma::getTxBuffinPreHwQCount", dmaGetTxBuffinPreHwQCount);
+    return dmaGetTxBuffinPreHwQCount(fd_);
 }
 
 //! Get TX buffer in SW Queue count
 uint32_t rha::AxiStreamDma::getTxBuffinSwQCount() {
-    return readFdValue("AxiStreamDma::getTxBuffinSwQCount", dmaGetTxBuffinSwQCount);
+    return dmaGetTxBuffinSwQCount(fd_);
 }
 
 //! Get TX buffer missing count
 uint32_t rha::AxiStreamDma::getTxBuffMissCount() {
-    return readFdValue("AxiStreamDma::getTxBuffMissCount", dmaGetTxBuffMissCount);
+    return dmaGetTxBuffMissCount(fd_);
 }
 
 void rha::AxiStreamDma::setup_python() {

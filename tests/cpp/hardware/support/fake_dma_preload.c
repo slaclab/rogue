@@ -6,10 +6,11 @@
  * Test-only LD_PRELOAD shim that emulates just enough of the aes-stream-driver
  * character device for AxiStreamDma to construct, hand out a zero-copy buffer,
  * and tear down on a machine with no DMA hardware. It intercepts
- * open/close/ioctl/mmap/munmap/poll/write for a single sentinel device path and
+ * open/close/ioctl/mmap/munmap/poll for a single sentinel device path and
  * backs the "DMA" buffers with ordinary anonymous mappings, tracking how many
  * are currently mapped. Tests query that count via fakedma_mapped_count() and
- * use the blocking hooks below to exercise stop() races deterministically.
+ * use the blocking hooks below to exercise deferred buffer returns overlapping
+ * stop() deterministically.
  *
  * This object is built only under -DROGUE_BUILD_TESTS=ON and is never linked
  * into rogue-core or shipped.
@@ -60,12 +61,6 @@
 #define FAKE_BUFF_SIZE  4096u
 #define FAKE_BUFF_COUNT 8u
 
-#define FAKE_BLOCK_NONE      0
-#define FAKE_BLOCK_GET_INDEX 1
-#define FAKE_BLOCK_RET_INDEX 2
-#define FAKE_BLOCK_BUFF_SIZE 3
-#define FAKE_BLOCK_WRITE     4
-
 #define MAX_FDS     16
 #define MAX_REGIONS 64
 
@@ -79,14 +74,14 @@ static void*  g_region_addr[MAX_REGIONS];
 static size_t g_region_len[MAX_REGIONS];
 static int    g_region_n = 0;
 
-static int      g_mapped_count = 0;
-static uint32_t g_next_index   = 0;
-static int      g_block_next   = FAKE_BLOCK_NONE;
-static int      g_blocked      = 0;
-static int      g_release      = 0;
-static int      g_active_calls = 0;
+static int      g_mapped_count            = 0;
+static uint32_t g_next_index              = 0;
+static int      g_block_ret_index         = 0;
+static int      g_blocked                 = 0;
+static int      g_release                 = 0;
+static int      g_active_calls            = 0;
 static int      g_close_during_driver_call = 0;
-static int      g_ret_index_count = 0;
+static int      g_ret_index_count         = 0;
 static int      g_tracking_overflow_count = 0;
 
 typedef int (*open_fn)(const char*, int, ...);
@@ -95,7 +90,6 @@ typedef int (*munmap_fn)(void*, size_t);
 typedef int (*close_fn)(int);
 typedef int (*ioctl_fn)(int, unsigned long, ...);
 typedef int (*poll_fn)(struct pollfd*, nfds_t, int);
-typedef ssize_t (*write_fn)(int, const void*, size_t);
 
 static open_fn   real_open;
 static open_fn   real_open64;
@@ -105,7 +99,6 @@ static munmap_fn real_munmap;
 static close_fn  real_close;
 static ioctl_fn  real_ioctl;
 static poll_fn   real_poll;
-static write_fn  real_write;
 
 /* ------- bookkeeping helpers (caller holds g_lock) ------- */
 
@@ -191,12 +184,11 @@ static void driver_call_end(void) {
     pthread_mutex_unlock(&g_lock);
 }
 
-static void maybe_block(int op) {
+static void maybe_block_ret_index(void) {
     pthread_mutex_lock(&g_lock);
-    if (g_block_next == op) {
-        g_block_next = FAKE_BLOCK_NONE;
-        g_blocked    = 1;
-        g_release    = 0;
+    if (g_block_ret_index) {
+        g_block_ret_index = 0;
+        g_blocked         = 1;
         pthread_cond_broadcast(&g_cond);
         while (!g_release) pthread_cond_wait(&g_cond, &g_lock);
         g_blocked = 0;
@@ -334,7 +326,6 @@ int ioctl(int fd, unsigned long request, ...) {
             driver_call_end();
             return FAKE_DMA_VERSION;
         case FAKE_DMA_Get_Buff_Size:
-            maybe_block(FAKE_BLOCK_BUFF_SIZE);
             driver_call_end();
             return (int)FAKE_BUFF_SIZE;
         case FAKE_DMA_Get_Buff_Count:
@@ -351,7 +342,6 @@ int ioctl(int fd, unsigned long request, ...) {
             return 0;
         case FAKE_DMA_Get_Index: {
             int idx;
-            maybe_block(FAKE_BLOCK_GET_INDEX);
             pthread_mutex_lock(&g_lock);
             idx = (int)(g_next_index++ % FAKE_BUFF_COUNT);
             pthread_mutex_unlock(&g_lock);
@@ -359,7 +349,7 @@ int ioctl(int fd, unsigned long request, ...) {
             return idx;
         }
         case FAKE_DMA_Ret_Index:
-            maybe_block(FAKE_BLOCK_RET_INDEX);
+            maybe_block_ret_index();
             pthread_mutex_lock(&g_lock);
             g_ret_index_count++;
             pthread_mutex_unlock(&g_lock);
@@ -395,19 +385,6 @@ int poll(struct pollfd* fds, nfds_t nfds, int timeout) {
         }
     }
     return real_poll(fds, nfds, timeout);
-}
-
-ssize_t write(int fd, const void* buf, size_t count) {
-    int ours;
-    if (!real_write) real_write = (write_fn)dlsym(RTLD_NEXT, "write");
-
-    ours = is_our_fd(fd);
-    if (!ours) return real_write(fd, buf, count);
-
-    driver_call_begin();
-    maybe_block(FAKE_BLOCK_WRITE);
-    driver_call_end();
-    return (ssize_t)count;
 }
 
 /* Query hook for the test: number of fake DMA buffers currently mapped. */
@@ -466,22 +443,22 @@ const char* fakedma_path(void) {
 
 void fakedma_reset(void) {
     pthread_mutex_lock(&g_lock);
-    g_block_next = FAKE_BLOCK_NONE;
-    g_blocked = 0;
-    g_release = 0;
-    g_active_calls = 0;
+    g_block_ret_index          = 0;
+    g_blocked                  = 0;
+    g_release                  = 0;
+    g_active_calls             = 0;
     g_close_during_driver_call = 0;
-    g_ret_index_count = 0;
-    g_next_index = 0;
+    g_ret_index_count          = 0;
+    g_next_index               = 0;
     pthread_cond_broadcast(&g_cond);
     pthread_mutex_unlock(&g_lock);
 }
 
-void fakedma_block_next(int op) {
+void fakedma_block_next_ret_index(void) {
     pthread_mutex_lock(&g_lock);
-    g_block_next = op;
-    g_blocked = 0;
-    g_release = 0;
+    g_block_ret_index = 1;
+    g_blocked         = 0;
+    g_release         = 0;
     pthread_mutex_unlock(&g_lock);
 }
 

@@ -24,7 +24,6 @@
 #include <map>
 #include <memory>
 #include <mutex>
-#include <shared_mutex>
 #include <string>
 #include <thread>
 
@@ -86,6 +85,9 @@ typedef std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared> AxiStreamDmaSh
  * - A background RX thread is started in the constructor and runs until `stop()`
  *   or destruction.
  * - TX operations execute synchronously in caller context of `acceptFrame()`.
+ * - Callers must quiesce public driver operations before calling `stop()`.
+ *   Deferred zero-copy buffer returns may overlap `stop()` and are serialized
+ *   against descriptor closure internally.
  *
  * Zero-copy model:
  * - Enabled by default per device path.
@@ -106,11 +108,8 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     // Process-local descriptor for TX/RX operations and dest mask programming.
     int32_t fd_;
 
-    // Set once stop() starts; public stream operations reject new work after it.
-    std::atomic<bool> stopped_{false};
-
-    // Serializes fd_ close against active driver calls and deferred zero-copy returns.
-    std::shared_timed_mutex fdMtx_;
+    // Serializes fd_ close against deferred zero-copy buffer returns.
+    std::mutex fdMtx_;
 
     // Destination selector used when transmitting frames.
     uint32_t dest_;
@@ -146,47 +145,6 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     // Closes shared DMA mapping state when last user exits.
     static void closeShared(std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared>);
-
-    // RAII guard that pins fd_ open while a driver call runs.
-    class FdGuard {
-        std::shared_lock<std::shared_timed_mutex> lock_;
-        int32_t fd_ = -1;
-
-      public:
-        FdGuard(rogue::hardware::axi::AxiStreamDma* owner,
-                const char* context,
-                bool throwOnStopped,
-                bool allowStopped = false);
-        ~FdGuard() = default;
-        FdGuard(const FdGuard&) = delete;
-        FdGuard& operator=(const FdGuard&) = delete;
-
-        int32_t fd() const { return fd_; }
-        bool valid() const { return fd_ >= 0; }
-    };
-
-    // Runs a void driver operation while fd_ is pinned open.
-    template <typename Func>
-    void withFd(const char* context, bool throwOnStopped, Func func, bool allowStopped = false) {
-        FdGuard fd(this, context, throwOnStopped, allowStopped);
-        if (fd.valid()) func(fd.fd());
-    }
-
-    // Runs a value-returning driver operation while fd_ is pinned open.
-    template <typename Result, typename Func>
-    Result withFd(const char* context, bool throwOnStopped, Result stoppedValue, Func func, bool allowStopped = false) {
-        FdGuard fd(this, context, throwOnStopped, allowStopped);
-        if (!fd.valid()) return stoppedValue;
-        return func(fd.fd());
-    }
-
-    template <typename Func>
-    uint32_t readFdValue(const char* context, Func func) {
-        return withFd<uint32_t>(context, false, 0, [func](int32_t fd) {
-            auto value = func(fd);
-            return (value < 0) ? 0 : static_cast<uint32_t>(value);
-        });
-    }
 
   public:
     /**
@@ -260,6 +218,11 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
      * The shared zero-copy DMA mapping remains valid until destruction so
      * downstream Rogue buffers retained after `stop()` do not reference
      * unmapped memory.
+     *
+     * Before calling `stop()`, callers must ensure that stream operations and
+     * driver controls/accessors have completed and that no new ones can begin.
+     * Deferred returns from previously issued zero-copy buffers may overlap
+     * `stop()`; descriptor closure is synchronized with those callbacks.
      */
     void stop();
 

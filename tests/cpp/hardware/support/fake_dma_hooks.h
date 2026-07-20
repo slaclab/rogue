@@ -24,42 +24,34 @@
 
 namespace rogue_test {
 
-enum FakeDmaBlockOp {
-    FakeDmaBlockNone     = 0,
-    FakeDmaBlockGetIndex = 1,
-    FakeDmaBlockRetIndex = 2,
-    FakeDmaBlockBuffSize = 3,
-    FakeDmaBlockWrite    = 4,
-};
-
 class FakeDma {
   public:
     using PathFn        = const char* (*)();
     using ResetFn       = void (*)();
-    using BlockNextFn   = void (*)(int);
+    using BlockNextFn   = void (*)();
     using WaitBlockedFn = int (*)(uint32_t);
     using ReleaseFn     = void (*)();
     using CountFn       = int (*)();
 
     FakeDma() {
-        path_          = load<PathFn>("fakedma_path");
-        reset_         = load<ResetFn>("fakedma_reset");
-        blockNext_     = load<BlockNextFn>("fakedma_block_next");
-        waitBlocked_   = load<WaitBlockedFn>("fakedma_wait_blocked");
-        release_       = load<ReleaseFn>("fakedma_release_blocked");
-        mappedCount_   = load<CountFn>("fakedma_mapped_count");
-        fdCount_       = load<CountFn>("fakedma_fd_count");
-        regionCount_   = load<CountFn>("fakedma_region_count");
-        activeCalls_   = load<CountFn>("fakedma_active_call_count");
-        overflowCount_ = load<CountFn>("fakedma_tracking_overflow_count");
-        isClean_       = load<CountFn>("fakedma_is_clean");
+        path_            = load<PathFn>("fakedma_path");
+        reset_           = load<ResetFn>("fakedma_reset");
+        blockNext_       = load<BlockNextFn>("fakedma_block_next_ret_index");
+        waitBlocked_     = load<WaitBlockedFn>("fakedma_wait_blocked");
+        release_         = load<ReleaseFn>("fakedma_release_blocked");
+        mappedCount_     = load<CountFn>("fakedma_mapped_count");
+        fdCount_         = load<CountFn>("fakedma_fd_count");
+        regionCount_     = load<CountFn>("fakedma_region_count");
+        activeCalls_     = load<CountFn>("fakedma_active_call_count");
+        overflowCount_   = load<CountFn>("fakedma_tracking_overflow_count");
+        isClean_         = load<CountFn>("fakedma_is_clean");
         retIndexCount_     = load<CountFn>("fakedma_ret_index_count");
-        closeDuringCall_ = load<CountFn>("fakedma_close_during_driver_call");
+        closeDuringCall_   = load<CountFn>("fakedma_close_during_driver_call");
     }
 
     const char* path() const { return path_(); }
     void reset() const { reset_(); }
-    void blockNext(FakeDmaBlockOp op) const { blockNext_(static_cast<int>(op)); }
+    void blockNextRetIndex() const { blockNext_(); }
     bool waitBlocked(uint32_t timeoutMs) const { return waitBlocked_(timeoutMs) != 0; }
     void releaseBlocked() const { release_(); }
     int mappedCount() const { return mappedCount_(); }
