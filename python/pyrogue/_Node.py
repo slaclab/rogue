@@ -554,6 +554,22 @@ class Node(object):
         lock = getattr(root, 'operationLock', None)
         return lock() if callable(lock) else nullcontext()
 
+    def _operationShared(self) -> Any:
+        """Return shared operation admission when this node has a Root."""
+        root = self.root
+        if root is None:
+            return nullcontext()
+        lock = getattr(root, '_operationShared', None)
+        return lock() if callable(lock) else nullcontext()
+
+    def _operationExclusive(self) -> Any:
+        """Return exclusive operation admission when this node has a Root."""
+        root = self.root
+        if root is None:
+            return nullcontext()
+        lock = getattr(root, 'operationLock', None)
+        return lock() if callable(lock) else nullcontext()
+
     def node(self, name: str) -> Node:
         """Return a direct child node by name.
 

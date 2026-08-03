@@ -1503,25 +1503,26 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         """
         try:
-            wait = _resolve_deprecated_bool(
-                new_name="wait",
-                new_value=wait,
-                old_name="check",
-                old_value=check,
-                default=True,
-            )
+            with self._operationShared():
+                wait = _resolve_deprecated_bool(
+                    new_name="wait",
+                    new_value=wait,
+                    old_name="check",
+                    old_value=check,
+                    default=True,
+                )
 
-            # Set value to block
-            index = operator.index(index)
+                # Set value to block
+                index = operator.index(index)
 
-            self._set(value,index)
+                self._set(value,index)
 
-            if write:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
-                if verify:
-                    self._parent.verifyBlocks(recurse=False, variable=self)
-                if wait:
-                    self._parent.waitBlocks(recurse=False, variable=self)
+                if write:
+                    self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
+                    if verify:
+                        self._parent.verifyBlocks(recurse=False, variable=self)
+                    if wait:
+                        self._parent.waitBlocks(recurse=False, variable=self)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1553,13 +1554,13 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         """
         try:
+            with self._operationShared():
+                index = operator.index(index)
 
-            index = operator.index(index)
+                # Set value to block
+                self._set(value,index)
 
-            # Set value to block
-            self._set(value,index)
-
-            pr.startTransaction(self._block, type=rim.Post, forceWr=False, wait=True, variable=self, index=index)
+                pr.startTransaction(self._block, type=rim.Post, forceWr=False, wait=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1598,21 +1599,22 @@ class RemoteVariable(BaseVariable,rim.Variable):
             Deprecated alias for ``wait``.
         """
         try:
-            wait = _resolve_deprecated_bool(
-                new_name="wait",
-                new_value=wait,
-                old_name="check",
-                old_value=check,
-                default=True,
-            )
-            index = operator.index(index)
+            with self._operationShared():
+                wait = _resolve_deprecated_bool(
+                    new_name="wait",
+                    new_value=wait,
+                    old_name="check",
+                    old_value=check,
+                    default=True,
+                )
+                index = operator.index(index)
 
-            if read:
-                self._parent.readBlocks(recurse=False, variable=self, index=index)
-                if wait:
-                    self._parent.waitBlocks(recurse=False, variable=self)
+                if read:
+                    self._parent.readBlocks(recurse=False, variable=self, index=index)
+                    if wait:
+                        self._parent.waitBlocks(recurse=False, variable=self)
 
-            return self._get(index)
+                return self._get(index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1648,18 +1650,19 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         """
         try:
-            wait = _resolve_deprecated_bool(
-                new_name="wait",
-                new_value=wait,
-                old_name="check",
-                old_value=check,
-                default=True,
-            )
-            self._parent.writeBlocks(force=True, recurse=False, variable=self)
-            if verify:
-                self._parent.verifyBlocks(recurse=False, variable=self)
-            if wait:
-                self._parent.waitBlocks(recurse=False, variable=self)
+            with self._operationShared():
+                wait = _resolve_deprecated_bool(
+                    new_name="wait",
+                    new_value=wait,
+                    old_name="check",
+                    old_value=check,
+                    default=True,
+                )
+                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                if verify:
+                    self._parent.verifyBlocks(recurse=False, variable=self)
+                if wait:
+                    self._parent.waitBlocks(recurse=False, variable=self)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1847,19 +1850,20 @@ class LocalVariable(BaseVariable):
         self._log.debug("%s.set(%r)", self, value)
 
         try:
-            _resolve_deprecated_bool(
-                new_name="wait",
-                new_value=wait,
-                old_name="check",
-                old_value=check,
-                default=True,
-            )
+            with self._operationShared():
+                _resolve_deprecated_bool(
+                    new_name="wait",
+                    new_value=wait,
+                    old_name="check",
+                    old_value=check,
+                    default=True,
+                )
 
-            # Set value to block
-            self._block.set(self, value, index)
+                # Set value to block
+                self._block.set(self, value, index)
 
-            if write:
-                self._block._checkTransaction()
+                if write:
+                    self._block._checkTransaction()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1893,8 +1897,9 @@ class LocalVariable(BaseVariable):
         self._log.debug("%s.post(%r)", self, value)
 
         try:
-            self._block.set(self, value, index)
-            self._block._checkTransaction()
+            with self._operationShared():
+                self._block.set(self, value, index)
+                self._block._checkTransaction()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1937,17 +1942,18 @@ class LocalVariable(BaseVariable):
 
         """
         try:
-            wait = _resolve_deprecated_bool(
-                new_name="wait",
-                new_value=wait,
-                old_name="check",
-                old_value=check,
-                default=True,
-            )
-            if read and wait:
-                self._block._checkTransaction()
+            with self._operationShared():
+                wait = _resolve_deprecated_bool(
+                    new_name="wait",
+                    new_value=wait,
+                    old_name="check",
+                    old_value=check,
+                    default=True,
+                )
+                if read and wait:
+                    self._block._checkTransaction()
 
-            return self._block.get(self,index)
+                return self._block.get(self,index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1960,67 +1966,80 @@ class LocalVariable(BaseVariable):
 
     def __iadd__(self, other: Any) -> LocalVariable:
         """In-place add on the local variable value."""
-        self._block._iadd(other)
+        with self._operationShared():
+            self._block._iadd(other)
         return self
 
     def __isub__(self, other: Any) -> LocalVariable:
         """In-place subtract on the local variable value."""
-        self._block._isub(other)
+        with self._operationShared():
+            self._block._isub(other)
         return self
 
     def __imul__(self, other: Any) -> LocalVariable:
         """In-place multiply on the local variable value."""
-        self._block._imul(other)
+        with self._operationShared():
+            self._block._imul(other)
         return self
 
     def __imatmul__(self, other: Any) -> LocalVariable:
         """In-place matrix-multiply on the local variable value."""
-        self._block._imatmul(other)
+        with self._operationShared():
+            self._block._imatmul(other)
         return self
 
     def __itruediv__(self, other: Any) -> LocalVariable:
         """In-place true-division on the local variable value."""
-        self._block._itruediv(other)
+        with self._operationShared():
+            self._block._itruediv(other)
         return self
 
     def __ifloordiv__(self, other: Any) -> LocalVariable:
         """In-place floor-division on the local variable value."""
-        self._block._ifloordiv(other)
+        with self._operationShared():
+            self._block._ifloordiv(other)
         return self
 
     def __imod__(self, other: Any) -> LocalVariable:
         """In-place modulo on the local variable value."""
-        self._block._imod(other)
+        with self._operationShared():
+            self._block._imod(other)
         return self
 
     def __ipow__(self, other: Any) -> LocalVariable:
         """In-place exponentiation on the local variable value."""
-        self._block._ipow(other)
+        with self._operationShared():
+            self._block._ipow(other)
         return self
 
     def __ilshift__(self, other: Any) -> LocalVariable:
         """In-place left-shift on the local variable value."""
-        self._block._ilshift(other)
+        with self._operationShared():
+            self._block._ilshift(other)
         return self
 
     def __irshift__(self, other: Any) -> LocalVariable:
         """In-place right-shift on the local variable value."""
-        self._block._irshift(other)
+        with self._operationShared():
+            self._block._irshift(other)
         return self
 
     def __iand__(self, other: Any) -> LocalVariable:
         """In-place bitwise-and on the local variable value."""
-        self._block._iand(other)
+        with self._operationShared():
+            self._block._iand(other)
         return self
 
     def __ixor__(self, other: Any) -> LocalVariable:
         """In-place bitwise-xor on the local variable value."""
-        self._block._ixor(other)
+        with self._operationShared():
+            self._block._ixor(other)
         return self
 
     def __ior__(self, other: Any) -> LocalVariable:
         """In-place bitwise-or on the local variable value."""
-        self._block._ior(other)
+        with self._operationShared():
+            self._block._ior(other)
         return self
 
 class LinkVariable(BaseVariable):
@@ -2191,24 +2210,25 @@ class LinkVariable(BaseVariable):
 
         """
         try:
-            wait = _resolve_deprecated_bool(
-                new_name="wait",
-                new_value=wait,
-                old_name="check",
-                old_value=check,
-                default=True,
-            )
-            self._linkedSetWrap(
-                function=self._linkedSet,
-                dev=self.parent,
-                var=self,
-                value=value,
-                write=write,
-                index=index,
-                verify=verify,
-                wait=wait,
-                check=wait,
-            )
+            with self._operationShared():
+                wait = _resolve_deprecated_bool(
+                    new_name="wait",
+                    new_value=wait,
+                    old_name="check",
+                    old_value=check,
+                    default=True,
+                )
+                self._linkedSetWrap(
+                    function=self._linkedSet,
+                    dev=self.parent,
+                    var=self,
+                    value=value,
+                    write=write,
+                    index=index,
+                    verify=verify,
+                    wait=wait,
+                    check=wait,
+                )
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error setting link variable %s", self.path)
@@ -2242,22 +2262,23 @@ class LinkVariable(BaseVariable):
 
         """
         try:
-            wait = _resolve_deprecated_bool(
-                new_name="wait",
-                new_value=wait,
-                old_name="check",
-                old_value=check,
-                default=True,
-            )
-            return self._linkedGetWrap(
-                function=self._linkedGet,
-                dev=self.parent,
-                var=self,
-                read=read,
-                index=index,
-                wait=wait,
-                check=wait,
-            )
+            with self._operationShared():
+                wait = _resolve_deprecated_bool(
+                    new_name="wait",
+                    new_value=wait,
+                    old_name="check",
+                    old_value=check,
+                    default=True,
+                )
+                return self._linkedGetWrap(
+                    function=self._linkedGet,
+                    dev=self.parent,
+                    var=self,
+                    read=read,
+                    index=index,
+                    wait=wait,
+                    check=wait,
+                )
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error getting link variable %s", self.path)

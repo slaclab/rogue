@@ -136,7 +136,8 @@ class BaseCommand(pr.BaseVariable):
         arg : object, optional
             Command argument. If ``None``, uses the default value.
         """
-        return self._doFunc(arg)
+        with self._operationExclusive():
+            return self._doFunc(arg)
 
     def _doFunc(self, arg: Any) -> Any:
         """Execute command callback.
@@ -412,7 +413,8 @@ class BaseCommand(pr.BaseVariable):
         index : int, optional (default = -1)
             Unused for commands.
         """
-        return self._default
+        with self._operationShared():
+            return self._default
 
     def _genDocs(self, file: Any) -> None:
         """Emit Sphinx documentation for this command."""
@@ -546,12 +548,13 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         """
         self._log.debug("%s.set(%r)", self, value)
         try:
-            index = operator.index(index)
+            with self._operationExclusive():
+                index = operator.index(index)
 
-            self._set(value,index)
+                self._set(value,index)
 
-            if write:
-                pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, wait=True, variable=self, index=index)
+                if write:
+                    pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, wait=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -574,12 +577,13 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             Retrieved value.
         """
         try:
-            index = operator.index(index)
+            with self._operationShared():
+                index = operator.index(index)
 
-            if read:
-                pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, wait=True, variable=self, index=index)
+                if read:
+                    pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, wait=True, variable=self, index=index)
 
-            return self._get(index)
+                return self._get(index)
 
         except Exception as e:
             pr.logException(self._log,e)

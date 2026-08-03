@@ -110,6 +110,211 @@ def test_root_operation_lock_is_reentrant_and_blocks_other_threads():
     assert not thread.is_alive()
 
 
+def test_variable_access_waits_for_root_operation_lock():
+    root = pr.Root(name="root", pollEn=False)
+    root.add(pr.LocalVariable(name="Value", value=1))
+    set_done = threading.Event()
+    get_done = threading.Event()
+    errors = []
+
+    def set_value():
+        try:
+            root.Value.set(2)
+        except Exception as exc:
+            errors.append(exc)
+        finally:
+            set_done.set()
+
+    def get_value():
+        try:
+            root.Value.get()
+        except Exception as exc:
+            errors.append(exc)
+        finally:
+            get_done.set()
+
+    with root:
+        with root.operationLock():
+            set_thread = threading.Thread(target=set_value)
+            get_thread = threading.Thread(target=get_value)
+            set_thread.start()
+            get_thread.start()
+            assert not set_done.wait(timeout=0.1)
+            assert not get_done.wait(timeout=0.1)
+
+        assert set_done.wait(timeout=1.0)
+        assert get_done.wait(timeout=1.0)
+        set_thread.join(timeout=1.0)
+        get_thread.join(timeout=1.0)
+        assert not set_thread.is_alive()
+        assert not get_thread.is_alive()
+        assert errors == []
+        assert root.Value.value() == 2
+
+
+def test_independent_variable_reads_share_operation_admission():
+    root = pr.Root(name="root", pollEn=False)
+    first_entered = threading.Event()
+    second_entered = threading.Event()
+    release = threading.Event()
+    block_reads = threading.Event()
+    errors = []
+
+    def blocking_get(entered, value):
+        if not block_reads.is_set():
+            return value
+        entered.set()
+        if not release.wait(timeout=5.0):
+            raise TimeoutError("test did not release local getter")
+        return value
+
+    root.add(pr.LocalVariable(
+        name="First",
+        mode="RO",
+        localGet=lambda: blocking_get(first_entered, 1),
+    ))
+    root.add(pr.LocalVariable(
+        name="Second",
+        mode="RO",
+        localGet=lambda: blocking_get(second_entered, 2),
+    ))
+
+    def read(variable):
+        try:
+            variable.get()
+        except Exception as exc:
+            errors.append(exc)
+
+    with root:
+        block_reads.set()
+        first_thread = threading.Thread(target=read, args=(root.First,))
+        second_thread = threading.Thread(target=read, args=(root.Second,))
+        first_thread.start()
+        assert first_entered.wait(timeout=1.0)
+        second_thread.start()
+
+        try:
+            # A single root mutex would keep this second getter from entering
+            # until the first getter returns. Shared admission permits both.
+            assert second_entered.wait(timeout=1.0)
+        finally:
+            release.set()
+
+        first_thread.join(timeout=1.0)
+        second_thread.join(timeout=1.0)
+        assert not first_thread.is_alive()
+        assert not second_thread.is_alive()
+        assert errors == []
+
+
+def test_waiting_exclusive_operation_has_priority_over_new_variable_access(wait_until):
+    root = pr.Root(name="root", pollEn=False)
+    block_reads = threading.Event()
+    first_entered = threading.Event()
+    release_first = threading.Event()
+    writer_entered = threading.Event()
+    release_writer = threading.Event()
+    second_entered = threading.Event()
+    errors = []
+
+    def first_get():
+        if block_reads.is_set():
+            first_entered.set()
+            if not release_first.wait(timeout=5.0):
+                raise TimeoutError("test did not release first reader")
+        return 1
+
+    def second_get():
+        if block_reads.is_set():
+            second_entered.set()
+        return 2
+
+    root.add(pr.LocalVariable(name="First", mode="RO", localGet=first_get))
+    root.add(pr.LocalVariable(name="Second", mode="RO", localGet=second_get))
+
+    def run(action):
+        try:
+            action()
+        except Exception as exc:
+            errors.append(exc)
+
+    def exclusive_operation():
+        with root.operationLock():
+            writer_entered.set()
+            if not release_writer.wait(timeout=5.0):
+                raise TimeoutError("test did not release exclusive operation")
+
+    with root:
+        block_reads.set()
+        first_thread = threading.Thread(target=run, args=(root.First.get,))
+        writer_thread = threading.Thread(target=run, args=(exclusive_operation,))
+        second_thread = threading.Thread(target=run, args=(root.Second.get,))
+
+        first_thread.start()
+        assert first_entered.wait(timeout=1.0)
+
+        writer_thread.start()
+        assert wait_until(lambda: root._opGate._waitingWriters == 1)
+
+        second_thread.start()
+        assert not second_entered.wait(timeout=0.1)
+
+        release_first.set()
+        assert writer_entered.wait(timeout=1.0)
+        assert not second_entered.wait(timeout=0.1)
+
+        release_writer.set()
+        assert second_entered.wait(timeout=1.0)
+
+        first_thread.join(timeout=1.0)
+        writer_thread.join(timeout=1.0)
+        second_thread.join(timeout=1.0)
+        assert not first_thread.is_alive()
+        assert not writer_thread.is_alive()
+        assert not second_thread.is_alive()
+        assert errors == []
+
+
+def test_command_execution_is_exclusive_and_operation_lock_is_reentrant():
+    root = pr.Root(name="root", pollEn=False)
+    root.add(pr.LocalVariable(name="Value", value=1))
+    callback_entered = threading.Event()
+    command_done = threading.Event()
+    errors = []
+
+    def command(root):
+        try:
+            with root.operationLock():
+                root.Value.set(3)
+                callback_entered.set()
+        except Exception as exc:
+            errors.append(exc)
+
+    root.add(pr.LocalCommand(name="Apply", function=command))
+
+    def call_command():
+        try:
+            root.Apply()
+        except Exception as exc:
+            errors.append(exc)
+        finally:
+            command_done.set()
+
+    with root:
+        with root.operationLock():
+            thread = threading.Thread(target=call_command)
+            thread.start()
+            assert not callback_entered.wait(timeout=0.1)
+            assert not command_done.wait(timeout=0.1)
+
+        assert callback_entered.wait(timeout=1.0)
+        assert command_done.wait(timeout=1.0)
+        thread.join(timeout=1.0)
+        assert not thread.is_alive()
+        assert errors == []
+        assert root.Value.value() == 3
+
+
 def test_root_lifecycle_operations_wait_for_operation_lock():
     with IoRoot() as root:
         for method_name in ("initialize", "hardReset", "countReset"):

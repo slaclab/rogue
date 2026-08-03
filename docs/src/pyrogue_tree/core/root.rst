@@ -235,9 +235,14 @@ For the detailed scheduling and behavior model, see
 Root Operation Lock
 ===================
 
-``Root`` owns a reentrant operation lock used to serialize long-running
-root-level operations. This is mostly a behind-the-scenes guard: normal users
-do not need to acquire it when using built-in APIs. PyRogue acquires it
+``Root`` owns a writer-preferred shared/exclusive operation gate. Normal
+variable accesses enter the gate in shared mode, so unrelated reads and writes
+can still overlap. Coordinated operations enter in exclusive mode, wait for
+active variable calls to finish, and prevent new variable calls from starting
+until the operation completes.
+
+The public ``operationLock()`` context acquires exclusive access and is
+reentrant for its owning thread. PyRogue acquires exclusive access
 automatically for:
 
 * ``ReadAll`` and ``WriteAll`` root operations
@@ -246,6 +251,12 @@ automatically for:
   and ``setYaml``
 * ``RemoteVariableDump`` and ``RemoteConfigDump``
 * ZMQ request/reply operations served by :py:class:`~pyrogue.interfaces.ZmqServer`
+* command execution
+
+Concrete local, remote, and link variable ``get``, ``set``, ``post``, and
+``write`` entry points acquire shared access. This includes variable writes
+originating from interfaces such as EPICS without requiring each interface to
+know about the gate. An exclusive operation may call these APIs reentrantly.
 
 The goal is to prevent operations that change or snapshot a coordinated tree
 state from interleaving with each other. For example, if one client starts a
@@ -253,26 +264,30 @@ long ``LoadConfig`` operation, another ZMQ client request will wait until that
 operation completes instead of reading or writing the tree halfway through the
 load.
 
-Application authors usually only need to know about this lock when they create
-custom commands or callbacks that perform a multi-step system operation. If the
-operation must not interleave with YAML loads, root reads/writes, lifecycle
-operations, or remote client requests, wrap it with ``operationLock()``:
+Command callbacks are already exclusive, so multi-step commands do not need to
+acquire the lock themselves. For coordinated application code entered through
+some other path, wrap the complete operation with ``operationLock()`` before
+calling any variable APIs:
 
 .. code-block:: python
 
-   @pyrogue.command(name='ApplyMode', value='')
-   def _applyMode(self, arg):
-       with self.operationLock():
+   def applyMode(self, arg):
+       with self.root.operationLock():
            self.Control.Mode.setDisp(arg)
            self.Control.Enable.set(True)
-           self.WriteAll()
+           self.root.WriteAll()
 
-The lock is reentrant, so code inside the block can safely call built-in
-helpers that also acquire the lock. Keep the protected section limited to the
-coordinated operation. The operation lock is not a replacement for lower-level
-memory transaction locking, and it does not stop asynchronous value update
-publishing; those mechanisms remain handled by the block, polling, and update
-queue paths.
+Do not attempt to begin an exclusive operation from inside a local-variable or
+link-variable callback that was entered in shared mode. Begin the exclusive
+scope before calling the variable instead. This avoids ambiguous
+shared-to-exclusive upgrades.
+
+Keep the protected section limited to the coordinated operation. The operation
+gate is not a replacement for lower-level memory transaction locking, and it
+does not stop asynchronous value update publishing. A variable call made with
+``wait=False`` leaves shared admission when the Python method returns; an
+in-flight hardware transaction remains governed by the block and transaction
+locking layers.
 
 YAML helpers operate on a live tree attached to a ``Root``. Calling YAML
 helpers on detached ``Device`` or ``Node`` objects is treated as a tree

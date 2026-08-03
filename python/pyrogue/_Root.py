@@ -32,6 +32,122 @@ from typing import Any, Callable, Iterator
 
 SystemLogInit = '[]'
 
+
+class _OperationGateContext(object):
+    """Reusable context object for one side of an operation gate."""
+
+    def __init__(self, gate: Any, exclusive: bool) -> None:
+        self._gate = gate
+        self._exclusive = exclusive
+
+    def __enter__(self) -> None:
+        if self._exclusive:
+            self._gate._acquireExclusive()
+        else:
+            self._gate._acquireShared()
+
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        if self._exclusive:
+            self._gate._releaseExclusive()
+        else:
+            self._gate._releaseShared()
+
+
+class _OperationGate(object):
+    """Coordinate shared variable access and exclusive root operations."""
+
+    def __init__(self) -> None:
+        self._condition = threading.Condition(threading.RLock())
+        self._readers = {}
+        self._readerCount = 0
+        self._writer = None
+        self._writerDepth = 0
+        self._waitingWriters = 0
+        self._sharedContext = _OperationGateContext(self, False)
+        self._exclusiveContext = _OperationGateContext(self, True)
+
+    def shared(self) -> Any:
+        """Return the shared variable-access context."""
+        return self._sharedContext
+
+    def exclusive(self) -> Any:
+        """Return the reentrant exclusive root-operation context."""
+        return self._exclusiveContext
+
+    def _acquireShared(self) -> None:
+        """Acquire shared variable-access admission."""
+        tid = threading.get_ident()
+
+        with self._condition:
+            # An exclusive owner may call variable APIs without demoting its
+            # exclusive access or blocking on itself.
+            if self._writer == tid:
+                return
+
+            depth = self._readers.get(tid, 0)
+
+            # Existing readers may nest while a writer waits so callbacks and
+            # LinkVariable chains can finish. New readers wait behind queued
+            # writers to prevent writer starvation.
+            while self._writer is not None or (self._waitingWriters != 0 and depth == 0):
+                self._condition.wait()
+
+            self._readers[tid] = depth + 1
+            self._readerCount += 1
+
+    def _releaseShared(self) -> None:
+        """Release shared variable-access admission."""
+        tid = threading.get_ident()
+
+        with self._condition:
+            if self._writer == tid:
+                return
+
+            depth = self._readers[tid] - 1
+            self._readerCount -= 1
+
+            if depth == 0:
+                del self._readers[tid]
+            else:
+                self._readers[tid] = depth
+
+            if self._readerCount == 0:
+                self._condition.notify_all()
+
+    def _acquireExclusive(self) -> None:
+        """Acquire reentrant exclusive root-operation admission."""
+        tid = threading.get_ident()
+
+        with self._condition:
+            if self._writer == tid:
+                self._writerDepth += 1
+                return
+
+            if self._readers.get(tid, 0) != 0:
+                raise RuntimeError(
+                    "operationLock() cannot be acquired from inside a shared variable access; "
+                    "enter the exclusive scope before calling the variable")
+
+            self._waitingWriters += 1
+            try:
+                while self._writer is not None or self._readerCount != 0:
+                    self._condition.wait()
+                self._writer = tid
+                self._writerDepth = 1
+            finally:
+                self._waitingWriters -= 1
+                if self._writer is None:
+                    self._condition.notify_all()
+
+    def _releaseExclusive(self) -> None:
+        """Release reentrant exclusive root-operation admission."""
+        with self._condition:
+            self._writerDepth -= 1
+            if self._writerDepth == 0:
+                self._writer = None
+                self._condition.notify_all()
+
+
 class UpdateTracker(object):
     """Track grouped variable updates for root listeners."""
     def __init__(self, q: Any) -> None:
@@ -252,7 +368,7 @@ class Root(pr.Device):
         self._updateThread = None
         self._updateLock   = threading.Lock()
         self._updateTrack  = {}
-        self._opLock       = threading.RLock()
+        self._opGate       = _OperationGate()
 
         # Init
         pr.Device.__init__(self, name=name, description=description, expand=expand)
@@ -569,19 +685,18 @@ class Root(pr.Device):
 
         self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
-    @contextmanager
-    def operationLock(self) -> Iterator[None]:
-        """Serialize root-level operations that must not interleave.
+    def operationLock(self) -> Any:
+        """Acquire exclusive access for a coordinated root operation.
 
-        The lock is reentrant so built-in helpers can compose safely. Root
-        read/write helpers, lifecycle helpers, YAML import/export helpers, and
-        ZMQ request handlers acquire this lock automatically. Application code
-        can use it around custom multi-step root operations that must not run
-        concurrently with remote client requests or other serialized root
-        operations.
+        The lock is reentrant so built-in helpers and command callbacks can
+        compose safely. Exclusive scopes wait for active variable accesses to
+        finish and block new variable accesses until the operation completes.
         """
-        with self._opLock:
-            yield
+        return self._opGate.exclusive()
+
+    def _operationShared(self) -> Any:
+        """Acquire shared admission for a variable access."""
+        return self._opGate.shared()
 
     @contextmanager
     def updateGroup(self, period: float = 0) -> Iterator[None]:
