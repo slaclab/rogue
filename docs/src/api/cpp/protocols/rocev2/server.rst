@@ -27,6 +27,11 @@ Threading and Lifecycle
 - An ibverbs failure inside ``postRecvWr()`` is caught inside the poll
   thread; the thread logs the error and exits cleanly instead of
   escaping the thread entry point and triggering ``std::terminate``.
+- Before calling ``stop()``, callers must quiesce ``completeConnection()``
+  and other public operations that use the Server's ibverbs resources.
+  Deferred returns from zero-copy buffers already issued by the Server may
+  overlap ``stop()``; their receive-WR re-posts are serialized against QP/MR
+  teardown internally.
 
 
 Python binding
@@ -89,7 +94,10 @@ Class Reference
       that is the ``Pool`` buffer backing and is freed by ``~Server()`` (see
       above), so a zero-copy ``Buffer`` still held downstream is never
       stranded. Idempotent — safe to call multiple times (also called by
-      ``~Server()``).
+      ``~Server()``). Callers must first quiesce ``completeConnection()`` and
+      other public ibverbs-resource operations. Deferred zero-copy buffer
+      returns may overlap ``stop()`` and are serialized internally against
+      destruction of the QP and MR.
 
    .. cpp:function:: void setFpgaGid(const std::string& gidBytes)
 

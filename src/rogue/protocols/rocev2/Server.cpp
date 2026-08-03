@@ -770,6 +770,11 @@ void rpr::Server::acceptFrame(ris::FramePtr /*frame*/) {
 // stop / destructor
 // ---------------------------------------------------------------------------
 void rpr::Server::stop() {
+    // Callers must quiesce completeConnection() and other public ibverbs
+    // resource operations before shutdown.  Deferred zero-copy buffer returns
+    // are the one operation allowed to overlap stop(); resourcesMtx_ serializes
+    // their receive-WR re-posts with cleanupResources() below.
+
     // Release the GIL for the duration of teardown.  stop() is driven from Python
     // (RoCEv2Server._stop) with the GIL held, and the receive thread re-acquires
     // the GIL via ScopedGil inside sendFrame() when a downstream slave is Python;

@@ -41,11 +41,14 @@
 
 #include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <cstring>
+#include <exception>
 #include <memory>
 #include <mutex>
 #include <string>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include "doctest/doctest.h"
@@ -73,6 +76,7 @@ constexpr uint32_t kMaxPayload   = 4096;
 constexpr uint32_t kQueueDepth   = 256;
 constexpr uint32_t kMinRnrTimer  = 12;
 constexpr uint32_t kPayloadLen   = 1024;   // bytes actually SENT (<= bufSize_)
+constexpr size_t   kFrameCount   = 4;
 // path_mtu is chosen at runtime from the port's active_mtu: rxe0 inherits the
 // backing netdev MTU (typically 1500 -> IBV_MTU_1024), so a fixed 4096 would be
 // rejected at INIT->RTR. The RC layer segments the SEND into path_mtu packets;
@@ -138,14 +142,49 @@ class HoldingSlave : public ris::Slave {
         std::lock_guard<std::mutex> lk(mtx_);
         return frames_.size();
     }
-    ris::FramePtr front() {
+    std::vector<ris::FramePtr> takeAll() {
         std::lock_guard<std::mutex> lk(mtx_);
-        return frames_.empty() ? nullptr : frames_.front();
+        std::vector<ris::FramePtr> frames;
+        frames.swap(frames_);
+        return frames;
+    }
+    void clear() {
+        std::lock_guard<std::mutex> lk(mtx_);
+        frames_.clear();
     }
 
   private:
     std::mutex                 mtx_;
     std::vector<ris::FramePtr> frames_;
+};
+
+// Break the Server -> HoldingSlave -> Frame -> Buffer -> Server ownership
+// cycle if a fatal doctest assertion unwinds the test before takeAll().
+class HoldingSlaveCleanup {
+  public:
+    HoldingSlaveCleanup(const std::shared_ptr<rpr::Server>& server,
+                        const std::shared_ptr<HoldingSlave>& slave)
+        : server_(server), slave_(slave) {}
+    ~HoldingSlaveCleanup() {
+        // Stop delivery before clearing retained frames; otherwise a frame
+        // arriving between clear() and local shared_ptr teardown could recreate
+        // the ownership cycle this guard exists to break.
+        if (auto server = server_.lock()) {
+            try {
+                server->stop();
+            } catch (...) {
+                // Best-effort cleanup during assertion unwinding.
+            }
+        }
+        slave_->clear();
+    }
+
+    HoldingSlaveCleanup(const HoldingSlaveCleanup&)            = delete;
+    HoldingSlaveCleanup& operator=(const HoldingSlaveCleanup&) = delete;
+
+  private:
+    std::weak_ptr<rpr::Server>       server_;
+    std::shared_ptr<HoldingSlave>    slave_;
 };
 
 // Minimal loopback client: an RC QP on rxe0 that SENDs one frame to the Server.
@@ -320,7 +359,7 @@ struct LoopbackClient {
 
 }  // namespace
 
-TEST_CASE("rocev2 Server::stop must not free the RX slab while a zero-copy frame is held") {
+TEST_CASE("rocev2 Server preserves zero-copy lifetime and serializes returns with stop") {
     if (!rxeAvailable()) return;  // runtime-skip idiom (doctest 2.4.12 has no skip macro)
 
     // Loopback client — open first so we can pick a GID index usable by both.
@@ -344,6 +383,7 @@ TEST_CASE("rocev2 Server::stop must not free the RX slab while a zero-copy frame
 
     auto slave = std::make_shared<HoldingSlave>();
     server->addSlave(slave);
+    HoldingSlaveCleanup slaveCleanup(server, slave);
 
     // path_mtu = the port's active MTU (rxe0 inherits the netdev MTU); a fixed
     // 4096 is rejected at INIT->RTR when the netdev MTU is smaller.
@@ -360,15 +400,22 @@ TEST_CASE("rocev2 Server::stop must not free the RX slab while a zero-copy frame
     server->completeConnection(client.qp->qp_num, kClientSqPsn, pmtu, kMinRnrTimer);
     REQUIRE(client.connectTo(server->getQpn(), server->getSqPsn(), pmtu));
 
-    REQUIRE(client.send());
+    for (size_t i = 0; i < kFrameCount; ++i) REQUIRE(client.send());
 
-    // Wait (bounded) for the Server's receive thread to deliver the frame.
+    // Wait (bounded) for the Server's receive thread to deliver the frames.
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
-    while (slave->count() == 0 && std::chrono::steady_clock::now() < deadline)
+    while (slave->count() < kFrameCount && std::chrono::steady_clock::now() < deadline)
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
-    REQUIRE(slave->count() >= 1);
+    REQUIRE(slave->count() >= kFrameCount);
 
-    ris::FramePtr frame = slave->front();
+    // Detach every retained frame from HoldingSlave.  This breaks the
+    // Server -> Slave -> Frame -> Buffer -> Server ownership cycle while
+    // preserving explicit references for the lifetime and teardown-race checks
+    // below.
+    std::vector<ris::FramePtr> returnedFrames = slave->takeAll();
+    REQUIRE(returnedFrames.size() >= kFrameCount);
+    ris::FramePtr frame = std::move(returnedFrames.front());
+    returnedFrames.erase(returnedFrames.begin());
     REQUIRE(frame != nullptr);
     REQUIRE(frame->getPayload() == kPayloadLen);
 
@@ -381,11 +428,58 @@ TEST_CASE("rocev2 Server::stop must not free the RX slab while a zero-copy frame
     }
     CHECK_EQ(std::memcmp(before.data(), client.sbuf.data(), kPayloadLen), 0);
 
-    // TEARDOWN while `frame` is still held downstream.  On the buggy build
+    // Release several deferred zero-copy buffers concurrently with stop().
+    // Both workers rendezvous before proceeding to maximize the practical race
+    // coverage on real ibverbs hardware.  retBuffer()/postRecvWr() and
+    // cleanupResources() share resourcesMtx_, so either the re-post finishes
+    // before teardown or it observes that the resources are already gone.
+    std::mutex startMtx;
+    std::condition_variable startCv;
+    uint32_t ready = 0;
+    bool start      = false;
+    auto awaitStart = [&] {
+        std::unique_lock<std::mutex> lock(startMtx);
+        ++ready;
+        startCv.notify_all();
+        startCv.wait(lock, [&] { return start; });
+    };
+
+    std::exception_ptr stopError;
+    std::exception_ptr returnError;
+    std::thread stopper([&] {
+        awaitStart();
+        try {
+            server->stop();
+        } catch (...) {
+            stopError = std::current_exception();
+        }
+    });
+    std::thread returner([&] {
+        awaitStart();
+        try {
+            returnedFrames.clear();
+        } catch (...) {
+            returnError = std::current_exception();
+        }
+    });
+
+    {
+        std::unique_lock<std::mutex> lock(startMtx);
+        startCv.wait(lock, [&] { return ready == 2; });
+        start = true;
+    }
+    startCv.notify_all();
+
+    stopper.join();
+    returner.join();
+    CHECK(returnedFrames.empty());
+    if (stopError) std::rethrow_exception(stopError);
+    if (returnError) std::rethrow_exception(returnError);
+
+    // TEARDOWN completed while `frame` remains held.  On the buggy build,
     // Server::stop() -> cleanupResources() free()s the slab that `frame` still
-    // points into.  (Fixed build: the slab is freed only in ~Server, which the
-    // frame's shared_ptr<Pool> keeps alive, so it outlives the frame.)
-    server->stop();
+    // points into.  On the fixed build the slab is freed only in ~Server, which
+    // the frame's shared_ptr<Pool> keeps alive, so it outlives stop().
 
     // Reclaim the freed region: many same-size allocations, each fully written,
     // so the allocator hands the just-freed slab chunk back and we overwrite it.
@@ -410,7 +504,12 @@ TEST_CASE("rocev2 Server::stop must not free the RX slab while a zero-copy frame
     }
     CHECK_EQ(std::memcmp(after.data(), client.sbuf.data(), kPayloadLen), 0);
 
-    // Release the held frame before the client MR/QP it (indirectly) races.
+    // Release the last held zero-copy frame, then drop the explicit Server
+    // owner.  HoldingSlave no longer owns any frames, so the Server must be
+    // destructible rather than remaining in a Server/Slave/Frame/Buffer cycle.
+    std::weak_ptr<rpr::Server> weakServer = server;
     frame.reset();
     client.destroy();
+    server.reset();
+    CHECK(weakServer.expired());
 }
