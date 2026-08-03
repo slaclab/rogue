@@ -19,7 +19,9 @@
 
 #include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <exception>
+#include <mutex>
 #include <thread>
 
 #include "doctest/doctest.h"
@@ -86,14 +88,37 @@ TEST_CASE("AxiStreamDma stop waits for an in-flight zero-copy buffer return") {
     }
     CHECK_FALSE(returnDone.load());
 
-    std::atomic<bool> stopDone{false};
+    std::mutex stopStateMtx;
+    std::condition_variable stopStateCv;
+    bool stopStarted = false;
+    bool stopDone    = false;
     std::thread stopper([&] {
+        {
+            std::lock_guard<std::mutex> lock(stopStateMtx);
+            stopStarted = true;
+        }
+        stopStateCv.notify_all();
+
         dma->stop();
-        stopDone.store(true);
+
+        {
+            std::lock_guard<std::mutex> lock(stopStateMtx);
+            stopDone = true;
+        }
+        stopStateCv.notify_all();
     });
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(25));
-    CHECK_FALSE(stopDone.load());
+    bool started;
+    bool completedWhileReturnBlocked;
+    {
+        std::unique_lock<std::mutex> lock(stopStateMtx);
+        started = stopStateCv.wait_for(lock, std::chrono::seconds(1), [&] { return stopStarted; });
+        completedWhileReturnBlocked =
+            started && stopStateCv.wait_for(lock, std::chrono::milliseconds(25), [&] { return stopDone; });
+    }
+
+    CHECK(started);
+    CHECK_FALSE(completedWhileReturnBlocked);
     CHECK_FALSE(fake.closeDuringDriverCall());
 
     fake.releaseBlocked();
@@ -102,7 +127,7 @@ TEST_CASE("AxiStreamDma stop waits for an in-flight zero-copy buffer return") {
     if (returnError) std::rethrow_exception(returnError);
 
     CHECK(returnDone.load());
-    CHECK(stopDone.load());
+    CHECK(stopDone);
     CHECK_EQ(fake.retIndexCount(), 1);
     CHECK_FALSE(fake.closeDuringDriverCall());
 
