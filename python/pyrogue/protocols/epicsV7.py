@@ -26,9 +26,7 @@ except Exception:
     warnings.warn(
         "softioc (pythonSoftIOC) is not installed.\n\n"
         "To install with pip:\n"
-        "    pip install softioc\n\n"
-        "To install with Conda:\n"
-        "    conda install -c conda-forge softioc\n\n"
+        "    python -m pip install softioc p4p\n\n"
         "Note: softioc requires EPICS base to be available on your system."
     )
 
