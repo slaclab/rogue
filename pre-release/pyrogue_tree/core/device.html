@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device &mdash; Rogue v6.15.0-2-gbfead58cf documentation</title>
+  <title>Device &mdash; Rogue v6.15.0-4-g9cdee4c87 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=3342de6c"></script>
+      <script src="../../_static/documentation_options.js?v=0ad5eff5"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -194,6 +194,171 @@ for each transaction immediately rather than deferring completion waits.</p></li
 <p>The built-in <code class="docutils literal notranslate"><span class="pre">enable</span></code> Variable is especially important because it lets a tree
 keep its full structure visible while disabling hardware interaction for one
 subtree.</p>
+</section>
+<section id="dependency-controlled-device-enable">
+<span id="pyrogue-tree-device-enable-dependencies"></span><h2>Dependency-Controlled Device Enable<a class="headerlink" href="#dependency-controlled-device-enable" title="Link to this heading"></a></h2>
+<p>Some Devices are reachable only while another part of the system is ready. For
+example, a front-end board accessed through a serial link must not receive
+register transactions while that link is down. Likewise, a peripheral subtree
+should not be accessed while its power rail is off.</p>
+<p>Pass those readiness Variables to the Device’s <code class="docutils literal notranslate"><span class="pre">enableDeps</span></code> argument. The
+Device remains present in the tree, but its memory Blocks are enabled only when
+its own <code class="docutils literal notranslate"><span class="pre">enable</span></code> setting, its parent Device, and every enable dependency all
+permit access.</p>
+<p>The following example models a front-end FPGA reached through a PGP link. The
+<code class="docutils literal notranslate"><span class="pre">PgpFrontEndLane</span></code> Device contains the PGP4 AXI-L status registers and a
+<code class="docutils literal notranslate"><span class="pre">FrontEnd</span></code> Device whose enable state depends on the remote-link status.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">surf.protocols.pgp</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FrontEnd</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registers implemented by the FPGA at the far end of the link.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Remote front-end FPGA&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FpgaVersion&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Front-end firmware version&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;AcquisitionEnable&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Enable front-end data acquisition&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0004</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PgpFrontEndLane</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One local PGP4 link and the front end reached through that link.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pgpMemBase</span><span class="p">,</span> <span class="n">frontEndMemBase</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;PGP-connected front end&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Local PGP4 control and status registers.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">surf</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">pgp</span><span class="o">.</span><span class="n">Pgp4AxiL</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Pgp4&#39;</span><span class="p">,</span>
+            <span class="n">memBase</span><span class="o">=</span><span class="n">pgpMemBase</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
+            <span class="n">numVc</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Registers implemented by the FPGA at the far end of the link.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">FrontEnd</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrontEnd&#39;</span><span class="p">,</span>
+            <span class="n">memBase</span><span class="o">=</span><span class="n">frontEndMemBase</span><span class="p">,</span>
+            <span class="n">enableDeps</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Pgp4</span><span class="o">.</span><span class="n">RxStatus</span><span class="o">.</span><span class="n">RemRxLinkReady</span><span class="p">],</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>The separate <code class="docutils literal notranslate"><span class="pre">pgpMemBase</span></code> and <code class="docutils literal notranslate"><span class="pre">frontEndMemBase</span></code> arguments reflect one
+common PGP/SRP topology, but they are not an <code class="docutils literal notranslate"><span class="pre">enableDeps</span></code> requirement. A
+dependency Variable may use the same memory interface as the dependent Device,
+a different interface, or no memory interface at all. <code class="docutils literal notranslate"><span class="pre">enableDeps</span></code> only
+requires a Variable object that emits updates.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pgp4.RxStatus.RemRxLinkReady</span></code> is a Boolean RemoteVariable provided by
+SURF’s <code class="docutils literal notranslate"><span class="pre">surf.protocols.pgp.Pgp4AxiL</span></code>. SURF polls it once per second,
+so link transitions automatically update <code class="docutils literal notranslate"><span class="pre">FrontEnd.enable</span></code>. When the remote
+receiver is not ready, PyRogue disables the <code class="docutils literal notranslate"><span class="pre">FrontEnd</span></code> Blocks, and recursive
+reads, writes, and configuration loads do not issue memory transactions to that
+Device. When the remote receiver becomes ready again, PyRogue re-enables those
+Blocks automatically.</p>
+<section id="polling-the-link-status-is-required">
+<h3>Polling The Link Status Is Required<a class="headerlink" href="#polling-the-link-status-is-required" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">enableDeps</span></code> does not read or poll its dependency Variables. It registers for
+their update notifications and re-evaluates the Device enable state only when
+an update is processed. A cached link-ready value therefore cannot protect a
+Device from later link transitions unless something continues to read that
+status register.</p>
+<p>In this example, SURF gives <code class="docutils literal notranslate"><span class="pre">RemRxLinkReady</span></code> a one-second <code class="docutils literal notranslate"><span class="pre">pollInterval</span></code>.
+That polling occurs only while Root polling is enabled. The default
+<code class="docutils literal notranslate"><span class="pre">Root(pollEn=True)</span></code> behavior is appropriate; constructing the Root with
+<code class="docutils literal notranslate"><span class="pre">pollEn=False</span></code> or setting <code class="docutils literal notranslate"><span class="pre">Root.PollEn</span></code> false stops the periodic reads and
+prevents <code class="docutils literal notranslate"><span class="pre">FrontEnd.enable</span></code> from following subsequent link changes.</p>
+<p>Keep the dependency Variable outside the Device that it gates, as shown above.
+The local <code class="docutils literal notranslate"><span class="pre">Pgp4</span></code> status Device remains readable while <code class="docutils literal notranslate"><span class="pre">FrontEnd</span></code> is
+disabled, so its next poll can detect link recovery and re-enable the remote
+Blocks. Placing the link-status register inside <code class="docutils literal notranslate"><span class="pre">FrontEnd</span></code> would create a
+deadlock in the design: disabling <code class="docutils literal notranslate"><span class="pre">FrontEnd</span></code> would also disable the Block
+that must be read to discover recovery.</p>
+<p>If an application intentionally runs with polling disabled, it must explicitly
+read the dependency whenever it needs to refresh the enable state. Updates are
+processed asynchronously, so wait for the queued update before using the
+effective state:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lane</span><span class="o">.</span><span class="n">Pgp4</span><span class="o">.</span><span class="n">RxStatus</span><span class="o">.</span><span class="n">RemRxLinkReady</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">root</span><span class="o">.</span><span class="n">waitOnUpdate</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">lane</span><span class="o">.</span><span class="n">FrontEnd</span><span class="o">.</span><span class="n">enable</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">lane</span><span class="o">.</span><span class="n">FrontEnd</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This explicit read is only a snapshot. Repeat it whenever the link might have
+changed, or prefer continuous polling for automatic protection. Until the first
+poll or explicit read is processed, a Device with <code class="docutils literal notranslate"><span class="pre">enableDeps</span></code> remains in the
+<code class="docutils literal notranslate"><span class="pre">'deps'</span></code> state and its Blocks stay disabled.</p>
+</section>
+<section id="effective-enable-states">
+<h3>Effective Enable States<a class="headerlink" href="#effective-enable-states" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">device.enable</span></code> represents both the user’s enable choice and any automatic
+gating. Its effective value is:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 25.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Condition</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">device.enable.value()</span></code></p></th>
+<th class="head"><p>Display value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>The Device was explicitly disabled</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>One or more enable dependencies are false</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'deps'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ExtDepFalse</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>An ancestor Device is not effectively enabled</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'parent'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ParentFalse</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>All conditions permit access</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>An explicit <code class="docutils literal notranslate"><span class="pre">device.enable.set(False)</span></code> takes precedence over dependency and
+parent state. Setting it back to <code class="docutils literal notranslate"><span class="pre">True</span></code> restores dependency-controlled
+behavior; it does not bypass a false dependency or disabled parent.</p>
+</section>
+<section id="practical-rules">
+<h3>Practical Rules<a class="headerlink" href="#practical-rules" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Pass Variable objects, not paths or names, and construct each dependency
+before constructing the dependent Device.</p></li>
+<li><p>Multiple entries use AND semantics: every dependency value must be truthy.
+Boolean status Variables are clearest, although integer <code class="docutils literal notranslate"><span class="pre">0</span></code>/<code class="docutils literal notranslate"><span class="pre">1</span></code>
+Variables work as well.</p></li>
+<li><p>A dependency controls hardware access; it does not remove or hide the Device,
+change the user’s stored enable choice, or write the dependency Variable.</p></li>
+<li><p>Dependency changes take effect through PyRogue’s Variable update mechanism.
+Ensure hardware status Variables are read or polled so their updates reach
+the dependent Device.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">device.enable.value()</span> <span class="pre">is</span> <span class="pre">True</span></code> when testing whether a Device is
+effectively enabled. A general truthiness check is incorrect because the
+explanatory states <code class="docutils literal notranslate"><span class="pre">'deps'</span></code> and <code class="docutils literal notranslate"><span class="pre">'parent'</span></code> are non-empty strings.</p></li>
+</ul>
+</section>
 </section>
 <section id="composition-and-tree-structure">
 <h2>Composition And Tree Structure<a class="headerlink" href="#composition-and-tree-structure" title="Link to this heading"></a></h2>

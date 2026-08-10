@@ -79,6 +79,175 @@ The built-in ``enable`` Variable is especially important because it lets a tree
 keep its full structure visible while disabling hardware interaction for one
 subtree.
 
+.. _pyrogue_tree_device_enable_dependencies:
+
+Dependency-Controlled Device Enable
+===================================
+
+Some Devices are reachable only while another part of the system is ready. For
+example, a front-end board accessed through a serial link must not receive
+register transactions while that link is down. Likewise, a peripheral subtree
+should not be accessed while its power rail is off.
+
+Pass those readiness Variables to the Device's ``enableDeps`` argument. The
+Device remains present in the tree, but its memory Blocks are enabled only when
+its own ``enable`` setting, its parent Device, and every enable dependency all
+permit access.
+
+The following example models a front-end FPGA reached through a PGP link. The
+``PgpFrontEndLane`` Device contains the PGP4 AXI-L status registers and a
+``FrontEnd`` Device whose enable state depends on the remote-link status.
+
+.. code-block:: python
+
+   import pyrogue as pr
+   import surf.protocols.pgp
+
+   class FrontEnd(pr.Device):
+       """Registers implemented by the FPGA at the far end of the link."""
+
+       def __init__(self, **kwargs):
+           super().__init__(description='Remote front-end FPGA', **kwargs)
+
+           self.add(pr.RemoteVariable(
+               name='FpgaVersion',
+               description='Front-end firmware version',
+               offset=0x0000,
+               bitSize=32,
+               mode='RO',
+           ))
+
+           self.add(pr.RemoteVariable(
+               name='AcquisitionEnable',
+               description='Enable front-end data acquisition',
+               offset=0x0004,
+               bitSize=1,
+               base=pr.Bool,
+               mode='RW',
+           ))
+
+   class PgpFrontEndLane(pr.Device):
+       """One local PGP4 link and the front end reached through that link."""
+
+       def __init__(self, *, pgpMemBase, frontEndMemBase, **kwargs):
+           super().__init__(description='PGP-connected front end', **kwargs)
+
+           # Local PGP4 control and status registers.
+           self.add(surf.protocols.pgp.Pgp4AxiL(
+               name='Pgp4',
+               memBase=pgpMemBase,
+               offset=0x0000,
+               numVc=4,
+           ))
+
+           # Registers implemented by the FPGA at the far end of the link.
+           self.add(FrontEnd(
+               name='FrontEnd',
+               memBase=frontEndMemBase,
+               enableDeps=[self.Pgp4.RxStatus.RemRxLinkReady],
+           ))
+
+The separate ``pgpMemBase`` and ``frontEndMemBase`` arguments reflect one
+common PGP/SRP topology, but they are not an ``enableDeps`` requirement. A
+dependency Variable may use the same memory interface as the dependent Device,
+a different interface, or no memory interface at all. ``enableDeps`` only
+requires a Variable object that emits updates.
+
+``Pgp4.RxStatus.RemRxLinkReady`` is a Boolean RemoteVariable provided by
+SURF's ``surf.protocols.pgp.Pgp4AxiL``. SURF polls it once per second,
+so link transitions automatically update ``FrontEnd.enable``. When the remote
+receiver is not ready, PyRogue disables the ``FrontEnd`` Blocks, and recursive
+reads, writes, and configuration loads do not issue memory transactions to that
+Device. When the remote receiver becomes ready again, PyRogue re-enables those
+Blocks automatically.
+
+Polling The Link Status Is Required
+-----------------------------------
+
+``enableDeps`` does not read or poll its dependency Variables. It registers for
+their update notifications and re-evaluates the Device enable state only when
+an update is processed. A cached link-ready value therefore cannot protect a
+Device from later link transitions unless something continues to read that
+status register.
+
+In this example, SURF gives ``RemRxLinkReady`` a one-second ``pollInterval``.
+That polling occurs only while Root polling is enabled. The default
+``Root(pollEn=True)`` behavior is appropriate; constructing the Root with
+``pollEn=False`` or setting ``Root.PollEn`` false stops the periodic reads and
+prevents ``FrontEnd.enable`` from following subsequent link changes.
+
+Keep the dependency Variable outside the Device that it gates, as shown above.
+The local ``Pgp4`` status Device remains readable while ``FrontEnd`` is
+disabled, so its next poll can detect link recovery and re-enable the remote
+Blocks. Placing the link-status register inside ``FrontEnd`` would create a
+deadlock in the design: disabling ``FrontEnd`` would also disable the Block
+that must be read to discover recovery.
+
+If an application intentionally runs with polling disabled, it must explicitly
+read the dependency whenever it needs to refresh the enable state. Updates are
+processed asynchronously, so wait for the queued update before using the
+effective state:
+
+.. code-block:: python
+
+   lane.Pgp4.RxStatus.RemRxLinkReady.get(read=True)
+   root.waitOnUpdate()
+
+   if lane.FrontEnd.enable.value() is True:
+       lane.FrontEnd.readBlocks()
+
+This explicit read is only a snapshot. Repeat it whenever the link might have
+changed, or prefer continuous polling for automatic protection. Until the first
+poll or explicit read is processed, a Device with ``enableDeps`` remains in the
+``'deps'`` state and its Blocks stay disabled.
+
+Effective Enable States
+-----------------------
+
+``device.enable`` represents both the user's enable choice and any automatic
+gating. Its effective value is:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 25 45
+
+   * - Condition
+     - ``device.enable.value()``
+     - Display value
+   * - The Device was explicitly disabled
+     - ``False``
+     - ``False``
+   * - One or more enable dependencies are false
+     - ``'deps'``
+     - ``ExtDepFalse``
+   * - An ancestor Device is not effectively enabled
+     - ``'parent'``
+     - ``ParentFalse``
+   * - All conditions permit access
+     - ``True``
+     - ``True``
+
+An explicit ``device.enable.set(False)`` takes precedence over dependency and
+parent state. Setting it back to ``True`` restores dependency-controlled
+behavior; it does not bypass a false dependency or disabled parent.
+
+Practical Rules
+---------------
+
+* Pass Variable objects, not paths or names, and construct each dependency
+  before constructing the dependent Device.
+* Multiple entries use AND semantics: every dependency value must be truthy.
+  Boolean status Variables are clearest, although integer ``0``/``1``
+  Variables work as well.
+* A dependency controls hardware access; it does not remove or hide the Device,
+  change the user's stored enable choice, or write the dependency Variable.
+* Dependency changes take effect through PyRogue's Variable update mechanism.
+  Ensure hardware status Variables are read or polled so their updates reach
+  the dependent Device.
+* Use ``device.enable.value() is True`` when testing whether a Device is
+  effectively enabled. A general truthiness check is incorrect because the
+  explanatory states ``'deps'`` and ``'parent'`` are non-empty strings.
+
 Composition And Tree Structure
 ==============================
 

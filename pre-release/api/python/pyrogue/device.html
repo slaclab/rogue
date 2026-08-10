@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device &mdash; Rogue v6.15.0-2-gbfead58cf documentation</title>
+  <title>Device &mdash; Rogue v6.15.0-4-g9cdee4c87 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=3342de6c"></script>
+      <script src="../../../_static/documentation_options.js?v=0ad5eff5"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -180,7 +180,9 @@
 <li><p><strong>expand</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default = False</em><em>)</em>) – Default GUI expand state.</p></li>
 <li><p><strong>enabled</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default = True</em><em>)</em>) – Initial enable state.</p></li>
 <li><p><strong>defaults</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>optional</em>) – Default variable values keyed by name.</p></li>
-<li><p><strong>enableDeps</strong> (<em>iterable</em><em>, </em><em>optional</em>) – Enable dependency variables.</p></li>
+<li><p><strong>enableDeps</strong> (<em>iterable</em><em> of </em><a class="reference internal" href="basevariable.html#pyrogue.BaseVariable" title="pyrogue.BaseVariable"><em>BaseVariable</em></a><em>, </em><em>optional</em>) – Variables that gate this Device’s effective enable state. All
+dependency values must be truthy before the Device’s memory Blocks are
+enabled. See <a class="reference internal" href="../../../pyrogue_tree/core/device.html#pyrogue-tree-device-enable-dependencies"><span class="std std-ref">Dependency-Controlled Device Enable</span></a>.</p></li>
 <li><p><strong>hubMin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default = 0</em><em>)</em>) – Hub minimum access size.</p></li>
 <li><p><strong>hubMax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default = 0</em><em>)</em>) – Hub maximum access size.</p></li>
 <li><p><strong>guiGroup</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – GUI grouping label.</p></li>
