@@ -336,22 +336,21 @@ def dataToYaml(data: Any) -> str:
         pass
 
     def _var_representer(dumper: yaml.Dumper, data: pr.VariableValue) -> Any:
-        """Represent ``VariableValue`` using display formatting and YAML typing."""
-        if isinstance(data.value, bool):
+        """Represent floats natively and other values by display text."""
+        if data.valueDisp is None:
+            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
+        elif isinstance(data.value, bool):
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
             enc = 'tag:yaml.org,2002:str'
         elif isinstance(data.value, int):
             enc = 'tag:yaml.org,2002:int'
         elif isinstance(data.value, float):
-            enc = 'tag:yaml.org,2002:float'
+            return dumper.represent_data(data.value)
         else:
             enc = 'tag:yaml.org,2002:str'
 
-        if data.valueDisp is None:
-            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
-        else:
-            return dumper.represent_scalar(enc, data.valueDisp)
+        return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper: yaml.Dumper, data: odict) -> Any:
         """Represent ``OrderedDict`` values while preserving key order."""
