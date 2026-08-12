@@ -344,9 +344,11 @@ def dataToYaml(data: Any) -> str:
         elif data.enum is not None:
             enc = 'tag:yaml.org,2002:str'
         elif isinstance(data.value, int):
+            # Preserve readable integer formats such as hexadecimal in saved
+            # configs; unsafe display formats need a separate compatibility policy.
             enc = 'tag:yaml.org,2002:int'
         elif isinstance(data.value, float):
-            return dumper.represent_data(data.value)
+            return dumper.represent_float(float(data.value))
         else:
             enc = 'tag:yaml.org,2002:str'
 

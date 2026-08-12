@@ -10,6 +10,7 @@
 
 import struct
 
+import numpy as np
 import pyrogue as pr
 import pyrogue.utilities.fileio
 import pytest
@@ -119,13 +120,21 @@ def test_file_reader_decodes_float_with_grouped_display_format(tmp_path):
         value=256939.708,
         disp="{:,.3f}",
     ))
+    writer.add(pr.LocalVariable(
+        name="NumpyBandwidth",
+        mode="RO",
+        value=np.float64(256939.708),
+        disp="{:,.3f}",
+    ))
     root.add(writer)
 
     with root:
         assert writer.Bandwidth.getDisp(read=False) == "256,939.708"
+        assert writer.NumpyBandwidth.getDisp(read=False) == "256,939.708"
         config_payload = root.getYaml(readFirst=False).encode("utf-8")
 
     assert b"256,939.708" not in config_payload
+    assert b"!!python/object" not in config_payload
 
     data_path = tmp_path / "grouped-float-config.dat"
     _write_record(data_path, 7, config_payload)
@@ -133,6 +142,7 @@ def test_file_reader_decodes_float_with_grouped_display_format(tmp_path):
     reader = pyrogue.utilities.fileio.FileReader(files=str(data_path), configChan=7)
     assert list(reader.records()) == []
     assert reader.configValue("root.DataWriter.Bandwidth") == 256939.708
+    assert reader.configValue("root.DataWriter.NumpyBandwidth") == 256939.708
 
 
 def test_file_reader_missing_path_raises(tmp_path):
