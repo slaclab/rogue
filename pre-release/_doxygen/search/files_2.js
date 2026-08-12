@@ -10,7 +10,7 @@ var searchData=
   ['combinerv2_2eh_7',['CombinerV2.h',['../CombinerV2_8h.html',1,'']]],
   ['constants_2eh_8',['Constants.h',['../Constants_8h.html',1,'']]],
   ['controller_2ecpp_9',['controller.cpp',['../rssi_2Controller_8cpp.html',1,'(Global Namespace)'],['../packetizer_2Controller_8cpp.html',1,'(Global Namespace)']]],
-  ['controller_2eh_10',['controller.h',['../rssi_2Controller_8h.html',1,'(Global Namespace)'],['../packetizer_2Controller_8h.html',1,'(Global Namespace)']]],
+  ['controller_2eh_10',['controller.h',['../packetizer_2Controller_8h.html',1,'(Global Namespace)'],['../rssi_2Controller_8h.html',1,'(Global Namespace)']]],
   ['controllerv1_2ecpp_11',['ControllerV1.cpp',['../ControllerV1_8cpp.html',1,'']]],
   ['controllerv1_2eh_12',['ControllerV1.h',['../ControllerV1_8h.html',1,'']]],
   ['controllerv2_2ecpp_13',['ControllerV2.cpp',['../ControllerV2_8cpp.html',1,'']]],
