@@ -187,8 +187,10 @@ class Device(pr.Node,rim.Hub):
         Initial enable state.
     defaults : dict, optional
         Default variable values keyed by name.
-    enableDeps : iterable, optional
-        Enable dependency variables.
+    enableDeps : iterable of BaseVariable, optional
+        Variables that gate this Device's effective enable state. All
+        dependency values must be truthy before the Device's memory Blocks are
+        enabled. See :ref:`pyrogue_tree_device_enable_dependencies`.
     hubMin : int, optional (default = 0)
         Hub minimum access size.
     hubMax : int, optional (default = 0)
