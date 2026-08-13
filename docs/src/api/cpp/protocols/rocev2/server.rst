@@ -27,6 +27,11 @@ Threading and Lifecycle
 - An ibverbs failure inside ``postRecvWr()`` is caught inside the poll
   thread; the thread logs the error and exits cleanly instead of
   escaping the thread entry point and triggering ``std::terminate``.
+- Before calling ``stop()``, callers must quiesce ``completeConnection()``
+  and other public operations that use the Server's ibverbs resources.
+  Deferred returns from zero-copy buffers already issued by the Server may
+  overlap ``stop()``; their receive-WR re-posts are serialized against QP/MR
+  teardown internally.
 
 
 Python binding
@@ -72,16 +77,27 @@ Class Reference
 
    .. cpp:function:: ~Server()
 
-      Calls ``stop()``; ``stop()`` releases the slab MR and CQ/QP
-      resources, and the inherited ``Core`` destructor releases the PD
-      and ibverbs context.
+      Calls ``stop()`` to release the CQ/QP and MR resources, then frees
+      the RX slab **last**. The slab is deliberately freed here rather than
+      in ``stop()``: it is this ``Pool``'s buffer backing, and every
+      zero-copy ``Buffer`` handed downstream holds a ``shared_ptr`` to this
+      ``Server``, so the destructor cannot run until the last outstanding
+      frame is released — the slab is therefore never freed while a
+      downstream frame still references it. The inherited ``Core``
+      destructor then releases the PD and ibverbs context.
 
    .. cpp:function:: void stop()
 
       Signals the receive thread to exit, joins and deletes it, then
-      releases the ibverbs resources owned by ``Server``: destroys the
-      QP and CQ, deregisters the MR, and frees the slab. Idempotent —
-      safe to call multiple times (also called by ``~Server()``).
+      releases the external ibverbs resources owned by ``Server``: destroys
+      the QP and CQ and deregisters the MR. Does **not** free the RX slab —
+      that is the ``Pool`` buffer backing and is freed by ``~Server()`` (see
+      above), so a zero-copy ``Buffer`` still held downstream is never
+      stranded. Idempotent — safe to call multiple times (also called by
+      ``~Server()``). Callers must first quiesce ``completeConnection()`` and
+      other public ibverbs-resource operations. Deferred zero-copy buffer
+      returns may overlap ``stop()`` and are serialized internally against
+      destruction of the QP and MR.
 
    .. cpp:function:: void setFpgaGid(const std::string& gidBytes)
 

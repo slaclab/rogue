@@ -24,6 +24,7 @@
 
 #include <atomic>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <vector>
@@ -86,6 +87,9 @@ class Server : public rogue::protocols::rocev2::Core,
     // runThread() selects on wakeFd_[0]. Both ends are non-blocking.
     int wakeFd_[2];
 
+    // Serializes ibverbs resource teardown against deferred buffer re-posts.
+    std::mutex resourcesMtx_;
+
     // Intentional shadow: both Core and stream::Slave expose a `log_` member,
     // so any unqualified `log_` from inside Server would otherwise be
     // ambiguous.  Declaring our own `log_` here consolidates both names onto
@@ -105,9 +109,14 @@ class Server : public rogue::protocols::rocev2::Core,
     // poll/drain loop in runThread() exits.
     void processCompletion(struct ibv_wc& wc);
 
-    // Idempotent helper that releases every ibverbs / heap resource owned by
-    // Server in reverse allocation order.  Called by stop() and from the
-    // failed-construction path in the constructor.
+    // Releases the external ibverbs resources owned by Server (QP, CQ,
+    // comp-channel, MR registration, wake pipe) in reverse allocation order.
+    // Idempotent.  Does NOT free the RX slab: that is this Pool's buffer backing
+    // and lives with the Server object (freed in ~Server, mirroring
+    // ris::Pool::~Pool), so a zero-copy Buffer still held downstream is never
+    // stranded.  Resource teardown is serialized with postRecvWr() so deferred
+    // buffer returns cannot use a QP or MR while it is being destroyed.  The
+    // failed-construction path frees the slab explicitly.
     void cleanupResources();
 
   protected:
@@ -133,6 +142,20 @@ class Server : public rogue::protocols::rocev2::Core,
            uint32_t           rxQueueDepth);
 
     ~Server();
+
+    /**
+     * @brief Stops the receive thread and releases external ibverbs resources.
+     *
+     * @details
+     * Before calling `stop()`, callers must ensure that `completeConnection()`
+     * and any other public operations using the Server's ibverbs resources have
+     * completed and that no new ones can begin.  Deferred returns from
+     * previously issued zero-copy buffers may overlap `stop()`; their receive-WR
+     * re-posts are serialized against QP/MR teardown internally.
+     *
+     * The RX slab remains valid until destruction so retained zero-copy buffers
+     * do not reference freed memory after `stop()`.
+     */
     void stop();
 
     void setFpgaGid(const std::string& gidBytes);
