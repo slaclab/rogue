@@ -145,6 +145,38 @@ def test_file_reader_decodes_float_with_grouped_display_format(tmp_path):
     assert reader.configValue("root.DataWriter.NumpyBandwidth") == 256939.708
 
 
+def test_integer_yaml_preserves_only_round_trippable_display_formats(tmp_path):
+    root = pr.Root(name="root", pollEn=False, initRead=False)
+    values = pr.Device(name="Values")
+    values.add(pr.LocalVariable(name="Hex", value=0x12D687, disp="0x{:x}"))
+    values.add(pr.LocalVariable(name="Grouped", value=1234567, disp="{:,d}"))
+    values.add(pr.LocalVariable(name="ZeroPadded", value=123, disp="{:08d}"))
+    values.add(pr.LocalVariable(
+        name="NumpyGrouped",
+        value=np.int64(1234567),
+        disp="{:,d}",
+    ))
+    root.add(values)
+
+    with root:
+        config_payload = root.getYaml(readFirst=False).encode("utf-8")
+
+    assert b"Hex: 0x12d687" in config_payload
+    assert b"1,234,567" not in config_payload
+    assert b"ZeroPadded: 00000123" not in config_payload
+    assert b"!!python/object" not in config_payload
+
+    data_path = tmp_path / "integer-formats.dat"
+    _write_record(data_path, 7, config_payload)
+
+    reader = pyrogue.utilities.fileio.FileReader(files=str(data_path), configChan=7)
+    assert list(reader.records()) == []
+    assert reader.configValue("root.Values.Hex") == 0x12D687
+    assert reader.configValue("root.Values.Grouped") == 1234567
+    assert reader.configValue("root.Values.ZeroPadded") == 123
+    assert reader.configValue("root.Values.NumpyGrouped") == 1234567
+
+
 def test_file_reader_missing_path_raises(tmp_path):
     data_path = tmp_path / "empty.dat"
     _write_record(data_path, 1, bytes([9, 8]))

@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import ast
+import numbers
 import operator
 import re
 import shlex
@@ -884,6 +885,14 @@ class BaseVariable(pr.Node):
                 return self.revEnum[sValue]
             elif self.nativeType is str:
                 return sValue
+            elif (self.nativeType is not bool and
+                  isinstance(self.nativeType, type) and
+                  issubclass(self.nativeType, numbers.Integral) and
+                  ',' in sValue):
+                value = sValue.strip()
+                if re.fullmatch(r'[+-]?\d{1,3}(?:,\d{3})+', value) is None:
+                    raise ValueError('invalid grouped decimal integer')
+                return self.nativeType(int(value.replace(',', ''), 10))
             else:
                 return ast.literal_eval(sValue)
 

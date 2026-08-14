@@ -14,6 +14,7 @@
 #-----------------------------------------------------------------------------
 from __future__ import annotations
 
+import numbers
 import sys
 import os
 import signal
@@ -336,17 +337,26 @@ def dataToYaml(data: Any) -> str:
         pass
 
     def _var_representer(dumper: yaml.Dumper, data: pr.VariableValue) -> Any:
-        """Represent floats natively and other values by display text."""
+        """Represent numeric values safely and other values by display text."""
         if data.valueDisp is None:
             return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
         elif isinstance(data.value, bool):
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
             enc = 'tag:yaml.org,2002:str'
-        elif isinstance(data.value, int):
-            # Preserve readable integer formats such as hexadecimal in saved
-            # configs; unsafe display formats need a separate compatibility policy.
-            enc = 'tag:yaml.org,2002:int'
+        elif isinstance(data.value, numbers.Integral):
+            value = int(data.value)
+            try:
+                parsed = yaml.safe_load(data.valueDisp)
+            except (TypeError, ValueError, yaml.YAMLError):
+                parsed = None
+
+            # Preserve readable display formats such as hexadecimal only when
+            # a standard YAML loader reads the text back as the same integer.
+            if type(parsed) is int and parsed == value:
+                return dumper.represent_scalar('tag:yaml.org,2002:int', data.valueDisp)
+            else:
+                return dumper.represent_int(value)
         elif isinstance(data.value, float):
             return dumper.represent_float(float(data.value))
         else:
