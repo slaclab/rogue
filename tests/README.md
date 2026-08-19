@@ -10,7 +10,7 @@ Directories:
 - `fileio/`: file and stream reader/writer behavior
 - `protocols/`: protocol-specific deterministic tests
 - `integration/`: real transport, socket, and environment-dependent tests
-- `perf/`: soak, throughput, and benchmark-style tests
+- `perf/`: soak, throughput, and benchmark-style tests, see `perf/README.md`
 - `utilities/`: helper and exporter modules
 - `cpp/`: native C++ unit and smoke tests driven by `ctest`
 
@@ -77,3 +77,5 @@ Planning / handoff docs:
 - `NEXT_STEPS.md`: likely follow-up work and wrap-up checklist for both the
   Python and native C++ suites
 - `cpp/README.md`: native C++ suite layout, labels, and commands
+- `perf/README.md`: what a perf gate PASS, FAIL, and INCONCLUSIVE verdict
+  means and how to reproduce one locally

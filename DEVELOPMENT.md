@@ -244,6 +244,9 @@ CI enforces:
 - Python pytest suites, excluding perf in the main build jobs.
 - Separate performance tests and perf result publishing.
 
+See `tests/perf/README.md` for how to read a perf gate verdict and how to
+reproduce it locally.
+
 Choose local verification based on the changed surface. For shared C++ code,
 consider both Python-enabled and no-Python build paths when the code is
 compiled into both.
