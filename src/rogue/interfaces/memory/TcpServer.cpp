@@ -28,6 +28,7 @@
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/interfaces/memory/Constants.h"
 
 namespace rim = rogue::interfaces::memory;
@@ -208,7 +209,9 @@ void rim::TcpServer::runThread() {
         // Get message
         do {
             // Get the message
+            rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
             if (zmq_recvmsg(this->zmqReq_, &(msg[x]), 0) >= 0) {
+                rogue::perf::gIoBytes.fetch_add(zmq_msg_size(&(msg[x])), std::memory_order_relaxed);
                 if (x != 4) x++;
                 msgCnt++;
 
@@ -301,6 +304,7 @@ void rim::TcpServer::runThread() {
 
             uint32_t sendFailed = 0;
             for (x = 0; x < 6; x++) {
+                rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
                 if (this->sendResponseMsg_(&(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE) < 0) {
                     bridgeLog_->warning("zmq_sendmsg failed on part %" PRIu32 " for id=%" PRIu32 ": %s",
                                         x, id, zmq_strerror(zmq_errno()));
@@ -308,6 +312,8 @@ void rim::TcpServer::runThread() {
                     zmq_msg_close(&(msg[x]));
                     for (uint32_t y = x + 1; y < 6; y++) zmq_msg_close(&(msg[y]));
                     break;
+                } else {
+                    rogue::perf::gIoBytes.fetch_add(zmq_msg_size(&(msg[x])), std::memory_order_relaxed);
                 }
             }
             if (sendFailed) {

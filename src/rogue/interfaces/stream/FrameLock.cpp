@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "rogue/GilRelease.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/interfaces/stream/Frame.h"
 
 namespace ris = rogue::interfaces::stream;
@@ -41,6 +42,7 @@ ris::FrameLock::FrameLock(ris::FramePtr frame) {
     rogue::GilRelease noGil;
     frame_ = frame;
     frame_->lock_.lock();
+    rogue::perf::gFrameLockCount.fetch_add(1, std::memory_order_relaxed);
     locked_ = true;
 }
 
@@ -66,6 +68,7 @@ void ris::FrameLock::lock() {
     if (!locked_) {
         rogue::GilRelease noGil;
         frame_->lock_.lock();
+        rogue::perf::gFrameLockCount.fetch_add(1, std::memory_order_relaxed);
         locked_ = true;
     }
 }

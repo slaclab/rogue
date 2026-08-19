@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "rogue/GilRelease.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/interfaces/memory/Transaction.h"
 
 namespace rim = rogue::interfaces::memory;
@@ -50,6 +51,7 @@ rim::TransactionLock::TransactionLock(rim::TransactionPtr tran) {
             break;
     }
     tran_->lock_.lock();
+    rogue::perf::gTransactionLockCount.fetch_add(1, std::memory_order_relaxed);
     locked_ = true;
 }
 
@@ -75,6 +77,7 @@ void rim::TransactionLock::lock() {
     if (!locked_) {
         rogue::GilRelease noGil;
         tran_->lock_.lock();
+        rogue::perf::gTransactionLockCount.fetch_add(1, std::memory_order_relaxed);
         locked_ = true;
     }
 }

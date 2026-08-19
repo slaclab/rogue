@@ -43,6 +43,9 @@ ris::Pool::Pool() {
     allocMeta_  = 0;
     allocBytes_ = 0;
     allocCount_ = 0;
+    allocTotalCount_ = 0;
+    allocTotalBytes_ = 0;
+    allocPeakBytes_  = 0;
     fixedSize_  = 0;
     poolSize_   = 0;
 }
@@ -63,6 +66,21 @@ uint32_t ris::Pool::getAllocBytes() {
 //! Get allocated count
 uint32_t ris::Pool::getAllocCount() {
     return (allocCount_);
+}
+
+//! Get monotonic total allocated bytes
+uint64_t ris::Pool::getAllocTotalBytes() {
+    return (allocTotalBytes_.load(std::memory_order_relaxed));
+}
+
+//! Get monotonic total allocation count
+uint64_t ris::Pool::getAllocTotalCount() {
+    return (allocTotalCount_.load(std::memory_order_relaxed));
+}
+
+//! Get peak live allocated bytes
+uint64_t ris::Pool::getAllocPeakBytes() {
+    return (allocPeakBytes_.load(std::memory_order_relaxed));
 }
 
 //! Accept a frame request. Called from master
@@ -105,6 +123,9 @@ void ris::Pool::setup_python() {
     bp::class_<ris::Pool, ris::PoolPtr, boost::noncopyable>("Pool", bp::init<>())
         .def("getAllocCount", &ris::Pool::getAllocCount)
         .def("getAllocBytes", &ris::Pool::getAllocBytes)
+        .def("getAllocTotalCount", &ris::Pool::getAllocTotalCount)
+        .def("getAllocTotalBytes", &ris::Pool::getAllocTotalBytes)
+        .def("getAllocPeakBytes", &ris::Pool::getAllocPeakBytes)
         .def("setFixedSize", &ris::Pool::setFixedSize)
         .def("getFixedSize", &ris::Pool::getFixedSize)
         .def("setPoolSize", &ris::Pool::setPoolSize)
@@ -171,6 +192,18 @@ ris::BufferPtr ris::Pool::allocBuffer(uint32_t size, uint32_t* total) {
     allocMeta_ &= 0xFFFFFF;
     allocBytes_ += bAlloc;
     allocCount_++;
+    allocTotalCount_.fetch_add(1, std::memory_order_relaxed);
+    allocTotalBytes_.fetch_add(bAlloc, std::memory_order_relaxed);
+
+    // allocBytes_ is only mutated under mtx_ (held above), so this
+    // compare-exchange loop is defence in depth against a future caller
+    // rather than a fix for an observed race.
+    uint64_t peakCandidate = allocBytes_;
+    uint64_t curPeak       = allocPeakBytes_.load(std::memory_order_relaxed);
+    while (peakCandidate > curPeak &&
+           !allocPeakBytes_.compare_exchange_weak(curPeak, peakCandidate, std::memory_order_relaxed)) {
+    }
+
     if (total != NULL) *total += bSize;
     return (ris::Buffer::create(shared_from_this(), data, meta, bSize, bAlloc));
 }
@@ -186,6 +219,18 @@ ris::BufferPtr ris::Pool::createBuffer(void* data, uint32_t meta, uint32_t size,
 
     allocBytes_ += alloc;
     allocCount_++;
+    allocTotalCount_.fetch_add(1, std::memory_order_relaxed);
+    allocTotalBytes_.fetch_add(alloc, std::memory_order_relaxed);
+
+    // allocBytes_ is only mutated under mtx_ (held above), so this
+    // compare-exchange loop is defence in depth against a future caller
+    // rather than a fix for an observed race.
+    uint64_t peakCandidate = allocBytes_;
+    uint64_t curPeak       = allocPeakBytes_.load(std::memory_order_relaxed);
+    while (peakCandidate > curPeak &&
+           !allocPeakBytes_.compare_exchange_weak(curPeak, peakCandidate, std::memory_order_relaxed)) {
+    }
+
     return (buff);
 }
 

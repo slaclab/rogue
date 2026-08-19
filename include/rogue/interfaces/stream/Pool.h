@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 #include <queue>
 #include <thread>
@@ -81,6 +82,15 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     // Total buffers allocated
     uint32_t allocCount_;
 
+    // Monotonic total allocations, never decremented on buffer free
+    std::atomic<uint64_t> allocTotalCount_;
+
+    // Monotonic total bytes allocated, never decremented on buffer free
+    std::atomic<uint64_t> allocTotalBytes_;
+
+    // High-water mark of live allocated bytes, never decremented on buffer free
+    std::atomic<uint64_t> allocPeakBytes_;
+
     // Buffer queue
     std::queue<uint8_t*> dataQ_;
 
@@ -122,6 +132,45 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      * @return Total currently allocated buffers.
      */
     uint32_t getAllocCount();
+
+    /**
+     * @brief Returns total allocated bytes across the lifetime of the pool.
+     *
+     * @details
+     * This value is incremented as buffers are allocated and is never
+     * decremented when a buffer is freed, unlike `getAllocBytes()`.
+     *
+     * Exposed as `getAllocTotalBytes()` in Python.
+     *
+     * @return Monotonic total allocated bytes.
+     */
+    uint64_t getAllocTotalBytes();
+
+    /**
+     * @brief Returns total allocation count across the lifetime of the pool.
+     *
+     * @details
+     * This value is incremented as buffers are allocated and is never
+     * decremented when a buffer is freed, unlike `getAllocCount()`.
+     *
+     * Exposed as `getAllocTotalCount()` in Python.
+     *
+     * @return Monotonic total allocation count.
+     */
+    uint64_t getAllocTotalCount();
+
+    /**
+     * @brief Returns the high-water mark of live allocated bytes.
+     *
+     * @details
+     * This value tracks the maximum live byte total ever observed and is
+     * never decremented when a buffer is freed, unlike `getAllocBytes()`.
+     *
+     * Exposed as `getAllocPeakBytes()` in Python.
+     *
+     * @return Peak live allocated bytes.
+     */
+    uint64_t getAllocPeakBytes();
 
     /**
      * @brief Services a frame allocation request from a master.

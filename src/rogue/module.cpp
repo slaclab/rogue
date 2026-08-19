@@ -23,6 +23,7 @@
 
 #include "rogue/GeneralError.h"
 #include "rogue/Logging.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/Version.h"
 #include "rogue/hardware/module.h"
 #include "rogue/interfaces/module.h"
@@ -39,5 +40,6 @@ void rogue::setup_module() {
 
     rogue::GeneralError::setup_python();
     rogue::Logging::setup_python();
+    rogue::PerfCounters::setup_python();
     rogue::Version::setup_python();
 }

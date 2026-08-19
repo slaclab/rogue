@@ -16,14 +16,26 @@
  **/
 #include "rogue/ScopedGil.h"
 
+#include "rogue/PerfCounters.h"
+
+// The constructor and destructor bodies are Python-build-only: they compile
+// only when NO_PYTHON is undefined, so a C++ doctest with no Python
+// interpreter can never call either one. Behavioural coverage for this
+// counter family is the Python-level test in
+// tests/utilities/test_perf_counters.py instead.
+//
+// Both crossings below are unconditional, so one ScopedGil scope contributes
+// exactly two to gScopedGilCount, not one: this counts crossings, not scopes.
 rogue::ScopedGil::ScopedGil() {
 #ifndef NO_PYTHON
     state_ = PyGILState_Ensure();
+    rogue::perf::gScopedGilCount.fetch_add(1, std::memory_order_relaxed);
 #endif
 }
 
 rogue::ScopedGil::~ScopedGil() {
 #ifndef NO_PYTHON
     PyGILState_Release(state_);
+    rogue::perf::gScopedGilCount.fetch_add(1, std::memory_order_relaxed);
 #endif
 }

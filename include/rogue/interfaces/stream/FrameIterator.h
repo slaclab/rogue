@@ -24,6 +24,8 @@
 #include <memory>
 #include <vector>
 
+#include "rogue/PerfCounters.h"
+
 namespace rogue {
 namespace interfaces {
 namespace stream {
@@ -341,6 +343,10 @@ static inline void toFrame(rogue::interfaces::stream::FrameIterator& iter, uint3
     do {
         csize = (size > iter.remBuffer()) ? iter.remBuffer() : size;
         std::memcpy(iter.ptr(), ptr, csize);
+        // One increment per executed memcpy, not per function call: a frame
+        // spanning several buffers performs several copies here.
+        rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
+        rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
         ptr += csize;
         iter += csize;
         size -= csize;
@@ -369,6 +375,10 @@ static inline void fromFrame(rogue::interfaces::stream::FrameIterator& iter, uin
     do {
         csize = (size > iter.remBuffer()) ? iter.remBuffer() : size;
         std::memcpy(ptr, iter.ptr(), csize);
+        // One increment per executed memcpy, not per function call: a frame
+        // spanning several buffers performs several copies here.
+        rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
+        rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
         ptr += csize;
         iter += csize;
         size -= csize;
@@ -399,6 +409,10 @@ static inline void copyFrame(rogue::interfaces::stream::FrameIterator& srcIter,
         csize = (size > srcIter.remBuffer()) ? srcIter.remBuffer() : size;
         csize = (csize > dstIter.remBuffer()) ? dstIter.remBuffer() : csize;
         std::memcpy(dstIter.ptr(), srcIter.ptr(), csize);
+        // One increment per executed memcpy, not per function call: a frame
+        // spanning several buffers performs several copies here.
+        rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
+        rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
         srcIter += csize;
         dstIter += csize;
         size -= csize;

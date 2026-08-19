@@ -28,6 +28,7 @@
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Helpers.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/ScopedGil.h"
 #include "rogue/interfaces/memory/Constants.h"
 #include "rogue/interfaces/memory/Slave.h"
@@ -215,6 +216,9 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
         slave               = slave_;
         tranMap_[tran->id_] = tran;
     }
+
+    rogue::perf::gTransactionRequestCount.fetch_add(1, std::memory_order_relaxed);
+    rogue::perf::gTransactionRequestBytes.fetch_add(tran->size_, std::memory_order_relaxed);
 
     log_->debug("Request transaction type=%" PRIu32 " id=%" PRIu32, tran->type_, tran->id_);
     tran->log_->debug("Created transaction type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32,

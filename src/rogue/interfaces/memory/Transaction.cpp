@@ -28,6 +28,7 @@
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/ScopedGil.h"
 #include "rogue/interfaces/memory/Constants.h"
 #include "rogue/interfaces/memory/Master.h"
@@ -96,6 +97,8 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
     id_ = classIdx_;
     classIdx_++;
     classMtx_.unlock();
+
+    rogue::perf::gTransactionCreateCount.fetch_add(1, std::memory_order_relaxed);
 }
 
 //! Destroy object

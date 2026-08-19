@@ -28,6 +28,7 @@
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/interfaces/stream/Buffer.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameIterator.h"
@@ -341,6 +342,7 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
 
     bool sendFailed = false;
     for (x = 0; x < 4; x++) {
+        rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
         if (zmq_sendmsg(this->zmqPush_, &(msg[x]), (x == 3) ? 0 : ZMQ_SNDMORE) < 0) {
             bridgeLog_->warning("Failed to push message part %" PRIu32 " (frame size %" PRIu32 ") on %s: %s",
                                 x,
@@ -351,6 +353,8 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
             zmq_msg_close(&(msg[x]));
             for (uint32_t y = x + 1; y < 4; y++) zmq_msg_close(&(msg[y]));
             break;
+        } else {
+            rogue::perf::gIoBytes.fetch_add(zmq_msg_size(&(msg[x])), std::memory_order_relaxed);
         }
     }
 
@@ -395,7 +399,9 @@ void ris::TcpCore::runThread() {
         // Get message
         do {
             // Get the message
+            rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
             if (zmq_recvmsg(this->zmqPull_, &(msg[x]), 0) > 0) {
+                rogue::perf::gIoBytes.fetch_add(zmq_msg_size(&(msg[x])), std::memory_order_relaxed);
                 if (x != 3) x++;
                 msgCnt++;
 

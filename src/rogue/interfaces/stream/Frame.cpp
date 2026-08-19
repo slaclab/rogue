@@ -36,6 +36,7 @@ namespace bp = boost::python;
 #include <memory>
 
 #include "rogue/GeneralError.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/interfaces/stream/Buffer.h"
 #include "rogue/interfaces/stream/FrameIterator.h"
 #include "rogue/interfaces/stream/FrameLock.h"
@@ -45,6 +46,7 @@ namespace ris = rogue::interfaces::stream;
 //! Create an empty frame
 ris::FramePtr ris::Frame::create() {
     ris::FramePtr frame = std::make_shared<ris::Frame>();
+    rogue::perf::gFrameCreateCount.fetch_add(1, std::memory_order_relaxed);
     return (frame);
 }
 

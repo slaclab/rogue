@@ -29,6 +29,7 @@
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/interfaces/memory/Constants.h"
 #include "rogue/interfaces/memory/Transaction.h"
 #include "rogue/interfaces/memory/TransactionLock.h"
@@ -218,9 +219,12 @@ bool rim::TcpClient::waitReady(double timeout, double period) {
             // by normal memory transactions so this exercises the real bridge
             // path end-to-end.
             for (uint32_t x = 0; x < 4; ++x) {
+                rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
                 if (zmq_sendmsg(this->zmqReq_, &(msg[x]), (x == 3 ? 0 : ZMQ_SNDMORE) | ZMQ_DONTWAIT) < 0) {
                     bridgeLog_->debug("Readiness probe send failed for port %s", this->reqAddr_.c_str());
                     break;
+                } else {
+                    rogue::perf::gIoBytes.fetch_add(zmq_msg_size(&(msg[x])), std::memory_order_relaxed);
                 }
             }
         }
@@ -315,12 +319,15 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
 
     // Send message
     for (x = 0; x < msgCnt; x++) {
+        rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
         if (zmq_sendmsg(this->zmqReq_, &(msg[x]), ((x == (msgCnt - 1) ? 0 : ZMQ_SNDMORE)) | ZMQ_DONTWAIT) < 0) {
             bridgeLog_->warning("Failed to send transaction %" PRIu32 ", msg %" PRIu32 " on %s: %s",
                                 id,
                                 x,
                                 this->reqAddr_.c_str(),
                                 zmq_strerror(zmq_errno()));
+        } else {
+            rogue::perf::gIoBytes.fetch_add(zmq_msg_size(&(msg[x])), std::memory_order_relaxed);
         }
     }
 }
@@ -350,7 +357,9 @@ void rim::TcpClient::runThread() {
         // Get message
         do {
             // Get the message
+            rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
             if (zmq_recvmsg(this->zmqResp_, &(msg[x]), 0) >= 0) {
+                rogue::perf::gIoBytes.fetch_add(zmq_msg_size(&(msg[x])), std::memory_order_relaxed);
                 if (x != 5) x++;
                 msgCnt++;
 

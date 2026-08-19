@@ -31,6 +31,7 @@
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/PerfCounters.h"
 #include "rogue/interfaces/stream/Buffer.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameLock.h"
@@ -203,6 +204,13 @@ void rpu::Server::acceptFrame(ris::FramePtr frame) {
                                  port_,
                                  std::strerror(errno));
             }
+            // res != 0 here means sendmsg() was actually issued above (the
+            // select-timeout branch forces res=0, and this frame's payload is
+            // always > 0, so a genuine sendmsg() never itself returns 0).
+            if (res != 0) {
+                rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
+                if (res >= 0) rogue::perf::gIoBytes.fetch_add(static_cast<uint64_t>(res), std::memory_order_relaxed);
+            }
         } while (res == 0);  // Continue while write result was zero
     }
 }
@@ -232,6 +240,8 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
         avail  = buff->getAvailable();
         tmpLen = sizeof(struct sockaddr_in);
         res    = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, (struct sockaddr*)&tmpAddr, &tmpLen);
+        rogue::perf::gIoCallCount.fetch_add(1, std::memory_order_relaxed);
+        if (res >= 0) rogue::perf::gIoBytes.fetch_add(static_cast<uint64_t>(res), std::memory_order_relaxed);
 
         if (res > 0) {
             // Message was too big

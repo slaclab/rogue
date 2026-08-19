@@ -19,6 +19,7 @@ add_subdirectory("utilities")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/GeneralError.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/GilRelease.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Logging.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/PerfCounters.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ScopedGil.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Version.cpp")
 
