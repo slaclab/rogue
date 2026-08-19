@@ -1,0 +1,51 @@
+diff --git a/src/rogue/interfaces/stream/Pool.cpp b/src/rogue/interfaces/stream/Pool.cpp
+index b8e67a542..4bc3e201c 100644
+--- a/src/rogue/interfaces/stream/Pool.cpp
++++ b/src/rogue/interfaces/stream/Pool.cpp
+@@ -23,6 +23,7 @@
+ #include <inttypes.h>
+ #include <unistd.h>
+ 
++#include <cstdlib>
+ #include <memory>
+ #include <string>
+ 
+@@ -195,6 +196,25 @@ ris::BufferPtr ris::Pool::allocBuffer(uint32_t size, uint32_t* total) {
+     allocTotalCount_.fetch_add(1, std::memory_order_relaxed);
+     allocTotalBytes_.fetch_add(bAlloc, std::memory_order_relaxed);
+ 
++    // Injects one redundant heap allocation for gate sensitivity validation, gated on the
++    // ROGUE_SEEDED_REGRESSION_STRIDE environment variable. The extra block is freed
++    // immediately below, after the peak-bytes check has observed it, so no memory is
++    // leaked: this is an extra allocation, not a leak.
++    static const uint64_t seededRegressionStride = []() -> uint64_t {
++        const char* env = std::getenv("ROGUE_SEEDED_REGRESSION_STRIDE");
++        return (env != nullptr) ? static_cast<uint64_t>(std::strtoull(env, nullptr, 10)) : 0;
++    }();
++    uint8_t* seededExtraData = NULL;
++    if (seededRegressionStride > 0 && (allocCount_ % seededRegressionStride) == 0) {
++        seededExtraData = reinterpret_cast<uint8_t*>(malloc(bAlloc));
++        if (seededExtraData != NULL) {
++            allocBytes_ += bAlloc;
++            allocCount_++;
++            allocTotalCount_.fetch_add(1, std::memory_order_relaxed);
++            allocTotalBytes_.fetch_add(bAlloc, std::memory_order_relaxed);
++        }
++    }
++
+     // allocBytes_ is only mutated under mtx_ (held above), so this
+     // compare-exchange loop is defence in depth against a future caller
+     // rather than a fix for an observed race.
+@@ -204,6 +224,12 @@ ris::BufferPtr ris::Pool::allocBuffer(uint32_t size, uint32_t* total) {
+            !allocPeakBytes_.compare_exchange_weak(curPeak, peakCandidate, std::memory_order_relaxed)) {
+     }
+ 
++    if (seededExtraData != NULL) {
++        free(seededExtraData);
++        allocBytes_ -= bAlloc;
++        allocCount_--;
++    }
++
+     if (total != NULL) *total += bSize;
+     return (ris::Buffer::create(shared_from_this(), data, meta, bSize, bAlloc));
+ }

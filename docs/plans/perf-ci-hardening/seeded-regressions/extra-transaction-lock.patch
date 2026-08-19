@@ -1,0 +1,61 @@
+diff --git a/include/rogue/interfaces/memory/Master.h b/include/rogue/interfaces/memory/Master.h
+index 42d96d1c9..062a1b254 100644
+--- a/include/rogue/interfaces/memory/Master.h
++++ b/include/rogue/interfaces/memory/Master.h
+@@ -66,6 +66,10 @@ class Master {
+     /** Mutex protecting shared master state. */
+     std::mutex mastMtx_;
+ 
++    /** Occurrence counter for the seeded extra-transaction-lock regression, protected by
++     *  mastMtx_. Used only for gate sensitivity validation; see intTransaction(). */
++    uint64_t seededLockRegressionCount_;
++
+     /** Error string from the last completed transaction sequence. */
+     std::string error_;
+ 
+diff --git a/src/rogue/interfaces/memory/Master.cpp b/src/rogue/interfaces/memory/Master.cpp
+index 5bbd3c6f0..507577768 100644
+--- a/src/rogue/interfaces/memory/Master.cpp
++++ b/src/rogue/interfaces/memory/Master.cpp
+@@ -33,6 +33,7 @@
+ #include "rogue/interfaces/memory/Constants.h"
+ #include "rogue/interfaces/memory/Slave.h"
+ #include "rogue/interfaces/memory/Transaction.h"
++#include "rogue/interfaces/memory/TransactionLock.h"
+ 
+ namespace rim = rogue::interfaces::memory;
+ 
+@@ -77,6 +78,7 @@ void rim::Master::setup_python() {
+ rim::Master::Master() {
+     error_ = "";
+     slave_ = rim::Slave::create(4, 0);  // Empty placeholder
++    seededLockRegressionCount_ = 0;
+ 
+     rogue::defaultTimeout(sumTime_);
+ 
+@@ -226,6 +228,25 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
+                       tran->id_,
+                       tran->address_,
+                       tran->size_);
++
++    // Acquires and immediately releases one redundant transaction lock for gate
++    // sensitivity validation, gated on the ROGUE_SEEDED_REGRESSION_STRIDE environment
++    // variable. Routed through the real rim::TransactionLock type so the extra
++    // acquisition flows through its own existing counter increment rather than a
++    // fabricated one here. The lock is released before slave->doTransaction(tran) runs
++    // below, so no deadlock is possible.
++    static const uint64_t seededRegressionStride = []() -> uint64_t {
++        const char* env = std::getenv("ROGUE_SEEDED_REGRESSION_STRIDE");
++        return (env != nullptr) ? static_cast<uint64_t>(std::strtoull(env, nullptr, 10)) : 0;
++    }();
++    bool seededLockFires = false;
++    {
++        std::lock_guard<std::mutex> lock(mastMtx_);
++        seededLockFires =
++            seededRegressionStride > 0 && (++seededLockRegressionCount_ % seededRegressionStride) == 0;
++    }
++    if (seededLockFires) rim::TransactionLock::create(tran);
++
+     slave->doTransaction(tran);
+     tran->refreshTimer(tran);
+     return (tran->id_);

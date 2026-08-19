@@ -1,0 +1,101 @@
+diff --git a/include/rogue/interfaces/stream/FrameIterator.h b/include/rogue/interfaces/stream/FrameIterator.h
+index 7663d9ba0..2bb70e9bc 100644
+--- a/include/rogue/interfaces/stream/FrameIterator.h
++++ b/include/rogue/interfaces/stream/FrameIterator.h
+@@ -20,6 +20,8 @@
+ 
+ #include <stdint.h>
+ 
++#include <atomic>
++#include <cstdlib>
+ #include <cstring>
+ #include <memory>
+ #include <vector>
+@@ -321,6 +323,15 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
+     rogue::interfaces::stream::FrameIterator& operator-=(const int32_t sub);
+ };
+ 
++namespace {
++// Process-wide occurrence counter for the extra-buffer-copy regression seeded across
++// toFrame/fromFrame/copyFrame for gate sensitivity validation. These three helpers are
++// static inline free functions with no owning object, so no per-instance counter is
++// available; every benchmark that crosses them within the same process shares this one
++// counter, gated on the ROGUE_SEEDED_REGRESSION_STRIDE environment variable.
++std::atomic<uint64_t> gSeededMemcpyRegressionOccurrence{0};
++}  // namespace
++
+ /**
+  * @brief Copies bytes from a source pointer into a frame iterator.
+  *
+@@ -347,6 +358,23 @@ static inline void toFrame(rogue::interfaces::stream::FrameIterator& iter, uint3
+         // spanning several buffers performs several copies here.
+         rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
+         rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
++
++        // Injects one redundant buffer copy for gate sensitivity validation, gated on the
++        // ROGUE_SEEDED_REGRESSION_STRIDE environment variable. Copying the same csize bytes
++        // to the same destination a second time is behaviour preserving.
++        static const uint64_t seededRegressionStride = []() -> uint64_t {
++            const char* env = std::getenv("ROGUE_SEEDED_REGRESSION_STRIDE");
++            return (env != nullptr) ? static_cast<uint64_t>(std::strtoull(env, nullptr, 10)) : 0;
++        }();
++        if (seededRegressionStride > 0 &&
++            (gSeededMemcpyRegressionOccurrence.fetch_add(1, std::memory_order_relaxed) + 1) %
++                    seededRegressionStride ==
++                0) {
++            std::memcpy(iter.ptr(), ptr, csize);
++            rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
++            rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
++        }
++
+         ptr += csize;
+         iter += csize;
+         size -= csize;
+@@ -379,6 +407,23 @@ static inline void fromFrame(rogue::interfaces::stream::FrameIterator& iter, uin
+         // spanning several buffers performs several copies here.
+         rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
+         rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
++
++        // Injects one redundant buffer copy for gate sensitivity validation, gated on the
++        // ROGUE_SEEDED_REGRESSION_STRIDE environment variable. Copying the same csize bytes
++        // to the same destination a second time is behaviour preserving.
++        static const uint64_t seededRegressionStride = []() -> uint64_t {
++            const char* env = std::getenv("ROGUE_SEEDED_REGRESSION_STRIDE");
++            return (env != nullptr) ? static_cast<uint64_t>(std::strtoull(env, nullptr, 10)) : 0;
++        }();
++        if (seededRegressionStride > 0 &&
++            (gSeededMemcpyRegressionOccurrence.fetch_add(1, std::memory_order_relaxed) + 1) %
++                    seededRegressionStride ==
++                0) {
++            std::memcpy(ptr, iter.ptr(), csize);
++            rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
++            rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
++        }
++
+         ptr += csize;
+         iter += csize;
+         size -= csize;
+@@ -413,6 +458,23 @@ static inline void copyFrame(rogue::interfaces::stream::FrameIterator& srcIter,
+         // spanning several buffers performs several copies here.
+         rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
+         rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
++
++        // Injects one redundant buffer copy for gate sensitivity validation, gated on the
++        // ROGUE_SEEDED_REGRESSION_STRIDE environment variable. Copying the same csize bytes
++        // to the same destination a second time is behaviour preserving.
++        static const uint64_t seededRegressionStride = []() -> uint64_t {
++            const char* env = std::getenv("ROGUE_SEEDED_REGRESSION_STRIDE");
++            return (env != nullptr) ? static_cast<uint64_t>(std::strtoull(env, nullptr, 10)) : 0;
++        }();
++        if (seededRegressionStride > 0 &&
++            (gSeededMemcpyRegressionOccurrence.fetch_add(1, std::memory_order_relaxed) + 1) %
++                    seededRegressionStride ==
++                0) {
++            std::memcpy(dstIter.ptr(), srcIter.ptr(), csize);
++            rogue::perf::gBufferCopyCount.fetch_add(1, std::memory_order_relaxed);
++            rogue::perf::gBufferCopyBytes.fetch_add(csize, std::memory_order_relaxed);
++        }
++
+         srcIter += csize;
+         dstIter += csize;
+         size -= csize;

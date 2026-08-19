@@ -1,0 +1,13 @@
+{
+  "commit": "49f142a09aa8400534f4e51bf4c1408d925d26b3",
+  "directories_reachable_only_through_tag": [
+    "coverage-proof-runs",
+    "gate-validation-hangs",
+    "gate-validation-runs",
+    "harness-runs",
+    "harness-runs-superseded-6b74f791"
+  ],
+  "remote": "https://github.com/ruck314/rogue.git",
+  "tag": "perf-ci-hardening-evidence-v1",
+  "tree": "5ad7e1b6350ef139eaff957269f76cd01f91f1a0"
+}

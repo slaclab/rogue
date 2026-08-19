@@ -1,0 +1,66 @@
+{
+  "build": {},
+  "calibration": {},
+  "confirmation": {},
+  "errors": [],
+  "fingerprint": {
+    "cgroup_v2_cpu_max": "unavailable",
+    "cgroup_v2_cpu_stat": {
+      "burst_usec": 0,
+      "core_sched.force_idle_usec": 0,
+      "nice_usec": 17000,
+      "nr_bursts": 0,
+      "nr_periods": 0,
+      "nr_throttled": 0,
+      "system_usec": 12530000,
+      "throttled_usec": 0,
+      "usage_usec": 42729000,
+      "user_usec": 30199000
+    },
+    "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "cpu_mhz": 2445.431,
+    "cpu_model": "AMD EPYC 7763 64-Core Processor",
+    "cpython_version": "3.12.13",
+    "errors": [
+      "cgroup_v2_cpu_max: FileNotFoundError: /sys/fs/cgroup/cpu.max not found"
+    ],
+    "fingerprint_schema_version": 1,
+    "glibc_version": "2.39",
+    "kernel_version": "6.17.0-1022-azure",
+    "memory_total_bytes": 16770748416,
+    "nproc": 4,
+    "runner_image_version": "20260810.271.1",
+    "systemd_timers": [
+      "Sat 2026-08-15 22:09:00 UTC 4min 11s Sat 2026-08-15 22:04:25 UTC 22s ago phpsessionclean.timer          phpsessionclean.service",
+      "Sat 2026-08-15 22:09:14 UTC 4min 26s -                                 - update-notifier-download.timer update-notifier-download.service",
+      "Sat 2026-08-15 22:10:00 UTC     5min -                                 - sysstat-collect.timer          sysstat-collect.service",
+      "Sat 2026-08-15 22:19:13 UTC    14min -                                 - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+      "Sun 2026-08-16 00:00:00 UTC 1h 55min Sat 2026-08-15 22:04:25 UTC 22s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+      "Sun 2026-08-16 00:00:00 UTC 1h 55min Sat 2026-08-15 22:04:25 UTC 22s ago logrotate.timer                logrotate.service",
+      "Sun 2026-08-16 00:07:00 UTC  2h 2min -                                 - sysstat-summary.timer          sysstat-summary.service",
+      "Sun 2026-08-16 01:33:53 UTC 3h 29min Mon 2026-08-10 21:36:59 UTC       - motd-news.timer                motd-news.service",
+      "Sun 2026-08-16 03:10:56 UTC  5h 6min Mon 2026-08-10 21:15:47 UTC       - e2scrub_all.timer              e2scrub_all.service",
+      "Sun 2026-08-16 05:04:28 UTC       6h Mon 2026-08-10 21:15:47 UTC       - man-db.timer                   man-db.service",
+      "Mon 2026-08-17 00:44:39 UTC 1 day 2h Mon 2026-08-10 21:15:47 UTC       - fstrim.timer                   fstrim.service",
+      "Tue 2026-08-18 04:10:53 UTC   2 days Mon 2026-08-10 21:15:47 UTC       - update-notifier-motd.timer     update-notifier-motd.service",
+      "-                                  - -                                 - apport-autoreport.timer        apport-autoreport.service",
+      "-                                  - -                                 - fwupd-refresh.timer            -",
+      "-                                  - -                                 - snapd.snap-repair.timer        snapd.snap-repair.service",
+      "-                                  - -                                 - ua-timer.timer                 ua-timer.service"
+    ]
+  },
+  "instruments": {},
+  "interventions": {},
+  "perf_events": {},
+  "probe_schema_version": 1,
+  "run": {
+    "campaign_branch": "perf-probe/campaign",
+    "git_tree_hash": "258792f2e49c421c03f758335475669a29182d1a",
+    "github_run_attempt": "1",
+    "github_run_id": "31911173684",
+    "github_sha": "5563ca6369c5fcc455e56825caac5954a94e74d1",
+    "job_index": "1",
+    "runner_os": "Linux"
+  },
+  "windows": []
+}

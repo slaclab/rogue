@@ -1,0 +1,75 @@
+diff --git a/include/rogue/protocols/batcher/CombinerV2.h b/include/rogue/protocols/batcher/CombinerV2.h
+index 4cccfd2c7..5ede7f5fb 100644
+--- a/include/rogue/protocols/batcher/CombinerV2.h
++++ b/include/rogue/protocols/batcher/CombinerV2.h
+@@ -59,6 +59,10 @@ class CombinerV2 : public rogue::interfaces::stream::Master, public rogue::inter
+     // Mutex for queue access.
+     std::mutex mtx_;
+ 
++    // Occurrence counter for the seeded batching-bypass regression, protected by mtx_.
++    // Used only for gate sensitivity validation; see acceptFrame().
++    uint64_t seededBypassOccurrence_;
++
+   public:
+     /** @brief Registers Python bindings for this class. */
+     static void setup_python();
+diff --git a/src/rogue/protocols/batcher/CombinerV2.cpp b/src/rogue/protocols/batcher/CombinerV2.cpp
+index d7befb2d3..2c305e7e7 100644
+--- a/src/rogue/protocols/batcher/CombinerV2.cpp
++++ b/src/rogue/protocols/batcher/CombinerV2.cpp
+@@ -43,6 +43,7 @@
+ #include <inttypes.h>
+ #include <stdint.h>
+
++#include <cstdlib>
+ #include <vector>
+ #include <string.h>
+
+@@ -84,6 +85,7 @@ void rpb::CombinerV2::setup_python() {
+ rpb::CombinerV2::CombinerV2() : ris::Master(), ris::Slave() {
+     log_ = rogue::Logging::create("batcher.CombinerV2");
+     seq_ = 0;
++    seededBypassOccurrence_ = 0;
+ }
+
+ //! Deconstructor
+@@ -94,8 +96,37 @@ void rpb::CombinerV2::acceptFrame(ris::FramePtr frame) {
+     rogue::GilRelease noGil;
+     ris::FrameLockPtr lock = frame->lock();
+
+-    std::lock_guard<std::mutex> guard(mtx_);
+-    queue_.push_back(frame);
++    bool seededBypass = false;
++    {
++        std::lock_guard<std::mutex> guard(mtx_);
++
++        // Bypasses the batcher queue for gate sensitivity validation, gated on the
++        // ROGUE_SEEDED_REGRESSION_STRIDE environment variable. The bypassed frame is
++        // still delivered below through sendFrame(), so the benchmark's own drain
++        // assertion still holds; only the queue-depth accounting moves.
++        static const uint64_t seededRegressionStride = []() -> uint64_t {
++            const char* env = std::getenv("ROGUE_SEEDED_REGRESSION_STRIDE");
++            return (env != nullptr) ? static_cast<uint64_t>(std::strtoull(env, nullptr, 10)) : 0;
++        }();
++        if (seededRegressionStride > 0 &&
++            (++seededBypassOccurrence_ % seededRegressionStride) == 0) {
++            seededBypass = true;
++        } else {
++            queue_.push_back(frame);
++        }
++    }
++
++    // Released before sendFrame() below: Slave::acceptFrame() (invoked synchronously by
++    // Master::sendFrame() for every downstream slave, including a bare
++    // rogue.interfaces.stream.Slave() sink) re-acquires this same frame's own lock via its
++    // own frame->lock() call. Frame::lock_ is a plain, non-recursive std::mutex, so holding
++    // this lock across sendFrame() self-deadlocks the calling thread the first time the
++    // bypass fires -- observed as an unconditional hang in the paired validation job. The
++    // unpatched code never forwards the frame further, so it never had this problem; this
++    // patch introduces the recursive-lock hazard by forwarding a locked frame.
++    lock.reset();
++
++    if (seededBypass) sendFrame(frame);
+ }
+
+ //! Return queue count

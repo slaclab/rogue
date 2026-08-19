@@ -1,0 +1,3341 @@
+{
+  "budget": {
+    "additional_rounds_affordable": 1,
+    "at_boundary": false,
+    "binding": false,
+    "budget_seconds": 600.0,
+    "excluded_runs": [
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080781211"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080781211"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080791494"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080791494"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080797217"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080797217"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080802549"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080802549"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080807356"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080807356"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080812783"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080812783"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080819318"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080819318"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080824836"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080824836"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080829953"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080829953"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080836075"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080836075"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080841850"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080841850"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32080847690"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080847690"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32080852974"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32093010863"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32093010863"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32093016170"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32093016170"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32093021967"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32093021967"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32093027856"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32093027856"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32093032520"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32093032520"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32093037305"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32093037305"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32104913039"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32104913039"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32106870977"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32106870977"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32108819426"
+      },
+      {
+        "leg": "merge_base",
+        "reason": "zero completed rounds",
+        "run_id": "32108819426"
+      },
+      {
+        "leg": "candidate",
+        "reason": "zero completed rounds",
+        "run_id": "32159830013"
+      }
+    ],
+    "headroom_seconds": 249.22965758199996,
+    "no_projection_note": "No figure is given for additional benchmarks or additional magnitude rungs: this population measures no per-unit cost for either, and giving one would be a speculation rather than a derivation. The only quantity this population measures a per-unit cost for directly and repeatedly is the interleaved round count (timings.measure_candidate and timings.measure_merge_base, each divided by round_count), which is what the seconds-per-round-per-leg figure above uses.",
+    "reason": "measured median total 350.77s is under the 600s budget",
+    "seconds_per_round_per_leg": {
+      "candidate": 85.07586010699998,
+      "merge_base": 84.4687617305
+    },
+    "stages": {
+      "build_candidate": {
+        "maximum": 159.685689846,
+        "median": 10.700885650000004,
+        "minimum": 3.1936862609999253,
+        "n": 73
+      },
+      "build_merge_base": {
+        "maximum": 155.074012226,
+        "median": 2.6737122790000285,
+        "minimum": 1.4991830129999926,
+        "n": 72
+      },
+      "measure_candidate": {
+        "maximum": 189.55656645599998,
+        "median": 170.15172021399997,
+        "minimum": 153.43531244800005,
+        "n": 51
+      },
+      "measure_merge_base": {
+        "maximum": 187.79587852500003,
+        "median": 168.937523461,
+        "minimum": 6.2444577939998,
+        "n": 51
+      },
+      "patch_candidate": {
+        "maximum": 0.0045141529999739305,
+        "median": 0.0037406750000030797,
+        "minimum": 0.002059433999988869,
+        "n": 32
+      },
+      "total": {
+        "maximum": 1203.854310456,
+        "median": 350.77034241800004,
+        "minimum": 15.67442658200001,
+        "n": 73
+      },
+      "worktree_candidate": {
+        "maximum": 0.11966809299997294,
+        "median": 0.0975202449999415,
+        "minimum": 0.038961656999987326,
+        "n": 73
+      },
+      "worktree_merge_base": {
+        "maximum": 0.11824229100000139,
+        "median": 0.09650065300002098,
+        "minimum": 0.0382686949999993,
+        "n": 73
+      }
+    }
+  },
+  "conditions": {
+    "conditions": {
+      "baseline-cell-missing": 0,
+      "benchmark-errored": 0,
+      "guard-exceeded": 0,
+      "insufficient-clean-samples": 2753,
+      "merge-base-build-failed": 525,
+      "metric-absent-from-leg": 26353,
+      "no-gating-cell-evaluated": 0,
+      "secondary-window-flag": 0,
+      "tree-hash-pair-mismatch": 525,
+      "within-run-nondeterminism": 1489
+    }
+  },
+  "confusion_matrix": {
+    "matrix": {
+      "seeded regression": {
+        "FAIL": 10,
+        "INCONCLUSIVE": 2,
+        "PASS": 3
+      },
+      "unchanged code": {
+        "FAIL": 0,
+        "INCONCLUSIVE": 19,
+        "PASS": 18
+      }
+    },
+    "outside_matrix": {
+      "counts": {
+        "forced-inconclusive": 3,
+        "patch-failed": 0,
+        "seeded-search": 17,
+        "uncategorized": 1
+      },
+      "runs": [
+        {
+          "category": "uncategorized",
+          "run_id": "32073814745"
+        },
+        {
+          "category": "forced-inconclusive",
+          "run_id": "32080852974"
+        },
+        {
+          "category": "forced-inconclusive",
+          "run_id": "32080857579"
+        },
+        {
+          "category": "forced-inconclusive",
+          "run_id": "32080863186"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080879952"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080884627"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080893586"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080898624"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080906639"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080912906"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080922489"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080928355"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080936501"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080943373"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080952209"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080957533"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32080983694"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32104913039"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32106870977"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32108819426"
+        },
+        {
+          "category": "seeded-search",
+          "run_id": "32159830013"
+        }
+      ]
+    },
+    "reconciliation": {
+      "accepted_total": 73,
+      "matrix_total": 52,
+      "outside_total": 21
+    }
+  },
+  "false_positive": {
+    "combined": {
+      "fail_count": 0,
+      "fail_rate": {
+        "denominator": 37,
+        "numerator": 0,
+        "percent": 0.0
+      },
+      "failing_runs": [],
+      "inconclusive_count": 19,
+      "inconclusive_rate": {
+        "denominator": 37,
+        "numerator": 19,
+        "percent": 51.35135135135135
+      },
+      "nongating_inconclusive": {
+        "harness_comparison": {
+          "denominator": 5352,
+          "metric_count": 10,
+          "numerator": 855,
+          "percent": 16.0,
+          "reason": "insufficient-clean-samples",
+          "source": "docs/plans/perf-ci-hardening/CAMPAIGN-REPORT.md (harness population, 24 clean records)"
+        },
+        "rate": {
+          "denominator": 14689,
+          "numerator": 14518,
+          "percent": 98.83586357137995
+        }
+      },
+      "pass_count": 18,
+      "run_count": 37
+    },
+    "null_population": {
+      "fail_count": 0,
+      "fail_rate": {
+        "denominator": 15,
+        "numerator": 0,
+        "percent": 0.0
+      },
+      "failing_runs": [],
+      "inconclusive_count": 1,
+      "inconclusive_rate": {
+        "denominator": 15,
+        "numerator": 1,
+        "percent": 6.666666666666667
+      },
+      "nongating_inconclusive": {
+        "harness_comparison": {
+          "denominator": 5352,
+          "metric_count": 10,
+          "numerator": 855,
+          "percent": 16.0,
+          "reason": "insufficient-clean-samples",
+          "source": "docs/plans/perf-ci-hardening/CAMPAIGN-REPORT.md (harness population, 24 clean records)"
+        },
+        "rate": {
+          "denominator": 5955,
+          "numerator": 5820,
+          "percent": 97.73299748110831
+        }
+      },
+      "pass_count": 14,
+      "run_count": 15
+    },
+    "unrelated_population": {
+      "fail_count": 0,
+      "fail_rate": {
+        "denominator": 22,
+        "numerator": 0,
+        "percent": 0.0
+      },
+      "failing_runs": [],
+      "inconclusive_count": 18,
+      "inconclusive_rate": {
+        "denominator": 22,
+        "numerator": 18,
+        "percent": 81.81818181818183
+      },
+      "nongating_inconclusive": {
+        "harness_comparison": {
+          "denominator": 5352,
+          "metric_count": 10,
+          "numerator": 855,
+          "percent": 16.0,
+          "reason": "insufficient-clean-samples",
+          "source": "docs/plans/perf-ci-hardening/CAMPAIGN-REPORT.md (harness population, 24 clean records)"
+        },
+        "rate": {
+          "denominator": 8734,
+          "numerator": 8698,
+          "percent": 99.58781772383787
+        }
+      },
+      "pass_count": 4,
+      "run_count": 22
+    }
+  },
+  "nongating_inconclusive": {
+    "harness_comparison": {
+      "denominator": 5352,
+      "metric_count": 10,
+      "numerator": 855,
+      "percent": 16.0,
+      "reason": "insufficient-clean-samples",
+      "source": "docs/plans/perf-ci-hardening/CAMPAIGN-REPORT.md (harness population, 24 clean records)"
+    },
+    "rate": {
+      "denominator": 28981,
+      "numerator": 28540,
+      "percent": 98.47831337773025
+    }
+  },
+  "report_version": 1,
+  "seeded": {
+    "patches": {
+      "disable-frame-batching.patch": {
+        "magnitudes": {
+          "2": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "INCONCLUSIVE",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg"
+                ],
+                "run_id": "32106870977"
+              }
+            ]
+          },
+          "200": {
+            "run_count": 3,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "INCONCLUSIVE",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg"
+                ],
+                "run_id": "32104913039"
+              },
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "INCONCLUSIVE",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg"
+                ],
+                "run_id": "32108819426"
+              },
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "INCONCLUSIVE",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg"
+                ],
+                "run_id": "32159830013"
+              }
+            ]
+          }
+        }
+      },
+      "extra-hotpath-allocation.patch": {
+        "magnitudes": {
+          "1": {
+            "run_count": 4,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": true,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg",
+                  "metric-absent-from-leg",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080884627"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg",
+                  "metric-absent-from-leg",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32084302926"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg",
+                  "metric-absent-from-leg",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32084354757"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg",
+                  "metric-absent-from-leg",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32090963451"
+              }
+            ]
+          },
+          "100": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "INCONCLUSIVE",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg",
+                  "metric-absent-from-leg",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080912906"
+              }
+            ]
+          },
+          "200": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "PASS",
+                "repeatability_verdicts": [
+                  "metric-absent-from-leg",
+                  "metric-absent-from-leg",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080943373"
+              }
+            ]
+          }
+        }
+      },
+      "extra-memcpy-per-frame.patch": {
+        "magnitudes": {
+          "1": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080879952"
+              }
+            ]
+          },
+          "100": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080906639"
+              }
+            ]
+          },
+          "500600": {
+            "run_count": 5,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": true,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080936501"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32084297245"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32084323248"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32084346806"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32089774178"
+              }
+            ]
+          }
+        }
+      },
+      "extra-transaction-lock.patch": {
+        "magnitudes": {
+          "1": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": true,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080893586"
+              }
+            ]
+          },
+          "100": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080922489"
+              }
+            ]
+          },
+          "999": {
+            "run_count": 4,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": true,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32080952209"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32084307515"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32084333538"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": true,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "FAIL",
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_id": "32084359143"
+              }
+            ]
+          }
+        }
+      },
+      "per-transaction-delay.patch": {
+        "magnitudes": {
+          "1000": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "PASS",
+                "repeatability_verdicts": [],
+                "run_id": "32080898624"
+              }
+            ]
+          },
+          "10000": {
+            "run_count": 6,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "PASS",
+                "repeatability_verdicts": [],
+                "run_id": "32080928355"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": false,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "INCONCLUSIVE",
+                "repeatability_verdicts": [],
+                "run_id": "32084312692"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": false,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "PASS",
+                "repeatability_verdicts": [],
+                "run_id": "32084364435"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": false,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "PASS",
+                "repeatability_verdicts": [],
+                "run_id": "32090968425"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": false,
+                "measurement_detected": true,
+                "patch_applied": true,
+                "recomputed_verdict": "INCONCLUSIVE",
+                "repeatability_verdicts": [],
+                "run_id": "32091811747"
+              },
+              {
+                "category": "seeded-confirm",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "PASS",
+                "repeatability_verdicts": [],
+                "run_id": "32091835126"
+              }
+            ]
+          },
+          "100000": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "PASS",
+                "repeatability_verdicts": [],
+                "run_id": "32080957533"
+              }
+            ]
+          },
+          "1000000": {
+            "run_count": 1,
+            "runs": [
+              {
+                "category": "seeded-search",
+                "gate_detected": false,
+                "measurement_detected": false,
+                "patch_applied": true,
+                "recomputed_verdict": "PASS",
+                "repeatability_verdicts": [],
+                "run_id": "32080983694"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "smallest_magnitude": {
+    "patches": {
+      "disable-frame-batching": {
+        "metrics": {
+          "combiner_count": {
+            "candidates": [],
+            "smallest_detected": null
+          }
+        },
+        "narrowed_module_runs": [
+          {
+            "measured_modules": [
+              "tests/perf/test_batcher_combine_perf.py"
+            ],
+            "run_id": "32159830013"
+          }
+        ]
+      },
+      "extra-hotpath-allocation": {
+        "metrics": {
+          "pool_alloc_total_bytes": {
+            "candidates": [
+              {
+                "absolute_delta": 200000,
+                "benchmark": "pool_alloc_perf",
+                "magnitude": "1",
+                "percent_of_baseline": 100.0,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 4,
+                "stable": true
+              }
+            ],
+            "smallest_detected": {
+              "absolute_delta": 200000,
+              "benchmark": "pool_alloc_perf",
+              "magnitude": "1",
+              "percent_of_baseline": 100.0,
+              "repeatability_verdicts": [
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical"
+              ],
+              "run_count": 4,
+              "stable": true
+            }
+          },
+          "pool_alloc_total_count": {
+            "candidates": [
+              {
+                "absolute_delta": 200,
+                "benchmark": "pool_alloc_perf",
+                "magnitude": "1",
+                "percent_of_baseline": 100.0,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 4,
+                "stable": true
+              }
+            ],
+            "smallest_detected": {
+              "absolute_delta": 200,
+              "benchmark": "pool_alloc_perf",
+              "magnitude": "1",
+              "percent_of_baseline": 100.0,
+              "repeatability_verdicts": [
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical"
+              ],
+              "run_count": 4,
+              "stable": true
+            }
+          }
+        }
+      },
+      "extra-memcpy-per-frame": {
+        "metrics": {
+          "buffer_copy_bytes": {
+            "candidates": [
+              {
+                "absolute_delta": 4001600,
+                "benchmark": "fifo_perf",
+                "magnitude": "1",
+                "percent_of_baseline": 100.0,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 1,
+                "stable": true
+              },
+              {
+                "absolute_delta": 40016,
+                "benchmark": "fifo_perf",
+                "magnitude": "100",
+                "percent_of_baseline": 1.0,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 1,
+                "stable": true
+              },
+              {
+                "absolute_delta": 4,
+                "benchmark": "fifo_perf",
+                "magnitude": "500600",
+                "percent_of_baseline": 9.996001599360256e-05,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 5,
+                "stable": true
+              }
+            ],
+            "smallest_detected": {
+              "absolute_delta": 4001600,
+              "benchmark": "fifo_perf",
+              "magnitude": "1",
+              "percent_of_baseline": 100.0,
+              "repeatability_verdicts": [
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical"
+              ],
+              "run_count": 1,
+              "stable": true
+            }
+          },
+          "buffer_copy_count": {
+            "candidates": [
+              {
+                "absolute_delta": 500600,
+                "benchmark": "fifo_perf",
+                "magnitude": "1",
+                "percent_of_baseline": 100.0,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 1,
+                "stable": true
+              },
+              {
+                "absolute_delta": 5006,
+                "benchmark": "fifo_perf",
+                "magnitude": "100",
+                "percent_of_baseline": 1.0,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 1,
+                "stable": true
+              },
+              {
+                "absolute_delta": 1,
+                "benchmark": "fifo_perf",
+                "magnitude": "500600",
+                "percent_of_baseline": 0.00019976028765481422,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 5,
+                "stable": true
+              }
+            ],
+            "smallest_detected": {
+              "absolute_delta": 500600,
+              "benchmark": "fifo_perf",
+              "magnitude": "1",
+              "percent_of_baseline": 100.0,
+              "repeatability_verdicts": [
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical"
+              ],
+              "run_count": 1,
+              "stable": true
+            }
+          }
+        }
+      },
+      "extra-transaction-lock": {
+        "metrics": {
+          "transaction_lock_acquisitions": {
+            "candidates": [
+              {
+                "absolute_delta": 999,
+                "benchmark": "linkedGetRate",
+                "magnitude": "1",
+                "percent_of_baseline": 100.0,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 1,
+                "stable": true
+              },
+              {
+                "absolute_delta": 10,
+                "benchmark": "linkedGetRate",
+                "magnitude": "100",
+                "percent_of_baseline": 1.001001001001001,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 1,
+                "stable": true
+              },
+              {
+                "absolute_delta": 1,
+                "benchmark": "linkedGetRate",
+                "magnitude": "999",
+                "percent_of_baseline": 0.10010010010010009,
+                "repeatability_verdicts": [
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical",
+                  "bit-identical"
+                ],
+                "run_count": 4,
+                "stable": true
+              }
+            ],
+            "smallest_detected": {
+              "absolute_delta": 999,
+              "benchmark": "linkedGetRate",
+              "magnitude": "1",
+              "percent_of_baseline": 100.0,
+              "repeatability_verdicts": [
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical",
+                "bit-identical"
+              ],
+              "run_count": 1,
+              "stable": true
+            }
+          }
+        }
+      },
+      "per-transaction-delay": {
+        "measurement_only_magnitudes": {
+          "1000": {
+            "measurement_detected": false,
+            "run_count": 1
+          },
+          "10000": {
+            "measurement_detected": true,
+            "run_count": 6
+          },
+          "100000": {
+            "measurement_detected": false,
+            "run_count": 1
+          },
+          "1000000": {
+            "measurement_detected": false,
+            "run_count": 1
+          }
+        },
+        "metrics": {},
+        "no_gating_metric_reason": "No gating metric observes this regression: elapsed time is exactly what the tier ladder deliberately refuses to gate, since wall-clock and dual-clock CPU-time figures are Tier 2/3 and never gate by design. The regression is expected to be visible only in the wall-clock and dual-clock CPU-time figures for the benchmarks it reaches, never as a gate detection."
+      }
+    }
+  },
+  "source": {
+    "accepted_count": 73,
+    "baseline": "docs/plans/perf-ci-hardening/gate-baseline.json",
+    "category_counts": {
+      "forced-inconclusive": 3,
+      "null-population": 15,
+      "patch-failed": 0,
+      "seeded-confirm": 15,
+      "seeded-search": 17,
+      "uncategorized": 1,
+      "unrelated-population": 22
+    },
+    "noise_floor_parameters": {
+      "loaded": true,
+      "mde_gate_pct": 2.0,
+      "mde_z": 1.96,
+      "min_n": 5,
+      "source_file": "docs/plans/perf-ci-hardening/noise-floor.json"
+    },
+    "runs_dir": "docs/plans/perf-ci-hardening/gate-validation-runs",
+    "setup_doc": "docs/plans/perf-ci-hardening/GATE-VALIDATION-SETUP.md",
+    "skipped_count": 0,
+    "skipped_reasons": {
+      "record-without-verdict": 0,
+      "unparseable-file": 0,
+      "unrecognized-schema-version": 0,
+      "verdict-without-record": 0
+    },
+    "verdict_disagreement_count": 0
+  },
+  "threshold_derivations": {
+    "cells": [
+      {
+        "benchmark": "batcher_combine_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='batcher_combine_perf', metric='combiner_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "combiner_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "block_gil_contention_drain",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='block_gil_contention_drain', metric='gil_acquire_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "block_gil_contention_drain",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='block_gil_contention_drain', metric='gil_release_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "block_gil_contention_drain",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='block_gil_contention_drain', metric='scoped_gil_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='fifo_perf', metric='buffer_copy_bytes'); n=120, observed minimum=4.0016e+06, maximum=4.0016e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_bytes",
+        "n": 120,
+        "observed_value": 4001600.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='fifo_perf', metric='buffer_copy_count'); n=120, observed minimum=500600, maximum=500600, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_count",
+        "n": 120,
+        "observed_value": 500600.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='fifo_perf', metric='gil_acquire_count'); n=120, observed minimum=400, maximum=400, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 400.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='fifo_perf', metric='gil_release_count'); n=120, observed minimum=400, maximum=400, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 400.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='fifo_perf', metric='prbs_rx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='fifo_perf', metric='prbs_rx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='fifo_perf', metric='prbs_rx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='fifo_perf', metric='prbs_tx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='fifo_perf', metric='prbs_tx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='fifo_perf', metric='prbs_tx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "fifo_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='fifo_perf', metric='scoped_gil_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedGetRate', metric='gil_acquire_count'); n=120, observed minimum=1998, maximum=1998, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 1998.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedGetRate', metric='gil_release_count'); n=120, observed minimum=1998, maximum=1998, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 1998.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedGetRate', metric='scoped_gil_count'); n=120, observed minimum=5994, maximum=5994, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 5994.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedGetRate', metric='transaction_create_count'); n=120, observed minimum=999, maximum=999, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_create_count",
+        "n": 120,
+        "observed_value": 999.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedGetRate', metric='transaction_lock_acquisitions'); n=120, observed minimum=999, maximum=999, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_lock_acquisitions",
+        "n": 120,
+        "observed_value": 999.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedGetRate', metric='transaction_request_bytes'); n=120, observed minimum=3996, maximum=3996, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_bytes",
+        "n": 120,
+        "observed_value": 3996.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedGetRate', metric='transaction_request_count'); n=120, observed minimum=999, maximum=999, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_count",
+        "n": 120,
+        "observed_value": 999.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedSetRate', metric='gil_acquire_count'); n=120, observed minimum=3000, maximum=3000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 3000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedSetRate', metric='gil_release_count'); n=120, observed minimum=3000, maximum=3000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 3000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedSetRate', metric='scoped_gil_count'); n=120, observed minimum=8000, maximum=8000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 8000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedSetRate', metric='transaction_create_count'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_create_count",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedSetRate', metric='transaction_lock_acquisitions'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_lock_acquisitions",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedSetRate', metric='transaction_request_bytes'); n=120, observed minimum=8000, maximum=8000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_bytes",
+        "n": 120,
+        "observed_value": 8000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "linkedSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='linkedSetRate', metric='transaction_request_count'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_count",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localGetRate', metric='gil_acquire_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localGetRate', metric='gil_release_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localGetRate', metric='scoped_gil_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localGetRate', metric='transaction_create_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_create_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localGetRate', metric='transaction_lock_acquisitions'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_lock_acquisitions",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localGetRate', metric='transaction_request_bytes'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_bytes",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localGetRate', metric='transaction_request_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localSetRate', metric='gil_acquire_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localSetRate', metric='gil_release_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localSetRate', metric='scoped_gil_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localSetRate', metric='transaction_create_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_create_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localSetRate', metric='transaction_lock_acquisitions'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_lock_acquisitions",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localSetRate', metric='transaction_request_bytes'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_bytes",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "localSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='localSetRate', metric='transaction_request_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "pool_alloc_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='pool_alloc_perf', metric='pool_alloc_peak_bytes'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "pool_alloc_peak_bytes",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "pool_alloc_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='pool_alloc_perf', metric='pool_alloc_total_bytes'); n=120, observed minimum=200000, maximum=200000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "pool_alloc_total_bytes",
+        "n": 120,
+        "observed_value": 200000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "pool_alloc_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='pool_alloc_perf', metric='pool_alloc_total_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "pool_alloc_total_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "pool_alloc_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='pool_alloc_perf', metric='slave_byte_count'); n=120, observed minimum=200000, maximum=200000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "slave_byte_count",
+        "n": 120,
+        "observed_value": 200000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "pool_alloc_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='pool_alloc_perf', metric='slave_frame_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "slave_frame_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteGetRate', metric='gil_acquire_count'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteGetRate', metric='gil_release_count'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteGetRate', metric='scoped_gil_count'); n=120, observed minimum=6000, maximum=6000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 6000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteGetRate', metric='transaction_create_count'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_create_count",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteGetRate', metric='transaction_lock_acquisitions'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_lock_acquisitions",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteGetRate', metric='transaction_request_bytes'); n=120, observed minimum=4000, maximum=4000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_bytes",
+        "n": 120,
+        "observed_value": 4000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteGetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteGetRate', metric='transaction_request_count'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_count",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetNvRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetNvRate', metric='gil_acquire_count'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetNvRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetNvRate', metric='gil_release_count'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetNvRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetNvRate', metric='scoped_gil_count'); n=120, observed minimum=6000, maximum=6000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 6000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetNvRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetNvRate', metric='transaction_create_count'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_create_count",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetNvRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetNvRate', metric='transaction_lock_acquisitions'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_lock_acquisitions",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetNvRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetNvRate', metric='transaction_request_bytes'); n=120, observed minimum=4000, maximum=4000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_bytes",
+        "n": 120,
+        "observed_value": 4000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetNvRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetNvRate', metric='transaction_request_count'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_count",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetRate', metric='gil_acquire_count'); n=120, observed minimum=3000, maximum=3000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 3000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetRate', metric='gil_release_count'); n=120, observed minimum=3000, maximum=3000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 3000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetRate', metric='scoped_gil_count'); n=120, observed minimum=8000, maximum=8000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 8000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetRate', metric='transaction_create_count'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_create_count",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetRate', metric='transaction_lock_acquisitions'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_lock_acquisitions",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetRate', metric='transaction_request_bytes'); n=120, observed minimum=8000, maximum=8000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_bytes",
+        "n": 120,
+        "observed_value": 8000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "remoteSetRate",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='remoteSetRate', metric='transaction_request_count'); n=120, observed minimum=2000, maximum=2000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "transaction_request_count",
+        "n": 120,
+        "observed_value": 2000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='buffer_copy_bytes'); n=120, observed minimum=6.0016e+06, maximum=6.0016e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_bytes",
+        "n": 120,
+        "observed_value": 6001600.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='buffer_copy_count'); n=120, observed minimum=500800, maximum=500800, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_count",
+        "n": 120,
+        "observed_value": 500800.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='gil_acquire_count'); n=120, observed minimum=400, maximum=400, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 400.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='gil_release_count'); n=120, observed minimum=400, maximum=400, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 400.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='prbs_rx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='prbs_rx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='prbs_rx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='prbs_tx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='prbs_tx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='prbs_tx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "stream_bridge_perf",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='stream_bridge_perf', metric='scoped_gil_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='buffer_copy_bytes'); n=120, observed minimum=2.0016e+06, maximum=2.0016e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_bytes",
+        "n": 120,
+        "observed_value": 2001600.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='buffer_copy_count'); n=120, observed minimum=500400, maximum=500400, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_count",
+        "n": 120,
+        "observed_value": 500400.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='core_drop_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "core_drop_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='gil_acquire_count'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='gil_release_count'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='prbs_rx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='prbs_rx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='prbs_rx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='prbs_tx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='prbs_tx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='prbs_tx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_jumbo', metric='scoped_gil_count'); n=120, observed minimum=800, maximum=800, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 800.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='buffer_copy_bytes'); n=120, observed minimum=2.0016e+06, maximum=2.0016e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_bytes",
+        "n": 120,
+        "observed_value": 2001600.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='buffer_copy_count'); n=120, observed minimum=500400, maximum=500400, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_count",
+        "n": 120,
+        "observed_value": 500400.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='core_drop_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "core_drop_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='gil_acquire_count'); n=120, observed minimum=3000, maximum=3000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 3000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='gil_release_count'); n=120, observed minimum=3000, maximum=3000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 3000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='prbs_rx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='prbs_rx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='prbs_rx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='prbs_tx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='prbs_tx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='prbs_tx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v1_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v1_std', metric='scoped_gil_count'); n=120, observed minimum=2800, maximum=2800, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 2800.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='buffer_copy_bytes'); n=120, observed minimum=2.0016e+06, maximum=2.0016e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_bytes",
+        "n": 120,
+        "observed_value": 2001600.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='buffer_copy_count'); n=120, observed minimum=500400, maximum=500400, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_count",
+        "n": 120,
+        "observed_value": 500400.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='core_drop_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "core_drop_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='gil_acquire_count'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='gil_release_count'); n=120, observed minimum=1000, maximum=1000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 1000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='prbs_rx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='prbs_rx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='prbs_rx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='prbs_tx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='prbs_tx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='prbs_tx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_jumbo",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_jumbo', metric='scoped_gil_count'); n=120, observed minimum=800, maximum=800, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 800.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='buffer_copy_bytes'); n=120, observed minimum=2.0016e+06, maximum=2.0016e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_bytes",
+        "n": 120,
+        "observed_value": 2001600.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='buffer_copy_count'); n=120, observed minimum=500400, maximum=500400, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "buffer_copy_count",
+        "n": 120,
+        "observed_value": 500400.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='core_drop_count'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "core_drop_count",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='gil_acquire_count'); n=120, observed minimum=3000, maximum=3000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_acquire_count",
+        "n": 120,
+        "observed_value": 3000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='gil_release_count'); n=120, observed minimum=3000, maximum=3000, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "gil_release_count",
+        "n": 120,
+        "observed_value": 3000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='prbs_rx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='prbs_rx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='prbs_rx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_rx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='prbs_tx_bytes'); n=120, observed minimum=2e+06, maximum=2e+06, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_bytes",
+        "n": 120,
+        "observed_value": 2000000.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='prbs_tx_count'); n=120, observed minimum=200, maximum=200, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_count",
+        "n": 120,
+        "observed_value": 200.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": "undefined-zero-mean",
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='prbs_tx_errors'); n=120, observed minimum=0, maximum=0, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "prbs_tx_errors",
+        "n": 120,
+        "observed_value": 0.0,
+        "spread": 0.0
+      },
+      {
+        "benchmark": "udp_packetizer_perf_v2_std",
+        "cpu_models": [
+          "AMD EPYC 7763 64-Core Processor",
+          "AMD EPYC 9V74 80-Core Processor",
+          "INTEL(R) XEON(R) PLATINUM 8573C"
+        ],
+        "cv": 0.0,
+        "derivation": "grouped per (benchmark='udp_packetizer_perf_v2_std', metric='scoped_gil_count'); n=120, observed minimum=2800, maximum=2800, spread=0; CPU models observed: AMD EPYC 7763 64-Core Processor, AMD EPYC 9V74 80-Core Processor, INTEL(R) XEON(R) PLATINUM 8573C",
+        "metric": "scoped_gil_count",
+        "n": 120,
+        "observed_value": 2800.0,
+        "spread": 0.0
+      }
+    ],
+    "census": {
+      "constant_cells": 138,
+      "constant_cells_at_reference_min_n": 138,
+      "gating_cells": 128,
+      "gating_metrics": 22,
+      "insufficient_sample_cells": 0,
+      "max_n_observed": 120,
+      "measured_cells": 223,
+      "measured_cells_at_reference_min_n": 223,
+      "min_n": 5,
+      "min_n_observed": 94,
+      "no_sample_cells": 302,
+      "reference_min_n": 20,
+      "total_cells": 525,
+      "varying_cells": 85,
+      "varying_cells_at_reference_min_n": 85
+    },
+    "gating_metrics": [
+      "buffer_copy_bytes",
+      "buffer_copy_count",
+      "combiner_count",
+      "core_drop_count",
+      "gil_acquire_count",
+      "gil_release_count",
+      "pool_alloc_peak_bytes",
+      "pool_alloc_total_bytes",
+      "pool_alloc_total_count",
+      "prbs_rx_bytes",
+      "prbs_rx_count",
+      "prbs_rx_errors",
+      "prbs_tx_bytes",
+      "prbs_tx_count",
+      "prbs_tx_errors",
+      "scoped_gil_count",
+      "slave_byte_count",
+      "slave_frame_count",
+      "transaction_create_count",
+      "transaction_lock_acquisitions",
+      "transaction_request_bytes",
+      "transaction_request_count"
+    ],
+    "pooled_reconciliation_note": "Every threshold in this section is derived from its own (benchmark, metric) cell, never from the pooled per-metric figure docs/plans/perf-ci-hardening/CAMPAIGN-REPORT.md's own metric table reports: that table pools every sample across every benchmark that collects a metric into one distribution, so gil_acquire_count reads a pooled coefficient of variation of 0.79 and a pooled two-sample minimum-detectable effect of 7.66 percent there, even though every one of its 14 individual cells in this campaign's own baseline is exactly constant. The two figures differ because pooling mixes cells with genuinely different values into one distribution; the per-cell figure this section cites is what the gate actually compares against."
+  }
+}

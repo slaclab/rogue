@@ -1,0 +1,49 @@
+diff --git a/src/rogue/interfaces/memory/Master.cpp b/src/rogue/interfaces/memory/Master.cpp
+index 5bbd3c6f0..bf04e1076 100644
+--- a/src/rogue/interfaces/memory/Master.cpp
++++ b/src/rogue/interfaces/memory/Master.cpp
+@@ -20,10 +20,13 @@
+ 
+ #include <inttypes.h>
+ 
++#include <atomic>
++#include <chrono>
+ #include <cstdlib>
+ #include <cstring>
+ #include <memory>
+ #include <string>
++#include <thread>
+ 
+ #include "rogue/GeneralError.h"
+ #include "rogue/GilRelease.h"
+@@ -226,6 +229,30 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
+                       tran->id_,
+                       tran->address_,
+                       tran->size_);
++
++    // Injects an artificial per-transaction delay for gate sensitivity validation, gated
++    // on the ROGUE_SEEDED_REGRESSION_STRIDE environment variable. No deterministic counter
++    // observes this: the regression is expected to be visible only in the Tier 3
++    // wall-clock and Tier 2 dual-clock CPU-time figures, never in a gating metric.
++    static const uint64_t seededDelayRegressionStride = []() -> uint64_t {
++        const char* env = std::getenv("ROGUE_SEEDED_REGRESSION_STRIDE");
++        return (env != nullptr) ? static_cast<uint64_t>(std::strtoull(env, nullptr, 10)) : 0;
++    }();
++    // Second function-local static, initialized from the same stride variable, so one
++    // committed patch covers the whole magnitude sweep with a single environment variable.
++    static const uint64_t seededDelayRegressionMicroseconds = []() -> uint64_t {
++        const char* env = std::getenv("ROGUE_SEEDED_REGRESSION_STRIDE");
++        return (env != nullptr) ? static_cast<uint64_t>(std::strtoull(env, nullptr, 10)) : 0;
++    }();
++    if (seededDelayRegressionStride > 0) {
++        static std::atomic<uint64_t> seededDelayRegressionOccurrence{0};
++        if ((seededDelayRegressionOccurrence.fetch_add(1, std::memory_order_relaxed) + 1) %
++                seededDelayRegressionStride ==
++            0) {
++            std::this_thread::sleep_for(std::chrono::microseconds(seededDelayRegressionMicroseconds));
++        }
++    }
++
+     slave->doTransaction(tran);
+     tran->refreshTimer(tran);
+     return (tran->id_);

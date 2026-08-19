@@ -1,0 +1,1567 @@
+{
+  "build": {
+    "compile_exit_code": 0,
+    "compile_seconds": 95.314574043,
+    "configure_exit_code": 0,
+    "configure_seconds": 2.9508094900000117,
+    "install_exit_code": 0,
+    "parallelism": 4,
+    "status": "ok"
+  },
+  "calibration": {
+    "calibration_schema_version": 1,
+    "components": {
+      "alu": {
+        "mad": 0.0,
+        "median": 24546363.082222793,
+        "repeats": 1,
+        "samples": [
+          24546363.082222793
+        ],
+        "unit": "ops_per_second",
+        "value": 24546363.082222793
+      },
+      "memcpy": {
+        "mad": 0.0,
+        "median": 4241497820.7837925,
+        "repeats": 1,
+        "samples": [
+          4241497820.7837925
+        ],
+        "unit": "bytes_per_second",
+        "value": 4241497820.7837925
+      },
+      "syscall": {
+        "mad": 0.0,
+        "median": 173.109485,
+        "repeats": 1,
+        "samples": [
+          173.109485
+        ],
+        "unit": "nanoseconds_per_call",
+        "value": 173.109485
+      },
+      "tsc": {
+        "mad": 0.0,
+        "median": 2299959039.700772,
+        "repeats": 1,
+        "samples": [
+          2299959039.700772
+        ],
+        "unit": "hertz",
+        "value": 2299959039.700772
+      }
+    },
+    "errors": []
+  },
+  "confirmation": {
+    "excluded_instruments": {
+      "callgrind": "the call-graph profiler's overhead multiplier makes pointing it at a real performance module structurally incompatible with any sane job timeout; it is measured only against the synthetic workload in the instrument sweep, never against shipped code"
+    },
+    "modules": {
+      "tests/perf/test_stream_bridge_perf.py": {
+        "baseline_seconds": [
+          5.357154447,
+          5.340283374,
+          5.34623101
+        ],
+        "baseline_status": "ok",
+        "instruments": {
+          "allocator_stats": {
+            "reason": "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep",
+            "status": "skipped"
+          },
+          "malloc_interposer": {
+            "counts": [
+              170966,
+              170970,
+              170974
+            ],
+            "overhead_multiplier": 1.000504575278351,
+            "repeatability": {
+              "max": 170974,
+              "min": 170966,
+              "n": 3,
+              "spread": 8,
+              "verdict": "unstable"
+            },
+            "repeats": 3,
+            "status": "ok"
+          },
+          "perf_software_events": {
+            "counts": [],
+            "failure": {
+              "exit_code": 255,
+              "stderr_excerpt": "Error:\nAccess to performance monitoring and observability operations is limited.\nConsider adjusting /proc/sys/kernel/perf_event_paranoid setting to open\naccess to performance monitoring and observability operations for processes\nwithout CAP_PERFMON, CAP_SYS_PTRACE or CAP_SYS_ADMIN Linux capability.\nMore information can be found at 'Perf events and tool security' document:\nhttps://www.kernel.org/doc/html/latest/admin-guide/perf-security.html\nperf_event_paranoid setting is 4:\n  -1: Allow use of (almost) all events by all users\n      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK\n>= 0: Disallow raw and ftrace function tracepoint access\n>= 1: Disallow CPU event access\n>= 2: Disallow kernel profiling\nTo make the adjusted perf_event_paranoid setting permanent preserve it\nin /etc/sysctl.conf (e.g. kernel.perf_event_paranoid = <setting>)\n"
+            },
+            "overhead_multiplier": 0.001524674482781095,
+            "repeatability": {
+              "n": 0,
+              "verdict": "insufficient-samples"
+            },
+            "repeats": 3,
+            "status": "failed"
+          },
+          "python_tracemalloc": {
+            "reason": "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep",
+            "status": "skipped"
+          },
+          "resource_usage": {
+            "reason": "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep",
+            "status": "skipped"
+          },
+          "strace": {
+            "reason": "overhead-disqualifies",
+            "status": "skipped"
+          }
+        }
+      },
+      "tests/perf/test_variable_rate_perf.py": {
+        "baseline_seconds": [
+          5.263317434,
+          4.564572415000001,
+          4.55529776
+        ],
+        "baseline_status": "ok",
+        "instruments": {
+          "allocator_stats": {
+            "reason": "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep",
+            "status": "skipped"
+          },
+          "malloc_interposer": {
+            "counts": [
+              4743663,
+              4743666,
+              4743663
+            ],
+            "overhead_multiplier": 0.9994339642873208,
+            "repeatability": {
+              "max": 4743666,
+              "min": 4743663,
+              "n": 3,
+              "spread": 3,
+              "verdict": "unstable"
+            },
+            "repeats": 3,
+            "status": "ok"
+          },
+          "perf_software_events": {
+            "counts": [],
+            "failure": {
+              "exit_code": 255,
+              "stderr_excerpt": "Error:\nAccess to performance monitoring and observability operations is limited.\nConsider adjusting /proc/sys/kernel/perf_event_paranoid setting to open\naccess to performance monitoring and observability operations for processes\nwithout CAP_PERFMON, CAP_SYS_PTRACE or CAP_SYS_ADMIN Linux capability.\nMore information can be found at 'Perf events and tool security' document:\nhttps://www.kernel.org/doc/html/latest/admin-guide/perf-security.html\nperf_event_paranoid setting is 4:\n  -1: Allow use of (almost) all events by all users\n      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK\n>= 0: Disallow raw and ftrace function tracepoint access\n>= 1: Disallow CPU event access\n>= 2: Disallow kernel profiling\nTo make the adjusted perf_event_paranoid setting permanent preserve it\nin /etc/sysctl.conf (e.g. kernel.perf_event_paranoid = <setting>)\n"
+            },
+            "overhead_multiplier": 0.001737740204084373,
+            "repeatability": {
+              "n": 0,
+              "verdict": "insufficient-samples"
+            },
+            "repeats": 3,
+            "status": "failed"
+          },
+          "python_tracemalloc": {
+            "reason": "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep",
+            "status": "skipped"
+          },
+          "resource_usage": {
+            "reason": "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep",
+            "status": "skipped"
+          },
+          "strace": {
+            "reason": "overhead-disqualifies",
+            "status": "skipped"
+          }
+        }
+      }
+    },
+    "results_dir": "/tmp/tmp53rbng6z/confirmation-perf-results"
+  },
+  "errors": [],
+  "fingerprint": {
+    "cgroup_v2_cpu_max": "unavailable",
+    "cgroup_v2_cpu_stat": {
+      "burst_usec": 0,
+      "core_sched.force_idle_usec": 0,
+      "nice_usec": 3816000,
+      "nr_bursts": 0,
+      "nr_periods": 0,
+      "nr_throttled": 0,
+      "system_usec": 22527000,
+      "throttled_usec": 0,
+      "usage_usec": 93243000,
+      "user_usec": 70716000
+    },
+    "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "cpu_mhz": 3070.232,
+    "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpython_version": "3.12.13",
+    "errors": [
+      "cgroup_v2_cpu_max: FileNotFoundError: /sys/fs/cgroup/cpu.max not found"
+    ],
+    "fingerprint_schema_version": 1,
+    "glibc_version": "2.39",
+    "kernel_version": "6.17.0-1022-azure",
+    "memory_total_bytes": 16765378560,
+    "nproc": 4,
+    "runner_image_version": "20260810.271.1",
+    "systemd_timers": [
+      "Sun 2026-08-16 02:54:11 UTC  2min 1s -                                      - update-notifier-download.timer update-notifier-download.service",
+      "Sun 2026-08-16 03:00:00 UTC     7min Sun 2026-08-16 02:50:00 UTC 2min 10s ago sysstat-collect.timer          sysstat-collect.service",
+      "Sun 2026-08-16 03:04:09 UTC    11min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+      "Sun 2026-08-16 03:09:00 UTC    16min Sun 2026-08-16 02:49:20 UTC 2min 49s ago phpsessionclean.timer          phpsessionclean.service",
+      "Sun 2026-08-16 03:10:18 UTC    18min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+      "Sun 2026-08-16 08:24:49 UTC 5h 32min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+      "Sun 2026-08-16 12:46:33 UTC       9h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+      "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:49:20 UTC 2min 49s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+      "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:49:20 UTC 2min 49s ago logrotate.timer                logrotate.service",
+      "Mon 2026-08-17 00:00:43 UTC      21h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+      "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+      "Wed 2026-08-19 09:31:40 UTC   3 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+      "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+      "-                                  - -                                      - fwupd-refresh.timer            -",
+      "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+      "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+    ]
+  },
+  "instruments": [
+    {
+      "available": true,
+      "baseline_seconds": [
+        0.000279262
+      ],
+      "comparison_note": "Reads glibc's own mallinfo2() heap-usage snapshot with zero build step and zero preload, but only reports allocator-arena aggregates (bytes and block counts), never a per-call event count, and only for allocations that actually go through glibc's malloc.",
+      "counts": [
+        0
+      ],
+      "field_deltas": [
+        {
+          "arena": 0,
+          "fordblks": 0,
+          "fsmblks": 0,
+          "hblkhd": 0,
+          "hblks": 0,
+          "keepcost": 0,
+          "ordblks": 0,
+          "smblks": 0,
+          "uordblks": 0,
+          "usmblks": 0
+        }
+      ],
+      "install": {
+        "available": true
+      },
+      "instrumented_seconds": [
+        0.00017505
+      ],
+      "name": "allocator_stats",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier": 0.6268307181070106,
+      "repeatability": {
+        "n": 1,
+        "verdict": "insufficient-samples"
+      },
+      "repeats": 1,
+      "verdict": "usable",
+      "verdict_reason": "available, an acceptable overhead multiplier, and no repeatability finding disqualifies it"
+    },
+    {
+      "available": true,
+      "baseline_seconds": [
+        0.016031925000000002
+      ],
+      "counts": [
+        56049867
+      ],
+      "install": {
+        "exit_code": 0,
+        "installed": true,
+        "package": "valgrind",
+        "stderr_excerpt": "",
+        "version": "valgrind-3.22.0"
+      },
+      "instrumented_seconds": [
+        3.299808891
+      ],
+      "name": "callgrind",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier": 205.82736577173355,
+      "repeatability": {
+        "n": 1,
+        "verdict": "insufficient-samples"
+      },
+      "repeats": 1,
+      "verdict": "overhead-disqualifies",
+      "verdict_reason": "overhead multiplier 205.82736577173355 exceeds the disqualifying threshold 5.0"
+    },
+    {
+      "available": true,
+      "baseline_seconds": [
+        0.016141965
+      ],
+      "comparison_note": "Counts every process-wide malloc/free/calloc/realloc/posix_memalign/aligned_alloc call via a compiled LD_PRELOAD shim, including allocations made inside a native shared library such as librogue-core.so, at the cost of an in-job compiled build step.",
+      "counts": [
+        4093
+      ],
+      "install": {
+        "built": true,
+        "exit_code": 0,
+        "path": "/tmp/tmprs54lwl9/probe_malloc_interposer.so"
+      },
+      "instrumented_seconds": [
+        0.017525681
+      ],
+      "name": "malloc_interposer",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier": 1.0857216578031237,
+      "repeatability": {
+        "n": 1,
+        "verdict": "insufficient-samples"
+      },
+      "repeats": 1,
+      "verdict": "usable",
+      "verdict_reason": "available, an acceptable overhead multiplier, and no repeatability finding disqualifies it"
+    },
+    {
+      "available": true,
+      "baseline_seconds": [
+        0.015140201
+      ],
+      "counts": [],
+      "install": {
+        "attempted_packages": [
+          "linux-tools-common",
+          "linux-tools-6.17.0-1022-azure",
+          "linux-tools-generic"
+        ],
+        "exit_code": 0,
+        "installed": true,
+        "perf_version": "perf version 6.17.13",
+        "stderr_excerpt": ""
+      },
+      "instrumented_seconds": [
+        0.009236787
+      ],
+      "name": "perf_software_events",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier": 0.6100835121013254,
+      "repeatability": {
+        "n": 0,
+        "verdict": "insufficient-samples"
+      },
+      "repeats": 1,
+      "verdict": "usable",
+      "verdict_reason": "available, an acceptable overhead multiplier, and no repeatability finding disqualifies it"
+    },
+    {
+      "available": true,
+      "baseline_seconds": [
+        0.000391488
+      ],
+      "counts": [
+        11
+      ],
+      "install": {
+        "available": true
+      },
+      "instrumented_seconds": [
+        0.0008778610000000001
+      ],
+      "name": "python_tracemalloc",
+      "note": "tracemalloc observes Python-object allocations only; the allocations that matter for Rogue's frame and buffer path happen in native code inside librogue-core.so, which this tracer is structurally blind to, not merely quiet about.",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier": 2.2423701365048228,
+      "repeatability": {
+        "n": 1,
+        "verdict": "insufficient-samples"
+      },
+      "repeats": 1,
+      "verdict": "usable",
+      "verdict_reason": "available, an acceptable overhead multiplier, and no repeatability finding disqualifies it"
+    },
+    {
+      "available": true,
+      "baseline_seconds": [
+        0.00013239300000000002
+      ],
+      "counts": [
+        0
+      ],
+      "deltas": [
+        {
+          "involuntary_context_switches": 0,
+          "minor_faults": 0,
+          "voluntary_context_switches": 0
+        }
+      ],
+      "install": {
+        "available": true
+      },
+      "instrumented_seconds": [
+        0.000150755
+      ],
+      "name": "resource_usage",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier": 1.1386931333227586,
+      "repeatability": {
+        "n": 1,
+        "verdict": "insufficient-samples"
+      },
+      "repeats": 1,
+      "verdict": "usable",
+      "verdict_reason": "available, an acceptable overhead multiplier, and no repeatability finding disqualifies it"
+    },
+    {
+      "available": true,
+      "baseline_seconds": [
+        0.015374951000000001
+      ],
+      "counts": [
+        2434
+      ],
+      "install": {
+        "exit_code": 0,
+        "installed": true,
+        "package": "strace",
+        "stderr_excerpt": "",
+        "version": "strace -- version 6.8"
+      },
+      "instrumented_seconds": [
+        0.164676557
+      ],
+      "name": "strace",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier": 10.71070450891193,
+      "repeatability": {
+        "n": 1,
+        "verdict": "insufficient-samples"
+      },
+      "repeats": 1,
+      "verdict": "overhead-disqualifies",
+      "verdict_reason": "overhead multiplier 10.71070450891193 exceeds the disqualifying threshold 5.0"
+    }
+  ],
+  "interventions": [
+    {
+      "baseline_1": 24282815.541953832,
+      "baseline_2": 23838700.108103734,
+      "contaminated": false,
+      "drift_comparison": ">=",
+      "drift_ratio": 0.018289289109938368,
+      "drift_threshold": 0.1,
+      "effect_ratio": 0.9834309638698476,
+      "intervention": "service_stop",
+      "notes": [],
+      "restart_records": [
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "update-notifier-download.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "sysstat-collect.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "systemd-tmpfiles-clean.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "phpsessionclean.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "e2scrub_all.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "motd-news.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "man-db.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "dpkg-db-backup.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "logrotate.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "fstrim.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "sysstat-summary.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "update-notifier-motd.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "apport-autoreport.timer"
+        },
+        {
+          "returncode": 1,
+          "stderr": "Failed to start fwupd-refresh.timer: Unit fwupd-refresh.timer is masked.\n",
+          "unit": "fwupd-refresh.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "snapd.snap-repair.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "ua-timer.timer"
+        }
+      ],
+      "status": "measured",
+      "stop_records": [
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "update-notifier-download.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "sysstat-collect.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "systemd-tmpfiles-clean.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "phpsessionclean.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "e2scrub_all.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "motd-news.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "man-db.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "dpkg-db-backup.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "logrotate.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "fstrim.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "sysstat-summary.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "update-notifier-motd.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "apport-autoreport.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "fwupd-refresh.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "snapd.snap-repair.timer"
+        },
+        {
+          "returncode": 0,
+          "stderr": "",
+          "unit": "ua-timer.timer"
+        }
+      ],
+      "treatment": 23880472.693897374,
+      "windows": [
+        {
+          "cgroup_nr_periods_delta": 0,
+          "cgroup_nr_throttled_delta": 0,
+          "cgroup_throttled_usec_delta": 0,
+          "cpu_total_jiffies_delta": 17,
+          "label": "baseline_1",
+          "result": 24282815.541953832,
+          "steal_comparison": ">=",
+          "steal_flagged": false,
+          "steal_fraction": 0.0,
+          "steal_jiffies_delta": 0,
+          "steal_threshold": 0.01,
+          "wall_seconds": 0.041182948000000004
+        },
+        {
+          "cgroup_nr_periods_delta": 0,
+          "cgroup_nr_throttled_delta": 0,
+          "cgroup_throttled_usec_delta": 0,
+          "cpu_total_jiffies_delta": 16,
+          "label": "treatment",
+          "result": 23880472.693897374,
+          "steal_comparison": ">=",
+          "steal_flagged": false,
+          "steal_fraction": 0.0,
+          "steal_jiffies_delta": 0,
+          "steal_threshold": 0.01,
+          "wall_seconds": 0.041879476000000006
+        },
+        {
+          "cgroup_nr_periods_delta": 0,
+          "cgroup_nr_throttled_delta": 0,
+          "cgroup_throttled_usec_delta": 0,
+          "cpu_total_jiffies_delta": 18,
+          "label": "baseline_2",
+          "result": 23838700.108103734,
+          "steal_comparison": ">=",
+          "steal_flagged": false,
+          "steal_fraction": 0.0,
+          "steal_jiffies_delta": 0,
+          "steal_threshold": 0.01,
+          "wall_seconds": 0.041952407000000004
+        }
+      ]
+    },
+    {
+      "baseline_1": 23824439.042861737,
+      "baseline_2": 23743733.316465784,
+      "contaminated": false,
+      "cpu_set": [
+        0
+      ],
+      "drift_comparison": ">=",
+      "drift_ratio": 0.00338751843226019,
+      "drift_threshold": 0.1,
+      "effect_ratio": 0.9851709769704872,
+      "intervention": "taskset",
+      "notes": [],
+      "status": "measured",
+      "treatment": 23471145.887629915,
+      "windows": [
+        {
+          "cgroup_nr_periods_delta": 0,
+          "cgroup_nr_throttled_delta": 0,
+          "cgroup_throttled_usec_delta": 0,
+          "cpu_total_jiffies_delta": 17,
+          "label": "baseline_1",
+          "result": 23824439.042861737,
+          "steal_comparison": ">=",
+          "steal_flagged": false,
+          "steal_fraction": 0.0,
+          "steal_jiffies_delta": 0,
+          "steal_threshold": 0.01,
+          "wall_seconds": 0.041979179000000005
+        },
+        {
+          "cgroup_nr_periods_delta": 0,
+          "cgroup_nr_throttled_delta": 0,
+          "cgroup_throttled_usec_delta": 0,
+          "cpu_total_jiffies_delta": 18,
+          "label": "treatment",
+          "result": 23471145.887629915,
+          "steal_comparison": ">=",
+          "steal_flagged": false,
+          "steal_fraction": 0.0,
+          "steal_jiffies_delta": 0,
+          "steal_threshold": 0.01,
+          "wall_seconds": 0.04260747
+        },
+        {
+          "cgroup_nr_periods_delta": 0,
+          "cgroup_nr_throttled_delta": 0,
+          "cgroup_throttled_usec_delta": 0,
+          "cpu_total_jiffies_delta": 16,
+          "label": "baseline_2",
+          "result": 23743733.316465784,
+          "steal_comparison": ">=",
+          "steal_flagged": false,
+          "steal_fraction": 0.0,
+          "steal_jiffies_delta": 0,
+          "steal_threshold": 0.01,
+          "wall_seconds": 0.042117654000000004
+        }
+      ]
+    }
+  ],
+  "perf_events": {
+    "errors": [],
+    "events": [
+      {
+        "event": "cycles",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "not counted in either paranoid state",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "cycles",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "   <not supported>      cycles                                                                ",
+        "reason": "not counted in either paranoid state",
+        "status": "not-supported",
+        "value": null
+      },
+      {
+        "event": "instructions",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "not counted in either paranoid state",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "instructions",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "   <not supported>      instructions                                                          ",
+        "reason": "not counted in either paranoid state",
+        "status": "not-supported",
+        "value": null
+      },
+      {
+        "event": "cache-references",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "not counted in either paranoid state",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "cache-references",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "   <not supported>      cache-references                                                      ",
+        "reason": "not counted in either paranoid state",
+        "status": "not-supported",
+        "value": null
+      },
+      {
+        "event": "cache-misses",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "not counted in either paranoid state",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "cache-misses",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "   <not supported>      cache-misses                                                          ",
+        "reason": "not counted in either paranoid state",
+        "status": "not-supported",
+        "value": null
+      },
+      {
+        "event": "branches",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "not counted in either paranoid state",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "branches",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "   <not supported>      branches                                                              ",
+        "reason": "not counted in either paranoid state",
+        "status": "not-supported",
+        "value": null
+      },
+      {
+        "event": "branch-misses",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "not counted in either paranoid state",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "branch-misses",
+        "event_class": "hardware",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "   <not supported>      branch-misses                                                         ",
+        "reason": "not counted in either paranoid state",
+        "status": "not-supported",
+        "value": null
+      },
+      {
+        "event": "task-clock",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "task-clock",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "            726309      task-clock                       #    0.004 CPUs utilized             ",
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "counted",
+        "value": 726309
+      },
+      {
+        "event": "context-switches",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "context-switches",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "                 2      context-switches                 #    2.754 K/sec                     ",
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "counted",
+        "value": 2
+      },
+      {
+        "event": "cpu-migrations",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "cpu-migrations",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "                 0      cpu-migrations                   #    0.000 /sec                      ",
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "counted",
+        "value": 0
+      },
+      {
+        "event": "page-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "page-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "                82      page-faults                      #  112.900 K/sec                     ",
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "counted",
+        "value": 82
+      },
+      {
+        "event": "minor-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "minor-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "                81      minor-faults                     #  111.523 K/sec                     ",
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "counted",
+        "value": 81
+      },
+      {
+        "event": "major-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "major-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "                 1      major-faults                     #    1.377 K/sec                     ",
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "counted",
+        "value": 1
+      },
+      {
+        "event": "alignment-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "alignment-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "                 0      alignment-faults                 #    0.000 /sec                      ",
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "counted",
+        "value": 0
+      },
+      {
+        "event": "emulation-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "default",
+        "paranoid_value": 4,
+        "raw_line": null,
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "unparsed",
+        "value": null
+      },
+      {
+        "event": "emulation-faults",
+        "event_class": "software",
+        "gating_eligible": false,
+        "paranoid_state": "lowered",
+        "paranoid_value": 0,
+        "raw_line": "                 0      emulation-faults                 #    0.000 /sec                      ",
+        "reason": "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks",
+        "status": "counted",
+        "value": 0
+      }
+    ],
+    "install": {
+      "attempted_packages": [
+        "linux-tools-common",
+        "linux-tools-6.17.0-1022-azure",
+        "linux-tools-generic"
+      ],
+      "exit_code": 0,
+      "installed": true,
+      "perf_version": "perf version 6.17.13",
+      "stderr_excerpt": "\nRunning kernel seems to be up-to-date.\n\nNo services need to be restarted.\n\nNo containers need to be restarted.\n\nNo user sessions are running outdated binaries.\n\nNo VM guests are running outdated hypervisor (qemu) binaries on this host.\n"
+    },
+    "paranoid_default": 4,
+    "paranoid_lowered": {
+      "attempted_value": 0,
+      "exit_code": 0,
+      "stderr_excerpt": "",
+      "succeeded": true
+    },
+    "paranoid_restored": 4,
+    "perf_installed": true,
+    "perf_version": "perf version 6.17.13"
+  },
+  "probe_schema_version": 1,
+  "run": {
+    "campaign_branch": "perf-probe/campaign-v2",
+    "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+    "git_tree_hash_source": "git_rev_parse",
+    "github_run_attempt": "1",
+    "github_run_id": "31922829567",
+    "github_sha": "c69718239f6c1c4828bc1d6cf3204c05673433a3",
+    "job_index": "4",
+    "runner_os": "Linux"
+  },
+  "windows": [
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 17,
+      "label": "baseline_1",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.041979179000000005
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 17,
+      "label": "baseline_1",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.041182948000000004
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 16,
+      "label": "baseline_2",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.042117654000000004
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 18,
+      "label": "baseline_2",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.041952407000000004
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 7,
+      "label": "callgrind_baseline_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.016031925000000002
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 1318,
+      "label": "callgrind_instrumented_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 3.299808891
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2140,
+      "label": "confirmation_baseline_test_stream_bridge_perf_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 5.357154447
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2133,
+      "label": "confirmation_baseline_test_stream_bridge_perf_1",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 5.340283374
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2136,
+      "label": "confirmation_baseline_test_stream_bridge_perf_2",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 5.34623101
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2103,
+      "label": "confirmation_baseline_test_variable_rate_perf_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 5.263317434
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 1825,
+      "label": "confirmation_baseline_test_variable_rate_perf_1",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 4.564572415000001
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 1820,
+      "label": "confirmation_baseline_test_variable_rate_perf_2",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 4.55529776
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2137,
+      "label": "confirmation_malloc_interposer_test_stream_bridge_perf_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 5.347017232000001
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2178,
+      "label": "confirmation_malloc_interposer_test_stream_bridge_perf_1",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 5.448855745
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2135,
+      "label": "confirmation_malloc_interposer_test_stream_bridge_perf_2",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 5.348928586
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 1824,
+      "label": "confirmation_malloc_interposer_test_variable_rate_perf_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 4.561988704
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2223,
+      "label": "confirmation_malloc_interposer_test_variable_rate_perf_1",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 5.564971098
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 1819,
+      "label": "confirmation_malloc_interposer_test_variable_rate_perf_2",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 4.55486285
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 3,
+      "label": "confirmation_perf_software_events_test_stream_bridge_perf_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.008813166
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 3,
+      "label": "confirmation_perf_software_events_test_stream_bridge_perf_1",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.008151262000000001
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 3,
+      "label": "confirmation_perf_software_events_test_stream_bridge_perf_2",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.007880508000000001
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 5,
+      "label": "confirmation_perf_software_events_test_variable_rate_perf_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.008541855000000001
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 2,
+      "label": "confirmation_perf_software_events_test_variable_rate_perf_1",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.007932041
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 4,
+      "label": "confirmation_perf_software_events_test_variable_rate_perf_2",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.007768136
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 6,
+      "label": "malloc_interposer_baseline_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.016141965
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 7,
+      "label": "malloc_interposer_instrumented_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.017525681
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 6,
+      "label": "perf_software_events_baseline_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.015140201
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 4,
+      "label": "perf_software_events_instrumented_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.009236787
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 1,
+      "label": "python_tracemalloc_instrumented_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.0008778610000000001
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 6,
+      "label": "strace_baseline_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.015374951000000001
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 61,
+      "label": "strace_instrumented_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.164676557
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 18,
+      "label": "treatment",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.04260747
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 16,
+      "label": "treatment",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": 0.0,
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.041879476000000006
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 0,
+      "label": "allocator_stats_baseline_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": "unavailable",
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.000279262
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 0,
+      "label": "allocator_stats_instrumented_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": "unavailable",
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.00017505
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 0,
+      "label": "python_tracemalloc_baseline_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": "unavailable",
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.000391488
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 0,
+      "label": "resource_usage_baseline_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": "unavailable",
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.00013239300000000002
+    },
+    {
+      "cgroup_nr_periods_delta": 0,
+      "cgroup_nr_throttled_delta": 0,
+      "cgroup_throttled_usec_delta": 0,
+      "cpu_total_jiffies_delta": 0,
+      "label": "resource_usage_instrumented_0",
+      "steal_comparison": ">=",
+      "steal_flagged": false,
+      "steal_fraction": "unavailable",
+      "steal_jiffies_delta": 0,
+      "steal_threshold": 0.01,
+      "wall_seconds": 0.000150755
+    }
+  ]
+}

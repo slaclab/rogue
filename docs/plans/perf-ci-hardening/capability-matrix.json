@@ -1,0 +1,2641 @@
+{
+  "calibration": {
+    "alu": {
+      "across_host": {
+        "cv": 0.0801081,
+        "cv_percent": 8.01081,
+        "iqr": "insufficient-samples",
+        "mad": 1999960.0,
+        "maximum": 27049800.0,
+        "mean": 25041700.0,
+        "median": 25037700.0,
+        "minimum": 23037700.0,
+        "n": 3,
+        "spread": 4012080.0,
+        "spread_pct": 16.0242,
+        "stdev": 2006050.0
+      },
+      "within_host": {
+        "eta_squared": 0.323224,
+        "grand_mean": 24041400.0,
+        "k": 3,
+        "n": 20,
+        "within_cv": 0.0793537,
+        "within_stdev": 1907780.0
+      }
+    },
+    "memcpy": {
+      "across_host": {
+        "cv": 0.361969,
+        "cv_percent": 36.1969,
+        "iqr": "insufficient-samples",
+        "mad": 2759900000.0,
+        "maximum": 10728200000.0,
+        "mean": 7901790000.0,
+        "median": 7968270000.0,
+        "minimum": 5008930000.0,
+        "n": 3,
+        "spread": 5719240000.0,
+        "spread_pct": 71.7752,
+        "stdev": 2860200000.0
+      },
+      "within_host": {
+        "eta_squared": 0.87605,
+        "grand_mean": 8525560000.0,
+        "k": 3,
+        "n": 20,
+        "within_cv": 0.0780524,
+        "within_stdev": 665440000.0
+      }
+    },
+    "syscall": {
+      "across_host": {
+        "cv": 0.345784,
+        "cv_percent": 34.5784,
+        "iqr": "insufficient-samples",
+        "mad": 77.2772,
+        "maximum": 317.723,
+        "mean": 237.293,
+        "median": 240.446,
+        "minimum": 153.71,
+        "n": 3,
+        "spread": 164.013,
+        "spread_pct": 68.2121,
+        "stdev": 82.0522
+      },
+      "within_host": {
+        "eta_squared": 0.825927,
+        "grand_mean": 254.943,
+        "k": 3,
+        "n": 20,
+        "within_cv": 0.0940992,
+        "within_stdev": 23.9899
+      }
+    },
+    "tsc": {
+      "across_host": {
+        "cv": 0.0604825,
+        "cv_percent": 6.04825,
+        "iqr": "insufficient-samples",
+        "mad": 145355000.0,
+        "maximum": 2596030000.0,
+        "mean": 2447140000.0,
+        "median": 2445380000.0,
+        "minimum": 2300020000.0,
+        "n": 3,
+        "spread": 296003000.0,
+        "spread_pct": 12.1046,
+        "stdev": 148009000.0
+      },
+      "within_host": {
+        "eta_squared": 1.0,
+        "grand_mean": 2476040000.0,
+        "k": 3,
+        "n": 20,
+        "within_cv": 1.28432e-05,
+        "within_stdev": 31800.4
+      }
+    }
+  },
+  "cgroup_and_timer": {
+    "cgroup_rows": [
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2578000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922549223-probe-results-1",
+        "system_usec": 24573000,
+        "throttled_usec": 0,
+        "usage_usec": 87976000,
+        "user_usec": 63403000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2836000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922549223-probe-results-2",
+        "system_usec": 26610000,
+        "throttled_usec": 0,
+        "usage_usec": 93684000,
+        "user_usec": 67074000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2228000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922549223-probe-results-3",
+        "system_usec": 22907000,
+        "throttled_usec": 0,
+        "usage_usec": 77201000,
+        "user_usec": 54294000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2977000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922549223-probe-results-4",
+        "system_usec": 23387000,
+        "throttled_usec": 0,
+        "usage_usec": 79371000,
+        "user_usec": 55984000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3129000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922635356-probe-results-1",
+        "system_usec": 26260000,
+        "throttled_usec": 0,
+        "usage_usec": 91483000,
+        "user_usec": 65223000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2508000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922635356-probe-results-2",
+        "system_usec": 27176000,
+        "throttled_usec": 0,
+        "usage_usec": 91911000,
+        "user_usec": 64735000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2734000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922635356-probe-results-3",
+        "system_usec": 30667000,
+        "throttled_usec": 0,
+        "usage_usec": 99316000,
+        "user_usec": 68649000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2887000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922635356-probe-results-4",
+        "system_usec": 26507000,
+        "throttled_usec": 0,
+        "usage_usec": 92138000,
+        "user_usec": 65631000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2708000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922829567-probe-results-1",
+        "system_usec": 24855000,
+        "throttled_usec": 0,
+        "usage_usec": 82092000,
+        "user_usec": 57237000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2797000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922829567-probe-results-2",
+        "system_usec": 25949000,
+        "throttled_usec": 0,
+        "usage_usec": 91023000,
+        "user_usec": 65074000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2750000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922829567-probe-results-3",
+        "system_usec": 26022000,
+        "throttled_usec": 0,
+        "usage_usec": 90322000,
+        "user_usec": 64300000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3816000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31922829567-probe-results-4",
+        "system_usec": 22527000,
+        "throttled_usec": 0,
+        "usage_usec": 93243000,
+        "user_usec": 70716000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2731000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31923018084-probe-results-1",
+        "system_usec": 28217000,
+        "throttled_usec": 0,
+        "usage_usec": 92308000,
+        "user_usec": 64091000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3190000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31923018084-probe-results-2",
+        "system_usec": 28770000,
+        "throttled_usec": 0,
+        "usage_usec": 97161000,
+        "user_usec": 68391000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3693000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31923018084-probe-results-3",
+        "system_usec": 26651000,
+        "throttled_usec": 0,
+        "usage_usec": 94768000,
+        "user_usec": 68117000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2727000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31923018084-probe-results-4",
+        "system_usec": 29346000,
+        "throttled_usec": 0,
+        "usage_usec": 96106000,
+        "user_usec": 66760000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2054000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31923209941-probe-results-1",
+        "system_usec": 15228000,
+        "throttled_usec": 0,
+        "usage_usec": 71186000,
+        "user_usec": 55958000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2993000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31923209941-probe-results-2",
+        "system_usec": 26031000,
+        "throttled_usec": 0,
+        "usage_usec": 90362000,
+        "user_usec": 64331000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3004000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31923209941-probe-results-3",
+        "system_usec": 27399000,
+        "throttled_usec": 0,
+        "usage_usec": 95233000,
+        "user_usec": 67834000
+      },
+      {
+        "burst_usec": 0,
+        "cgroup_v2_cpu_max": "unavailable",
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2421000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "run_id": "31923209941-probe-results-4",
+        "system_usec": 25882000,
+        "throttled_usec": 0,
+        "usage_usec": 89816000,
+        "user_usec": 63934000
+      }
+    ],
+    "cgroup_stat_columns": [
+      "burst_usec",
+      "core_sched.force_idle_usec",
+      "nice_usec",
+      "nr_bursts",
+      "nr_periods",
+      "nr_throttled",
+      "system_usec",
+      "throttled_usec",
+      "usage_usec",
+      "user_usec"
+    ],
+    "timer_inventory": [
+      {
+        "label": "set-1",
+        "run_count": 20,
+        "unit_count": 16,
+        "unit_names": [
+          "apport-autoreport.timer",
+          "dpkg-db-backup.timer",
+          "e2scrub_all.timer",
+          "fstrim.timer",
+          "fwupd-refresh.timer",
+          "logrotate.timer",
+          "man-db.timer",
+          "motd-news.timer",
+          "phpsessionclean.timer",
+          "snapd.snap-repair.timer",
+          "sysstat-collect.timer",
+          "sysstat-summary.timer",
+          "systemd-tmpfiles-clean.timer",
+          "ua-timer.timer",
+          "update-notifier-download.timer",
+          "update-notifier-motd.timer"
+        ]
+      }
+    ]
+  },
+  "confirmation": {
+    "by_instrument": {
+      "allocator_stats": {
+        "admission": "derived-not-exercised",
+        "modules": [],
+        "repeatability_verdict_tally": {}
+      },
+      "malloc_interposer": {
+        "admission": "derived-ineligible-count-unstable",
+        "modules": [
+          "tests/perf/test_stream_bridge_perf.py",
+          "tests/perf/test_variable_rate_perf.py"
+        ],
+        "repeatability_verdict_tally": {
+          "bit-identical": 14,
+          "unstable": 26
+        }
+      },
+      "perf_software_events": {
+        "admission": "insufficient-samples",
+        "modules": [
+          "tests/perf/test_stream_bridge_perf.py",
+          "tests/perf/test_variable_rate_perf.py"
+        ],
+        "repeatability_verdict_tally": {
+          "insufficient-samples": 40
+        }
+      },
+      "python_tracemalloc": {
+        "admission": "derived-not-exercised",
+        "modules": [],
+        "repeatability_verdict_tally": {}
+      },
+      "resource_usage": {
+        "admission": "derived-not-exercised",
+        "modules": [],
+        "repeatability_verdict_tally": {}
+      },
+      "strace": {
+        "admission": "derived-not-exercised",
+        "modules": [],
+        "repeatability_verdict_tally": {}
+      }
+    },
+    "excluded_instruments": {
+      "callgrind": [
+        "the call-graph profiler's overhead multiplier makes pointing it at a real performance module structurally incompatible with any sane job timeout; it is measured only against the synthetic workload in the instrument sweep, never against shipped code"
+      ]
+    },
+    "per_module": [
+      {
+        "admission": "derived-not-exercised",
+        "instrument": "allocator_stats",
+        "module": "tests/perf/test_stream_bridge_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {},
+        "repeats_tally": {},
+        "skip_reasons": [
+          "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep"
+        ],
+        "status_tally": {
+          "skipped": 20
+        }
+      },
+      {
+        "admission": "derived-ineligible-count-unstable",
+        "instrument": "malloc_interposer",
+        "module": "tests/perf/test_stream_bridge_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {
+          "unstable": 20
+        },
+        "repeats_tally": {
+          "3": 20
+        },
+        "skip_reasons": [],
+        "status_tally": {
+          "ok": 20
+        }
+      },
+      {
+        "admission": "insufficient-samples",
+        "instrument": "perf_software_events",
+        "module": "tests/perf/test_stream_bridge_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {
+          "insufficient-samples": 20
+        },
+        "repeats_tally": {
+          "3": 20
+        },
+        "skip_reasons": [],
+        "status_tally": {
+          "failed": 20
+        }
+      },
+      {
+        "admission": "derived-not-exercised",
+        "instrument": "python_tracemalloc",
+        "module": "tests/perf/test_stream_bridge_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {},
+        "repeats_tally": {},
+        "skip_reasons": [
+          "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep"
+        ],
+        "status_tally": {
+          "skipped": 20
+        }
+      },
+      {
+        "admission": "derived-not-exercised",
+        "instrument": "resource_usage",
+        "module": "tests/perf/test_stream_bridge_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {},
+        "repeats_tally": {},
+        "skip_reasons": [
+          "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep"
+        ],
+        "status_tally": {
+          "skipped": 20
+        }
+      },
+      {
+        "admission": "derived-not-exercised",
+        "instrument": "strace",
+        "module": "tests/perf/test_stream_bridge_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {},
+        "repeats_tally": {},
+        "skip_reasons": [
+          "overhead-disqualifies"
+        ],
+        "status_tally": {
+          "skipped": 20
+        }
+      },
+      {
+        "admission": "derived-not-exercised",
+        "instrument": "allocator_stats",
+        "module": "tests/perf/test_variable_rate_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {},
+        "repeats_tally": {},
+        "skip_reasons": [
+          "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep"
+        ],
+        "status_tally": {
+          "skipped": 20
+        }
+      },
+      {
+        "admission": "derived-ineligible-count-unstable",
+        "instrument": "malloc_interposer",
+        "module": "tests/perf/test_variable_rate_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {
+          "bit-identical": 14,
+          "unstable": 6
+        },
+        "repeats_tally": {
+          "3": 20
+        },
+        "skip_reasons": [],
+        "status_tally": {
+          "ok": 20
+        }
+      },
+      {
+        "admission": "insufficient-samples",
+        "instrument": "perf_software_events",
+        "module": "tests/perf/test_variable_rate_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {
+          "insufficient-samples": 20
+        },
+        "repeats_tally": {
+          "3": 20
+        },
+        "skip_reasons": [],
+        "status_tally": {
+          "failed": 20
+        }
+      },
+      {
+        "admission": "derived-not-exercised",
+        "instrument": "python_tracemalloc",
+        "module": "tests/perf/test_variable_rate_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {},
+        "repeats_tally": {},
+        "skip_reasons": [
+          "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep"
+        ],
+        "status_tally": {
+          "skipped": 20
+        }
+      },
+      {
+        "admission": "derived-not-exercised",
+        "instrument": "resource_usage",
+        "module": "tests/perf/test_variable_rate_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {},
+        "repeats_tally": {},
+        "skip_reasons": [
+          "cannot observe allocations or resource usage inside a separate pytest subprocess without modifying the target performance module; measured only against the synthetic workload in the instrument sweep"
+        ],
+        "status_tally": {
+          "skipped": 20
+        }
+      },
+      {
+        "admission": "derived-not-exercised",
+        "instrument": "strace",
+        "module": "tests/perf/test_variable_rate_perf.py",
+        "n": 20,
+        "repeatability_verdict_tally": {},
+        "repeats_tally": {},
+        "skip_reasons": [
+          "overhead-disqualifies"
+        ],
+        "status_tally": {
+          "skipped": 20
+        }
+      }
+    ]
+  },
+  "coverage": {
+    "coverage_target": [
+      "AMD EPYC 7763 64-Core Processor",
+      "AMD EPYC 9V74 80-Core Processor",
+      "INTEL(R) XEON(R) PLATINUM 8573C"
+    ],
+    "distinct_host_model_count": 3,
+    "host_model_run_counts": {
+      "AMD EPYC 7763 64-Core Processor": 12,
+      "AMD EPYC 9V74 80-Core Processor": 6,
+      "INTEL(R) XEON(R) PLATINUM 8573C": 2
+    },
+    "run_cap": 24,
+    "run_count": 20,
+    "stopping_condition": "target-cpu-model-set-observed"
+  },
+  "fingerprint_runs": [
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2578000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 24573000,
+        "throttled_usec": 0,
+        "usage_usec": 87976000,
+        "user_usec": 63403000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 3143.397,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16770748416,
+      "nproc": 4,
+      "run_id": "31922549223-probe-results-1",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:47:53 UTC      3min 22s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 02:50:00 UTC          5min -                                      - sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 02:57:52 UTC         13min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC         24min Sun 2026-08-16 02:43:04 UTC 1min 27s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:43 UTC         26min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 07:32:10 UTC      4h 47min Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Sun 2026-08-16 09:11:22 UTC            6h Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Mon 2026-08-17 00:00:00 UTC           21h Sun 2026-08-16 02:43:04 UTC 1min 27s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC           21h Sun 2026-08-16 02:43:04 UTC 1min 27s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC           21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:52:00 UTC           22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Sun 2026-08-23 03:04:57 UTC 1 week 0 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                       - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                       - -                                      - fwupd-refresh.timer            -",
+        "-                                       - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                       - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2836000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 26610000,
+        "throttled_usec": 0,
+        "usage_usec": 93684000,
+        "user_usec": 67074000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2445.43,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31922549223-probe-results-2",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:46:51 UTC 2min 29s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 02:47:21 UTC  3min 0s Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 02:50:00 UTC     5min -                                      - sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 02:56:49 UTC    12min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC    24min Sun 2026-08-16 02:42:01 UTC 2min 20s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:04 UTC    25min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 12:08:55 UTC       9h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:42:01 UTC 2min 20s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:42:01 UTC 2min 20s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:29:28 UTC      22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Wed 2026-08-19 14:29:18 UTC   3 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2228000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 22907000,
+        "throttled_usec": 0,
+        "usage_usec": 77201000,
+        "user_usec": 54294000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2596.133,
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31922549223-probe-results-3",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:46:54 UTC 1min 46s -                                     - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 02:50:00 UTC 4min 52s -                                     - sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 02:56:52 UTC    11min -                                     - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC    23min Sun 2026-08-16 02:42:05 UTC 3min 2s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:43 UTC    25min Mon 2026-08-10 21:15:47 UTC           - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 07:25:14 UTC 4h 40min Mon 2026-08-10 21:15:47 UTC           - man-db.timer                   man-db.service",
+        "Sun 2026-08-16 07:35:59 UTC 4h 50min Mon 2026-08-10 21:36:59 UTC           - motd-news.timer                motd-news.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:42:05 UTC 3min 2s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:42:05 UTC 3min 2s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                     - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:10:28 UTC      21h Mon 2026-08-10 21:15:47 UTC           - fstrim.timer                   fstrim.service",
+        "Tue 2026-08-18 03:30:03 UTC   2 days Mon 2026-08-10 21:15:47 UTC           - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                     - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                     - fwupd-refresh.timer            -",
+        "-                                  - -                                     - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                     - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2977000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 23387000,
+        "throttled_usec": 0,
+        "usage_usec": 79371000,
+        "user_usec": 55984000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2596.154,
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31922549223-probe-results-4",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:45:52 UTC    55s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 02:50:00 UTC   5min -                                      - sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 02:55:50 UTC  10min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC  24min Sun 2026-08-16 02:41:03 UTC 3min 52s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:38 UTC  25min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 09:59:12 UTC     7h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Sun 2026-08-16 11:58:40 UTC     9h Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Mon 2026-08-17 00:00:00 UTC    21h Sun 2026-08-16 02:41:03 UTC 3min 52s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC    21h Sun 2026-08-16 02:41:03 UTC 3min 52s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC    21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:35:00 UTC    22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Tue 2026-08-18 16:58:31 UTC 2 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                - -                                      - fwupd-refresh.timer            -",
+        "-                                - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3129000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 26260000,
+        "throttled_usec": 0,
+        "usage_usec": 91483000,
+        "user_usec": 65223000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 3243.417,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766410752,
+      "nproc": 4,
+      "run_id": "31922635356-probe-results-1",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:49:09 UTC 2min 26s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 02:50:00 UTC 3min 16s -                                      - sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 02:59:08 UTC    12min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC    22min Sun 2026-08-16 02:44:19 UTC 2min 24s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:47 UTC    24min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 10:49:52 UTC       8h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Sun 2026-08-16 11:14:21 UTC       8h Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:44:19 UTC 2min 24s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:44:19 UTC 2min 24s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:35:07 UTC      22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Sat 2026-08-22 03:07:02 UTC   6 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2508000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 27176000,
+        "throttled_usec": 0,
+        "usage_usec": 91911000,
+        "user_usec": 64735000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2445.427,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16770748416,
+      "nproc": 4,
+      "run_id": "31922635356-probe-results-2",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:50:00 UTC 3min 26s Sun 2026-08-16 02:40:07 UTC     6min ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:09:00 UTC    22min Sun 2026-08-16 02:39:01 UTC     7min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:56 UTC    24min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 07:57:03 UTC 5h 10min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 10:06:05 UTC       7h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:28:18 UTC    18min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:28:18 UTC    18min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:05:08 UTC      22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 02:33:09 UTC      23h Sun 2026-08-16 02:33:09 UTC    13min ago update-notifier-download.timer update-notifier-download.service",
+        "Mon 2026-08-17 02:43:09 UTC      23h Sun 2026-08-16 02:43:09 UTC 3min 24s ago systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sat 2026-08-22 14:44:43 UTC   6 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2734000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 30667000,
+        "throttled_usec": 0,
+        "usage_usec": 99316000,
+        "user_usec": 68649000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2596.151,
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31922635356-probe-results-3",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:50:00 UTC 3min 19s Sun 2026-08-16 02:40:00 UTC  6min ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:09:00 UTC    22min Sun 2026-08-16 02:39:00 UTC  7min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:13 UTC    23min Mon 2026-08-10 21:15:47 UTC         - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 08:48:33 UTC       6h Mon 2026-08-10 21:15:47 UTC         - update-notifier-motd.timer     update-notifier-motd.service",
+        "Sun 2026-08-16 10:23:22 UTC       7h Mon 2026-08-10 21:36:59 UTC         - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 12:21:24 UTC       9h Mon 2026-08-10 21:15:47 UTC         - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:24:14 UTC 22min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:24:14 UTC 22min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                   - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:21:54 UTC      21h Mon 2026-08-10 21:15:47 UTC         - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 02:29:04 UTC      23h Sun 2026-08-16 02:29:04 UTC 17min ago update-notifier-download.timer update-notifier-download.service",
+        "Mon 2026-08-17 02:39:05 UTC      23h Sun 2026-08-16 02:39:04 UTC  7min ago systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "-                                  - -                                   - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                   - fwupd-refresh.timer            -",
+        "-                                  - -                                   - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                   - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2887000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 26507000,
+        "throttled_usec": 0,
+        "usage_usec": 92138000,
+        "user_usec": 65631000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 3240.354,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31922635356-probe-results-4",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:49:07 UTC 2min 23s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 02:50:00 UTC 3min 16s -                                      - sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 02:59:05 UTC    12min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC    22min Sun 2026-08-16 02:44:17 UTC 2min 26s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:36 UTC    23min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 05:59:04 UTC 3h 12min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 10:57:26 UTC       8h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:44:17 UTC 2min 26s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:44:17 UTC 2min 26s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:34:02 UTC      21h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Wed 2026-08-19 15:41:23 UTC   3 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2708000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 24855000,
+        "throttled_usec": 0,
+        "usage_usec": 82092000,
+        "user_usec": 57237000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 3692.5,
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31922829567-probe-results-1",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 03:00:00 UTC     7min Sun 2026-08-16 02:50:03 UTC  2min 9s ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:09:00 UTC    16min Sun 2026-08-16 02:39:03 UTC    13min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:56 UTC    18min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 05:33:43 UTC 2h 41min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 12:59:18 UTC      10h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:33:22 UTC    18min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:33:22 UTC    18min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:26:10 UTC      22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 02:38:13 UTC      23h Sun 2026-08-16 02:38:13 UTC    13min ago update-notifier-download.timer update-notifier-download.service",
+        "Mon 2026-08-17 02:48:13 UTC      23h Sun 2026-08-16 02:48:13 UTC 3min 59s ago systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sat 2026-08-22 13:54:36 UTC   6 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2797000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 25949000,
+        "throttled_usec": 0,
+        "usage_usec": 91023000,
+        "user_usec": 65074000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 3243.044,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31922829567-probe-results-2",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:54:09 UTC 2min 23s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 03:00:00 UTC     8min Sun 2026-08-16 02:50:00 UTC 1min 46s ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:04:08 UTC    12min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC    17min Sun 2026-08-16 02:49:19 UTC 2min 26s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:37 UTC    18min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 08:30:57 UTC 5h 39min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 09:37:30 UTC       6h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:49:19 UTC 2min 26s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:49:19 UTC 2min 26s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:33:03 UTC      21h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Sat 2026-08-22 03:18:46 UTC   6 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2750000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 26022000,
+        "throttled_usec": 0,
+        "usage_usec": 90322000,
+        "user_usec": 64300000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2445.425,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16770748416,
+      "nproc": 4,
+      "run_id": "31922829567-probe-results-3",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:57:05 UTC    5min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:00:00 UTC    7min Sun 2026-08-16 02:50:04 UTC 1min 57s ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:09:00 UTC   16min Sun 2026-08-16 02:42:18 UTC     9min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:50 UTC   18min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 04:53:56 UTC 2h 1min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 10:53:11 UTC      8h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC     21h Sun 2026-08-16 02:42:18 UTC     9min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC     21h Sun 2026-08-16 02:42:18 UTC     9min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC     21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:24:48 UTC     22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 02:47:09 UTC     23h Sun 2026-08-16 02:47:09 UTC 4min 52s ago update-notifier-download.timer update-notifier-download.service",
+        "Tue 2026-08-18 08:48:11 UTC  2 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                 - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                 - -                                      - fwupd-refresh.timer            -",
+        "-                                 - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                 - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3816000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 22527000,
+        "throttled_usec": 0,
+        "usage_usec": 93243000,
+        "user_usec": 70716000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 3070.232,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16765378560,
+      "nproc": 4,
+      "run_id": "31922829567-probe-results-4",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:54:11 UTC  2min 1s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 03:00:00 UTC     7min Sun 2026-08-16 02:50:00 UTC 2min 10s ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:04:09 UTC    11min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC    16min Sun 2026-08-16 02:49:20 UTC 2min 49s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:18 UTC    18min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 08:24:49 UTC 5h 32min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 12:46:33 UTC       9h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:49:20 UTC 2min 49s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:49:20 UTC 2min 49s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:00:43 UTC      21h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Wed 2026-08-19 09:31:40 UTC   3 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2731000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 28217000,
+        "throttled_usec": 0,
+        "usage_usec": 92308000,
+        "user_usec": 64091000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2869.903,
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31923018084-probe-results-1",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:59:10 UTC  2min 36s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 03:00:00 UTC  3min 25s -                                      - sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:09:00 UTC     12min Sun 2026-08-16 02:54:21 UTC 2min 13s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:09:09 UTC     12min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:10:31 UTC     13min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 03:33:03 UTC     36min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 13:21:41 UTC       10h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC       21h Sun 2026-08-16 02:54:21 UTC 2min 13s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC       21h Sun 2026-08-16 02:54:21 UTC 2min 13s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC       21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:40:13 UTC       21h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 14:40:02 UTC 1 day 11h Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                   - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                   - -                                      - fwupd-refresh.timer            -",
+        "-                                   - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                   - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3190000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 28770000,
+        "throttled_usec": 0,
+        "usage_usec": 97161000,
+        "user_usec": 68391000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2615.825,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31923018084-probe-results-2",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 03:00:00 UTC 3min 11s Sun 2026-08-16 02:50:09 UTC  6min ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:09:00 UTC    12min Sun 2026-08-16 02:39:09 UTC 17min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:09 UTC    13min Mon 2026-08-10 21:15:47 UTC         - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 04:08:09 UTC 1h 11min Mon 2026-08-10 21:36:59 UTC         - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 11:57:44 UTC       9h Mon 2026-08-10 21:15:47 UTC         - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:36:19 UTC 20min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:36:19 UTC 20min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                   - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:57:52 UTC      22h Mon 2026-08-10 21:15:47 UTC         - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 02:41:09 UTC      23h Sun 2026-08-16 02:41:09 UTC 15min ago update-notifier-download.timer update-notifier-download.service",
+        "Mon 2026-08-17 02:51:09 UTC      23h Sun 2026-08-16 02:51:09 UTC  5min ago systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Thu 2026-08-20 00:19:54 UTC   3 days Mon 2026-08-10 21:15:47 UTC         - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                   - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                   - fwupd-refresh.timer            -",
+        "-                                  - -                                   - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                   - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3693000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 26651000,
+        "throttled_usec": 0,
+        "usage_usec": 94768000,
+        "user_usec": 68117000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 3241.825,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16770748416,
+      "nproc": 4,
+      "run_id": "31923018084-probe-results-3",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:57:10 UTC      31s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 03:00:00 UTC 3min 21s -                                      - sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:07:08 UTC    10min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC    12min Sun 2026-08-16 02:52:21 UTC 4min 17s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:05 UTC    13min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 04:02:00 UTC  1h 5min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 05:11:32 UTC 2h 14min Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Sun 2026-08-16 13:44:59 UTC      10h Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:52:21 UTC 4min 17s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:52:21 UTC 4min 17s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:10:12 UTC      22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2727000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 29346000,
+        "throttled_usec": 0,
+        "usage_usec": 96106000,
+        "user_usec": 66760000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2869.981,
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31923018084-probe-results-4",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 02:57:09 UTC      29s -                                   - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:00:00 UTC 3min 20s Sun 2026-08-16 02:50:02 UTC  6min ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:09:00 UTC    12min Sun 2026-08-16 02:42:21 UTC 14min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:22 UTC    13min Mon 2026-08-10 21:15:47 UTC         - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 04:18:17 UTC 1h 21min Mon 2026-08-10 21:36:59 UTC         - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 07:01:34 UTC  4h 4min Mon 2026-08-10 21:15:47 UTC         - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:42:21 UTC 14min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      21h Sun 2026-08-16 02:42:21 UTC 14min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:00:21 UTC      21h Mon 2026-08-10 21:15:47 UTC         - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                   - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 02:47:12 UTC      23h Sun 2026-08-16 02:47:12 UTC  9min ago update-notifier-download.timer update-notifier-download.service",
+        "Fri 2026-08-21 07:12:51 UTC   5 days Mon 2026-08-10 21:15:47 UTC         - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                   - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                   - fwupd-refresh.timer            -",
+        "-                                  - -                                   - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                   - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2054000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 15228000,
+        "throttled_usec": 0,
+        "usage_usec": 71186000,
+        "user_usec": 55958000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2300.0,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16765374464,
+      "nproc": 4,
+      "run_id": "31923209941-probe-results-1",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 03:09:00 UTC     6min Sun 2026-08-16 02:56:24 UTC    5min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:00 UTC     7min Sun 2026-08-16 03:00:05 UTC 2min 8s ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:10:54 UTC     8min Mon 2026-08-10 21:15:47 UTC           - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 03:11:09 UTC     8min -                                     - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 04:07:46 UTC  1h 5min Mon 2026-08-10 21:36:59 UTC           - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 04:29:46 UTC 1h 27min Mon 2026-08-10 21:15:47 UTC           - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      20h Sun 2026-08-16 02:56:24 UTC    5min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      20h Sun 2026-08-16 02:56:24 UTC    5min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                     - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:20:37 UTC      22h Mon 2026-08-10 21:15:47 UTC           - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 03:01:12 UTC      23h Sun 2026-08-16 03:01:12 UTC 1min 1s ago update-notifier-download.timer update-notifier-download.service",
+        "Thu 2026-08-20 20:16:55 UTC   4 days Mon 2026-08-10 21:15:47 UTC           - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                     - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                     - fwupd-refresh.timer            -",
+        "-                                  - -                                     - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                     - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2993000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 26031000,
+        "throttled_usec": 0,
+        "usage_usec": 90362000,
+        "user_usec": 64331000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2445.434,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31923209941-probe-results-2",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 03:04:13 UTC 2min 33s -                                      - update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-16 03:09:00 UTC     7min Sun 2026-08-16 02:59:22 UTC 2min 16s ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:00 UTC     8min Sun 2026-08-16 03:00:00 UTC 1min 39s ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:10:37 UTC     8min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 03:14:11 UTC    12min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 04:43:28 UTC 1h 41min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Sun 2026-08-16 11:19:40 UTC       8h Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Mon 2026-08-17 00:00:00 UTC      20h Sun 2026-08-16 02:59:22 UTC 2min 16s ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC      20h Sun 2026-08-16 02:59:22 UTC 2min 16s ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC      21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:19:18 UTC      21h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Sat 2026-08-22 04:32:33 UTC   6 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                  - -                                      - fwupd-refresh.timer            -",
+        "-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                  - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 3004000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 27399000,
+        "throttled_usec": 0,
+        "usage_usec": 95233000,
+        "user_usec": 67834000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 3237.94,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766410752,
+      "nproc": 4,
+      "run_id": "31923209941-probe-results-3",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 03:07:12 UTC          5min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:09:00 UTC          6min Sun 2026-08-16 02:52:24 UTC     9min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:00 UTC          7min Sun 2026-08-16 03:00:04 UTC 1min 58s ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:10:36 UTC          8min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 05:07:16 UTC       2h 5min Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Sun 2026-08-16 07:28:39 UTC      4h 26min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Mon 2026-08-17 00:00:00 UTC           20h Sun 2026-08-16 02:52:24 UTC     9min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC           20h Sun 2026-08-16 02:52:24 UTC     9min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC           21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 01:30:25 UTC           22h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 02:57:14 UTC           23h Sun 2026-08-16 02:57:14 UTC 4min 48s ago update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-23 04:54:12 UTC 1 week 0 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                       - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                       - -                                      - fwupd-refresh.timer            -",
+        "-                                       - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                       - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    },
+    {
+      "cgroup_v2_cpu_stat": {
+        "burst_usec": 0,
+        "core_sched.force_idle_usec": 0,
+        "nice_usec": 2421000,
+        "nr_bursts": 0,
+        "nr_periods": 0,
+        "nr_throttled": 0,
+        "system_usec": 25882000,
+        "throttled_usec": 0,
+        "usage_usec": 89816000,
+        "user_usec": 63934000
+      },
+      "compiler_version": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "cpu_mhz": 2775.688,
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "cpython_version": "3.12.13",
+      "git_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+      "glibc_version": "2.39",
+      "kernel_version": "6.17.0-1022-azure",
+      "memory_total_bytes": 16766414848,
+      "nproc": 4,
+      "run_id": "31923209941-probe-results-4",
+      "runner_image_version": "20260810.271.1",
+      "systemd_timers": [
+        "Sun 2026-08-16 03:09:00 UTC          7min Sun 2026-08-16 02:55:23 UTC     6min ago phpsessionclean.timer          phpsessionclean.service",
+        "Sun 2026-08-16 03:10:00 UTC          8min Sun 2026-08-16 03:00:03 UTC 1min 43s ago sysstat-collect.timer          sysstat-collect.service",
+        "Sun 2026-08-16 03:10:11 UTC          8min -                                      - systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service",
+        "Sun 2026-08-16 03:10:52 UTC          9min Mon 2026-08-10 21:15:47 UTC            - e2scrub_all.timer              e2scrub_all.service",
+        "Sun 2026-08-16 04:25:48 UTC      1h 24min Mon 2026-08-10 21:15:47 UTC            - man-db.timer                   man-db.service",
+        "Sun 2026-08-16 08:51:59 UTC      5h 50min Mon 2026-08-10 21:36:59 UTC            - motd-news.timer                motd-news.service",
+        "Mon 2026-08-17 00:00:00 UTC           20h Sun 2026-08-16 02:55:23 UTC     6min ago dpkg-db-backup.timer           dpkg-db-backup.service",
+        "Mon 2026-08-17 00:00:00 UTC           20h Sun 2026-08-16 02:55:23 UTC     6min ago logrotate.timer                logrotate.service",
+        "Mon 2026-08-17 00:07:00 UTC           21h -                                      - sysstat-summary.timer          sysstat-summary.service",
+        "Mon 2026-08-17 00:16:36 UTC           21h Mon 2026-08-10 21:15:47 UTC            - fstrim.timer                   fstrim.service",
+        "Mon 2026-08-17 03:00:13 UTC           23h Sun 2026-08-16 03:00:13 UTC 1min 33s ago update-notifier-download.timer update-notifier-download.service",
+        "Sun 2026-08-23 04:57:42 UTC 1 week 0 days Mon 2026-08-10 21:15:47 UTC            - update-notifier-motd.timer     update-notifier-motd.service",
+        "-                                       - -                                      - apport-autoreport.timer        apport-autoreport.service",
+        "-                                       - -                                      - fwupd-refresh.timer            -",
+        "-                                       - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service",
+        "-                                       - -                                      - ua-timer.timer                 ua-timer.service"
+      ]
+    }
+  ],
+  "instruments": [
+    {
+      "availability_tally": {
+        "available": 20
+      },
+      "n": 20,
+      "name": "allocator_stats",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier_median": 0.958503,
+      "overhead_multiplier_n": 20,
+      "repeatability_verdict_tally": {
+        "insufficient-samples": 20
+      },
+      "repeats_tally": {
+        "1": 20
+      },
+      "verdict_tally": {
+        "usable": 20
+      }
+    },
+    {
+      "availability_tally": {
+        "available": 20
+      },
+      "n": 20,
+      "name": "callgrind",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier_median": 190.521,
+      "overhead_multiplier_n": 20,
+      "repeatability_verdict_tally": {
+        "insufficient-samples": 20
+      },
+      "repeats_tally": {
+        "1": 20
+      },
+      "verdict_tally": {
+        "overhead-disqualifies": 20
+      }
+    },
+    {
+      "availability_tally": {
+        "available": 20
+      },
+      "n": 20,
+      "name": "malloc_interposer",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier_median": 1.07169,
+      "overhead_multiplier_n": 20,
+      "repeatability_verdict_tally": {
+        "insufficient-samples": 20
+      },
+      "repeats_tally": {
+        "1": 20
+      },
+      "verdict_tally": {
+        "usable": 20
+      }
+    },
+    {
+      "availability_tally": {
+        "available": 20
+      },
+      "n": 20,
+      "name": "perf_software_events",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier_median": 0.606204,
+      "overhead_multiplier_n": 20,
+      "repeatability_verdict_tally": {
+        "insufficient-samples": 20
+      },
+      "repeats_tally": {
+        "1": 20
+      },
+      "verdict_tally": {
+        "usable": 20
+      }
+    },
+    {
+      "availability_tally": {
+        "available": 20
+      },
+      "n": 20,
+      "name": "python_tracemalloc",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier_median": 3.14447,
+      "overhead_multiplier_n": 20,
+      "repeatability_verdict_tally": {
+        "insufficient-samples": 20
+      },
+      "repeats_tally": {
+        "1": 20
+      },
+      "verdict_tally": {
+        "usable": 20
+      }
+    },
+    {
+      "availability_tally": {
+        "available": 20
+      },
+      "n": 20,
+      "name": "resource_usage",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier_median": 0.981306,
+      "overhead_multiplier_n": 20,
+      "repeatability_verdict_tally": {
+        "insufficient-samples": 20
+      },
+      "repeats_tally": {
+        "1": 20
+      },
+      "verdict_tally": {
+        "usable": 20
+      }
+    },
+    {
+      "availability_tally": {
+        "available": 20
+      },
+      "n": 20,
+      "name": "strace",
+      "overhead_disqualify_threshold": 5.0,
+      "overhead_multiplier_median": 9.50787,
+      "overhead_multiplier_n": 20,
+      "repeatability_verdict_tally": {
+        "insufficient-samples": 20
+      },
+      "repeats_tally": {
+        "1": 20
+      },
+      "verdict_tally": {
+        "overhead-disqualifies": 20
+      }
+    }
+  ],
+  "interventions": [
+    {
+      "baseline_1_median": 23822000.0,
+      "baseline_1_n": 20,
+      "baseline_2_median": 24318000.0,
+      "baseline_2_n": 20,
+      "contaminated_count": 1,
+      "drift_median": 0.025693,
+      "drift_n": 20,
+      "drift_threshold": 0.1,
+      "effect_ratio": 1.01729,
+      "effect_ratio_n": 19,
+      "intervention": "service_stop",
+      "not_applicable_reasons": [],
+      "status_tally": {
+        "measured": 20
+      }
+    },
+    {
+      "baseline_1_median": 23289900.0,
+      "baseline_1_n": 20,
+      "baseline_2_median": 23927500.0,
+      "baseline_2_n": 20,
+      "contaminated_count": 1,
+      "drift_median": 0.0174343,
+      "drift_n": 20,
+      "drift_threshold": 0.1,
+      "effect_ratio": 1.01766,
+      "effect_ratio_n": 19,
+      "intervention": "taskset",
+      "not_applicable_reasons": [],
+      "status_tally": {
+        "measured": 20
+      }
+    }
+  ],
+  "parameters": {
+    "expected_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+    "min_n": 3,
+    "run_cap": 24,
+    "target_cpu_models": [
+      "AMD EPYC 7763 64-Core Processor",
+      "AMD EPYC 9V74 80-Core Processor",
+      "INTEL(R) XEON(R) PLATINUM 8573C"
+    ]
+  },
+  "perf_events": [
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "alignment-faults",
+      "event_class": "software",
+      "evidence_raw_line": "                 0      alignment-faults                 #    0.000 /sec                      ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks"
+      ],
+      "lowered_status_tally": {
+        "counted": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "branch-misses",
+      "event_class": "hardware",
+      "evidence_raw_line": "   <not supported>      branch-misses                                                         ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "not counted in either paranoid state"
+      ],
+      "lowered_status_tally": {
+        "not-supported": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "branches",
+      "event_class": "hardware",
+      "evidence_raw_line": "   <not supported>      branches                                                              ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "not counted in either paranoid state"
+      ],
+      "lowered_status_tally": {
+        "not-supported": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "cache-misses",
+      "event_class": "hardware",
+      "evidence_raw_line": "   <not supported>      cache-misses                                                          ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "not counted in either paranoid state"
+      ],
+      "lowered_status_tally": {
+        "not-supported": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "cache-references",
+      "event_class": "hardware",
+      "evidence_raw_line": "   <not supported>      cache-references                                                      ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "not counted in either paranoid state"
+      ],
+      "lowered_status_tally": {
+        "not-supported": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "context-switches",
+      "event_class": "software",
+      "evidence_raw_line": "                 2      context-switches                 #    2.715 K/sec                     ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks"
+      ],
+      "lowered_status_tally": {
+        "counted": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "cpu-migrations",
+      "event_class": "software",
+      "evidence_raw_line": "                 0      cpu-migrations                   #    0.000 /sec                      ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks"
+      ],
+      "lowered_status_tally": {
+        "counted": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "cycles",
+      "event_class": "hardware",
+      "evidence_raw_line": "   <not supported>      cycles                                                                ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "not counted in either paranoid state"
+      ],
+      "lowered_status_tally": {
+        "not-supported": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "emulation-faults",
+      "event_class": "software",
+      "evidence_raw_line": "                 0      emulation-faults                 #    0.000 /sec                      ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks"
+      ],
+      "lowered_status_tally": {
+        "counted": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "instructions",
+      "event_class": "hardware",
+      "evidence_raw_line": "   <not supported>      instructions                                                          ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "not counted in either paranoid state"
+      ],
+      "lowered_status_tally": {
+        "not-supported": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "major-faults",
+      "event_class": "software",
+      "evidence_raw_line": "                 1      major-faults                     #    1.358 K/sec                     ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks"
+      ],
+      "lowered_status_tally": {
+        "counted": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "minor-faults",
+      "event_class": "software",
+      "evidence_raw_line": "                79      minor-faults                     #  107.244 K/sec                     ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks"
+      ],
+      "lowered_status_tally": {
+        "counted": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "page-faults",
+      "event_class": "software",
+      "evidence_raw_line": "                80      page-faults                      #  108.602 K/sec                     ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks"
+      ],
+      "lowered_status_tally": {
+        "counted": 20
+      },
+      "n": 20
+    },
+    {
+      "default_status_tally": {
+        "unparsed": 20
+      },
+      "event": "task-clock",
+      "event_class": "software",
+      "evidence_raw_line": "            736636      task-clock                       #    0.004 CPUs utilized             ",
+      "gating_eligible": false,
+      "gating_reason": [
+        "counted only after lowering kernel.perf_event_paranoid; ineligible for the gating job because the gate must behave identically on every contributor pull request and on forks"
+      ],
+      "lowered_status_tally": {
+        "counted": 20
+      },
+      "n": 20
+    }
+  ],
+  "sidecar_version": 1,
+  "source": {
+    "record_count": 20,
+    "records_rejected": 1,
+    "records_skipped": 0,
+    "rejected_reasons": [
+      {
+        "expected_tree_hash": "23ab89659eaccfa80215bba03e6a02f6152c3555",
+        "observed_tree_hash": "258792f2e49c421c03f758335475669a29182d1a",
+        "path": "docs/plans/perf-ci-hardening/probe-runs/31911173684-1.json",
+        "reason": "tree-hash-mismatch"
+      }
+    ],
+    "runs_dir": "docs/plans/perf-ci-hardening/probe-runs",
+    "skipped_reasons": []
+  },
+  "steal": {
+    "cgroup_throttling": {
+      "n": 760,
+      "total_periods": 0.0,
+      "total_throttled_periods": 0.0,
+      "total_throttled_usec": 0.0
+    },
+    "status": "ok",
+    "steal": {
+      "comparison": ">=",
+      "flagged_count": 0,
+      "samples": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "stats": {
+        "cv": "undefined-zero-mean",
+        "cv_percent": "undefined-zero-mean",
+        "iqr": 0.0,
+        "mad": 0.0,
+        "maximum": 0.0,
+        "mean": 0.0,
+        "median": 0.0,
+        "minimum": 0.0,
+        "n": 659,
+        "spread": 0.0,
+        "spread_pct": "undefined-zero-median",
+        "stdev": 0.0
+      },
+      "threshold": 0.01
+    },
+    "window_count": 760
+  }
+}
