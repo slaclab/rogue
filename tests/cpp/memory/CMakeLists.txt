@@ -22,6 +22,14 @@ rogue_add_cpp_test(rogue-cpp-memory-variable
       no-python
 )
 
+rogue_add_cpp_test(rogue-cpp-memory-perf-counters
+   SOURCES
+      test_memory_perf_counters.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+
 rogue_add_cpp_test(rogue-cpp-memory-tcpserver-send-failure-recovery
    SOURCES
       test_tcpserver_send_failure_recovery.cpp

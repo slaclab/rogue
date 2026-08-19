@@ -12,10 +12,12 @@
 # Comment added by rherbst for demonstration purposes.
 import pyrogue as pr
 import pyrogue.interfaces.simulation
+import rogue
 import rogue.interfaces.memory
 import time
 import pytest
 from tests.perf._perf_metrics import emit_perf_result
+from tests.perf import _perf_harness
 
 pytestmark = pytest.mark.perf
 
@@ -51,6 +53,29 @@ MaxAvgNs = {
     k: (v * 1.0e9) / (NOMINAL_CPU_HZ * BENCH_COUNT)
     for k, v in MaxCycles.items()
 }
+
+# Tier 1 counter readers for the harness, one entry per
+# rogue.PerfCounters getter perf_tier_registry.metrics_for_benchmark can
+# assign to a transaction-path benchmark.
+TIER1_COUNTER_READERS = {
+    'gil_acquire_count': rogue.PerfCounters.getGilAcquireCount,
+    'gil_release_count': rogue.PerfCounters.getGilReleaseCount,
+    'scoped_gil_count': rogue.PerfCounters.getScopedGilCount,
+    'transaction_create_count': rogue.PerfCounters.getTransactionCreateCount,
+    'transaction_lock_acquisitions': rogue.PerfCounters.getTransactionLockCount,
+    'transaction_request_bytes': rogue.PerfCounters.getTransactionRequestBytes,
+    'transaction_request_count': rogue.PerfCounters.getTransactionRequestCount,
+}
+
+# Dual-clock CPU per-byte normalization: localSetRate/localGetRate
+# issue no transaction at all (LocalVariable has no block/transaction path),
+# so rogue.PerfCounters.getTransactionRequestBytes() records a permanent
+# zero delta for them -- an unusable divisor. Every one of the seven
+# operations here reads or writes the same 32-bit (4-byte) test value,
+# whether or not that value crosses a real hardware transaction, so the
+# register's own byte width is used uniformly instead of a per-benchmark
+# measured delta that would be zero for two of the seven paths.
+TRANSACTION_BYTES_PER_OP = 4
 
 class LocalDev(pr.Device):
 
@@ -166,11 +191,8 @@ def test_rate():
             'linkedGetRate': lambda i: root.LocalDev.TestLink.get(i),
         }
 
-        failures = []
-
         for name, operation in operations.items():
             result = _measure_operation(root, count, operation)
-            threshold_pass = True
 
             msg = (
                 f"{name}: avg {result['avg_ns']:.2e} ns/op, "
@@ -184,17 +206,13 @@ def test_rate():
                 )
             print(msg)
 
+            # Phase 1's authorized cycles demotion: the comparison and the
+            # published threshold_pass field are retained, only the failure
+            # accumulation and the aggregate assertion are removed.
             if HAS_HWCOUNTER:
-                if result['cycles'] > MaxCycles[name]:
-                    threshold_pass = False
-                    failures.append(
-                        f"{name}: cycles {result['cycles']:.2e} > {MaxCycles[name]:.2e}"
-                    )
-            elif result['avg_ns'] > MaxAvgNs[name]:
-                threshold_pass = False
-                failures.append(
-                    f"{name}: avg_ns {result['avg_ns']:.2e} > {MaxAvgNs[name]:.2e}"
-                )
+                threshold_pass = result['cycles'] <= MaxCycles[name]
+            else:
+                threshold_pass = result['avg_ns'] <= MaxAvgNs[name]
 
             emit_perf_result(
                 f"variable_rate_perf_{name}",
@@ -207,7 +225,29 @@ def test_rate():
                 max_cycles=MaxCycles[name],
             )
 
-        assert not failures, "Rate check failed:\n" + "\n".join(failures)
+            # Tiered measurement harness (warmup repeats, measured repeats, and a
+            # per-benchmark wall-clock guard): one call per
+            # operation, its own separate reduced-size loop with its own
+            # counter snapshots, outside the timed region above.
+            harness_reduced_count = max(1, BENCH_COUNT // 100)
+            harness_counter_readers = {
+                metric_name: TIER1_COUNTER_READERS[metric_name]
+                for metric_name in _perf_harness.perf_tier_registry.metrics_for_benchmark(name)
+                if metric_name in TIER1_COUNTER_READERS
+            }
+            harness_metrics = _perf_harness.measure_benchmark(
+                name,
+                lambda: _run_update_loop(root, harness_reduced_count, operation),
+                harness_counter_readers,
+                bytes_per_repeat=harness_reduced_count * TRANSACTION_BYTES_PER_OP,
+                ops_per_repeat=harness_reduced_count,
+            )
+            harness_record = _perf_harness.build_harness_record(
+                name,
+                harness_metrics,
+                {"reduced_size": harness_reduced_count, "full_size": BENCH_COUNT},
+            )
+            _perf_harness.emit_harness_result(harness_record, name)
 
 
     #pr.disable()

@@ -21,3 +21,11 @@ rogue_add_cpp_test(rogue-cpp-stream-flow-primitives
       cpp-core
       no-python
 )
+
+rogue_add_cpp_test(rogue-cpp-stream-perf-counters
+   SOURCES
+      test_stream_perf_counters.cpp
+   LABELS
+      cpp-core
+      no-python
+)

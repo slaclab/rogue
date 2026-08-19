@@ -32,6 +32,7 @@ import pytest
 import rogue.interfaces.memory
 
 from tests.perf._perf_metrics import emit_perf_result
+from tests.perf import _perf_harness
 
 pytestmark = pytest.mark.perf
 
@@ -42,6 +43,14 @@ DRAIN_COUNT = 42000
 # (the reported 42-126 s stall under load); post-fix it completes in well under
 # a second on any CI host, so a wide margin keeps the test deterministic.
 CEILING_S = 10.0
+
+# Dual-clock CPU per-byte normalization: the pure staged
+# set(write=False)/get(read=False) drain this benchmark exercises issues no
+# transaction at all (write=False skips writeBlocks(), read=False skips
+# readBlocks()), so rogue.PerfCounters.getTransactionRequestBytes() would
+# record a permanent zero delta here -- an unusable divisor. Reg's own byte
+# width (32 bits) is used instead, a deterministic nonzero unit of work.
+REG_BYTE_WIDTH = 4
 
 
 class _DrainRoot(pr.Root):
@@ -132,6 +141,99 @@ def test_block_getset_drain_under_gil_contention():
             f"contended drain took {contended_s:.2f}s (>{CEILING_S:.1f}s ceiling); "
             f"baseline {baseline_s:.2f}s, slowdown {ratio:.1f}x -- #1262 GIL thrash"
         )
+
+        # Tiered measurement harness (warmup repeats, measured repeats, a per-benchmark
+        # wall-clock guard, and contamination rejection): a
+        # separate reduced-drain-count loop, each repeat running its own
+        # baseline and its own contended pass (with its own spawned/joined
+        # GIL contender) so slowdown_ratio is a genuine per-repeat sample
+        # rather than one figure repeated k times.
+        harness_reduced_count = max(1, DRAIN_COUNT // 100)
+        harness_slowdown_samples = []
+
+        def _harness_repeat():
+            harness_start = time.perf_counter()
+            _drain(var, harness_reduced_count)
+            harness_baseline_s = time.perf_counter() - harness_start
+
+            harness_stop = threading.Event()
+            harness_contender = _spawn_gil_contender(harness_stop)
+            try:
+                harness_start = time.perf_counter()
+                _drain(var, harness_reduced_count)
+                harness_contended_s = time.perf_counter() - harness_start
+            finally:
+                harness_stop.set()
+                harness_contender.join(timeout=5.0)
+
+            harness_slowdown_samples.append(
+                harness_contended_s / harness_baseline_s if harness_baseline_s > 0 else float("inf")
+            )
+
+        harness_gil_readers = {
+            'gil_acquire_count': rogue.PerfCounters.getGilAcquireCount,
+            'gil_release_count': rogue.PerfCounters.getGilReleaseCount,
+            'scoped_gil_count': rogue.PerfCounters.getScopedGilCount,
+        }
+        harness_counter_readers = {
+            metric_name: harness_gil_readers[metric_name]
+            for metric_name in _perf_harness.perf_tier_registry.metrics_for_benchmark(
+                "block_gil_contention_drain"
+            )
+            if metric_name in harness_gil_readers
+        }
+        harness_metrics = _perf_harness.measure_benchmark(
+            "block_gil_contention_drain",
+            _harness_repeat,
+            harness_counter_readers,
+            bytes_per_repeat=harness_reduced_count * REG_BYTE_WIDTH,
+            ops_per_repeat=harness_reduced_count,
+        )
+
+        # slowdown_ratio (Tier 2, a normalized cost): derived from the per-repeat samples
+        # _harness_repeat appended above, discarding the leading
+        # warmup-repeat sample the harness ran before its first counted
+        # repeat. Every Tier 1 metric collected in the same call shares the
+        # same completed-repeat count, so gil_acquire_count's own n_clean and
+        # guard outcome apply here too.
+        reference_entry = harness_metrics['gil_acquire_count']
+        guard_exceeded = (
+            reference_entry['status'] != _perf_harness.STATUS_OK
+            and reference_entry['reason'] == _perf_harness.REASON_GUARD_EXCEEDED
+        )
+        completed_repeats = reference_entry['n_clean']
+        slowdown_samples = harness_slowdown_samples[-completed_repeats:] if completed_repeats else []
+        rejected_indices = set(_perf_harness.mad_band_rejections(slowdown_samples))
+        slowdown_entry = {
+            'tier_candidate': _perf_harness.perf_tier_registry.TIER_2,
+            'rejected_samples': [
+                {'index': index, 'value': slowdown_samples[index], 'reason': _perf_harness.REJECTION_MAD_BAND}
+                for index in sorted(rejected_indices)
+            ],
+        }
+        accepted_slowdown = [
+            value for index, value in enumerate(slowdown_samples) if index not in rejected_indices
+        ]
+        slowdown_entry['n_clean'] = len(accepted_slowdown)
+        slowdown_entry['samples'] = accepted_slowdown
+        if len(accepted_slowdown) < _perf_harness.DEFAULT_TARGET_CLEAN_SAMPLES:
+            slowdown_entry['status'] = _perf_harness.STATUS_INCONCLUSIVE
+            slowdown_entry['reason'] = (
+                _perf_harness.REASON_GUARD_EXCEEDED if guard_exceeded
+                else _perf_harness.REASON_INSUFFICIENT_CLEAN_SAMPLES
+            )
+        else:
+            slowdown_entry['status'] = _perf_harness.STATUS_OK
+            slowdown_entry['reason'] = None
+            slowdown_entry['median'], slowdown_entry['mad'] = _perf_harness.median_and_mad(accepted_slowdown)
+        harness_metrics['slowdown_ratio'] = slowdown_entry
+
+        harness_record = _perf_harness.build_harness_record(
+            "block_gil_contention_drain",
+            harness_metrics,
+            {"reduced_size": harness_reduced_count, "full_size": DRAIN_COUNT},
+        )
+        _perf_harness.emit_harness_result(harness_record, "block_gil_contention_drain")
 
 
 if __name__ == "__main__":
