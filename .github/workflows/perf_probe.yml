@@ -1,0 +1,102 @@
+# ----------------------------------------------------------------------------
+# Title      : ROGUE GitHub Actions Script
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software package. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software package, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
+# Runner capability probe: a re-runnable diagnostic that captures a full
+# per-run capability record (fingerprint, calibration, perf event sweep,
+# instrument overhead sweep, A/B/A interventions, confirmation leg, and cold
+# build timing) from a real GitHub-hosted runner. Push-triggered on a
+# dedicated branch pattern so a probe campaign never fires the shared
+# Rogue Integration workflow, and also declared as workflow_dispatch so this
+# entry point stays usable once registered on a repository's default branch.
+#
+# No concurrency block: the shared Rogue Integration workflow cancels an
+# in-progress run on a new push to the same ref, and copying that here would
+# silently discard most of a multi-push campaign.
+#
+# Four identical job_index entries multiply host samples per push while
+# keeping every instrument/intervention comparison inside one job on one
+# host; instruments are never split across matrix entries. fail-fast: false
+# because GitHub Actions cancels every other matrix job by default the
+# moment one fails -- exactly the run-abort this probe's design exists to
+# avoid; each job's outcome must stand on its own.
+#
+# An apt install failure, an interposer build failure, or a single probe
+# stage exception must never abort the job before the record is written and
+# uploaded: the dependency and instrument install steps below carry
+# `continue-on-error: true`, and the probe module itself records each
+# stage's outcome (see scripts/probe_runner.py's run_stage()) rather than
+# raising.
+# ----------------------------------------------------------------------------
+
+name: Rogue Perf Probe
+
+on:
+  push:
+    branches:
+      - "perf-probe/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Probe
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        job_index: [1, 2, 3, 4]
+    steps:
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: 3.12
+          cache: 'pip'
+          cache-dependency-path: 'pip_requirements.txt'
+
+      - name: Install Rogue build dependencies
+        continue-on-error: true
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libzmq3-dev libboost-all-dev bzip2 libbz2-dev
+          pip install -r pip_requirements.txt
+
+      - name: Install instrument tooling (strace, callgrind)
+        continue-on-error: true
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y strace valgrind
+
+      - name: Build malloc interposer (preflight)
+        continue-on-error: true
+        run: bash scripts/build_malloc_interposer.sh
+
+      - name: Run probe
+        if: always()
+        timeout-minutes: 40
+        env:
+          PROBE_JOB_INDEX: ${{ matrix.job_index }}
+        run: |
+          mkdir -p probe-results
+          python scripts/probe_runner.py --out "probe-results/probe-${{ matrix.job_index }}.json"
+
+      - name: Upload probe results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: probe-results-${{ matrix.job_index }}
+          path: probe-results/*.json
+# ----------------------------------------------------------------------------

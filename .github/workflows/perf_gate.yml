@@ -1,0 +1,510 @@
+# ----------------------------------------------------------------------------
+# Title      : ROGUE GitHub Actions Script
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software package. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software package, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
+# Report-only perf gate: resolves the merge base, measures the pull request's own head commit
+# against that merge base through the shipped paired A/B runner, evaluates the resulting
+# two-leg record through the shipped evaluator, and reports exactly one of PASS, FAIL, or
+# INCONCLUSIVE without ever blocking. This is the phase's thinnest end-to-end slice: every
+# layer the phase touches (the pull-request event, merge-base resolution, the two worktrees,
+# the build cache, the measurement, the evaluator, the step summary, and the results artifact)
+# is wired here on its own thinnest path. A later plan flips this same evaluate step to
+# blocking; nothing else about this file's shape is expected to change at that point.
+#
+# The pull_request trigger lives in this new file rather than in rogue_ci.yml. All seven of
+# that workflow's jobs would run twice for a same-repo pull-request branch (once on push, once
+# on pull_request) unless every job gained a new event guard, and rogue_ci.yml's own
+# concurrency group would change meaning the moment a second event type could populate it.
+#
+# The candidate leg checks out the pull request's own head commit
+# (github.event.pull_request.head.sha), never the synthetic merge commit github.sha that a
+# pull_request event checks out by default. The synthetic commit's tree hash exists only
+# inside the runner: a developer could never reproduce the candidate leg locally against it,
+# and the paired runner's own declared tree-hash-pair rejection rule would have nothing
+# reproducible to check against outside CI.
+#
+# No concurrency block. A concurrency group cancels a queued run regardless of its own
+# cancel-in-progress setting, and a cancelled run leaves a hole in a pull request's gate
+# history indistinguishable from a run that never started. Every measured run here produces a
+# record instead.
+#
+# No path filter, no branches filter, and no types override on the pull_request trigger. A
+# skipped job reports as skipped, and GitHub's required-check semantics around a skipped job
+# would silently un-gate a documentation-adjacent pull request. The gate always runs.
+#
+# A fork pull request runs this identical file with no elevated permissions: permissions below
+# grants contents: read only, and the privileged pull_request_target event variant is never
+# used. Because a fork pull request's cache scope and token differ from a same-repo branch's,
+# the record itself carries the ccache hit rate so a colder fork-PR cache is visible rather
+# than assumed.
+#
+# This workflow publishes nothing to the project's published documentation branch. It uploads
+# its own record and verdict as a job artifact and writes the step summary; the existing
+# perf_test job in rogue_ci.yml and the existing publishing pipeline are both untouched.
+#
+# The job id is `gate` and its name is frozen at `Perf Gate` from this commit onward: branch
+# protection references a required check by job name, and a later rename would silently break
+# protection.
+#
+# Action pins below (actions/checkout, actions/setup-python, actions/cache,
+# actions/upload-artifact) are the same commit shas already used identically in
+# perf_gate_validation.yml, rogue_ci.yml, and perf_harness.yml -- copied, not re-pinned. The
+# ccache key scheme in the "Cache ccache directory" step is character-for-character identical
+# to rogue_ci.yml's own perf_test job, so push builds and pull-request gate builds warm each
+# other's cache. Every dispatch input, every pull-request event field, and the merge-base
+# resolution's own outputs reach a shell only through an env: block and are referenced as a
+# quoted shell variable; no run: body in this file interpolates github.event or inputs
+# directly, since both are attacker-influenceable on a fork pull request.
+# ----------------------------------------------------------------------------
+
+name: Rogue Perf Gate
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      base_ref:
+        description: "The branch the merge base is computed against on a manual dispatch."
+        type: string
+        default: "main"
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: Perf Gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+    steps:
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        timeout-minutes: 15
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        timeout-minutes: 10
+        with:
+          python-version: 3.12
+          cache: 'pip'
+          cache-dependency-path: 'pip_requirements.txt'
+
+      # Runs before any dependency install so a malformed dispatch costs nothing. The only
+      # dispatch input this workflow declares reaches this shell through the env: block below,
+      # never through a template expansion inside run:. On rejection the offending input's name
+      # is printed and its value withheld, then the job exits non-zero. A pull_request event
+      # supplies no input at all, so an empty value is accepted.
+      - name: Validate dispatch inputs
+        timeout-minutes: 2
+        env:
+          BASE_REF: ${{ inputs.base_ref }}
+        run: |
+          set -u
+          if [ -n "${BASE_REF}" ]; then
+            base_ref_pattern='^[A-Za-z0-9][A-Za-z0-9._/-]{0,99}$'
+            if ! [[ "${BASE_REF}" =~ ${base_ref_pattern} ]]; then
+              echo "Rejected dispatch input: base_ref"
+              exit 1
+            fi
+            case "${BASE_REF}" in
+              *..*)
+                echo "Rejected dispatch input: base_ref"
+                exit 1
+                ;;
+            esac
+          fi
+          echo "dispatch inputs validated"
+
+      # Prefers the pull-request event payload's own base sha; falls back to a real
+      # git merge-base only on workflow_dispatch, which carries no pull-request payload. Every
+      # event field and dispatch input reaches this shell only through the env: block above,
+      # referenced as a quoted shell variable. Both the resolved merge base and the resolved
+      # candidate sha are rejected unless they are a full 40-character lowercase hex sha before
+      # either can reach a later argv.
+      - name: Resolve merge base
+        id: merge-base
+        timeout-minutes: 3
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_REF: ${{ github.event.pull_request.base.ref || inputs.base_ref }}
+        run: |
+          set -u
+          sha_pattern='^[0-9a-f]{40}$'
+          if [ "${EVENT_NAME}" = "pull_request" ] && [ -n "${PR_BASE_SHA}" ]; then
+            merge_base_sha="${PR_BASE_SHA}"
+            merge_base_source="pull_request_base_sha"
+          else
+            git fetch origin "${BASE_REF}" --depth=1
+            merge_base_sha=$(git merge-base "origin/${BASE_REF}" HEAD)
+            merge_base_source="git_merge_base_fallback"
+          fi
+          if ! [[ "${merge_base_sha}" =~ ${sha_pattern} ]]; then
+            echo "Resolved merge base is not a full 40-character lowercase hex sha"
+            exit 1
+          fi
+          candidate_sha=$(git rev-parse HEAD)
+          if ! [[ "${candidate_sha}" =~ ${sha_pattern} ]]; then
+            echo "Resolved candidate sha is not a full 40-character lowercase hex sha"
+            exit 1
+          fi
+          echo "merge_base_sha=${merge_base_sha}" >> "$GITHUB_OUTPUT"
+          echo "merge_base_source=${merge_base_source}" >> "$GITHUB_OUTPUT"
+          echo "candidate_sha=${candidate_sha}" >> "$GITHUB_OUTPUT"
+
+      # Both the paired-run step below and the evaluate step read the gate baseline from this
+      # step's own extracted copy, never from the checked-out tree: the checked-out tree is the
+      # pull request's own head commit, so a repository-relative baseline path there is
+      # writable by the same change the gate is judging. This step instead extracts the
+      # baseline blob from the merge base's own git object, at the merge-base step's own
+      # already-validated sha, and writes it under the runner's temporary directory, outside
+      # the checkout entirely. The merge-base sha reaches this shell only through the env:
+      # block below, never through a template expansion in run:, and it has already been
+      # rejected unless it matched a full 40-character lowercase hex sha, so this step adds no
+      # new validation of its own for that value. When the merge base predates this baseline
+      # file entirely, this step records why rather than hard-failing: see the comment
+      # immediately above the blob lookup below for the absent-versus-corrupt distinction.
+      - name: Extract the trusted gate baseline
+        id: trusted-baseline
+        timeout-minutes: 2
+        env:
+          MERGE_BASE_SHA: ${{ steps.merge-base.outputs.merge_base_sha }}
+        run: |
+          set -u
+          trusted_dir="${RUNNER_TEMP}/perf-gate-trusted"
+          trusted_path="${trusted_dir}/gate-baseline.json"
+          baseline_repo_path="docs/plans/perf-ci-hardening/gate-baseline.json"
+          mkdir -p "${trusted_dir}"
+
+          # The merge-base commit is in practice already present: the paired runner below
+          # creates a git worktree from this identical sha on every run, which cannot succeed
+          # unless the object is already in the local database. The fetch here is a fallback
+          # for the case that inference does not hold, not the expected path, and it carries no
+          # depth argument so a fully-cloned checkout is never turned shallow by this step.
+          if ! git cat-file -e "${MERGE_BASE_SHA}^{commit}" 2>/dev/null; then
+            git fetch origin "${MERGE_BASE_SHA}" --no-tags
+            if ! git cat-file -e "${MERGE_BASE_SHA}^{commit}" 2>/dev/null; then
+              echo "Merge-base commit object is not present after fetch: ${MERGE_BASE_SHA}"
+              exit 1
+            fi
+          fi
+
+          # Absent and corrupt are different facts and get different treatment here. A blob
+          # simply not present at the merge base means the base branch predates this baseline
+          # file entirely -- the normal, expected state for a pull request whose base branch
+          # has never carried it, most obviously the pull request that introduces it. That is
+          # "I do not know", not a defect, so it is recorded as a named reason for the evaluate
+          # step below to resolve into a non-blocking INCONCLUSIVE, and this step exits 0 so
+          # the paired measurement still runs and this run still observes the mechanism end to
+          # end. A blob that is present but fails the parse-and-shape check just below remains
+          # a hard exit 1: that is an upstream defect on the base branch a human must fix, and
+          # failing loudly there is unchanged.
+          if ! trusted_blob_sha=$(git rev-parse --verify "${MERGE_BASE_SHA}:${baseline_repo_path}" 2>/dev/null); then
+            unavailable_reason="Trusted baseline blob is not present at ${MERGE_BASE_SHA}:${baseline_repo_path}"
+            echo "${unavailable_reason}"
+            delimiter="ghadelimiter_$(date +%s%N)_${RANDOM}${RANDOM}"
+            {
+              echo "unavailable_reason<<${delimiter}"
+              printf '%s\n' "${unavailable_reason}"
+              echo "${delimiter}"
+            } >> "$GITHUB_OUTPUT"
+            echo "path=" >> "$GITHUB_OUTPUT"
+            echo "modified_by_pull_request=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git cat-file blob "${trusted_blob_sha}" > "${trusted_path}"
+
+          # Exactly two conditions: the file parses as JSON, and its top level carries a
+          # `cells` mapping. A trusted baseline that legitimately declares zero gate-eligible
+          # cells must reach the evaluator and resolve to a non-blocking verdict, so no cell
+          # count is asserted here.
+          python3 -c '
+          import json
+          import sys
+
+          path = sys.argv[1]
+          try:
+              with open(path, "r", encoding="utf-8") as handle:
+                  data = json.load(handle)
+          except (OSError, json.JSONDecodeError) as exc:
+              print(f"Trusted baseline at {path} could not be parsed: {exc}")
+              sys.exit(1)
+          if not isinstance(data, dict) or not isinstance(data.get("cells"), dict):
+              print(f"Trusted baseline at {path} does not carry a cells mapping")
+              sys.exit(1)
+          ' "${trusted_path}" || {
+            echo "Trusted baseline sha ${trusted_blob_sha} at ${MERGE_BASE_SHA} failed validation"
+            exit 1
+          }
+
+          # Informational only: this comparison never gates anything and no argument passed to
+          # either consumer below depends on it. It exists so a reviewer can see, without
+          # having to diff for it, whether the pull request's own copy of the file differs from
+          # the trusted copy that actually decided the verdict.
+          pr_tree_blob_sha=$(git hash-object "${baseline_repo_path}" 2>/dev/null || true)
+          if [ -n "${pr_tree_blob_sha}" ] && [ "${pr_tree_blob_sha}" != "${trusted_blob_sha}" ]; then
+            modified_by_pull_request="true"
+          else
+            modified_by_pull_request="false"
+          fi
+          echo "Trusted baseline blob: ${trusted_blob_sha}"
+          echo "Pull request tree copy blob: ${pr_tree_blob_sha:-absent}"
+          echo "Modified by this pull request: ${modified_by_pull_request}"
+
+          echo "path=${trusted_path}" >> "$GITHUB_OUTPUT"
+          echo "modified_by_pull_request=${modified_by_pull_request}" >> "$GITHUB_OUTPUT"
+          echo "unavailable_reason=" >> "$GITHUB_OUTPUT"
+
+      # The escape-hatch trailer: read from the checked-out head commit's own message
+      # only -- never the pull-request body, never a label -- so changing it requires a new
+      # push, which re-triggers the gate on the same commit it authorizes. Runs before any
+      # dependency install so a malformed commit message costs nothing. The trailer text is
+      # fully attacker-controlled on a fork pull request: it never reaches this
+      # shell except through this step's own local variables, and it is emitted to
+      # $GITHUB_OUTPUT only through the multi-line-safe heredoc form with a delimiter
+      # generated fresh at runtime, so a crafted commit message cannot forge additional step
+      # outputs by embedding a guessed delimiter line. If the trailer-parser subcommand
+      # itself is unavailable on this runner image, this step records a named
+      # unavailability reason and an empty trailer value: the gate fails closed and says why,
+      # rather than silently ignoring a real override.
+      - name: Read escape-hatch trailer
+        id: escape-hatch
+        timeout-minutes: 2
+        run: |
+          set -u
+          delimiter="ghadelimiter_$(date +%s%N)_${RANDOM}${RANDOM}"
+          head_message=$(git log -1 --format=%B HEAD)
+          author_value=$(git log -1 --format='%an <%ae>' HEAD)
+          trailer_value=""
+          unavailable_reason=""
+          if parsed=$(printf '%s\n' "${head_message}" | git interpret-trailers --parse 2>/dev/null); then
+            trailer_value=$(printf '%s\n' "${parsed}" | grep -i '^Perf-Gate-Override:' | cut -d: -f2- | sed 's/^ *//')
+          else
+            unavailable_reason="trailer-parser-subcommand-missing"
+          fi
+          {
+            echo "value<<${delimiter}"
+            printf '%s\n' "${trailer_value}"
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "author<<${delimiter}"
+            printf '%s\n' "${author_value}"
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+          echo "unavailable_reason=${unavailable_reason}" >> "$GITHUB_OUTPUT"
+
+      - name: Install Rogue build dependencies
+        timeout-minutes: 12
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libzmq3-dev libboost-all-dev bzip2 libbz2-dev
+          pip install -r pip_requirements.txt
+
+      # Resolves the same compiler CMake will pick with no -DCMAKE_CXX_COMPILER set, so the
+      # ccache key below cannot describe a different toolchain than the one that actually
+      # filled it. Identical to rogue_ci.yml's own perf_test job and to perf_gate_validation.yml.
+      - name: Resolve compiler version
+        id: compiler-version
+        timeout-minutes: 2
+        run: echo "version=$(g++ -dumpfullversion)" >> "$GITHUB_OUTPUT"
+
+      # Identical cache-key design and restore-keys prefix to rogue_ci.yml's own perf_test job
+      # (runner OS + resolved compiler version + a hash of the source tree), so push builds and
+      # pull-request gate builds warm each other's cache.
+      - name: Cache ccache directory
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        timeout-minutes: 10
+        with:
+          path: ~/.cache/ccache
+          key: ccache-${{ runner.os }}-${{ steps.compiler-version.outputs.version }}-${{ hashFiles('src/**', 'include/**', 'CMakeLists.txt') }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ steps.compiler-version.outputs.version }}-
+
+      # A failed ccache install degrades the run to an uncached build rather than aborting a run
+      # that would otherwise produce a usable record.
+      - name: Install ccache
+        continue-on-error: true
+        timeout-minutes: 6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache
+
+      # The paired run: two git worktrees, two builds, interleaved measurement rounds, one
+      # two-leg record. No --modules argument is passed at all: omitting it selects the
+      # runner's own default seven-module set, which at two rounds per leg is exactly the
+      # configuration already validated. --deadline-seconds 1260 is this step's own 1500 second
+      # (25 minute) bound minus 240 seconds of slack for the record write and both worktree
+      # removals. --round-share-floor-seconds 180 is twice the measured 85.08 second
+      # per-round-per-leg median, rounded up to the next whole minute. The 25 minute step bound
+      # is deliberately far above the ten minute gating budget so a cold-cache run still
+      # completes and still writes a record rather than being killed mid-measurement.
+      #
+      # The runner now takes its own single automatic retry decision in job against
+      # --baseline, the same committed baseline the evaluate step below reads: at most one
+      # narrow re-measurement follows a retry-eligible INCONCLUSIVE verdict on a gating cell,
+      # reusing the two worktrees this same process already built, so the retry pays no
+      # rebuild. --no-retry is deliberately omitted here: the retry stays on for every hosted
+      # run, and only a local invocation suppresses it. --merge-base-source carries the
+      # "Resolve merge base" step's own resolved source through for provenance only.
+      - name: Run paired A/B measurement
+        timeout-minutes: 25
+        env:
+          CANDIDATE_SHA: ${{ steps.merge-base.outputs.candidate_sha }}
+          MERGE_BASE_SHA: ${{ steps.merge-base.outputs.merge_base_sha }}
+          MERGE_BASE_SOURCE: ${{ steps.merge-base.outputs.merge_base_source }}
+          TRUSTED_BASELINE: ${{ steps.trusted-baseline.outputs.path }}
+          HARNESS_CAMPAIGN_BRANCH: ${{ github.ref_name }}
+          HARNESS_DISPATCH_INDEX: ${{ github.run_number }}
+          PERF_RESULTS_DIR: gate-results/perf-results
+          PERF_HARNESS_RESULTS_DIR: gate-results/perf-harness-results
+        run: |
+          mkdir -p gate-results
+          python scripts/perf_gate_ab_runner.py \
+            --out gate-results/ab-record.json \
+            --candidate-ref "${CANDIDATE_SHA}" \
+            --merge-base-ref "${MERGE_BASE_SHA}" \
+            --mode null \
+            --label perf-gate \
+            --rounds 2 \
+            --worktree-root "${RUNNER_TEMP}/perf-gate-ab" \
+            --baseline "${TRUSTED_BASELINE}" \
+            --merge-base-source "${MERGE_BASE_SOURCE}" \
+            --deadline-seconds 1260 \
+            --round-share-floor-seconds 180 \
+            --hang-diagnostics-dir gate-results/hang-diagnostics \
+            --hang-diagnostics-lead-seconds 60 \
+            --print-summary > gate-results/ab-summary.md
+
+      # GATE_BLOCKING's polarity is deliberately inverted from this repository's other
+      # feature-gate variable (perf_publish.yml's vars.ROGUE_ENABLE_PERF_PUBLISH == 'true',
+      # which enables a feature when the variable is true). Matching that polarity here would
+      # mean a deleted or forgotten repository variable silently un-gates every pull request,
+      # which is the one failure mode a gate must not have, so the expression below is written
+      # the other way round on purpose: an unset repository variable evaluates as an empty
+      # string in a GitHub Actions expression, so the inequality is true and the mode is
+      # blocking with no second branch. Do not harmonize this with perf_publish.yml's polarity;
+      # the mismatch is intentional.
+      #
+      # Blocking means the evaluator's own main() returns 1 when --exit-nonzero-on-fail is
+      # passed and the run verdict is FAIL, and only then. An INCONCLUSIVE verdict structurally
+      # cannot produce a non-zero exit through that code path; no new exit path is added here.
+      #
+      # Making this job's own check required on the fork or on the upstream repository is a
+      # repository setting, not a commit: no workflow file can apply it. The procedure is
+      # documented separately in docs/plans/perf-ci-hardening/GATE-SETUP.md's "Required-check
+      # registration ordering" section; this workflow does not and cannot apply it.
+      #
+      # The trailer value, the author, and the unavailability reason all reach this shell
+      # only through this env: block, sourced from the "Read escape-hatch trailer" step's own
+      # outputs, and are passed to the evaluator as quoted shell variables. None is ever
+      # interpolated directly into this run: body: the trailer is attacker-controlled content
+      # on a fork pull request, and the evaluator's own anchored cell-token pattern
+      # and required-justification check are what actually decide whether it is honoured.
+      #
+      # GATE_BASELINE_UNAVAILABLE_REASON reaches this shell the same way, sourced from the
+      # "Extract the trusted gate baseline" step's own output rather than any event field, and
+      # is empty whenever that step found a trusted baseline. When it is non-empty, the
+      # evaluator resolves to a non-blocking INCONCLUSIVE without ever opening --record or
+      # --baseline, so a measurement failure on this same run cannot turn this into a red
+      # check.
+      - name: Evaluate the paired record against the baseline
+        if: always()
+        timeout-minutes: 5
+        env:
+          GATE_BLOCKING: ${{ vars.ROGUE_PERF_GATE_REPORT_ONLY != 'true' }}
+          GATE_OVERRIDE_TRAILER: ${{ steps.escape-hatch.outputs.value }}
+          GATE_OVERRIDE_AUTHOR: ${{ steps.escape-hatch.outputs.author }}
+          GATE_OVERRIDE_UNAVAILABLE_REASON: ${{ steps.escape-hatch.outputs.unavailable_reason }}
+          GATE_BASELINE_UNAVAILABLE_REASON: ${{ steps.trusted-baseline.outputs.unavailable_reason }}
+          TRUSTED_BASELINE: ${{ steps.trusted-baseline.outputs.path }}
+        run: |
+          args=(
+            --record gate-results/ab-record.json
+            --baseline "${TRUSTED_BASELINE}"
+            --out-json gate-results/verdict.json
+            --out-md gate-results/verdict.md
+            --override-trailer "${GATE_OVERRIDE_TRAILER}"
+            --override-author "${GATE_OVERRIDE_AUTHOR}"
+            --override-unavailable-reason "${GATE_OVERRIDE_UNAVAILABLE_REASON}"
+            --baseline-unavailable-reason "${GATE_BASELINE_UNAVAILABLE_REASON}"
+          )
+          if [ "${GATE_BLOCKING}" = "true" ]; then
+            args+=(--exit-nonzero-on-fail)
+          fi
+          python scripts/perf_gate_evaluator.py "${args[@]}"
+
+      # Reuses the runner's own --print-summary output and the evaluator's own --out-md
+      # rendering rather than reformatting either in shell. Everything below is inside one
+      # brace group redirected once to GITHUB_STEP_SUMMARY, so no region spans two steps.
+      - name: Append gate summary to step summary
+        if: always()
+        timeout-minutes: 3
+        env:
+          GATE_BLOCKING: ${{ vars.ROGUE_PERF_GATE_REPORT_ONLY != 'true' }}
+          MERGE_BASE_SOURCE: ${{ steps.merge-base.outputs.merge_base_source }}
+          BASELINE_SOURCE_REF: ${{ steps.merge-base.outputs.merge_base_sha }}
+          BASELINE_MODIFIED_BY_PR: ${{ steps.trusted-baseline.outputs.modified_by_pull_request }}
+        run: |
+          {
+            if [ "${GATE_BLOCKING}" = "true" ]; then
+              echo "## Perf gate"
+              echo
+              echo "This check blocks the pull request on a FAIL verdict only. An INCONCLUSIVE verdict never blocks."
+            else
+              echo "## Report-only perf gate"
+              echo
+              echo "This check does not block. A FAIL verdict here would block once this gate is flipped to blocking."
+            fi
+            echo
+            echo "Merge base source: ${MERGE_BASE_SOURCE}"
+            echo "Baseline read from ref: ${BASELINE_SOURCE_REF}"
+            echo "Baseline modified by this pull request's own copy: ${BASELINE_MODIFIED_BY_PR}"
+            echo
+            if [ -f gate-results/ab-summary.md ]; then
+              cat gate-results/ab-summary.md
+            fi
+            if [ -f gate-results/verdict.md ]; then
+              cat gate-results/verdict.md
+            fi
+            if [ -d gate-results/hang-diagnostics ] && [ -n "$(ls -A gate-results/hang-diagnostics 2>/dev/null)" ]; then
+              echo "## Hang diagnostics"
+              echo
+              for f in gate-results/hang-diagnostics/*; do
+                echo "### ${f}"
+                echo
+                echo '```'
+                cat "${f}"
+                echo '```'
+              done
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Writes nothing to the project's published documentation branch: this is the gate's own
+      # record and verdict only, uploaded as a job artifact.
+      - name: Upload gate results
+        if: always()
+        timeout-minutes: 10
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: perf-gate-results-${{ github.run_id }}
+          path: |
+            gate-results/ab-record.json
+            gate-results/ab-summary.md
+            gate-results/verdict.json
+            gate-results/verdict.md
+            gate-results/hang-diagnostics/**
+            ${{ runner.temp }}/perf-gate-ab/results/**
+            ${{ runner.temp }}/perf-gate-trusted/**
+# ----------------------------------------------------------------------------

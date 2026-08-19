@@ -307,12 +307,61 @@ jobs:
           sudo apt-get install libzmq3-dev libboost-all-dev bzip2 libbz2-dev
           pip install -r pip_requirements.txt
 
+      # Resolves the same compiler CMake will pick with no -DCMAKE_CXX_COMPILER set (g++, the
+      # ubuntu-24.04 default), so the ccache key below cannot describe a different toolchain
+      # than the one that actually filled it. Same design as .github/workflows/
+      # perf_harness.yml's own compiler-version step.
+      - name: Resolve compiler version
+        id: compiler-version
+        run: echo "version=$(g++ -dumpfullversion)" >> "$GITHUB_OUTPUT"
+
+      # The cache-key design, identical to perf_harness.yml's: runner OS + resolved compiler
+      # version + a hash of the source tree, with a restore-keys prefix that drops only the
+      # tree-hash component. Pinned by the same actions/cache commit SHA this file already uses
+      # at its conda cache steps above, so the file carries one pinned version of that action.
+      - name: Cache ccache directory
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ccache
+          key: ccache-${{ runner.os }}-${{ steps.compiler-version.outputs.version }}-${{ hashFiles('src/**', 'include/**', 'CMakeLists.txt') }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ steps.compiler-version.outputs.version }}-
+
+      # A failed ccache install must degrade the run to an uncached build rather than abort the
+      # job, matching perf_harness.yml's discipline.
+      - name: Install ccache
+        continue-on-error: true
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache
+
+      # Zeroed here (before Build Rogue configures/compiles) so the statistics the report step
+      # below reads cover only this job's own build, not the whole persisted cache's lifetime.
+      - name: Zero ccache statistics
+        continue-on-error: true
+        run: ccache --zero-stats
+
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
-          cmake -S . -B build -DROGUE_INSTALL=local
+          cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=OFF -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cmake --build build -j$(nproc)
           cmake --build build --target install
+
+      # Criterion 5's build-step report: the derived ccache hit rate (raw hit/miss counts,
+      # never ccache -s's rounded text) plus the resolved build-target evidence, both
+      # via scripts/perf_harness_runner.py's own statistics-only CLI modes so there is exactly
+      # one implementation of the hit-rate derivation in the repository.
+      - name: Report ccache statistics and build targets
+        if: always()
+        run: |
+          {
+            echo "### ccache statistics"
+            echo "- Cache key: ccache-${{ runner.os }}-${{ steps.compiler-version.outputs.version }}-${{ hashFiles('src/**', 'include/**', 'CMakeLists.txt') }}"
+            python scripts/perf_harness_runner.py --print-ccache-summary
+            echo "### Build targets (BUDGET-03 evidence)"
+            python scripts/perf_harness_runner.py --print-build-targets-summary
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run Perf Tests
         run: |

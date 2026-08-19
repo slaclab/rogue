@@ -1,0 +1,185 @@
+# ----------------------------------------------------------------------------
+# Title      : ROGUE GitHub Actions Script
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software package. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software package, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
+# Perf measurement campaign vehicle: builds Rogue and runs the
+# tests/perf/_perf_harness.py-backed benchmarks on a real GitHub-hosted
+# runner, emitting a versioned harness record. Push-triggered on a dedicated
+# branch pattern so a campaign never fires the shared Rogue Integration
+# workflow, and also declared as workflow_dispatch so it can be dispatched
+# by ref against the frozen campaign branch once registered on a
+# repository's default branch.
+#
+# No concurrency block: the shared Rogue Integration workflow cancels an
+# in-progress run on a new push to the same ref, and copying that here would
+# silently discard campaign runs dispatched in close succession.
+#
+# fail-fast: false because GitHub Actions cancels every other matrix job by
+# default the moment one fails; this workflow currently declares a single
+# job, but the setting is carried forward from perf_probe.yml so a future
+# matrix addition does not reintroduce that failure mode by omission.
+#
+# ccache cache-key design: runner OS + the resolved compiler version + a hash
+# of the source tree (src/**, include/**, CMakeLists.txt). A changed compiler cannot warm from a
+# mismatched cache since the version is part of the key; the restore-keys prefix drops only the
+# tree-hash component, so a changed tree still warms from the previous compiler-matched cache.
+# scripts/perf_harness_runner.py owns the build (through this ccache wiring), the ccache
+# statistics this campaign's wall-clock budget accounting requires, the resolved build-target
+# evidence this campaign's build-target accounting requires, and the
+# measurement across the tests/perf/ modules named in scripts/perf_harness_runner.py's
+# DEFAULT_PERF_MODULES (the single source of truth for which modules a dispatch measures),
+# aggregating every per-benchmark record into one run record.
+# ----------------------------------------------------------------------------
+
+name: Rogue Perf Harness
+
+on:
+  push:
+    branches:
+      - "perf-harness/**"
+  workflow_dispatch:
+    inputs:
+      injected_load:
+        description: "Inject synthetic background load for the contamination demonstration"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  harness:
+    name: Harness
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+    steps:
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: 3.12
+          cache: 'pip'
+          cache-dependency-path: 'pip_requirements.txt'
+
+      - name: Install Rogue build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libzmq3-dev libboost-all-dev bzip2 libbz2-dev
+          pip install -r pip_requirements.txt
+
+      # Resolves the same compiler CMake will pick with no -DCMAKE_CXX_COMPILER set (g++, the
+      # ubuntu-24.04 default), so the ccache key below cannot describe a different toolchain
+      # than the one that actually filled it.
+      - name: Resolve compiler version
+        id: compiler-version
+        run: echo "version=$(g++ -dumpfullversion)" >> "$GITHUB_OUTPUT"
+
+      # The cache-key design: runner OS + resolved compiler version + a hash of the source
+      # tree (src/**, include/**, CMakeLists.txt). The restore-keys prefix drops only the
+      # tree-hash component, so a changed tree still warms from the previous compiler-matched
+      # cache. Pinned by the same actions/cache commit SHA already established at
+      # rogue_ci.yml:245,252. The cached directory is what scripts/perf_harness_runner.py's
+      # configure command wires in via -DCMAKE_CXX_COMPILER_LAUNCHER=ccache.
+      - name: Cache ccache directory
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ccache
+          key: ccache-${{ runner.os }}-${{ steps.compiler-version.outputs.version }}-${{ hashFiles('src/**', 'include/**', 'CMakeLists.txt') }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ steps.compiler-version.outputs.version }}-
+
+      # A failed ccache install must degrade the run to an uncached build with the ccache
+      # status recorded as unavailable (collect_ccache_stats' own binary-absent branch), never
+      # abort a campaign run that would otherwise produce a usable record.
+      - name: Install ccache
+        continue-on-error: true
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache
+
+      # Contamination demonstration: when injected_load is true, spawn as many busy
+      # processes as the runner reports cores, each self-terminating after a hard 900 s bound
+      # (`timeout 900`) so a failure to reach the stop step below cannot leave the runner
+      # saturated. The run is labelled at the source via HARNESS_INJECTED_LOAD below, so the
+      # campaign report can exclude it from the dispersion population by construction rather than
+      # by inference.
+      - name: Start injected competing load (contamination demonstration)
+        if: ${{ inputs.injected_load }}
+        run: |
+          mkdir -p /tmp/injected-load
+          : > /tmp/injected-load/pids
+          for _ in $(seq 1 "$(nproc)"); do
+            nohup timeout 900 bash -c 'while true; do :; done' >/dev/null 2>&1 &
+            echo $! >> /tmp/injected-load/pids
+          done
+          disown -a
+
+      # Owns the build (ccache-accelerated, -DROGUE_BUILD_TESTS=OFF pinned), the
+      # ccache statistics this campaign's wall-clock budget accounting requires, the resolved
+      # build-target evidence this campaign's build-target accounting requires, and the
+      # measurement across the tests/perf/ modules named in
+      # scripts/perf_harness_runner.py's DEFAULT_PERF_MODULES (the single source of truth for
+      # which modules a dispatch measures), aggregating every per-benchmark record into one run
+      # record. timeout-minutes derived from a measured 54.53 s total across all five
+      # modules (direct-import, no pytest-collection overhead) plus Phase 2's 96.4 s median cold
+      # configure-plus-compile time (docs/plans/perf-ci-hardening/probe-runs/): roughly 150 s
+      # expected, so 15 minutes leaves generous headroom for a hung benchmark or
+      # pytest-collection overhead this campaign vehicle's own step has not yet measured
+      # directly. The coverage-gap-closure benchmark added afterward (pool_alloc_perf) generates
+      # 200 frames of 1000 bytes per repeat with no drain wait, adding a small fraction of a
+      # second per repeat against this existing headroom.
+      - name: Run Perf Harness
+        if: always()
+        timeout-minutes: 15
+        env:
+          HARNESS_CAMPAIGN_BRANCH: ${{ github.ref_name }}
+          HARNESS_DISPATCH_INDEX: ${{ github.run_number }}
+          HARNESS_INJECTED_LOAD: ${{ inputs.injected_load }}
+        run: |
+          mkdir -p perf-results
+          mkdir -p perf-harness-results
+          export PERF_RESULTS_DIR="${PWD}/perf-results"
+          export PERF_HARNESS_RESULTS_DIR="${PWD}/perf-harness-results"
+          python scripts/perf_harness_runner.py --out perf-harness-results/run-record.json
+
+      - name: Stop injected competing load
+        if: always()
+        run: |
+          if [ -f /tmp/injected-load/pids ]; then
+            while read -r pid; do kill "$pid" 2>/dev/null || true; done < /tmp/injected-load/pids
+          fi
+
+      # Reports the derived ccache hit rate, the raw hit and miss counts, the resolved ccache
+      # version, and the key that was used, to both the step summary (here) and the run record
+      # (perf-harness-results/run-record.json's build.ccache block), since criterion 5 names the
+      # step's report specifically. Reuses scripts/perf_harness_runner.py's own ccache
+      # statistics collection so there is exactly one implementation of the hit-rate derivation.
+      - name: Report ccache statistics
+        if: always()
+        run: |
+          {
+            echo "### ccache statistics"
+            echo "- Cache key: ccache-${{ runner.os }}-${{ steps.compiler-version.outputs.version }}-${{ hashFiles('src/**', 'include/**', 'CMakeLists.txt') }}"
+            python scripts/perf_harness_runner.py --print-ccache-summary
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload harness results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: harness-results-${{ github.run_id }}
+          path: |
+            perf-results/*.json
+            perf-harness-results/*.json
+# ----------------------------------------------------------------------------
