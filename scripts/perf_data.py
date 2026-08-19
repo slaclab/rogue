@@ -20,9 +20,27 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 TRACKED_BASELINE_REFS = ("main", "pre-release")
 COMPARISON_HIGHLIGHT_THRESHOLD_PERCENT = 5.0
+
+# The published field distinguishing a multi-sample harness-produced record from a
+# historical single-sample one. Permanent once published: see upgrade_summary().
+SAMPLE_PROVENANCE_KEY = "sample_provenance"
+SAMPLE_PROVENANCE_SINGLE_SAMPLE = "single-sample"
+SAMPLE_PROVENANCE_MULTI_SAMPLE_CLEAN = "multi-sample-clean"
+SAMPLE_PROVENANCE_VALUES = (SAMPLE_PROVENANCE_SINGLE_SAMPLE, SAMPLE_PROVENANCE_MULTI_SAMPLE_CLEAN)
+
+# The in-memory-only gate-eligibility marking. Never enters a published record;
+# upgrade_summary() is the sole place these are set.
+GATE_ELIGIBLE_KEY = "gate_eligible"
+GATE_ELIGIBLE_REASON_KEY = "gate_eligible_reason"
+GATE_REASON_UPGRADED_FROM_SCHEMA_VERSION_1 = "upgraded-from-schema-version-1"
+GATE_REASON_SINGLE_SAMPLE_PUBLISHED = "single-sample-published"
+GATE_REASON_UNRECOGNIZED_SCHEMA_VERSION = "unrecognized-schema-version"
+# Distinct from GATE_REASON_UNRECOGNIZED_SCHEMA_VERSION: this names a record whose
+# schema_version was recognized but whose sample_provenance value was not.
+GATE_REASON_UNRECOGNIZED_SAMPLE_PROVENANCE = "unrecognized-sample-provenance"
 
 
 def utc_now_iso() -> str:
@@ -178,6 +196,7 @@ def build_run_summary(
 
     return {
         "schema_version": SCHEMA_VERSION,
+        SAMPLE_PROVENANCE_KEY: SAMPLE_PROVENANCE_SINGLE_SAMPLE,
         "ref_name": ref_name,
         "ref_slug": slugify_ref_name(ref_name),
         "sha": sha,
@@ -187,6 +206,53 @@ def build_run_summary(
         "published_at": published_at or utc_now_iso(),
         "benchmarks": benchmarks,
     }
+
+
+def upgrade_summary(summary: dict[str, Any]) -> dict[str, Any]:
+    """Read a published run summary of schema_version 1 or 2, or of any
+    unrecognized version, and return a new in-memory dict that always carries
+    the version 2 shape plus an explicit gate-eligibility marking.
+
+    Never mutates its argument. Never adds, drops, renames, or reorders any
+    pre-existing key beyond what this docstring's own additions describe, and
+    never touches "benchmarks". A historical version 1 record, and any record
+    this reader does not recognize, comes back marked not gate-eligible with a
+    named reason, so old or unrecognized data can never silently become a gate
+    baseline.
+
+    A recognized schema_version whose sample_provenance value is absent, null, or
+    outside the recognized tuple is marked not gate-eligible with
+    GATE_REASON_UNRECOGNIZED_SAMPLE_PROVENANCE, distinct from
+    GATE_REASON_UNRECOGNIZED_SCHEMA_VERSION: the former means the version itself
+    was recognized and only the provenance value was not, the latter means the
+    version itself was not recognized.
+    """
+    upgraded = dict(summary)
+    version = upgraded.get("schema_version")
+
+    if version == 1:
+        upgraded["schema_version"] = SCHEMA_VERSION
+        upgraded[SAMPLE_PROVENANCE_KEY] = SAMPLE_PROVENANCE_SINGLE_SAMPLE
+        upgraded[GATE_ELIGIBLE_KEY] = False
+        upgraded[GATE_ELIGIBLE_REASON_KEY] = GATE_REASON_UPGRADED_FROM_SCHEMA_VERSION_1
+        return upgraded
+
+    if version == SCHEMA_VERSION:
+        sample_provenance = upgraded.get(SAMPLE_PROVENANCE_KEY)
+        if sample_provenance == SAMPLE_PROVENANCE_MULTI_SAMPLE_CLEAN:
+            upgraded[GATE_ELIGIBLE_KEY] = True
+            upgraded[GATE_ELIGIBLE_REASON_KEY] = None
+        elif sample_provenance in SAMPLE_PROVENANCE_VALUES:
+            upgraded[GATE_ELIGIBLE_KEY] = False
+            upgraded[GATE_ELIGIBLE_REASON_KEY] = GATE_REASON_SINGLE_SAMPLE_PUBLISHED
+        else:
+            upgraded[GATE_ELIGIBLE_KEY] = False
+            upgraded[GATE_ELIGIBLE_REASON_KEY] = GATE_REASON_UNRECOGNIZED_SAMPLE_PROVENANCE
+        return upgraded
+
+    upgraded[GATE_ELIGIBLE_KEY] = False
+    upgraded[GATE_ELIGIBLE_REASON_KEY] = GATE_REASON_UNRECOGNIZED_SCHEMA_VERSION
+    return upgraded
 
 
 def benchmarks_by_name(summary: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
