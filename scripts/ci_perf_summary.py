@@ -31,6 +31,7 @@ from perf_data import (
     row_highlight,
     summary_metadata,
     tracked_ref_relative_json_path,
+    upgrade_summary,
 )
 
 
@@ -77,10 +78,14 @@ def load_published_summary(
     gh_pages_ref: str | None = None,
 ) -> dict[str, Any] | None:
     if published_root is not None:
-        return _load_summary_from_root(published_root, relative_path)
-    if gh_pages_ref:
-        return _load_summary_from_git(gh_pages_ref, relative_path)
-    return None
+        summary = _load_summary_from_root(published_root, relative_path)
+    elif gh_pages_ref:
+        summary = _load_summary_from_git(gh_pages_ref, relative_path)
+    else:
+        summary = None
+    if summary is None:
+        return None
+    return upgrade_summary(summary)
 
 
 def _render_reference_line(label: str, summary: dict[str, Any] | None) -> str:
