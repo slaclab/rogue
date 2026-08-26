@@ -17,9 +17,40 @@ from pydm import Display
 from qtpy.QtWidgets import (QVBoxLayout, QTabWidget, QWidget)
 
 from pyrogue.pydm.widgets import DebugTree
+from pyrogue.pydm.widgets import IPythonPanel
+from pyrogue.pydm.widgets import TerminalPanel
 from pyrogue.pydm.widgets import SystemWindow
 
 Channel = 'rogue://0/root'
+
+
+def _parseBoolArg(args: list[str], name: str) -> bool | None:
+    """Return the boolean value of a ``name=<value>`` display argument.
+
+    Returns ``None`` when the argument is absent so the caller keeps its own
+    default. Matches on a leading prefix rather than the substring test used by
+    the older size and title arguments, which would otherwise false-positive on
+    a title that happened to contain the argument name.
+
+    Parameters
+    ----------
+    args : list[str]
+        Display argument list, each entry formatted as ``key=value``.
+    name : str
+        Argument name to look for.
+
+    Returns
+    -------
+    bool | None
+        Parsed value, or ``None`` when the argument is not present.
+    """
+    prefix = name + '='
+
+    for a in args:
+        if a.startswith(prefix):
+            return a[len(prefix):].strip().strip('\'"').lower() in ('1','true','yes','on')
+
+    return None
 
 
 class DefaultTop(Display):
@@ -44,6 +75,8 @@ class DefaultTop(Display):
         self.sizeX  = None
         self.sizeY  = None
         self.title  = None
+        self.enableTerminal = False
+        self.enableIPython = False
 
         if args is None:
             args = []
@@ -55,6 +88,14 @@ class DefaultTop(Display):
                 self.sizeY = int(a.split('=')[1])
             if 'title=' in a:
                 self.title = a.split('=')[1]
+
+        enableTerminal = _parseBoolArg(args, 'enableTerminal')
+        if enableTerminal is not None:
+            self.enableTerminal = enableTerminal
+
+        enableIPython = _parseBoolArg(args, 'enableIPython')
+        if enableIPython is not None:
+            self.enableIPython = enableIPython
 
         if self.title is None:
             self.title = "Rogue Server: {}".format(os.getenv('ROGUE_SERVERS'))
@@ -79,6 +120,24 @@ class DefaultTop(Display):
         # Debug Tree Tab  (Tab Index=1)
         var = DebugTree(parent=None, init_channel=Channel)
         self.tab.addTab(var,'Debug Tree')
+
+        # Terminal Tab  (Tab Index=2), added last so the existing tab indexes
+        # are unchanged whether or not the terminal is enabled. A top level tab
+        # gives the terminal the full window height, and unlike the other tabs
+        # it needs no Rogue channel, so it also works while the link is down.
+        self.terminal = None
+        if self.enableTerminal:
+            self.terminal = TerminalPanel(parent=None)
+            self.tab.addTab(self.terminal,'Terminal')
+
+        # IPython Tab, appended after the terminal for the same reason: the two
+        # options are independent, so neither one may move the tabs the other
+        # added. Unlike the terminal this one does use the channel, to reach the
+        # same server as the tabs above rather than a hardcoded address.
+        self.ipython = None
+        if self.enableIPython:
+            self.ipython = IPythonPanel(parent=None, init_channel=Channel)
+            self.tab.addTab(self.ipython,'IPython')
 
         # Set the default Tab view
         self.tab.setCurrentIndex(1)

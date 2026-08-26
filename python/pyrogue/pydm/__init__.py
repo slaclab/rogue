@@ -119,6 +119,8 @@ def runPyDM(
     maxListSize: int = 100,
     linkTimeout: float = 10.0,
     requestStallTimeout: float | None = None,
+    enableTerminal: bool = False,
+    enableIPython: bool = False,
 ) -> None:
     """Launch the default Rogue PyDM application.
 
@@ -152,6 +154,18 @@ def runPyDM(
         server stalled. ``None`` disables stalled-request detection, which is
         usually the right default unless the application has a strict upper
         bound for valid request duration.
+    enableTerminal : bool, optional
+        Add a local shell terminal tab beside the system log in the ``System``
+        tab. Defaults to ``False``. When enabled the GUI exposes an interactive
+        shell running as the user who launched the GUI, on the machine
+        displaying the GUI, not on the Rogue server.
+    enableIPython : bool, optional
+        Add an ``IPython`` tab holding an interactive session with a connected
+        :class:`pyrogue.interfaces.VirtualClient` bound as ``client`` and the
+        tree root as ``root``. Defaults to ``False``. Independent of
+        ``enableTerminal``. When enabled the GUI exposes arbitrary Python
+        execution as the user who launched the GUI, on the machine displaying
+        the GUI, not on the Rogue server.
 
     Returns
     -------
@@ -237,6 +251,8 @@ def runPyDM(
     args.append(f"title='{title}'")
     args.append(f"maxListExpand={maxListExpand}")
     args.append(f"maxListSize={maxListSize}")
+    args.append(f"enableTerminal={enableTerminal}")
+    args.append(f"enableIPython={enableIPython}")
 
     pydm.data_plugins.initialize_plugins_if_needed()
 

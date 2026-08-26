@@ -12,6 +12,7 @@
 import pytest
 
 try:
+    import pyte  # noqa: F401
     from pydm import Display  # noqa: F401
     from qtpy.QtWidgets import QWidget  # noqa: F401
 except Exception as exc:
@@ -83,6 +84,31 @@ def test_import_system_log():
 def test_import_system_window():
     from pyrogue.pydm.widgets.system_window import SystemWindow
     assert SystemWindow is not None
+
+
+def test_import_terminal():
+    from pyrogue.pydm.widgets.terminal import LinuxTerminal
+    assert LinuxTerminal is not None
+
+
+def test_terminal_not_registered_in_designer():
+    # Qt Designer eagerly instantiates every registered widget, which would
+    # fork a pseudo-terminal and a shell inside the design tool. Keep the
+    # terminal out of the Designer plugin group.
+    from pyrogue.pydm.widgets import designer
+    assert not hasattr(designer, 'LinuxTerminal')
+
+
+def test_import_ipython_panel():
+    from pyrogue.pydm.widgets.ipython import IPythonPanel
+    assert IPythonPanel is not None
+
+
+def test_ipython_not_registered_in_designer():
+    # Same reasoning as the terminal: a registered widget is instantiated by
+    # Designer, which would start an IPython session inside the design tool.
+    from pyrogue.pydm.widgets import designer
+    assert not hasattr(designer, 'IPythonPanel')
 
 
 def test_import_time_plotter():

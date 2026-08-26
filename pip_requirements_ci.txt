@@ -18,5 +18,7 @@ numpy
 flake8
 cpplint
 pydm
+pyte
+ipython
 matplotlib
 hwcounter; platform_system == "Linux" and platform_machine == "x86_64"

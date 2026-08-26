@@ -25,6 +25,8 @@ Widget Classes
    runcontrol
    datawriter
    systemlog
+   linuxterminal
+   ipythonpanel
    process
    debugtree
    pyroguelabel

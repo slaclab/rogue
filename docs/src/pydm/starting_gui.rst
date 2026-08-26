@@ -23,6 +23,11 @@ The default top-level display is implemented in
   widgets, and the system log.
 - ``Debug Tree`` for the full tree browser.
 
+``Debug Tree`` is the tab shown on startup. With ``enableTerminal=True`` a third
+``Terminal`` tab is appended, and with ``enableIPython=True`` an ``IPython`` tab
+is appended after it. Both are appended, so neither changes the position of the
+other tabs. See :doc:`terminal_tab` and :doc:`ipython_tab`.
+
 That structure is useful context when deciding whether the stock GUI is enough
 or whether a custom screen would better match the operator workflow.
 
@@ -225,6 +230,19 @@ The main :py:func:`pyrogue.pydm.runPyDM` options are:
   ``VirtualClient`` instances. This is disabled by default and usually only
   makes sense when the application has a strict upper bound for valid request
   duration.
+- ``enableTerminal``: Add an interactive shell as a top-level ``Terminal`` tab.
+  Defaults to ``False``. Also available as ``--terminal`` on the command line.
+- ``enableIPython``: Add an IPython session with a connected client as a
+  top-level ``IPython`` tab. Defaults to ``False``. Independent of
+  ``enableTerminal``. Also available as ``--ipython`` on the command line.
+
+.. warning::
+
+   ``enableTerminal`` and ``enableIPython`` both expose arbitrary code execution
+   on the machine displaying the GUI, as the user who launched it, not on the
+   Rogue server. PyDM read-only mode does not restrict either of them. Read
+   :doc:`terminal_tab` or :doc:`ipython_tab` before enabling them on an operator
+   console.
 
 The command-line launcher defaults to ``localhost:9099``. The Python helper's
 function signature currently defaults to ``localhost:9090``, so in practice it

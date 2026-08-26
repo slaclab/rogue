@@ -62,6 +62,7 @@ autodoc_mock_imports = [
     'PyQt5.QtDesigner',
     'matplotlib',
     'pyqtgraph',
+    'pyte',
     'sip',
     'softioc',
     'softioc.asyncio_dispatcher',
