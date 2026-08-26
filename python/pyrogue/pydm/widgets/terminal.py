@@ -256,11 +256,17 @@ class LinuxTerminal(QPlainTextEdit):
     ----------
     parent : QWidget | None, optional
         Parent Qt widget.
+    argv : list[str] | None, optional
+        Program to run on the pseudo-terminal. Defaults to the user's login
+        shell. Restarting reuses this, so a program that exits is replaced by
+        the same program rather than by a shell.
     """
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: QWidget | None = None, *,
+                 argv: list[str] | None = None) -> None:
         QPlainTextEdit.__init__(self, parent)
 
+        self._argv = argv
         self._masterFd = -1
         self._proc = None
         self._readNotifier = None
@@ -449,7 +455,8 @@ class LinuxTerminal(QPlainTextEdit):
         self._sawInput = False
 
         try:
-            self._proc, self._masterFd = spawnShell(self._screen.lines, self._screen.columns)
+            self._proc, self._masterFd = spawnShell(self._screen.lines, self._screen.columns,
+                                                    argv=self._argv)
         except (OSError, ValueError) as exc:
             self._notice(f'[cannot start a shell: {exc}]')
             return
@@ -890,19 +897,35 @@ class TerminalPanel(QWidget):
     ----------
     parent : QWidget | None, optional
         Parent Qt widget.
+    argv : list[str] | None, optional
+        Program to run, passed through to :class:`LinuxTerminal`. Defaults to
+        the user's login shell.
+    label : str, optional
+        Tab label to restore when reattaching.
+    windowTitle : str, optional
+        Title of the detached window.
+    noun : str, optional
+        What the detach button tooltips call the contents.
     """
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, parent: QWidget | None = None, *,
+                 argv: list[str] | None = None,
+                 label: str = 'Terminal',
+                 windowTitle: str = 'Rogue Terminal',
+                 noun: str = 'terminal') -> None:
         QWidget.__init__(self, parent)
 
         self._tab = None
         self._tabIndex = 0
-        self._tabLabel = 'Terminal'
+        self._tabLabel = label
+        self._windowTitle = windowTitle
+        self._attachTip = f'Move the {noun} into its own window'
+        self._detachTip = f'Put the {noun} back in the main window'
 
-        self.terminal = LinuxTerminal(parent=None)
+        self.terminal = LinuxTerminal(parent=None, argv=argv)
 
         self._button = QPushButton('Detach')
-        self._button.setToolTip('Move the terminal into its own window')
+        self._button.setToolTip(self._attachTip)
         # No focus, so clicking it does not take the keyboard away from the
         # shell and Tab completion is never captured by the button.
         self._button.setFocusPolicy(Qt.NoFocus)
@@ -966,11 +989,11 @@ class TerminalPanel(QWidget):
         # the GUI, so closing the GUI takes it down too instead of leaving a
         # stray window keeping the process alive.
         self.setParent(owner, Qt.Window)
-        self.setWindowTitle('Rogue Terminal')
+        self.setWindowTitle(self._windowTitle)
         self.resize(*_DETACHED_SIZE)
 
         self._button.setText('Reattach')
-        self._button.setToolTip('Put the terminal back in the main window')
+        self._button.setToolTip(self._detachTip)
 
         self.show()
         self.raise_()
@@ -994,7 +1017,7 @@ class TerminalPanel(QWidget):
         tab.setCurrentIndex(index)
 
         self._button.setText('Detach')
-        self._button.setToolTip('Move the terminal into its own window')
+        self._button.setToolTip(self._attachTip)
 
         self.terminal.setFocus(Qt.OtherFocusReason)
 

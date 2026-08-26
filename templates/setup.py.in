@@ -86,6 +86,7 @@ setup (
             'qtpy>=2.0',
             'pyqtgraph>=0.13',
             'pyte>=0.8',
+            'ipython',
         ],
     },
 )

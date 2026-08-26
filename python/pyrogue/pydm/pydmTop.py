@@ -17,6 +17,7 @@ from pydm import Display
 from qtpy.QtWidgets import (QVBoxLayout, QTabWidget, QWidget)
 
 from pyrogue.pydm.widgets import DebugTree
+from pyrogue.pydm.widgets import IPythonPanel
 from pyrogue.pydm.widgets import TerminalPanel
 from pyrogue.pydm.widgets import SystemWindow
 
@@ -75,6 +76,7 @@ class DefaultTop(Display):
         self.sizeY  = None
         self.title  = None
         self.enableTerminal = False
+        self.enableIPython = False
 
         if args is None:
             args = []
@@ -90,6 +92,10 @@ class DefaultTop(Display):
         enableTerminal = _parseBoolArg(args, 'enableTerminal')
         if enableTerminal is not None:
             self.enableTerminal = enableTerminal
+
+        enableIPython = _parseBoolArg(args, 'enableIPython')
+        if enableIPython is not None:
+            self.enableIPython = enableIPython
 
         if self.title is None:
             self.title = "Rogue Server: {}".format(os.getenv('ROGUE_SERVERS'))
@@ -123,6 +129,15 @@ class DefaultTop(Display):
         if self.enableTerminal:
             self.terminal = TerminalPanel(parent=None)
             self.tab.addTab(self.terminal,'Terminal')
+
+        # IPython Tab, appended after the terminal for the same reason: the two
+        # options are independent, so neither one may move the tabs the other
+        # added. Unlike the terminal this one does use the channel, to reach the
+        # same server as the tabs above rather than a hardcoded address.
+        self.ipython = None
+        if self.enableIPython:
+            self.ipython = IPythonPanel(parent=None, init_channel=Channel)
+            self.tab.addTab(self.ipython,'IPython')
 
         # Set the default Tab view
         self.tab.setCurrentIndex(1)

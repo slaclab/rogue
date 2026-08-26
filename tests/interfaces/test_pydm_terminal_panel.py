@@ -228,5 +228,21 @@ def test_shutdown_terminates_the_shell(tabbed):
     assert panel.terminal._proc is None
 
 
+# ---------------------------------------------------------------------------
+# Defaults
+# ---------------------------------------------------------------------------
+
+def test_defaults_are_a_login_shell_terminal(tabbed):
+    # The panel is parameterized so the IPython tab can reuse it. Nothing about
+    # the terminal's own presentation may drift as a result.
+    _tabs, panel = tabbed
+
+    assert panel.terminal._argv is None
+    assert panel._tabLabel == 'Terminal'
+    assert panel._windowTitle == 'Rogue Terminal'
+    assert panel._attachTip == 'Move the terminal into its own window'
+    assert panel._detachTip == 'Put the terminal back in the main window'
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

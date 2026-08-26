@@ -99,6 +99,18 @@ def test_terminal_not_registered_in_designer():
     assert not hasattr(designer, 'LinuxTerminal')
 
 
+def test_import_ipython_panel():
+    from pyrogue.pydm.widgets.ipython import IPythonPanel
+    assert IPythonPanel is not None
+
+
+def test_ipython_not_registered_in_designer():
+    # Same reasoning as the terminal: a registered widget is instantiated by
+    # Designer, which would start an IPython session inside the design tool.
+    from pyrogue.pydm.widgets import designer
+    assert not hasattr(designer, 'IPythonPanel')
+
+
 def test_import_time_plotter():
     from pyrogue.pydm.widgets.time_plotter import DebugDev as TimePlotDebugDev
     assert TimePlotDebugDev is not None

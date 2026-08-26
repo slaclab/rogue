@@ -175,3 +175,22 @@ def test_run_pydm_forwards_enable_terminal(monkeypatch):
     # Pins the exact string DefaultTop._parseBoolArg has to consume. This is the
     # only part of the option plumbing that spans two files.
     assert "enableTerminal=True" in _runPyDMArgs(monkeypatch, enableTerminal=True)
+
+
+def test_run_pydm_defaults_enable_ipython_to_false(monkeypatch):
+    assert "enableIPython=False" in _runPyDMArgs(monkeypatch)
+
+
+def test_run_pydm_forwards_enable_ipython(monkeypatch):
+    assert "enableIPython=True" in _runPyDMArgs(monkeypatch, enableIPython=True)
+
+
+def test_run_pydm_forwards_the_two_tab_options_independently(monkeypatch):
+    # Either option on its own must not drag the other along.
+    args = _runPyDMArgs(monkeypatch, enableIPython=True)
+    assert "enableIPython=True" in args
+    assert "enableTerminal=False" in args
+
+    args = _runPyDMArgs(monkeypatch, enableTerminal=True)
+    assert "enableTerminal=True" in args
+    assert "enableIPython=False" in args
