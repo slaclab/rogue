@@ -17,8 +17,9 @@
 #
 # Most of it involves no Rogue server: the console reports that it cannot connect
 # and hands over a prompt anyway, which is all those tests need. The integration
-# tests at the end do run one, because reading the tree and completing on it only
-# mean something against a server that is really there.
+# tests at the end do run one, because reading the tree, completing on it, and
+# exiting a session that holds a connected client only mean something against a
+# server that is really there.
 
 import importlib.util
 import time
@@ -301,6 +302,32 @@ def test_tab_completes_on_the_tree(qapp, connected):
     connected.terminal.sendInput(b'\t')
     assert _pump(qapp, connected.terminal, 'root.Dev', 30.0), \
         f"Tab did not complete: {connected.terminal.toPlainText()[-600:]!r}"
+
+
+@pytest.mark.integration
+@needsIPython
+def test_exiting_a_connected_session_starts_a_fresh_one(qapp, connected):
+    # Restarting on exit only works if the interpreter can exit, and a connected
+    # client used to keep it alive: the widget learns the session ended from the
+    # pty reporting end of file, which never comes while the child is still there.
+    first = connected.terminal._proc.pid
+
+    connected.terminal.sendInput(b'exit\r')
+
+    deadline = time.monotonic() + 90.0
+    while time.monotonic() < deadline:
+        qapp.processEvents()
+        proc = connected.terminal._proc
+        if proc is not None and proc.pid != first:
+            break
+        time.sleep(0.05)
+    else:
+        pytest.fail(f"console never restarted: {connected.terminal.toPlainText()[-600:]!r}")
+
+    # A restarted session is only useful if it reconnected, and it starts from a
+    # cleared view, so this needle can only come from the new one.
+    assert _pump(qapp, connected.terminal, 'are ready', 90.0), \
+        f"fresh session did not connect: {connected.terminal.toPlainText()[-600:]!r}"
 
 
 if __name__ == "__main__":
