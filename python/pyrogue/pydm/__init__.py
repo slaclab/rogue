@@ -119,6 +119,7 @@ def runPyDM(
     maxListSize: int = 100,
     linkTimeout: float = 10.0,
     requestStallTimeout: float | None = None,
+    enableTerminal: bool = False,
 ) -> None:
     """Launch the default Rogue PyDM application.
 
@@ -152,6 +153,11 @@ def runPyDM(
         server stalled. ``None`` disables stalled-request detection, which is
         usually the right default unless the application has a strict upper
         bound for valid request duration.
+    enableTerminal : bool, optional
+        Add a local shell terminal tab beside the system log in the ``System``
+        tab. Defaults to ``False``. When enabled the GUI exposes an interactive
+        shell running as the user who launched the GUI, on the machine
+        displaying the GUI, not on the Rogue server.
 
     Returns
     -------
@@ -237,6 +243,7 @@ def runPyDM(
     args.append(f"title='{title}'")
     args.append(f"maxListExpand={maxListExpand}")
     args.append(f"maxListSize={maxListSize}")
+    args.append(f"enableTerminal={enableTerminal}")
 
     pydm.data_plugins.initialize_plugins_if_needed()
 

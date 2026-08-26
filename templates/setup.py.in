@@ -85,6 +85,7 @@ setup (
             'pydm>=1.18',
             'qtpy>=2.0',
             'pyqtgraph>=0.13',
+            'pyte>=0.8',
         ],
     },
 )

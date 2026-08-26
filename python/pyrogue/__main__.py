@@ -28,6 +28,10 @@ parser.add_argument('--ui',
                     help='UI File for gui (cmd=gui)',
                     default=None)
 
+parser.add_argument('--terminal',
+                    help='Add a local shell terminal tab beside the system log (cmd=gui)',
+                    action='store_true')
+
 parser.add_argument('--details',
                     help='Show log details with stacktrace (cmd=syslog)',
                     action='store_true')
@@ -66,7 +70,7 @@ print("Connecting to {}".format(args.server))
 # GUI Client
 if args.cmd == 'gui':
     import pyrogue.pydm
-    pyrogue.pydm.runPyDM(serverList=args.server,ui=args.ui)
+    pyrogue.pydm.runPyDM(serverList=args.server,ui=args.ui,enableTerminal=args.terminal)
 
 elif args.cmd == 'timeplot':
     import pyrogue.pydm
