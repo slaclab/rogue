@@ -1133,6 +1133,14 @@ class VariableWrap : public rogue::interfaces::memory::Variable,
                  uint32_t retryCount);
 
     /**
+     * @brief Sets the verification flag before the Variable is added to a Block.
+     * @param verifyEn Resolved verification setting.
+     */
+    void setVerifyEn(bool verifyEn) {
+        verifyEn_ = verifyEn;
+    }
+
+    /**
      * @brief Updates bit-offset definition from Python.
      * @param bitOffset Python object containing new bit offsets.
      */
