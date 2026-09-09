@@ -234,13 +234,20 @@ def test_local_variables_exercise_public_variable_api():
         root.Dev.LocalString.set("updated")
         root.Dev.LocalFloat.set(2.5)
 
+        # Display channels carry text. A whole-number entry still has to retain
+        # the target variable's float type after parsing.
+        root.Dev.LocalFloat.setDisp("10")
+        with pytest.raises(pr.VariableError, match="Boolean display values"):
+            root.Dev.LocalFloat.setDisp("True")
+
         assert root.Dev.LocalInt.get() == 12
         assert root.Dev.LocalInt.typeStr == "int"
         assert root.Dev.LocalBool.get() is True
         assert root.Dev.LocalBool.typeStr == "bool"
         assert root.Dev.LocalString.get() == "updated"
         assert root.Dev.LocalString.typeStr == "str"
-        assert root.Dev.LocalFloat.get() == 2.5
+        assert root.Dev.LocalFloat.get() == 10.0
+        assert type(root.Dev.LocalFloat.get()) is float
         assert root.Dev.LocalFloat.typeStr == "float"
 
 
