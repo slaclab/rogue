@@ -102,9 +102,9 @@ rpr::Server::Server(const std::string& deviceName,
     memset(fpgaGid_, 0, 16);
     wakeFd_[0] = wakeFd_[1] = -1;
 
-    // Release the GIL for the ibverbs bring-up below (open device, reg_mr, create
-    // CQ/QP, modify to INIT, query GID) — blocking syscalls run while the Python
-    // caller holds the GIL.  Matches AxiStreamDma's constructor.  On a throw,
+    // Core releases the GIL while opening the device and allocating the
+    // protection domain.  Release it here for the remaining ibverbs bring-up
+    // (reg_mr, create CQ/QP, modify to INIT, query GID).  On a throw,
     // GilRelease's destructor re-acquires the GIL before the boost.python
     // exception translator runs.
     rogue::GilRelease noGil;
