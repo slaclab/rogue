@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unified Logging Update &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Unified Logging Update &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -116,7 +116,7 @@ logging style for new Python code:</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 
 <span class="n">pr</span><span class="o">.</span><span class="n">setUnifiedLogging</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">&#39;pyrogue&#39;</span><span class="p">,</span> <span class="s1">&#39;INFO&#39;</span><span class="p">)</span>
+<span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">'pyrogue'</span><span class="p">,</span> <span class="s1">'INFO'</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="what-changed">
@@ -126,7 +126,7 @@ different APIs. Python code used <code class="docutils literal notranslate"><spa
 modules required direct calls such as:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;udp&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">'udp'</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>That direct API is still supported, but for new Python applications the
@@ -155,8 +155,8 @@ unified behavior.</p></li>
 <p>Before:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;udp&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;rssi&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">'udp'</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">'rssi'</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>After:</p>
@@ -164,8 +164,8 @@ unified behavior.</p></li>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 
 <span class="n">pr</span><span class="o">.</span><span class="n">setUnifiedLogging</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">&#39;udp&#39;</span><span class="p">,</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
-<span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">&#39;rssi&#39;</span><span class="p">,</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
+<span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">'udp'</span><span class="p">,</span> <span class="s1">'DEBUG'</span><span class="p">)</span>
+<span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">'rssi'</span><span class="p">,</span> <span class="s1">'DEBUG'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

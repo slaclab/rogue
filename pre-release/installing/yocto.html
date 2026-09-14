@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Rogue In Yocto &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Setting Up Rogue In Yocto &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -135,25 +135,25 @@
 # rogue recipe for Yocto
 #
 
-ROGUE_VERSION = &quot;6.7.0&quot;
-ROGUE_MD5SUM  = &quot;51e6797e9f3fb61b22ad0804a471b760&quot;
+ROGUE_VERSION = "6.7.0"
+ROGUE_MD5SUM  = "51e6797e9f3fb61b22ad0804a471b760"
 
-SUMMARY = &quot;Recipe to build Rogue&quot;
-HOMEPAGE =&quot;https://github.com/slaclab/rogue&quot;
-LICENSE = &quot;MIT&quot;
-LIC_FILES_CHKSUM = &quot;file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302&quot;
+SUMMARY = "Recipe to build Rogue"
+HOMEPAGE ="https://github.com/slaclab/rogue"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-SRC_URI = &quot;https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz&quot;
-SRC_URI[md5sum] = &quot;${ROGUE_MD5SUM}&quot;
-INSANE_SKIP += &quot;src-uri-bad&quot;
+SRC_URI = "https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz"
+SRC_URI[md5sum] = "${ROGUE_MD5SUM}"
+INSANE_SKIP += "src-uri-bad"
 
-S = &quot;${WORKDIR}/rogue-${ROGUE_VERSION}&quot;
-PROVIDES = &quot;rogue&quot;
-EXTRA_OECMAKE += &quot;-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}&quot;
+S = "${WORKDIR}/rogue-${ROGUE_VERSION}"
+PROVIDES = "rogue"
+EXTRA_OECMAKE += "-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}"
 
 inherit cmake python3native setuptools3
 
-DEPENDS += &quot; \
+DEPENDS += " \
    python3 \
    python3-native \
    python3-numpy \
@@ -168,9 +168,9 @@ DEPENDS += &quot; \
    zeromq \
    boost \
    cmake \
-&quot;
+"
 
-RDEPENDS:${PN} += &quot; \
+RDEPENDS:${PN} += " \
    python3-numpy \
    python3-pyzmq \
    python3-parse \
@@ -180,17 +180,17 @@ RDEPENDS:${PN} += &quot; \
    python3-pyserial \
    python3-json \
    python3-logging \
-&quot;
+"
 
-FILES:${PN}-dev += &quot;/usr/include/rogue/*&quot;
-FILES:${PN} += &quot;/usr/lib/*&quot;
+FILES:${PN}-dev += "/usr/include/rogue/*"
+FILES:${PN} += "/usr/lib/*"
 
 do_configure() {
    setup_target_config
    cmake_do_configure
    cmake --build ${B}
    bbplain $(cp -vH ${WORKDIR}/build/setup.py ${S}/.)
-   bbplain $(sed -i &quot;s/..\/python/python/&quot; ${S}/setup.py)
+   bbplain $(sed -i "s/..\/python/python/" ${S}/setup.py)
    setuptools3_do_configure
 }
 
@@ -217,7 +217,7 @@ do_install() {
 builds simpler. Add them to <code class="docutils literal notranslate"><span class="pre">EXTRA_OECMAKE</span></code> when you do not want RoCEv2 and
 want the recipe (<code class="docutils literal notranslate"><span class="pre">setuptools3</span></code>) to install the Python package into
 <code class="docutils literal notranslate"><span class="pre">DESTDIR</span></code> itself:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXTRA_OECMAKE</span> <span class="o">+=</span> <span class="s2">&quot;-DROGUE_INSTALL=system -DNO_ROCEV2=1 -DROGUE_SKIP_PIP_INSTALL=1&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXTRA_OECMAKE</span> <span class="o">+=</span> <span class="s2">"-DROGUE_INSTALL=system -DNO_ROCEV2=1 -DROGUE_SKIP_PIP_INSTALL=1"</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -231,7 +231,7 @@ handles the Python package into <code class="docutils literal notranslate"><span
 </div>
 <p>Step 3 - Add your application to the image installation list</p>
 <p>To enable compilation and installation of the rogue package in your Yocto project execute the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;IMAGE_INSTALL:append = </span><span class="se">\&quot;</span><span class="s2"> rogue</span><span class="se">\&quot;</span><span class="s2">&quot;</span>  <span class="o">&gt;&gt;</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">layer</span><span class="o">.</span><span class="n">conf</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">"IMAGE_INSTALL:append = </span><span class="se">\"</span><span class="s2"> rogue</span><span class="se">\"</span><span class="s2">"</span>  <span class="o">&gt;&gt;</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">layer</span><span class="o">.</span><span class="n">conf</span>
 </pre></div>
 </div>
 </section>

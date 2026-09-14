@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xilinx Protocols &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Xilinx Protocols &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -197,7 +197,7 @@ managed lifecycle.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.xilinx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rpx</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">JtagRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="n">jtagDest</span><span class="o">=</span><span class="mh">0x400</span><span class="p">,</span> <span class="n">xvcPort</span><span class="o">=</span><span class="mi">2542</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="n">jtagDest</span><span class="o">=</span><span class="mh">0x400</span><span class="p">,</span> <span class="n">xvcPort</span><span class="o">=</span><span class="mi">2542</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Open the firmware stream path that terminates at the JTAG bridge.</span>
@@ -226,7 +226,7 @@ script.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.xilinx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rpx</span>
 
 <span class="c1"># Open the stream path to the firmware JTAG bridge.</span>
-<span class="n">jtag_stream</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mh">0x400</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">jtag_stream</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="mh">0x400</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Start a local XVC server on tcp://127.0.0.1:2542.</span>
 <span class="n">xvc</span> <span class="o">=</span> <span class="n">rpx</span><span class="o">.</span><span class="n">Xvc</span><span class="p">(</span><span class="mi">2542</span><span class="p">)</span>
@@ -258,7 +258,7 @@ PyRogue <code class="docutils literal notranslate"><span class="pre">Root</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Open the firmware-facing stream path for the JTAG bridge endpoint.</span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">jtagStream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rha</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mh">0x400</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">jtagStream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rha</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"/dev/datadev_0"</span><span class="p">,</span><span class="w"> </span><span class="mh">0x400</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Start the local XVC server used by Vivado.</span>
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">xvc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpx</span><span class="o">::</span><span class="n">Xvc</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">2542</span><span class="p">);</span>
@@ -286,7 +286,7 @@ actual value after <code class="docutils literal notranslate"><span class="pre">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">xvc</span> <span class="o">=</span> <span class="n">rpx</span><span class="o">.</span><span class="n">Xvc</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>        <span class="c1"># kernel picks a free port</span>
 <span class="n">xvc</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
 <span class="n">port</span> <span class="o">=</span> <span class="n">xvc</span><span class="o">.</span><span class="n">getPort</span><span class="p">()</span>     <span class="c1"># e.g. 49152</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vivado target: localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Vivado target: localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For normal interactive use with Vivado Hardware Manager, pass the standard
@@ -340,7 +340,7 @@ Without a Root, call <code class="docutils literal notranslate"><span class="pre
 construction only if you want constructor or initial server-startup messages:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.xilinx&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">'pyrogue.xilinx'</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

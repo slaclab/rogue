@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RemoteCommand &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>RemoteCommand &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -224,8 +224,8 @@ back correctly</p></li>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;CountReset&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Pulse the hardware counter reset bit&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'CountReset'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Pulse the hardware counter reset bit'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -248,8 +248,8 @@ sequence.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DeviceUpdate&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Latch recently written configuration values&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'DeviceUpdate'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Latch recently written configuration values'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x3FC</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
@@ -270,8 +270,8 @@ the write of <code class="docutils literal notranslate"><span class="pre">1</spa
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FreezeDebug&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Write the debug freeze control field&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'FreezeDebug'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Write the debug freeze control field'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0xA0</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
@@ -294,8 +294,8 @@ the write of <code class="docutils literal notranslate"><span class="pre">1</spa
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FpgaReload&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Request FPGA reload through a posted write&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'FpgaReload'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Request FPGA reload through a posted write'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x104</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -319,8 +319,8 @@ does not match one of the standard one-line helpers directly.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SpecialKick&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Write the required three-step kick sequence&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'SpecialKick'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Write the required three-step kick sequence'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x20</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
@@ -343,8 +343,8 @@ command wrapper around a writable field.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;StartAddress&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Write the capture start address through a command node&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'StartAddress'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Write the capture start address through a command node'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x40</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
@@ -372,8 +372,8 @@ when the hardware action needs a small amount of extra policy.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReloadAtAddress&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Write a reload request using the current address field&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'ReloadAtAddress'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Write a reload request using the current address field'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x104</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>

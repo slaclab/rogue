@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._StreamReader &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.utilities.fileio._StreamReader &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,7 +125,7 @@
 <div class="viewcode-block" id="StreamReader">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/utilities/fileio/streamreader.html#pyrogue.utilities.fileio.StreamReader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StreamReader</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper ``pyrogue.Device`` around ``rogue.utilities.fileio.StreamReader``.</span>
+<span class="w">    </span><span class="sd">"""Wrapper ``pyrogue.Device`` around ``rogue.utilities.fileio.StreamReader``.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -138,53 +138,53 @@
 <span class="sd">    ----------</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional keyword arguments forwarded to ``pyrogue.Device``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DataFile&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Data File&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
-            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'DataFile'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Data File'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Open'</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Open data file.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Open data file.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Close'</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Close data file.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Close data file.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;isOpen&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'isOpen'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_isOpen</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Data file is open.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Data file is open.'</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open the configured input file.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Open the configured input file."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the current input file.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Close the current input file."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_isOpen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the reader has an open file.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return whether the reader has an open file."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">isOpen</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return wrapped stream reader endpoint.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return wrapped stream reader endpoint."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect this reader to ``other`` via stream API.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Connect this reader to ``other`` via stream API."""</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">other</span></div>
 

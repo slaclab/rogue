@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm.widgets.plot &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.pydm.widgets.plot &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -130,7 +130,7 @@
 <div class="viewcode-block" id="Plotter">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/plotter.html#pyrogue.pydm.widgets.Plotter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Plotter</span><span class="p">(</span><span class="n">PyDMFrame</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;PyDM widget that displays an incoming matplotlib figure published by a pyrogue Variable.</span>
+<span class="w">    </span><span class="sd">"""PyDM widget that displays an incoming matplotlib figure published by a pyrogue Variable.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -140,7 +140,7 @@
 <span class="sd">        Initial Rogue channel address.</span>
 <span class="sd">    show_toolbar : bool, optional</span>
 <span class="sd">        If ``True``, display the matplotlib navigation toolbar above the plot.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -160,7 +160,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_show_toolbar</span> <span class="o">=</span> <span class="n">show_toolbar</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the widget layout before embedding the plot widgets.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build the widget layout before embedding the plot widgets."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -168,7 +168,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_clear_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Release the current toolbar, canvas, and figure.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Release the current toolbar, canvas, and figure."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span> <span class="o">=</span> <span class="kc">None</span>
@@ -227,7 +227,7 @@
 <div class="viewcode-block" id="Plotter.connection_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/plotter.html#pyrogue.pydm.widgets.Plotter.connection_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">connection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the layout after the first successful channel connection.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build the layout after the first successful channel connection."""</span>
         <span class="n">build</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">!=</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">connected</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">connection_changed</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span>
 
@@ -240,7 +240,7 @@
 <div class="viewcode-block" id="Plotter.value_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/plotter.html#pyrogue.pydm.widgets.Plotter.value_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">value_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the displayed plot with the latest incoming figure.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Replace the displayed plot with the latest incoming figure."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_layout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_plot</span><span class="p">()</span>
 
@@ -260,7 +260,7 @@
 <div class="viewcode-block" id="Plotter.closeEvent">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/plotter.html#pyrogue.pydm.widgets.Plotter.closeEvent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Release embedded plot resources when the widget closes.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Release embedded plot resources when the widget closes."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_plot</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
 </div>

@@ -9,7 +9,7 @@ var searchData=
   ['err_5fnot_5fpresent_6',['ERR_NOT_PRESENT',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a1c07410e4db68f6bc688428328e89cde',1,'rogue::protocols::xilinx::JtagDriver']]],
   ['err_5fshift_7',['ERR_SHIFT',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ae0819dd2c209d122aa244b1a761c2038',1,'rogue::protocols::xilinx::JtagDriver']]],
   ['err_5ftruncated_8',['ERR_TRUNCATED',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a851ef6a876e7ab870882cde73ce6758e',1,'rogue::protocols::xilinx::JtagDriver']]],
-  ['error_9',['error',['../classrogue_1_1Logging.html#ace312bc00d8e73fd3aeaef993c6da7dd',1,'rogue::Logging::Error'],['../structDmaReadData.html#a08f2e6ec00655bfc8710dccd54617268',1,'DmaReadData::error']]],
+  ['error_9',['error',['../structDmaReadData.html#a08f2e6ec00655bfc8710dccd54617268',1,'DmaReadData::error'],['../classrogue_1_1Logging.html#ace312bc00d8e73fd3aeaef993c6da7dd',1,'rogue::Logging::Error']]],
   ['error_5f_10',['error_',['../classrogue_1_1interfaces_1_1memory_1_1Transaction.html#ac6ba743be1e85ed350b9794919da82bb',1,'rogue::interfaces::memory::Transaction']]],
   ['expecteddata_5f_11',['expectedData_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a144beff9f4247381a240e37057d703cc',1,'rogue::interfaces::memory::Block']]]
 ];

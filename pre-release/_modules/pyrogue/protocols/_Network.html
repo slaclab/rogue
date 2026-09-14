@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols._Network &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.protocols._Network &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -127,7 +127,7 @@
 <div class="viewcode-block" id="UdpRssiPack">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/network_udprssipack.html#pyrogue.protocols.UdpRssiPack">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UdpRssiPack</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    UDP-based network device with RSSI and Packetizer protocols.</span>
 
 <span class="sd">    Combines UDP transport with reliable stream protocol (rUDP) and packetizer</span>
@@ -153,13 +153,13 @@
 <span class="sd">        Run as server instead of client.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments passed to :class:`pyrogue.Device`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+        <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'127.0.0.1'</span><span class="p">,</span>
         <span class="n">jumbo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">packVer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -202,14 +202,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
 
         <span class="c1"># Set any user override of defaults</span>
-        <span class="n">defaults</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;defaults&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'defaults'</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">param_setters</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;locMaxBuffers&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxBuffers</span><span class="p">,</span>
-            <span class="s1">&#39;locCumAckTout&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocCumAckTout</span><span class="p">,</span>
-            <span class="s1">&#39;locRetranTout&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocRetranTout</span><span class="p">,</span>
-            <span class="s1">&#39;locNullTout&#39;</span>   <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocNullTout</span><span class="p">,</span>
-            <span class="s1">&#39;locMaxRetran&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxRetran</span><span class="p">,</span>
-            <span class="s1">&#39;locMaxCumAck&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxCumAck</span><span class="p">,</span>
+            <span class="s1">'locMaxBuffers'</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxBuffers</span><span class="p">,</span>
+            <span class="s1">'locCumAckTout'</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocCumAckTout</span><span class="p">,</span>
+            <span class="s1">'locRetranTout'</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocRetranTout</span><span class="p">,</span>
+            <span class="s1">'locNullTout'</span>   <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocNullTout</span><span class="p">,</span>
+            <span class="s1">'locMaxRetran'</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxRetran</span><span class="p">,</span>
+            <span class="s1">'locMaxCumAck'</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxCumAck</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">setter</span> <span class="ow">in</span> <span class="n">param_setters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">defaults</span><span class="p">:</span>
@@ -217,43 +217,43 @@
 
         <span class="c1"># Add variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;rssiOpen&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'rssiOpen'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getOpen</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;rssiDownCount&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'rssiDownCount'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getDownCount</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;rssiDropCount&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'rssiDropCount'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getDropCount</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;rssiRetranCount&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'rssiRetranCount'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getRetranCount</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locBusy&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locBusy'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocBusy</span><span class="p">(),</span>
             <span class="n">hidden</span>      <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -261,17 +261,17 @@
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locBusyCnt&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locBusyCnt'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocBusyCnt</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;remBusy&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'remBusy'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getRemBusy</span><span class="p">(),</span>
             <span class="n">hidden</span>      <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -279,163 +279,163 @@
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;remBusyCnt&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'remBusyCnt'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getRemBusyCnt</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locTryPeriod&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locTryPeriod'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocTryPeriod</span><span class="p">(),</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocTryPeriod</span><span class="p">(),</span>
             <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocTryPeriod</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locMaxBuffers&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locMaxBuffers'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxBuffers</span><span class="p">(),</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt8'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxBuffers</span><span class="p">(),</span>
             <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxBuffers</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locMaxSegment&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locMaxSegment'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxSegment</span><span class="p">(),</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt16'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxSegment</span><span class="p">(),</span>
             <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxSegment</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locCumAckTout&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locCumAckTout'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocCumAckTout</span><span class="p">(),</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt16'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocCumAckTout</span><span class="p">(),</span>
             <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocCumAckTout</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locRetranTout&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locRetranTout'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocRetranTout</span><span class="p">(),</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt16'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocRetranTout</span><span class="p">(),</span>
             <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocRetranTout</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locNullTout&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locNullTout'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocNullTout</span><span class="p">(),</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt16'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocNullTout</span><span class="p">(),</span>
             <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocNullTout</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locMaxRetran&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locMaxRetran'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxRetran</span><span class="p">(),</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt8'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxRetran</span><span class="p">(),</span>
             <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxRetran</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locMaxCumAck&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'locMaxCumAck'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxCumAck</span><span class="p">(),</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt8'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxCumAck</span><span class="p">(),</span>
             <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxCumAck</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curMaxBuffers&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'curMaxBuffers'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt8'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxBuffers</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curMaxSegment&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'curMaxSegment'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt16'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxSegment</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curCumAckTout&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'curCumAckTout'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt16'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curCumAckTout</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curRetranTout&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'curRetranTout'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt16'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curRetranTout</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curNullTout&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'curNullTout'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt16'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curNullTout</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curMaxRetran&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'curMaxRetran'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt8'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxRetran</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curMaxCumAck&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'curMaxCumAck'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt8'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxCumAck</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'stop'</span><span class="p">,</span>
             <span class="n">function</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;start&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'start'</span><span class="p">,</span>
             <span class="n">function</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
         <span class="p">))</span>
 
 <div class="viewcode-block" id="UdpRssiPack.application">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/network_udprssipack.html#pyrogue.protocols.UdpRssiPack.application">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">application</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">Application</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get the application interface for connecting to a destination.</span>
 
 <span class="sd">        Parameters</span>
@@ -447,19 +447,19 @@
 <span class="sd">        -------</span>
 <span class="sd">        object</span>
 <span class="sd">            Application interface for the packetizer.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UdpRssiPack.countReset">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/network_udprssipack.html#pyrogue.protocols.UdpRssiPack.countReset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset RSSI connection counters.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Reset RSSI connection counters."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">resetCounters</span><span class="p">()</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start RSSI/UDP transport and optionally wait for link-up.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Start RSSI/UDP transport and optionally wait for link-up."""</span>
         <span class="c1"># Start the RSSI connection</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferThreadStop</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
@@ -479,18 +479,18 @@
                         <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
 
                     <span class="k">if</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Establishing link ...&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Establishing link ..."</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
 
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Failing to connect using jumbo frames. &quot;</span>
-                            <span class="s2">&quot;Check interface MTU settings with ifconfig -a&quot;</span><span class="p">,</span>
+                            <span class="s2">"host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Failing to connect using jumbo frames. "</span>
+                            <span class="s2">"Check interface MTU settings with ifconfig -a"</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">,</span>
                         <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Link established. jumbo=</span><span class="si">%s</span><span class="s2">, maxPayload=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Link established. jumbo=</span><span class="si">%s</span><span class="s2">, maxPayload=</span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_jumbo</span><span class="p">,</span>
@@ -510,13 +510,13 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_applyNegotiatedRxBufferCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Program UDP RX buffers from the negotiated RSSI max-buffer count.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Program UDP RX buffers from the negotiated RSSI max-buffer count."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_udp</span><span class="o">.</span><span class="n">setRxBufferCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxBuffers</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Configured UDP RX buffer count to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">"host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Configured UDP RX buffer count to </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxBuffers</span><span class="p">(),</span>
@@ -524,7 +524,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_armServerRxBufferUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for server-side RSSI open, then program the negotiated RX depth.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Wait for server-side RSSI open, then program the negotiated RX depth."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_wait_open</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -537,7 +537,7 @@
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_wait_open</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the UDP/RSSI connection and clean up resources.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Stop the UDP/RSSI connection and clean up resources."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferThreadStop</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">False</span>

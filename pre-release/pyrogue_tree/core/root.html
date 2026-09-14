@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Root &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Root &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -174,8 +174,8 @@ transactions.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">axipcie</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">EvalBoard</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;EvalBoard&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Evaluation board root&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'EvalBoard'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Evaluation board root'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Create the memory-mapped hardware interface.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">memMap</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiMemMap</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
@@ -186,7 +186,7 @@ transactions.</p>
         <span class="c1"># Expose the tree to remote tools.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span>
             <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+            <span class="n">addr</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
@@ -211,7 +211,7 @@ construct the Root with <code class="docutils literal notranslate"><span class="
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">,</span> <span class="n">unifyLogs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MyRoot'</span><span class="p">,</span> <span class="n">unifyLogs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This enables Rogue C++ log forwarding into Python logging and disables the
@@ -220,17 +220,17 @@ then appear in <code class="docutils literal notranslate"><span class="pre">Root
 attached under the <code class="docutils literal notranslate"><span class="pre">pyrogue</span></code> logger tree.</p>
 <p>Example forwarded <code class="docutils literal notranslate"><span class="pre">SystemLog</span></code> entry:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1772812345.123456</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyrogue.rssi.controller&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Closing link. Server=0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;levelName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;levelNumber&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;rogueCpp&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;rogueTid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">48123</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;roguePid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;rogueLogger&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyrogue.rssi.controller&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;rogueTimestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1772812345.123456</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;rogueComponent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rssi&quot;</span>
+<span class="w">  </span><span class="nt">"created"</span><span class="p">:</span><span class="w"> </span><span class="mf">1772812345.123456</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pyrogue.rssi.controller"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Closing link. Server=0"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"levelName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WARNING"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"levelNumber"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"rogueCpp"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"rogueTid"</span><span class="p">:</span><span class="w"> </span><span class="mi">48123</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"roguePid"</span><span class="p">:</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"rogueLogger"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pyrogue.rssi.controller"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"rogueTimestamp"</span><span class="p">:</span><span class="w"> </span><span class="mf">1772812345.123456</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"rogueComponent"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rssi"</span>
 <span class="p">}</span>
 </pre></div>
 </div>

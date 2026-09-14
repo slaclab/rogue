@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LocalCommand &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>LocalCommand &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -206,8 +206,8 @@ stored default.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SoftReset&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Run the device software reset sequence&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'SoftReset'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Run the device software reset sequence'</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_soft_reset</span><span class="p">,</span>
         <span class="p">))</span>
 
@@ -232,14 +232,14 @@ an option string.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;LoadConfig&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Load configuration from a YAML file&#39;</span><span class="p">,</span>
-            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'LoadConfig'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Load configuration from a YAML file'</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_config</span><span class="p">,</span>
         <span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_load_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Here, <code class="docutils literal notranslate"><span class="pre">value=''</span></code> establishes the default argument shape and lets the command
@@ -265,9 +265,9 @@ tree-facing command and the Python logic are defined together.</p>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Capture the current state to disk&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Capture the current state to disk'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">SaveSnapshot</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">saveYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">saveYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'RO'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>The decorator form still creates a <code class="docutils literal notranslate"><span class="pre">LocalCommand(function=...)</span></code> under the
@@ -280,11 +280,11 @@ context:</p>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Report the current device path&#39;</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Report the current device path'</span><span class="p">)</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">ReportPath</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Command path: </span><span class="si">{</span><span class="n">cmd</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Command path: </span><span class="si">{</span><span class="n">cmd</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
-        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate a requested number of frames&#39;</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Generate a requested number of frames'</span><span class="p">)</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">GenerateFrames</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
                 <span class="n">dev</span><span class="o">.</span><span class="n">_gen_frame</span><span class="p">()</span>
@@ -318,8 +318,8 @@ real implementation is attached.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReservedAction&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Placeholder command for a future software action&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'ReservedAction'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Placeholder command for a future software action'</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">nothing</span><span class="p">,</span>
         <span class="p">))</span>
 </pre></div>

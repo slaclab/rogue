@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blocks &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Blocks &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -522,17 +522,17 @@ in a <code class="docutils literal notranslate"><span class="pre">RemoteVariable
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyUInt</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
     <span class="n">ptype</span> <span class="o">=</span> <span class="nb">int</span>
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:#x}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:#x}</span><span class="s1">'</span>
     <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitsize</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitsize</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="s1">'little'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="s1">'little'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -547,13 +547,13 @@ in a <code class="docutils literal notranslate"><span class="pre">RemoteVariable
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRegister&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Register with custom Model&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'MyRegister'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Register with custom Model'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
             <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">MyUInt</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
         <span class="p">))</span>
 </pre></div>
 </div>
@@ -573,12 +573,12 @@ Variables that overlap that address range.</p>
         <span class="c1"># Pre-allocate a 128-byte Block at offset 0x1000.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addCustomBlock</span><span class="p">(</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="mh">0x1000</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRegister&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'MyRegister'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
             <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
         <span class="p">))</span>
 </pre></div>
 </div>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AxiStreamDma &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -157,7 +157,8 @@
 <li><p>TX path: Rogue frames written to hardware via DMA.</p></li>
 <li><p>Optional zero-copy buffer mapping when supported by the driver/path. Threading model:</p></li>
 <li><p>A background RX thread is started in the constructor and runs until <code class="docutils literal notranslate"><span class="pre">stop()</span></code> or destruction.</p></li>
-<li><p>TX operations execute synchronously in caller context of <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code>. Zero-copy model:</p></li>
+<li><p>TX operations execute synchronously in caller context of <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code>.</p></li>
+<li><p>Callers must quiesce public driver operations before calling <code class="docutils literal notranslate"><span class="pre">stop()</span></code>. Deferred zero-copy buffer returns may overlap <code class="docutils literal notranslate"><span class="pre">stop()</span></code> and are serialized against descriptor closure internally. Zero-copy model:</p></li>
 <li><p>Enabled by default per device path.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">zeroCopyDisable(path)</span></code> must be called before first instance on that path.</p></li>
 <li><p>When disabled or unavailable, frame buffers are allocated from local pool and copied on TX/RX boundaries.</p></li>

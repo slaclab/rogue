@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Model &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue._Model &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -127,7 +127,7 @@
 <div class="viewcode-block" id="wordCount">
 <a class="viewcode-back" href="../../api/python/pyrogue/wordcount.html#pyrogue.wordCount">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">wordCount</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">wordSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of words needed to represent a bit width.</span>
+<span class="w">    </span><span class="sd">"""Return the number of words needed to represent a bit width.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -140,7 +140,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    int</span>
 <span class="sd">        Number of words required.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">//</span> <span class="n">wordSize</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">bits</span> <span class="o">%</span> <span class="n">wordSize</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">bits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -151,7 +151,7 @@
 <div class="viewcode-block" id="byteCount">
 <a class="viewcode-back" href="../../api/python/pyrogue/bytecount.html#pyrogue.byteCount">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">byteCount</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of bytes needed to represent a bit width.</span>
+<span class="w">    </span><span class="sd">"""Return the number of bytes needed to represent a bit width.</span>
 <span class="sd">    Equivalent to ``wordCount(bits, 8)``.</span>
 
 <span class="sd">    Parameters</span>
@@ -163,7 +163,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    int</span>
 <span class="sd">        Number of bytes required.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">wordCount</span><span class="p">(</span><span class="n">bits</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span></div>
 
 
@@ -171,7 +171,7 @@
 <div class="viewcode-block" id="reverseBits">
 <a class="viewcode-back" href="../../api/python/pyrogue/reversebits.html#pyrogue.reverseBits">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">reverseBits</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the bit-reversed value of an integer.</span>
+<span class="w">    </span><span class="sd">"""Return the bit-reversed value of an integer.</span>
 <span class="sd">    For example, if ``value = 0b1010`` and ``bitSize = 4``, then the function will return ``0b0101``.</span>
 
 <span class="sd">    Parameters</span>
@@ -185,7 +185,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    int</span>
 <span class="sd">        Bit-reversed value.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bitSize</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
@@ -198,7 +198,7 @@
 <div class="viewcode-block" id="twosComplement">
 <a class="viewcode-back" href="../../api/python/pyrogue/twoscomplement.html#pyrogue.twosComplement">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">twosComplement</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the two&#39;s complement of an integer value.</span>
+<span class="w">    </span><span class="sd">"""Compute the two's complement of an integer value.</span>
 <span class="sd">    For example, if ``value = 0b1010`` and ``bitSize = 4``, then the function will return ``0b0110``.</span>
 
 <span class="sd">    Parameters</span>
@@ -211,8 +211,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    int</span>
-<span class="sd">        Two&#39;s complement value.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        Two's complement value.</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">bitSize</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># if sign bit is set e.g., 8bit: 128-255</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bitSize</span><span class="p">)</span>      <span class="c1"># compute negative value</span>
     <span class="k">return</span> <span class="n">value</span>                            <span class="c1"># return positive value as is</span></div>
@@ -220,20 +220,20 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">ModelMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metaclass for the Model class.</span>
+<span class="w">    </span><span class="sd">"""Metaclass for the Model class.</span>
 <span class="sd">    This metaclass is used to create a dictionary of subclasses of the Model class.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize metaclass state for model-instance caching.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize metaclass state for model-instance caching."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">subclasses</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return cached model instances for identical constructor arguments.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return cached model instances for identical constructor arguments."""</span>
         <span class="n">key</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">subclasses</span><span class="p">:</span>
-            <span class="c1">#print(f&#39;Key: {key}&#39;)</span>
+            <span class="c1">#print(f'Key: {key}')</span>
             <span class="n">inst</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">subclasses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">inst</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">subclasses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -242,7 +242,7 @@
 <div class="viewcode-block" id="Model">
 <a class="viewcode-back" href="../../api/python/pyrogue/model.html#pyrogue.Model">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ModelMeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extensible base class which describes how a data type is represented and accessed</span>
 <span class="sd">    using the Rogue Variables and Blocks</span>
 
@@ -273,7 +273,7 @@
 <span class="sd">        Flag indicating if value is signed. Default=False</span>
 
 <span class="sd">    endianness: str</span>
-<span class="sd">        Endianness indicator. &#39;little&#39; or &#39;big&#39;. Default=&#39;little&#39;</span>
+<span class="sd">        Endianness indicator. 'little' or 'big'. Default='little'</span>
 
 <span class="sd">    bitReverse: bool</span>
 <span class="sd">        Bit reversal flag.</span>
@@ -282,23 +282,23 @@
 <span class="sd">        Block processing ID. See :ref:`interfaces_memory_constants_ptype`</span>
 
 <span class="sd">    isBigEndian: bool</span>
-<span class="sd">        True if endianness = &#39;big&#39;</span>
+<span class="sd">        True if endianness = 'big'</span>
 
 <span class="sd">    ndType: np.dtype</span>
 <span class="sd">        numpy type value (bool, int32, int64, uint32, uin64, float32, float64)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">fstring</span>     <span class="o">=</span> <span class="kc">None</span>
     <span class="n">encoding</span>    <span class="o">=</span> <span class="kc">None</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span>
     <span class="n">signed</span>      <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">endianness</span>  <span class="o">=</span> <span class="s1">&#39;little&#39;</span>
+    <span class="n">endianness</span>  <span class="o">=</span> <span class="s1">'little'</span>
     <span class="n">bitReverse</span>  <span class="o">=</span> <span class="kc">False</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">binPoint</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize base model metadata.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize base model metadata."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span> <span class="o">=</span> <span class="n">binPoint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span>  <span class="o">=</span> <span class="n">bitSize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
@@ -306,13 +306,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">isBigEndian</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the model is big endian.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">&#39;big&#39;</span>
+<span class="w">        </span><span class="sd">"""Return True if the model is big endian."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">'big'</span>
 
 <div class="viewcode-block" id="Model.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/model.html#pyrogue.Model.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert the python value to byte array.</span>
 <span class="sd">        Implement this method in a subclass to define the conversion.</span>
 
@@ -325,7 +325,7 @@
 <span class="sd">        -------</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -333,7 +333,7 @@
 <div class="viewcode-block" id="Model.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/model.html#pyrogue.Model.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a byte array to a python value.</span>
 <span class="sd">        Implement this method in a subclass to define the conversion.</span>
 
@@ -346,14 +346,14 @@
 <span class="sd">        -------</span>
 <span class="sd">        Python value.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="Model.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/model.html#pyrogue.Model.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a string to a python value.</span>
 <span class="sd">        Implement this method in a subclass to define the conversion.</span>
 
@@ -366,25 +366,25 @@
 <span class="sd">        -------</span>
 <span class="sd">        Python value.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="Model.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/model.html#pyrogue.Model.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum value for the Model type.</span>
+<span class="w">        </span><span class="sd">"""Return the minimum value for the Model type.</span>
 <span class="sd">        Implement this method in a subclass to define the minimum value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="Model.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/model.html#pyrogue.Model.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum value for the Model type.</span>
+<span class="w">        </span><span class="sd">"""Return the maximum value for the Model type.</span>
 <span class="sd">        Implement this method in a subclass to define the maximum value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 </div>
 
@@ -393,29 +393,29 @@
 <div class="viewcode-block" id="UInt">
 <a class="viewcode-back" href="../../api/python/pyrogue/uint.html#pyrogue.UInt">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UInt</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for unsigned integers.</span>
+<span class="w">    </span><span class="sd">"""Model class for unsigned integers.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bitSize : int</span>
 <span class="sd">        Number of bits being represented.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">int</span>
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:#x}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:#x}</span><span class="s1">'</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">UInt</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize unsigned-integer model metadata.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize unsigned-integer model metadata."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span> <span class="k">if</span> <span class="n">bitSize</span> <span class="o">&lt;=</span> <span class="mi">32</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
 
     <span class="c1"># Called by raw read/write and when bitsize &gt; 64</span>
 <div class="viewcode-block" id="UInt.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/uint.html#pyrogue.UInt.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 
 
 <span class="sd">        Parameters</span>
@@ -428,7 +428,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        bytes</span>
 <span class="sd">            Byte array representation of the value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span></div>
 
 
@@ -436,7 +436,7 @@
 <div class="viewcode-block" id="UInt.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/uint.html#pyrogue.UInt.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 
 
 <span class="sd">        Parameters</span>
@@ -449,14 +449,14 @@
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
 <span class="sd">            Python value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UInt.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/uint.html#pyrogue.UInt.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 
 
 <span class="sd">        Parameters</span>
@@ -469,39 +469,39 @@
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
 <span class="sd">            Python value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UInt.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/uint.html#pyrogue.UInt.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum unisgned int (0). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum unisgned int (0). """</span>
         <span class="k">return</span> <span class="mi">0</span></div>
 
 
 <div class="viewcode-block" id="UInt.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/uint.html#pyrogue.UInt.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum unsigned int (2**bitSize-1). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum unsigned int (2**bitSize-1). """</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span></div>
 </div>
 
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">UIntReversed</span><span class="p">(</span><span class="n">UInt</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for unsigned integers, stored in reverse bit order.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for unsigned integers, stored in reverse bit order."""</span>
 
     <span class="n">modelId</span>    <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span> <span class="c1"># Not yet supported</span>
     <span class="n">bitReverse</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize reversed-bit unsigned-integer model metadata.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize reversed-bit unsigned-integer model metadata."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a python int value to a byte array.</span>
 
 <span class="sd">        Parameters</span>
@@ -514,12 +514,12 @@
 <span class="sd">        -------</span>
 <span class="sd">        bytes</span>
 <span class="sd">            Byte array representation of the value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">valueReverse</span> <span class="o">=</span> <span class="n">reverseBits</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">valueReverse</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a byte array to a python int value.</span>
 
 <span class="sd">        Parameters</span>
@@ -532,7 +532,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
 <span class="sd">            Python value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">valueReverse</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">reverseBits</span><span class="p">(</span><span class="n">valueReverse</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span>
 
@@ -540,21 +540,21 @@
 <div class="viewcode-block" id="Int">
 <a class="viewcode-back" href="../../api/python/pyrogue/int.html#pyrogue.Int">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Int</span><span class="p">(</span><span class="n">UInt</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for signed integers.</span>
+<span class="w">    </span><span class="sd">"""Model class for signed integers.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bitSize : int</span>
 <span class="sd">        Number of bits being represented.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Override these and inherit everything else from UInt</span>
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:d}</span><span class="s1">'</span>
     <span class="n">signed</span>      <span class="o">=</span> <span class="kc">True</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Int</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize signed-integer model metadata.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize signed-integer model metadata."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="k">if</span> <span class="n">bitSize</span> <span class="o">&lt;=</span> <span class="mi">32</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 
@@ -562,7 +562,7 @@
 <div class="viewcode-block" id="Int.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/int.html#pyrogue.Int.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a python int value to a byte array.</span>
 
 <span class="sd">        Parameters</span>
@@ -576,7 +576,7 @@
 <span class="sd">        bytes</span>
 <span class="sd">            Byte array representation of the value.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)):</span>
             <span class="n">newValue</span> <span class="o">=</span> <span class="n">value</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Strip upper bits</span>
             <span class="n">ba</span> <span class="o">=</span> <span class="n">newValue</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -590,7 +590,7 @@
 <div class="viewcode-block" id="Int.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/int.html#pyrogue.Int.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a byte array to a python int value.</span>
 
 <span class="sd">        Parameters</span>
@@ -603,7 +603,7 @@
 <span class="sd">        int</span>
 <span class="sd">            Python value.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span><span class="o">*</span><span class="mi">8</span><span class="p">)):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -619,7 +619,7 @@
 <div class="viewcode-block" id="Int.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/int.html#pyrogue.Int.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a string to a python int value.</span>
 
 <span class="sd">        Parameters</span>
@@ -633,7 +633,7 @@
 <span class="sd">            Python value.</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="c1"># perform twos complement if necessary</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
@@ -644,60 +644,60 @@
 <div class="viewcode-block" id="Int.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/int.html#pyrogue.Int.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum signed int (-2**(bitSize-1)). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum signed int (-2**(bitSize-1)). """</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Int.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/int.html#pyrogue.Int.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum signed int (2**(bitSize-1)-1). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum signed int (2**(bitSize-1)-1). """</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span></div>
 </div>
 
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">UIntBE</span><span class="p">(</span><span class="n">UInt</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for big endian unsigned integers.</span>
+<span class="w">    </span><span class="sd">"""Model class for big endian unsigned integers.</span>
 <span class="sd">    Inherits from UInt.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">IntBE</span><span class="p">(</span><span class="n">Int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for big endian integers.</span>
+<span class="w">    </span><span class="sd">"""Model class for big endian integers.</span>
 <span class="sd">    Inherits from Int.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span>
 
 
 <div class="viewcode-block" id="Bool">
 <a class="viewcode-back" href="../../api/python/pyrogue/bool.html#pyrogue.Bool">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Bool</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for booleans.</span>
+<span class="w">    </span><span class="sd">"""Model class for booleans.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bitSize : int</span>
 <span class="sd">        Number of bits being represented. Must be 1.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">bool</span>
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="p">{</span><span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;True&#39;</span><span class="p">}</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="p">{</span><span class="kc">False</span><span class="p">:</span> <span class="s1">'False'</span><span class="p">,</span> <span class="kc">True</span><span class="p">:</span> <span class="s1">'True'</span><span class="p">}</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Bool</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize boolean model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 1&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize boolean model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 1"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Bool.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/bool.html#pyrogue.Bool.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a python bool value to a byte array.</span>
 
 <span class="sd">        Parameters</span>
@@ -711,14 +711,14 @@
 <span class="sd">            Byte array representation of the value.</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Bool.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/bool.html#pyrogue.Bool.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a byte array to a python bool value.</span>
 
 <span class="sd">        Parameters</span>
@@ -732,14 +732,14 @@
 <span class="sd">            Python value.</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Bool.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/bool.html#pyrogue.Bool.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a string to a python bool value.</span>
+<span class="w">        </span><span class="sd">"""Convert a string to a python bool value.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -754,21 +754,21 @@
 <span class="sd">        ----------</span>
 <span class="sd">        string :</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"true"</span></div>
 
 
 <div class="viewcode-block" id="Bool.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/bool.html#pyrogue.Bool.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum bool (0). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum bool (0). """</span>
         <span class="k">return</span> <span class="mi">0</span></div>
 
 
 <div class="viewcode-block" id="Bool.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/bool.html#pyrogue.Bool.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum bool (1). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum bool (1). """</span>
         <span class="k">return</span> <span class="mi">1</span></div>
 </div>
 
@@ -777,29 +777,29 @@
 <div class="viewcode-block" id="String">
 <a class="viewcode-back" href="../../api/python/pyrogue/string.html#pyrogue.String">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">String</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for strings.</span>
+<span class="w">    </span><span class="sd">"""Model class for strings.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bitSize : int</span>
 <span class="sd">        Number of bits being represented.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">encoding</span>    <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span>
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span>
+    <span class="n">encoding</span>    <span class="o">=</span> <span class="s1">'utf-8'</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">str</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">String</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize string model metadata.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize string model metadata."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">//</span><span class="mi">8</span><span class="si">}</span><span class="s1">)&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">//</span><span class="mi">8</span><span class="si">}</span><span class="s1">)'</span>
 
 
 <div class="viewcode-block" id="String.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/string.html#pyrogue.String.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a python string value to a byte array.</span>
 
 <span class="sd">        Parameters</span>
@@ -811,7 +811,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        bytearray</span>
 <span class="sd">            Byte array representation of the value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">ba</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
         <span class="n">ba</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">ba</span></div>
@@ -820,7 +820,7 @@
 <div class="viewcode-block" id="String.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/string.html#pyrogue.String.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a byte array to a python string value.</span>
 
 <span class="sd">        Parameters</span>
@@ -832,7 +832,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            Python value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">ba</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span></div>
 
@@ -840,7 +840,7 @@
 <div class="viewcode-block" id="String.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/string.html#pyrogue.String.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a string to a python string value.</span>
 
 <span class="sd">        Parameters</span>
@@ -852,7 +852,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            Python string value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">string</span></div>
 </div>
 
@@ -861,30 +861,30 @@
 <div class="viewcode-block" id="Float">
 <a class="viewcode-back" href="../../api/python/pyrogue/float.html#pyrogue.Float">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 32-bit floating point numbers.</span>
+<span class="w">    </span><span class="sd">"""Model class for 32-bit floating point numbers.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bitSize : int</span>
 <span class="sd">        Number of bits being represented. Must be 32.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:f}</span><span class="s1">'</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">float</span>
-    <span class="n">fstring</span>     <span class="o">=</span> <span class="s1">&#39;f&#39;</span>
+    <span class="n">fstring</span>     <span class="o">=</span> <span class="s1">'f'</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Float</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize 32-bit float model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">32</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 32&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize 32-bit float model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">32</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 32"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Float.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float.html#pyrogue.Float.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a python float value to a byte array.</span>
 
 <span class="sd">        Parameters</span>
@@ -897,14 +897,14 @@
 <span class="sd">        bytearray</span>
 <span class="sd">            Byte array representation of the value.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fstring</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Float.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float.html#pyrogue.Float.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a byte array to a python float value.</span>
 
 <span class="sd">        Parameters</span>
@@ -917,14 +917,14 @@
 <span class="sd">        float</span>
 <span class="sd">            Python value.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fstring</span><span class="p">,</span> <span class="n">ba</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Float.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/float.html#pyrogue.Float.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a string to a python float value.</span>
 
 <span class="sd">        Parameters</span>
@@ -936,21 +936,21 @@
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Python value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Float.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float.html#pyrogue.Float.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum 32-bit float (-3.4e38). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum 32-bit float (-3.4e38). """</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">3.4e38</span></div>
 
 
 <div class="viewcode-block" id="Float.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float.html#pyrogue.Float.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum 32-bit float (3.4e38). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum 32-bit float (3.4e38). """</span>
         <span class="k">return</span> <span class="mf">3.4e38</span></div>
 </div>
 
@@ -959,81 +959,81 @@
 <div class="viewcode-block" id="Double">
 <a class="viewcode-back" href="../../api/python/pyrogue/double.html#pyrogue.Double">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Double</span><span class="p">(</span><span class="n">Float</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 64-bit floats.</span>
+<span class="w">    </span><span class="sd">"""Model class for 64-bit floats.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bitSize : int</span>
 <span class="sd">        Number of bits being represented. Must be 64.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;d&#39;</span>
+    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">'d'</span>
     <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Double</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize 64-bit float model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">64</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 64&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize 64-bit float model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">64</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 64"</span>
         <span class="n">Model</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Double.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/double.html#pyrogue.Double.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum 64-bit float (-1.80e308). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum 64-bit float (-1.80e308). """</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">1.80e308</span></div>
 
 
 <div class="viewcode-block" id="Double.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/double.html#pyrogue.Double.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum 64-bit float (1.80e308). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum 64-bit float (1.80e308). """</span>
         <span class="k">return</span> <span class="mf">1.80e308</span></div>
 </div>
 
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FloatBE</span><span class="p">(</span><span class="n">Float</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 32-bit floats stored as big endian&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for 32-bit floats stored as big endian"""</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span>
-    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;!f&#39;</span>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span>
+    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">'!f'</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">DoubleBE</span><span class="p">(</span><span class="n">Double</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 64-bit floats stored as big endian&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for 64-bit floats stored as big endian"""</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span>
-    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;!d&#39;</span>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span>
+    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">'!d'</span>
 
 
 <div class="viewcode-block" id="Float16">
 <a class="viewcode-back" href="../../api/python/pyrogue/float16.html#pyrogue.Float16">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float16</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 16-bit half-precision floating point numbers.</span>
+<span class="w">    </span><span class="sd">"""Model class for 16-bit half-precision floating point numbers.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bitSize : int</span>
 <span class="sd">        Number of bits being represented. Must be 16.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:f}</span><span class="s1">'</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">float</span>
-    <span class="n">fstring</span>     <span class="o">=</span> <span class="s1">&#39;e&#39;</span>
+    <span class="n">fstring</span>     <span class="o">=</span> <span class="s1">'e'</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Float16</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize 16-bit float model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 16&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize 16-bit float model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 16"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Float16&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'Float16'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float16</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Float16.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float16.html#pyrogue.Float16.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a python float value to a byte array.</span>
 
 <span class="sd">        Parameters</span>
@@ -1051,14 +1051,14 @@
 <span class="sd">        Uses ``struct.pack`` with IEEE 754 round-to-nearest-even. The C++ Block</span>
 <span class="sd">        path (``floatToHalf``) uses truncation instead, so values that fall on</span>
 <span class="sd">        a rounding boundary may differ by 1 ULP between the two paths.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fstring</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Float16.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float16.html#pyrogue.Float16.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a byte array to a python float value.</span>
 
 <span class="sd">        Parameters</span>
@@ -1071,14 +1071,14 @@
 <span class="sd">        float</span>
 <span class="sd">            Python value.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fstring</span><span class="p">,</span> <span class="n">ba</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="Float16.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/float16.html#pyrogue.Float16.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert a string to a python float value.</span>
 
 <span class="sd">        Parameters</span>
@@ -1090,21 +1090,21 @@
 <span class="sd">        -------</span>
 <span class="sd">        float</span>
 <span class="sd">            Python value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Float16.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float16.html#pyrogue.Float16.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum 16-bit float (-65504). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum 16-bit float (-65504). """</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">65504.0</span></div>
 
 
 <div class="viewcode-block" id="Float16.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float16.html#pyrogue.Float16.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum 16-bit float (65504). &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum 16-bit float (65504). """</span>
         <span class="k">return</span> <span class="mf">65504.0</span></div>
 </div>
 
@@ -1113,17 +1113,17 @@
 <div class="viewcode-block" id="Float16BE">
 <a class="viewcode-back" href="../../api/python/pyrogue/float16.html#pyrogue.Float16BE">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float16BE</span><span class="p">(</span><span class="n">Float16</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 16-bit floats stored as big endian&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for 16-bit floats stored as big endian"""</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span>
-    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;!e&#39;</span></div>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span>
+    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">'!e'</span></div>
 
 
 
 <div class="viewcode-block" id="Float8">
 <a class="viewcode-back" href="../../api/python/pyrogue/float8.html#pyrogue.Float8">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float8</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 8-bit E4M3 floating point numbers (NVIDIA FP8).</span>
+<span class="w">    </span><span class="sd">"""Model class for 8-bit E4M3 floating point numbers (NVIDIA FP8).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1136,29 +1136,29 @@
 <span class="sd">    Bias = 7. No infinity representation. NaN encoded as 0x7F.</span>
 <span class="sd">    Maximum representable value is 448.0.</span>
 <span class="sd">    Supported by NVIDIA Hopper (H100) and Blackwell GPUs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:f}</span><span class="s1">'</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">float</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Float8</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize 8-bit E4M3 float model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 8&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize 8-bit E4M3 float model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 8"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Float8&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'Float8'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Float8.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float8.html#pyrogue.Float8.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert float to 1-byte E4M3 encoding.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Convert float to 1-byte E4M3 encoding."""</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
         <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">bytearray</span><span class="p">([</span><span class="mh">0x7F</span><span class="p">])</span>
         <span class="c1"># Get float32 bit pattern</span>
-        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'I'</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">sign</span> <span class="o">=</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x80</span>
         <span class="n">exp32</span> <span class="o">=</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">23</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
         <span class="n">mant32</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">&amp;</span> <span class="mh">0x7FFFFF</span>
@@ -1184,11 +1184,11 @@
 <div class="viewcode-block" id="Float8.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float8.html#pyrogue.Float8.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode 1-byte E4M3 encoding to float.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Decode 1-byte E4M3 encoding to float."""</span>
         <span class="n">f8</span> <span class="o">=</span> <span class="n">ba</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c1"># Both 0x7F and 0xFF are NaN</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">f8</span> <span class="o">&amp;</span> <span class="mh">0x7F</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x7F</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'nan'</span><span class="p">)</span>
         <span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">f8</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="k">else</span> <span class="mf">1.0</span>
         <span class="n">exponent</span> <span class="o">=</span> <span class="p">(</span><span class="n">f8</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x0F</span>
         <span class="n">mantissa</span> <span class="o">=</span> <span class="n">f8</span> <span class="o">&amp;</span> <span class="mh">0x07</span>
@@ -1204,21 +1204,21 @@
 <div class="viewcode-block" id="Float8.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/float8.html#pyrogue.Float8.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a string into a float value.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Parse a string into a float value."""</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Float8.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float8.html#pyrogue.Float8.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum representable value (-448.0).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum representable value (-448.0)."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">448.0</span></div>
 
 
 <div class="viewcode-block" id="Float8.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float8.html#pyrogue.Float8.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum representable value (448.0).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum representable value (448.0)."""</span>
         <span class="k">return</span> <span class="mf">448.0</span></div>
 </div>
 
@@ -1227,16 +1227,16 @@
 <div class="viewcode-block" id="Float8BE">
 <a class="viewcode-back" href="../../api/python/pyrogue/float8.html#pyrogue.Float8BE">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float8BE</span><span class="p">(</span><span class="n">Float8</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 8-bit E4M3 floats stored as big endian.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for 8-bit E4M3 floats stored as big endian."""</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span></div>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span></div>
 
 
 
 <div class="viewcode-block" id="BFloat16">
 <a class="viewcode-back" href="../../api/python/pyrogue/bfloat16.html#pyrogue.BFloat16">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BFloat16</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 16-bit Brain Float (BFloat16) numbers.</span>
+<span class="w">    </span><span class="sd">"""Model class for 16-bit Brain Float (BFloat16) numbers.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1249,71 +1249,71 @@
 <span class="sd">    Bias = 127. Supports infinity and NaN. Maximum representable finite value</span>
 <span class="sd">    is approximately 3.39e38 (same range as float32).</span>
 <span class="sd">    Supported by NVIDIA Ampere (A100), Hopper (H100), and Blackwell GPUs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:f}</span><span class="s1">'</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">float</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">BFloat16</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize 16-bit BFloat16 model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 16&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize 16-bit BFloat16 model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">16</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 16"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;BFloat16&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'BFloat16'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BFloat16.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/bfloat16.html#pyrogue.BFloat16.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert float to 2-byte BFloat16 encoding.</span>
+<span class="w">        </span><span class="sd">"""Convert float to 2-byte BFloat16 encoding.</span>
 
 <span class="sd">        BFloat16 is the upper 16 bits of the float32 bit pattern.</span>
 <span class="sd">        All special values (NaN, infinity, zero, subnormals) are preserved.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="c1"># Get float32 bit pattern as uint32, take upper 16 bits</span>
-        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'I'</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">exp</span> <span class="o">=</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">23</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
         <span class="n">mant</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">&amp;</span> <span class="mh">0x7FFFFF</span>
         <span class="n">bf16</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span>
         <span class="c1"># Preserve NaN: truncation can clear payload bits, turning NaN into Inf.</span>
         <span class="k">if</span> <span class="n">exp</span> <span class="o">==</span> <span class="mh">0xFF</span> <span class="ow">and</span> <span class="n">mant</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">bf16</span> <span class="o">&amp;</span> <span class="mh">0x007F</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">bf16</span> <span class="o">|=</span> <span class="mh">0x0001</span>
-        <span class="n">endian</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">&#39;big&#39;</span> <span class="k">else</span> <span class="s1">&#39;&lt;&#39;</span>
-        <span class="k">return</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">endian</span><span class="si">}</span><span class="s1">H&#39;</span><span class="p">,</span> <span class="n">bf16</span><span class="p">))</span></div>
+        <span class="n">endian</span> <span class="o">=</span> <span class="s1">'&gt;'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">'big'</span> <span class="k">else</span> <span class="s1">'&lt;'</span>
+        <span class="k">return</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">endian</span><span class="si">}</span><span class="s1">H'</span><span class="p">,</span> <span class="n">bf16</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="BFloat16.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/bfloat16.html#pyrogue.BFloat16.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode 2-byte BFloat16 encoding to float.</span>
+<span class="w">        </span><span class="sd">"""Decode 2-byte BFloat16 encoding to float.</span>
 
 <span class="sd">        Reconstructs float32 by shifting the 16-bit pattern left by 16.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">endian</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">&#39;big&#39;</span> <span class="k">else</span> <span class="s1">&#39;&lt;&#39;</span>
-        <span class="n">bf16</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">endian</span><span class="si">}</span><span class="s1">H&#39;</span><span class="p">,</span> <span class="n">ba</span><span class="p">[:</span><span class="mi">2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">endian</span> <span class="o">=</span> <span class="s1">'&gt;'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">'big'</span> <span class="k">else</span> <span class="s1">'&lt;'</span>
+        <span class="n">bf16</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">endian</span><span class="si">}</span><span class="s1">H'</span><span class="p">,</span> <span class="n">ba</span><span class="p">[:</span><span class="mi">2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">bits</span> <span class="o">=</span> <span class="n">bf16</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span>
-        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">bits</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'I'</span><span class="p">,</span> <span class="n">bits</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="BFloat16.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/bfloat16.html#pyrogue.BFloat16.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a string into a float value.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Parse a string into a float value."""</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BFloat16.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/bfloat16.html#pyrogue.BFloat16.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum representable finite BFloat16 value (~-3.39e38).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum representable finite BFloat16 value (~-3.39e38)."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">3.3895313892515355e+38</span></div>
 
 
 <div class="viewcode-block" id="BFloat16.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/bfloat16.html#pyrogue.BFloat16.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum representable finite BFloat16 value (~3.39e38).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum representable finite BFloat16 value (~3.39e38)."""</span>
         <span class="k">return</span> <span class="mf">3.3895313892515355e+38</span></div>
 </div>
 
@@ -1322,16 +1322,16 @@
 <div class="viewcode-block" id="BFloat16BE">
 <a class="viewcode-back" href="../../api/python/pyrogue/bfloat16.html#pyrogue.BFloat16BE">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BFloat16BE</span><span class="p">(</span><span class="n">BFloat16</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for BFloat16 floats stored as big endian.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for BFloat16 floats stored as big endian."""</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span></div>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span></div>
 
 
 
 <div class="viewcode-block" id="TensorFloat32">
 <a class="viewcode-back" href="../../api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TensorFloat32</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 32-bit TensorFloat32 (NVIDIA TF32) numbers.</span>
+<span class="w">    </span><span class="sd">"""Model class for 32-bit TensorFloat32 (NVIDIA TF32) numbers.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1345,69 +1345,69 @@
 <span class="sd">    with the lower 13 mantissa bits zeroed. Supports infinity and NaN.</span>
 <span class="sd">    Maximum representable finite value is approximately 3.40e38.</span>
 <span class="sd">    Supported by NVIDIA Ampere (A100), Hopper (H100), and Blackwell GPUs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:f}</span><span class="s1">'</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">float</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">TensorFloat32</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize 32-bit TensorFloat32 model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">32</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 32&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize 32-bit TensorFloat32 model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">32</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 32"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;TensorFloat32&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'TensorFloat32'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TensorFloat32.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert float to 4-byte TensorFloat32 encoding.</span>
+<span class="w">        </span><span class="sd">"""Convert float to 4-byte TensorFloat32 encoding.</span>
 
 <span class="sd">        TF32 zeros the lower 13 mantissa bits of the float32 bit pattern.</span>
 <span class="sd">        All special values (NaN, infinity, zero, subnormals) are preserved.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'I'</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">tf32</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">&amp;</span> <span class="mh">0xFFFFE000</span>
         <span class="c1"># Preserve NaN: masking can clear payload bits, turning NaN into Inf.</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&amp;</span> <span class="mh">0x7F800000</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x7F800000</span> <span class="ow">and</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&amp;</span> <span class="mh">0x007FFFFF</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> \
                 <span class="p">(</span><span class="n">tf32</span> <span class="o">&amp;</span> <span class="mh">0x007FFFFF</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">tf32</span> <span class="o">|=</span> <span class="mh">0x00002000</span>
-        <span class="n">endian</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">&#39;big&#39;</span> <span class="k">else</span> <span class="s1">&#39;&lt;&#39;</span>
-        <span class="k">return</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">endian</span><span class="si">}</span><span class="s1">I&#39;</span><span class="p">,</span> <span class="n">tf32</span><span class="p">))</span></div>
+        <span class="n">endian</span> <span class="o">=</span> <span class="s1">'&gt;'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">'big'</span> <span class="k">else</span> <span class="s1">'&lt;'</span>
+        <span class="k">return</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">endian</span><span class="si">}</span><span class="s1">I'</span><span class="p">,</span> <span class="n">tf32</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="TensorFloat32.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode 4-byte TensorFloat32 encoding to float.</span>
+<span class="w">        </span><span class="sd">"""Decode 4-byte TensorFloat32 encoding to float.</span>
 
 <span class="sd">        TF32 bit pattern is a valid float32 with lower 13 mantissa bits</span>
 <span class="sd">        zeroed. Direct reinterpretation as float32 is sufficient.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">endian</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">&#39;big&#39;</span> <span class="k">else</span> <span class="s1">&#39;&lt;&#39;</span>
-        <span class="n">tf32</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">endian</span><span class="si">}</span><span class="s1">I&#39;</span><span class="p">,</span> <span class="n">ba</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">tf32</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
+<span class="sd">        """</span>
+        <span class="n">endian</span> <span class="o">=</span> <span class="s1">'&gt;'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">'big'</span> <span class="k">else</span> <span class="s1">'&lt;'</span>
+        <span class="n">tf32</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">endian</span><span class="si">}</span><span class="s1">I'</span><span class="p">,</span> <span class="n">ba</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'I'</span><span class="p">,</span> <span class="n">tf32</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="TensorFloat32.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a string into a float value.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Parse a string into a float value."""</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="TensorFloat32.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum representable finite TF32 value (~-3.40e38).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum representable finite TF32 value (~-3.40e38)."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">3.4011621342146535e+38</span></div>
 
 
 <div class="viewcode-block" id="TensorFloat32.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum representable finite TF32 value (~3.40e38).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum representable finite TF32 value (~3.40e38)."""</span>
         <span class="k">return</span> <span class="mf">3.4011621342146535e+38</span></div>
 </div>
 
@@ -1416,16 +1416,16 @@
 <div class="viewcode-block" id="TensorFloat32BE">
 <a class="viewcode-back" href="../../api/python/pyrogue/tensorfloat32.html#pyrogue.TensorFloat32BE">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TensorFloat32BE</span><span class="p">(</span><span class="n">TensorFloat32</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for TensorFloat32 floats stored as big endian.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for TensorFloat32 floats stored as big endian."""</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span></div>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span></div>
 
 
 
 <div class="viewcode-block" id="Float6">
 <a class="viewcode-back" href="../../api/python/pyrogue/float6.html#pyrogue.Float6">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float6</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 6-bit E3M2 floating point numbers (NVIDIA Blackwell FP6).</span>
+<span class="w">    </span><span class="sd">"""Model class for 6-bit E3M2 floating point numbers (NVIDIA Blackwell FP6).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1440,27 +1440,27 @@
 <span class="sd">    Maximum representable value is 28.0.</span>
 <span class="sd">    Stored in lower 6 bits of a uint8_t byte.</span>
 <span class="sd">    Supported by NVIDIA Blackwell GPUs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:f}</span><span class="s1">'</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">float</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Float6</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize 6-bit E3M2 float model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 8&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize 6-bit E3M2 float model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 8"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Float6&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'Float6'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Float6.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float6.html#pyrogue.Float6.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert float to 1-byte E3M2 encoding (6 active bits in uint8).</span>
+<span class="w">        </span><span class="sd">"""Convert float to 1-byte E3M2 encoding (6 active bits in uint8).</span>
 
 <span class="sd">        NaN and infinity inputs are clamped to max finite value (+/-28.0)</span>
 <span class="sd">        since E3M2 has no NaN or infinity encodings.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
         <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="n">math</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
@@ -1470,7 +1470,7 @@
                 <span class="n">sign</span> <span class="o">=</span> <span class="mh">0x00</span>  <span class="c1"># positive max for NaN</span>
             <span class="k">return</span> <span class="nb">bytearray</span><span class="p">([</span><span class="n">sign</span> <span class="o">|</span> <span class="mh">0x1F</span><span class="p">])</span>
         <span class="c1"># Get float32 bit pattern</span>
-        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'I'</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">sign</span> <span class="o">=</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">26</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x20</span>
         <span class="n">exp32</span> <span class="o">=</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">23</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
         <span class="n">mant32</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">&amp;</span> <span class="mh">0x7FFFFF</span>
@@ -1496,10 +1496,10 @@
 <div class="viewcode-block" id="Float6.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float6.html#pyrogue.Float6.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode 1-byte E3M2 encoding to float.</span>
+<span class="w">        </span><span class="sd">"""Decode 1-byte E3M2 encoding to float.</span>
 
 <span class="sd">        All 64 bit patterns decode to finite values or zero (no NaN/Inf).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f6</span> <span class="o">=</span> <span class="n">ba</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x3F</span>  <span class="c1"># mask to 6 bits</span>
         <span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">f6</span> <span class="o">&amp;</span> <span class="mh">0x20</span><span class="p">)</span> <span class="k">else</span> <span class="mf">1.0</span>
         <span class="n">exponent</span> <span class="o">=</span> <span class="p">(</span><span class="n">f6</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x07</span>
@@ -1516,21 +1516,21 @@
 <div class="viewcode-block" id="Float6.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/float6.html#pyrogue.Float6.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a string into a float value.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Parse a string into a float value."""</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Float6.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float6.html#pyrogue.Float6.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum representable value (-28.0).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum representable value (-28.0)."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">28.0</span></div>
 
 
 <div class="viewcode-block" id="Float6.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float6.html#pyrogue.Float6.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum representable value (28.0).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum representable value (28.0)."""</span>
         <span class="k">return</span> <span class="mf">28.0</span></div>
 </div>
 
@@ -1539,16 +1539,16 @@
 <div class="viewcode-block" id="Float6BE">
 <a class="viewcode-back" href="../../api/python/pyrogue/float6.html#pyrogue.Float6BE">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float6BE</span><span class="p">(</span><span class="n">Float6</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 6-bit E3M2 floats stored as big endian.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for 6-bit E3M2 floats stored as big endian."""</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span></div>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span></div>
 
 
 
 <div class="viewcode-block" id="Float4">
 <a class="viewcode-back" href="../../api/python/pyrogue/float4.html#pyrogue.Float4">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float4</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 4-bit E2M1 floating point numbers (NVIDIA Blackwell FP4).</span>
+<span class="w">    </span><span class="sd">"""Model class for 4-bit E2M1 floating point numbers (NVIDIA Blackwell FP4).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1564,27 +1564,27 @@
 <span class="sd">    Maximum representable value is 6.0.</span>
 <span class="sd">    Stored in lower 4 bits of a uint8_t byte.</span>
 <span class="sd">    Supported by NVIDIA Blackwell GPUs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1">&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:f}</span><span class="s1">'</span>
     <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">float</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Float4</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize 4-bit E2M1 float model metadata.&quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 8&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize 4-bit E2M1 float model metadata."""</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 8"</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Float4&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'Float4'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Float4.toBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float4.html#pyrogue.Float4.toBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytearray</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert float to 1-byte E2M1 encoding (4 active bits in uint8).</span>
+<span class="w">        </span><span class="sd">"""Convert float to 1-byte E2M1 encoding (4 active bits in uint8).</span>
 
 <span class="sd">        NaN and infinity inputs are clamped to max finite value (+/-6.0)</span>
 <span class="sd">        since E2M1 has no NaN or infinity encodings.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
         <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="n">math</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
@@ -1594,7 +1594,7 @@
                 <span class="n">sign</span> <span class="o">=</span> <span class="mh">0x00</span>  <span class="c1"># positive max for NaN</span>
             <span class="k">return</span> <span class="nb">bytearray</span><span class="p">([</span><span class="n">sign</span> <span class="o">|</span> <span class="mh">0x07</span><span class="p">])</span>
         <span class="c1"># Get float32 bit pattern</span>
-        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'I'</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'f'</span><span class="p">,</span> <span class="n">v</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">sign</span> <span class="o">=</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">28</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x08</span>
         <span class="n">exp32</span> <span class="o">=</span> <span class="p">(</span><span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">23</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
         <span class="n">mant32</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">&amp;</span> <span class="mh">0x7FFFFF</span>
@@ -1620,10 +1620,10 @@
 <div class="viewcode-block" id="Float4.fromBytes">
 <a class="viewcode-back" href="../../api/python/pyrogue/float4.html#pyrogue.Float4.fromBytes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode 1-byte E2M1 encoding to float.</span>
+<span class="w">        </span><span class="sd">"""Decode 1-byte E2M1 encoding to float.</span>
 
 <span class="sd">        All 16 bit patterns decode to finite values or zero (no NaN/Inf).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">f4</span> <span class="o">=</span> <span class="n">ba</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x0F</span>  <span class="c1"># mask to 4 bits</span>
         <span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">f4</span> <span class="o">&amp;</span> <span class="mh">0x08</span><span class="p">)</span> <span class="k">else</span> <span class="mf">1.0</span>
         <span class="n">exponent</span> <span class="o">=</span> <span class="p">(</span><span class="n">f4</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x03</span>
@@ -1640,21 +1640,21 @@
 <div class="viewcode-block" id="Float4.fromString">
 <a class="viewcode-back" href="../../api/python/pyrogue/float4.html#pyrogue.Float4.fromString">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a string into a float value.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Parse a string into a float value."""</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Float4.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float4.html#pyrogue.Float4.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum representable value (-6.0).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum representable value (-6.0)."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">6.0</span></div>
 
 
 <div class="viewcode-block" id="Float4.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/float4.html#pyrogue.Float4.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum representable value (6.0).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum representable value (6.0)."""</span>
         <span class="k">return</span> <span class="mf">6.0</span></div>
 </div>
 
@@ -1663,16 +1663,16 @@
 <div class="viewcode-block" id="Float4BE">
 <a class="viewcode-back" href="../../api/python/pyrogue/float4.html#pyrogue.Float4BE">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Float4BE</span><span class="p">(</span><span class="n">Float4</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for 4-bit E2M1 floats stored as big endian.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Model class for 4-bit E2M1 floats stored as big endian."""</span>
 
-    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span></div>
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">'big'</span></div>
 
 
 
 <div class="viewcode-block" id="Fixed">
 <a class="viewcode-back" href="../../api/python/pyrogue/fixed.html#pyrogue.Fixed">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Fixed</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Model class for fixed point signed integers</span>
 
 <span class="sd">    Parameters</span>
@@ -1682,29 +1682,29 @@
 
 <span class="sd">    binPoint : int</span>
 <span class="sd">        Specifies the bit location of the binary point, where bit zero is the least significant bit.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">pytype</span>  <span class="o">=</span> <span class="nb">float</span>
     <span class="n">signed</span>  <span class="o">=</span> <span class="kc">True</span>
     <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Fixed</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">binPoint</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize signed fixed-point model metadata.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize signed fixed-point model metadata."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">,</span><span class="n">binPoint</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Fixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'Fixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Fixed.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/fixed.html#pyrogue.Fixed.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum representable signed fixed-point value.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum representable signed fixed-point value."""</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Fixed.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/fixed.html#pyrogue.Fixed.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum representable signed fixed-point value.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum representable signed fixed-point value."""</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="p">)</span></div>
 </div>
 
@@ -1712,7 +1712,7 @@
 <div class="viewcode-block" id="UFixed">
 <a class="viewcode-back" href="../../api/python/pyrogue/ufixed.html#pyrogue.UFixed">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UFixed</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Model class for fixed point unsigned integers</span>
 
 <span class="sd">    Parameters</span>
@@ -1722,29 +1722,29 @@
 
 <span class="sd">    binPoint : int</span>
 <span class="sd">        Specifies the bit location of the binary point, where bit zero is the least significant bit.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">pytype</span>  <span class="o">=</span> <span class="nb">float</span>
     <span class="n">signed</span>  <span class="o">=</span> <span class="kc">False</span>
     <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">UFixed</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">binPoint</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize unsigned fixed-point model metadata.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize unsigned fixed-point model metadata."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">,</span><span class="n">binPoint</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;UFixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'UFixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">'</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
 <div class="viewcode-block" id="UFixed.minValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/ufixed.html#pyrogue.UFixed.minValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimum representable unsigned fixed-point value (0).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the minimum representable unsigned fixed-point value (0)."""</span>
         <span class="k">return</span> <span class="mf">0.0</span></div>
 
 
 <div class="viewcode-block" id="UFixed.maxValue">
 <a class="viewcode-back" href="../../api/python/pyrogue/ufixed.html#pyrogue.UFixed.maxValue">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum representable unsigned fixed-point value.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the maximum representable unsigned fixed-point value."""</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="p">)</span></div>
 </div>
 

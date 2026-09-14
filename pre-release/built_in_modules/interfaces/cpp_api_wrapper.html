@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wrapping Rogue In C++ &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Wrapping Rogue In C++ &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -130,10 +130,10 @@ node traversal, command execution, variable access, and root-level listeners.</p
 <h2>Creating A Root Wrapper<a class="headerlink" href="#creating-a-root-wrapper" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Bsp</span></code> can construct and start a PyRogue root directly from Python module/class
 names:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/api/Bsp.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/api/Bsp.h"</span>
 
 <span class="c1">// Imports pyrogue.examples and constructs ExampleRoot().</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">api</span><span class="o">::</span><span class="n">Bsp</span><span class="w"> </span><span class="n">bsp</span><span class="p">(</span><span class="s">&quot;pyrogue.examples&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ExampleRoot&quot;</span><span class="p">);</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">api</span><span class="o">::</span><span class="n">Bsp</span><span class="w"> </span><span class="n">bsp</span><span class="p">(</span><span class="s">"pyrogue.examples"</span><span class="p">,</span><span class="w"> </span><span class="s">"ExampleRoot"</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>If constructed this way, the root is started in the constructor and stopped in
@@ -147,14 +147,14 @@ interface.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">operator[]</span></code> for hierarchical traversal and <code class="docutils literal notranslate"><span class="pre">getNode()</span></code> for full-path
 lookup:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Read variable from local cached value (no forced hardware read).</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">localTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">&quot;LocalTime&quot;</span><span class="p">].</span><span class="n">get</span><span class="p">();</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">localTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">"LocalTime"</span><span class="p">].</span><span class="n">get</span><span class="p">();</span>
 
 <span class="c1">// Write variable and then force readback.</span>
-<span class="n">bsp</span><span class="p">[</span><span class="s">&quot;AxiVersion&quot;</span><span class="p">][</span><span class="s">&quot;ScratchPad&quot;</span><span class="p">].</span><span class="n">setWrite</span><span class="p">(</span><span class="s">&quot;0x1111&quot;</span><span class="p">);</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">scratch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">&quot;AxiVersion&quot;</span><span class="p">][</span><span class="s">&quot;ScratchPad&quot;</span><span class="p">].</span><span class="n">readGet</span><span class="p">();</span>
+<span class="n">bsp</span><span class="p">[</span><span class="s">"AxiVersion"</span><span class="p">][</span><span class="s">"ScratchPad"</span><span class="p">].</span><span class="n">setWrite</span><span class="p">(</span><span class="s">"0x1111"</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">scratch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">"AxiVersion"</span><span class="p">][</span><span class="s">"ScratchPad"</span><span class="p">].</span><span class="n">readGet</span><span class="p">();</span>
 
 <span class="c1">// Full-path lookup returns a shared pointer wrapper.</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">.</span><span class="n">getNode</span><span class="p">(</span><span class="s">&quot;ExampleRoot.AxiVersion.ScratchPad&quot;</span><span class="p">);</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">.</span><span class="n">getNode</span><span class="p">(</span><span class="s">"ExampleRoot.AxiVersion.ScratchPad"</span><span class="p">);</span>
 <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">scratch2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">();</span>
 </pre></div>
 </div>
@@ -163,11 +163,11 @@ lookup:</p>
 <h2>Commands<a class="headerlink" href="#commands" title="Link to this heading"></a></h2>
 <p>Command nodes are invoked through <code class="docutils literal notranslate"><span class="pre">operator()</span></code> or <code class="docutils literal notranslate"><span class="pre">execute()</span></code>:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Execute commands without arguments.</span>
-<span class="n">bsp</span><span class="p">[</span><span class="s">&quot;WriteAll&quot;</span><span class="p">]();</span>
-<span class="n">bsp</span><span class="p">[</span><span class="s">&quot;ReadAll&quot;</span><span class="p">]();</span>
+<span class="n">bsp</span><span class="p">[</span><span class="s">"WriteAll"</span><span class="p">]();</span>
+<span class="n">bsp</span><span class="p">[</span><span class="s">"ReadAll"</span><span class="p">]();</span>
 
 <span class="c1">// Execute command with argument string.</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">yaml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">&quot;GetYamlConfig&quot;</span><span class="p">](</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">yaml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">"GetYamlConfig"</span><span class="p">](</span><span class="s">"True"</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
@@ -176,12 +176,12 @@ lookup:</p>
 <p>Variable listeners can be attached only on a root wrapper:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">varListener</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Called for each variable update pushed to this listener.</span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Var Listener: %s = %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"Var Listener: %s = %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
 <span class="p">}</span>
 
 <span class="kt">void</span><span class="w"> </span><span class="nf">varDone</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Called when the current listener batch is complete.</span>
-<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Var Done</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"Var Done</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="n">bsp</span><span class="p">.</span><span class="n">addVarListener</span><span class="p">(</span><span class="o">&amp;</span><span class="n">varListener</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">varDone</span><span class="p">);</span>

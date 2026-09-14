@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm.widgets.label &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.pydm.widgets.label &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -128,7 +128,7 @@
 <div class="viewcode-block" id="PyRogueLabel">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelabel.html#pyrogue.pydm.widgets.PyRogueLabel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PyRogueLabel</span><span class="p">(</span><span class="n">PyDMLabel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;PyDM label variant with optional engineering-unit display.</span>
+<span class="w">    </span><span class="sd">"""PyDM label variant with optional engineering-unit display.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -138,7 +138,7 @@
 <span class="sd">        Initial Rogue channel address.</span>
 <span class="sd">    show_units : bool, optional</span>
 <span class="sd">        If ``True``, display channel units in a dedicated unit label.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">show_units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="n">init_channel</span><span class="p">)</span>
@@ -146,9 +146,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_show_units</span> <span class="o">=</span> <span class="n">show_units</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span> <span class="o">=</span> <span class="n">PyDMLabel</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QLabel { background-color: white; color : DimGrey; }&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">"QLabel { background-color: white; color : DimGrey; }"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 
         <span class="n">hbox</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">hbox</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -159,7 +159,7 @@
 <div class="viewcode-block" id="PyRogueLabel.unit_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelabel.html#pyrogue.pydm.widgets.PyRogueLabel.unit_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">unit_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update displayed engineering units.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update displayed engineering units."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_show_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">new_unit</span><span class="p">)</span></div>
 
@@ -167,7 +167,7 @@
 <div class="viewcode-block" id="PyRogueLabel.value_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelabel.html#pyrogue.pydm.widgets.PyRogueLabel.value_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">value_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Callback invoked when the Channel value is changed.</span>
 <span class="sd">        Sets the value of new_value accordingly at the Label.</span>
 
@@ -175,7 +175,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        new_value : str | int | float | bool | np.ndarray</span>
 <span class="sd">            The new value from the channel. The type depends on the channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PyDMLabel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">value_changed</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
         <span class="n">new_value</span> <span class="o">=</span> <span class="n">parse_value_for_display</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">new_value</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">precision</span><span class="p">,</span>
                                             <span class="n">display_format_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_display_format_type</span><span class="p">,</span>
@@ -192,7 +192,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enum_strings</span><span class="p">[</span><span class="n">new_value</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;**INVALID**&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">"**INVALID**"</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="c1"># If the value is a number (float or int), display it using a</span>
         <span class="c1"># format string if necessary.</span>

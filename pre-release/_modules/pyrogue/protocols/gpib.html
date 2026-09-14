@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols.gpib &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.protocols.gpib &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -134,11 +134,11 @@
 <div class="viewcode-block" id="GpibController">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/gpibcontroller.html#pyrogue.protocols.gpib.GpibController">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GpibController</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    GPIB-based memory slave interface for SCPI-style instrument control.</span>
 
 <span class="sd">    Translates memory-mapped read/write transactions into GPIB SCPI commands</span>
-<span class="sd">    using variable &#39;key&#39; attributes as command prefixes.</span>
+<span class="sd">    using variable 'key' attributes as command prefixes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -151,7 +151,7 @@
 <span class="sd">        ``T100s``, ``T30s``, ``T10s``, ``T3s``, ``T1s``, ``T300ms``,</span>
 <span class="sd">        ``T100ms``, ``T30ms``, ``T10ms``, ``T3ms``, ``T1ms``, ``T300us``,</span>
 <span class="sd">        ``T100us``, ``T30us``, ``T10us``, and ``TNONE``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -162,7 +162,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;GPIB.</span><span class="si">{</span><span class="n">gpibBoard</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">gpibAddr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">'GPIB.</span><span class="si">{</span><span class="n">gpibBoard</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">gpibAddr</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span> <span class="o">=</span> <span class="n">Gpib</span><span class="o">.</span><span class="n">Gpib</span><span class="p">(</span><span class="n">gpibBoard</span><span class="p">,</span><span class="n">gpibAddr</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">timeout</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_workerQueue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
@@ -171,27 +171,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_map</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_addVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a variable for GPIB translation by offset.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Register a variable for GPIB translation by offset."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">offset</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the worker thread.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Stop the worker thread."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_workerQueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># Self-thread guard prevents deadlock if called from inside the worker.</span>
         <span class="n">thr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workerThread</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">thr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thr</span><span class="p">,</span> <span class="s1">&#39;is_alive&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">thr</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span>
-                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thr</span><span class="p">,</span> <span class="s1">&#39;join&#39;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thr</span><span class="p">,</span> <span class="s1">'is_alive'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">thr</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thr</span><span class="p">,</span> <span class="s1">'join'</span><span class="p">)</span>
                 <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">thr</span><span class="p">):</span>
             <span class="n">thr</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transaction</span><span class="p">:</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Transaction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Queue a memory transaction for the worker thread.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Queue a memory transaction for the worker thread."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_workerQueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">transaction</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Worker thread that processes GPIB transactions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Worker thread that processes GPIB transactions."""</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">transaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workerQueue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
@@ -203,7 +203,7 @@
                 <span class="c1"># First lookup address</span>
                 <span class="n">addr</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">address</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">addr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">:</span>
-                    <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown address: </span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Unknown address: </span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
                     <span class="k">continue</span>
 
                 <span class="n">var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map</span><span class="p">[</span><span class="n">addr</span><span class="p">]</span>
@@ -212,7 +212,7 @@
 
                 <span class="c1"># Check transaction size</span>
                 <span class="k">if</span> <span class="n">byteSize</span> <span class="o">!=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">():</span>
-                    <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Transaction size mismatch: Got=</span><span class="si">{</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s1">, Exp=</span><span class="si">{</span><span class="n">byteSize</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Transaction size mismatch: Got=</span><span class="si">{</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="si">}</span><span class="s1">, Exp=</span><span class="si">{</span><span class="n">byteSize</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
                     <span class="k">continue</span>
 
                 <span class="c1"># Write path</span>
@@ -220,18 +220,18 @@
                     <span class="n">valBytes</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">byteSize</span><span class="p">)</span>
                     <span class="n">transaction</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">valBytes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">fromBytes</span><span class="p">(</span><span class="n">valBytes</span><span class="p">)</span>
-                    <span class="n">send</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">getExtraAttribute</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">var</span><span class="o">.</span><span class="n">genDisp</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Write sending </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">send</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
+                    <span class="n">send</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">getExtraAttribute</span><span class="p">(</span><span class="s1">'key'</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="n">var</span><span class="o">.</span><span class="n">genDisp</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Write sending </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">send</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'UTF-8'</span><span class="p">))</span>
                     <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 
                 <span class="c1"># Read Path</span>
                 <span class="k">elif</span> <span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span> <span class="ow">or</span> <span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Verify</span><span class="p">):</span>
-                    <span class="n">send</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">getExtraAttribute</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;?&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Read sending </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">send</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
-                    <span class="n">valStr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">readLen</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Read got: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">valStr</span><span class="p">)</span>
+                    <span class="n">send</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">getExtraAttribute</span><span class="p">(</span><span class="s1">'key'</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"?"</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Read sending </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">send</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'UTF-8'</span><span class="p">))</span>
+                    <span class="n">valStr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">readLen</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'UTF-8'</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Read got: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">valStr</span><span class="p">)</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">parseDisp</span><span class="p">(</span><span class="n">valStr</span><span class="p">)</span>
                     <span class="n">valBytes</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">toBytes</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                     <span class="n">transaction</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">valBytes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -239,14 +239,14 @@
 
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Posted writes not supported (for now)</span>
-                    <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported transaction type: </span><span class="si">{</span><span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+                    <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Unsupported transaction type: </span><span class="si">{</span><span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="GpibDevice">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/gpibdevice.html#pyrogue.protocols.gpib.GpibDevice">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GpibDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    PyRogue Device wrapper for GPIB instruments.</span>
 
 <span class="sd">    Provides a Device interface with automatic protocol and variable registration</span>
@@ -262,7 +262,7 @@
 <span class="sd">        Timeout value for GPIB operations.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments passed to :class:`pyrogue.Device`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -279,15 +279,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nextAddr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the next available address for variable registration.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the next available address for variable registration."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nextAddr</span>
 
 <div class="viewcode-block" id="GpibDevice.add">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/gpibdevice.html#pyrogue.protocols.gpib.GpibDevice.add">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node and register GPIB variables that have a &#39;key&#39; attribute.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Add a node and register GPIB variables that have a 'key' attribute."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">getExtraAttribute</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">getExtraAttribute</span><span class="p">(</span><span class="s1">'key'</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">_addVariable</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_nextAddr</span> <span class="o">+=</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">varBytes</span><span class="p">)</span></div>
 </div>

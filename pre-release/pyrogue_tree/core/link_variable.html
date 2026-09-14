@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LinkVariable &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>LinkVariable &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -257,20 +257,20 @@ view of one Variable without writing explicit <code class="docutils literal notr
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;VoltageRaw&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'VoltageRaw'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
             <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;VoltageCounts&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'VoltageCounts'</span><span class="p">,</span>
             <span class="n">variable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">VoltageRaw</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:#06x}</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Mirror of VoltageRaw with operator-facing formatting&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">'</span><span class="si">{:#06x}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Mirror of VoltageRaw with operator-facing formatting'</span><span class="p">,</span>
         <span class="p">))</span>
 </pre></div>
 </div>
@@ -291,18 +291,18 @@ units.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TempRaw&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'TempRaw'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x100</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
         <span class="p">))</span>
 
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Temperature&#39;</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;degC&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Temperature'</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">'degC'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">TempRaw</span><span class="p">],</span> <span class="c1"># add()ed Nodes can be accessed as attributes</span>
             <span class="n">linkedGet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">:</span> <span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-</span> <span class="mf">40.0</span><span class="p">,</span>
         <span class="p">))</span>
@@ -322,9 +322,9 @@ register fields.</p>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MaskLow&#39;</span><span class="p">,</span>  <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MaskHigh&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x14</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MaskDf&#39;</span><span class="p">,</span>   <span class="n">offset</span><span class="o">=</span><span class="mh">0x14</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bitOffset</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MaskLow'</span><span class="p">,</span>  <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MaskHigh'</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x14</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MaskDf'</span><span class="p">,</span>   <span class="n">offset</span><span class="o">=</span><span class="mh">0x14</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bitOffset</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">))</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_get_mask</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="n">low</span>  <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span>
@@ -340,8 +340,8 @@ register fields.</p>
                 <span class="n">var</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DeviceMask&#39;</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:#b}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'DeviceMask'</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">'</span><span class="si">{:#b}</span><span class="s1">'</span><span class="p">,</span>
             <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">MaskLow</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaskHigh</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaskDf</span><span class="p">],</span>
             <span class="n">linkedGet</span><span class="o">=</span><span class="n">_get_mask</span><span class="p">,</span>
             <span class="n">linkedSet</span><span class="o">=</span><span class="n">_set_mask</span><span class="p">,</span>
@@ -360,19 +360,19 @@ user-facing control should look like one coherent value.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;AdcRaw&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'AdcRaw'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x200</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="c1"># 16-bit ADC, 2.5 V full-scale, no offset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;InputVoltage&#39;</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:.6f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'InputVoltage'</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">'V'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">'</span><span class="si">{:.6f}</span><span class="s1">'</span><span class="p">,</span>
             <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">AdcRaw</span><span class="p">],</span>
             <span class="n">linkedGet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">:</span> <span class="p">(</span>
                 <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.5</span> <span class="o">/</span> <span class="mf">65535.0</span><span class="p">)</span>
@@ -390,10 +390,10 @@ user-facing control should look like one coherent value.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DacRaw&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'DacRaw'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x300</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
         <span class="p">))</span>
 
@@ -401,10 +401,10 @@ user-facing control should look like one coherent value.</p>
         <span class="n">max_code</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DacSetpoint&#39;</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:.5f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'DacSetpoint'</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">'V'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">'</span><span class="si">{:.5f}</span><span class="s1">'</span><span class="p">,</span>
             <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DacRaw</span><span class="p">],</span>
             <span class="n">linkedGet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">:</span> <span class="p">(</span>
                 <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">full_scale</span> <span class="o">/</span> <span class="n">max_code</span><span class="p">)</span>
@@ -428,18 +428,18 @@ user-facing control should look like one coherent value.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;AdcRaw&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'AdcRaw'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x400</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;GainRaw&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'GainRaw'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x404</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
         <span class="p">))</span>
 
@@ -451,10 +451,10 @@ user-facing control should look like one coherent value.</p>
             <span class="k">return</span> <span class="n">adc_volts</span> <span class="o">/</span> <span class="n">gain</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;InputVoltageScaled&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:.6f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'InputVoltageScaled'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">'V'</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">'</span><span class="si">{:.6f}</span><span class="s1">'</span><span class="p">,</span>
             <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">AdcRaw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GainRaw</span><span class="p">],</span>
             <span class="n">linkedGet</span><span class="o">=</span><span class="n">_scaled_input</span><span class="p">,</span>
         <span class="p">))</span>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RunControl Device Class &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>RunControl Device Class &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -200,11 +200,11 @@ accumulated count through <code class="docutils literal notranslate"><span class
 <span class="k">class</span><span class="w"> </span><span class="nc">AcquisitionRunControl</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RunControl</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RunControl&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Control a frame-based acquisition run&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'RunControl'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Control a frame-based acquisition run'</span><span class="p">,</span>
             <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">rates</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;Auto&#39;</span><span class="p">},</span>
-            <span class="n">states</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;Stopped&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Running&#39;</span><span class="p">},</span>
+            <span class="n">rates</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">'Auto'</span><span class="p">},</span>
+            <span class="n">states</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">'Stopped'</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">'Running'</span><span class="p">},</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -226,7 +226,7 @@ accumulated count through <code class="docutils literal notranslate"><span class
         <span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">runState</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Running&#39;</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">runState</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'Running'</span><span class="p">:</span>
                 <span class="c1"># Wait for one more recorded frame and publish the total.</span>
                 <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">DataWriter</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">channel</span><span class="o">.</span><span class="n">waitFrameCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000000000</span><span class="p">)</span>

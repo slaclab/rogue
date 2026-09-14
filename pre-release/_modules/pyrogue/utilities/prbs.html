@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.prbs &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.utilities.prbs &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -129,7 +129,7 @@
 <div class="viewcode-block" id="PrbsRx">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbsrx.html#pyrogue.utilities.prbs.PrbsRx">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PrbsRx</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;PRBS RX wrapper.</span>
+<span class="w">    </span><span class="sd">"""PRBS RX wrapper.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -143,7 +143,7 @@
 <span class="sd">        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)</span>
 <span class="sd">        where each entry is a tapped bit index in the PRBS state. If ``None``,</span>
 <span class="sd">        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.</span>
-<span class="sd">        For a 32-bit state in Rogue&#39;s left-shift Fibonacci form, this means</span>
+<span class="sd">        For a 32-bit state in Rogue's left-shift Fibonacci form, this means</span>
 <span class="sd">        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the</span>
 <span class="sd">        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use</span>
 <span class="sd">        reciprocal indexing conventions).</span>
@@ -151,7 +151,7 @@
 <span class="sd">        Optional stream endpoint to connect as the RX source upon initialization.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``pyrogue.Device``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -162,9 +162,9 @@
         <span class="n">stream</span><span class="p">:</span> <span class="n">ris</span><span class="o">.</span><span class="n">Master</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a software PRBS receiver.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize a software PRBS receiver."""</span>
 
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;PRBS Software Receiver&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'PRBS Software Receiver'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -176,66 +176,66 @@
         <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxEnable&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Enable&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'rxEnable'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'RX Enable'</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                        <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxEnable</span><span class="p">(),</span>
                                        <span class="n">localSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setRxEnable</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxErrors&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Error Count&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'rxErrors'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'RX Error Count'</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span>
                                        <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxErrors</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Count&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'rxCount'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'RX Count'</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span>
                                        <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxCount</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxBytes&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Bytes&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'rxBytes'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'RX Bytes'</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span>
                                        <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxBytes</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxRate&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Rate&#39;</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Frames/s&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'rxRate'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'RX Rate'</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="s2">"</span><span class="si">{:.3e}</span><span class="s2">"</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'Frames/s'</span><span class="p">,</span>
                                        <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxRate</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxBw&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX BW&#39;</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bytes/s&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'rxBw'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'RX BW'</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="s2">"</span><span class="si">{:.3e}</span><span class="s2">"</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'Bytes/s'</span><span class="p">,</span>
                                        <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxBw</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;checkPayload&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Payload Check Enable&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">checkPayload</span><span class="p">,</span> <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plEnable</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'checkPayload'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Payload Check Enable'</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">checkPayload</span><span class="p">,</span> <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plEnable</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_plEnable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">changed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable or disable payload checking.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Enable or disable payload checking."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">checkPayload</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PrbsRx.countReset">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbsrx.html#pyrogue.utilities.prbs.PrbsRx.countReset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset PRBS counters and delegate to parent reset.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Reset PRBS counters and delegate to parent reset."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">resetCount</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">countReset</span><span class="p">()</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Rogue PRBS receiver stream endpoint.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the Rogue PRBS receiver stream endpoint."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect ``other`` as a stream source.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Connect ``other`` as a stream source."""</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">other</span>
 
 <div class="viewcode-block" id="PrbsRx.setWidth">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbsrx.html#pyrogue.utilities.prbs.PrbsRx.setWidth">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set PRBS word width in bits (must be a multiple of 32).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set PRBS word width in bits (must be a multiple of 32)."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PrbsRx.setTaps">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbsrx.html#pyrogue.utilities.prbs.PrbsRx.setTaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set LFSR feedback tap bit positions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set LFSR feedback tap bit positions."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span></div>
 </div>
 
@@ -244,7 +244,7 @@
 <div class="viewcode-block" id="PrbsTx">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbstx.html#pyrogue.utilities.prbs.PrbsTx">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PrbsTx</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;PRBS TX wrapper.</span>
+<span class="w">    </span><span class="sd">"""PRBS TX wrapper.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -258,7 +258,7 @@
 <span class="sd">        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)</span>
 <span class="sd">        where each entry is a tapped bit index in the PRBS state. If ``None``,</span>
 <span class="sd">        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.</span>
-<span class="sd">        For a 32-bit state in Rogue&#39;s left-shift Fibonacci form, this means</span>
+<span class="sd">        For a 32-bit state in Rogue's left-shift Fibonacci form, this means</span>
 <span class="sd">        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the</span>
 <span class="sd">        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use</span>
 <span class="sd">        reciprocal indexing conventions).</span>
@@ -266,7 +266,7 @@
 <span class="sd">        Optional stream endpoint to connect as the TX destination.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``pyrogue.Device``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -277,9 +277,9 @@
         <span class="n">stream</span><span class="p">:</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a software PRBS transmitter.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize a software PRBS transmitter."""</span>
 
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;PRBS Software Transmitter&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'PRBS Software Transmitter'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -293,63 +293,63 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">sendCount</span><span class="p">(</span><span class="n">sendCount</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txSize&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;PRBS Frame Size&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bytes&#39;</span><span class="p">,</span>
-                                       <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_txSize</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'txSize'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'PRBS Frame Size'</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'Bytes'</span><span class="p">,</span>
+                                       <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_txSize</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txPeriod&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Tx Period In Microseconds&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;uS&#39;</span><span class="p">,</span>
-                                       <span class="n">localSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTxPeriod</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxPeriod</span><span class="p">(),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'txPeriod'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Tx Period In Microseconds'</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'uS'</span><span class="p">,</span>
+                                       <span class="n">localSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTxPeriod</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxPeriod</span><span class="p">(),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txEnable&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;PRBS Run Enable&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'txEnable'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'PRBS Run Enable'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
                                        <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_txEnable</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;genFrame&#39;</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate n frames&#39;</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'genFrame'</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s1">'Generate n frames'</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                                       <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_genFrame</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txErrors&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX Error Count&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxErrors</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'txErrors'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'TX Error Count'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxErrors</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX Count&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxCount</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'txCount'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'TX Count'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxCount</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txBytes&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX Bytes&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxBytes</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'txBytes'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'TX Bytes'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxBytes</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;genPayload&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Payload Generate Enable&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plEnable</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'genPayload'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Payload Generate Enable'</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plEnable</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txRate&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX Rate&#39;</span><span class="p">,</span>  <span class="n">disp</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Frames/s&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'txRate'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'TX Rate'</span><span class="p">,</span>  <span class="n">disp</span><span class="o">=</span><span class="s2">"</span><span class="si">{:.3e}</span><span class="s2">"</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'Frames/s'</span><span class="p">,</span>
                                        <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxRate</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txBw&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX BW&#39;</span><span class="p">,</span>  <span class="n">disp</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bytes/s&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'txBw'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'TX BW'</span><span class="p">,</span>  <span class="n">disp</span><span class="o">=</span><span class="s2">"</span><span class="si">{:.3e}</span><span class="s2">"</span><span class="p">,</span>
+                                       <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">'Bytes/s'</span><span class="p">,</span>
                                        <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxBw</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_plEnable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">changed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable or disable payload generation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Enable or disable payload generation."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">genPayload</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PrbsTx.countReset">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbstx.html#pyrogue.utilities.prbs.PrbsTx.countReset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset PRBS counters and delegate to parent reset.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Reset PRBS counters and delegate to parent reset."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">resetCount</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">countReset</span><span class="p">()</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_genFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate ``arg`` PRBS frames.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Generate ``arg`` PRBS frames."""</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">genFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txSize</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_txSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">changed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the PRBS frame size, restarting TX if needed.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update the PRBS frame size, restarting TX if needed."""</span>
         <span class="k">if</span> <span class="n">changed</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">value</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_txEnable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">changed</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable or disable PRBS transmission.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Enable or disable PRBS transmission."""</span>
         <span class="k">if</span> <span class="n">changed</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
@@ -357,37 +357,37 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txSize</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Rogue PRBS transmitter stream endpoint.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the Rogue PRBS transmitter stream endpoint."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect the transmitter to ``other``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Connect the transmitter to ``other``."""</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">other</span>
 
 <div class="viewcode-block" id="PrbsTx.setWidth">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbstx.html#pyrogue.utilities.prbs.PrbsTx.setWidth">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set PRBS word width in bits (must be a multiple of 32).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set PRBS word width in bits (must be a multiple of 32)."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PrbsTx.setTaps">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbstx.html#pyrogue.utilities.prbs.PrbsTx.setTaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set LFSR feedback tap bit positions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set LFSR feedback tap bit positions."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PrbsTx.sendCount">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbstx.html#pyrogue.utilities.prbs.PrbsTx.sendCount">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sendCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">en</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable or disable count transmission.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Enable or disable count transmission."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">sendCount</span><span class="p">(</span><span class="n">en</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop PRBS transmission.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Stop PRBS transmission."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span></div>
 
 
@@ -395,7 +395,7 @@
 <div class="viewcode-block" id="PrbsPair">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbspair.html#pyrogue.utilities.prbs.PrbsPair">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PrbsPair</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Paired PRBS transmitter and receiver.</span>
+<span class="w">    </span><span class="sd">"""Paired PRBS transmitter and receiver.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -407,7 +407,7 @@
 <span class="sd">        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)</span>
 <span class="sd">        where each entry is a tapped bit index in the PRBS state. If ``None``,</span>
 <span class="sd">        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.</span>
-<span class="sd">        For a 32-bit state in Rogue&#39;s left-shift Fibonacci form, this means</span>
+<span class="sd">        For a 32-bit state in Rogue's left-shift Fibonacci form, this means</span>
 <span class="sd">        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the</span>
 <span class="sd">        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use</span>
 <span class="sd">        reciprocal indexing conventions).</span>
@@ -419,7 +419,7 @@
 <span class="sd">        Optional RX stream endpoint.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``pyrogue.Device``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -437,7 +437,7 @@
 <div class="viewcode-block" id="PrbsPair.setWidth">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbspair.html#pyrogue.utilities.prbs.PrbsPair.setWidth">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set PRBS word width in bits on both devices.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set PRBS word width in bits on both devices."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span></div>
 
@@ -445,7 +445,7 @@
 <div class="viewcode-block" id="PrbsPair.setTaps">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbspair.html#pyrogue.utilities.prbs.PrbsPair.setTaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set LFSR feedback tap bit positions on both devices.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set LFSR feedback tap bit positions on both devices."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span></div>
 
@@ -453,30 +453,30 @@
 <div class="viewcode-block" id="PrbsPair.setCount">
 <a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbspair.html#pyrogue.utilities.prbs.PrbsPair.setCount">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set RX count threshold.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set RX count threshold."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">setCount</span><span class="p">(</span><span class="n">count</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the stream master endpoint.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the stream master endpoint."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">_getStreamMaster</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the stream slave endpoint.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the stream slave endpoint."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">_getStreamSlave</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect this pair output to ``other``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Connect this pair output to ``other``."""</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">other</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect ``other`` output to this pair input.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Connect ``other`` output to this pair input."""</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">other</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a bidirectional stream connection to ``other``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create a bidirectional stream connection to ``other``."""</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnectBiDir</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
 
 </pre></div>

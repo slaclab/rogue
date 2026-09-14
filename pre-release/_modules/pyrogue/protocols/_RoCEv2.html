@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols._RoCEv2 &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.protocols._RoCEv2 &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -129,7 +129,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RoCEv2Server&#39;</span><span class="p">,</span> <span class="s1">&#39;RoCEv2ServerCfg&#39;</span><span class="p">,</span> <span class="s1">&#39;RoCEv2TransportCfg&#39;</span><span class="p">,</span> <span class="s1">&#39;RoCEv2Mtu&#39;</span><span class="p">,</span> <span class="s1">&#39;RoCEv2RnrTimer&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'RoCEv2Server'</span><span class="p">,</span> <span class="s1">'RoCEv2ServerCfg'</span><span class="p">,</span> <span class="s1">'RoCEv2TransportCfg'</span><span class="p">,</span> <span class="s1">'RoCEv2Mtu'</span><span class="p">,</span> <span class="s1">'RoCEv2RnrTimer'</span><span class="p">]</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rocev2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_cpp_rocev2</span>
@@ -143,32 +143,32 @@
 <span class="c1"># ---------------------------------------------------------------------------</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_ip_to_gid_bytes</span><span class="p">(</span><span class="n">ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert IPv4 string to 16-byte IPv4-mapped IPv6 GID.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\xff\xff</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Convert IPv4 string to 16-byte IPv4-mapped IPv6 GID."""</span>
+    <span class="k">return</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\xff\xff</span><span class="s1">'</span> <span class="o">+</span> <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_gid_bytes_to_str</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format 16 GID bytes as colon-separated hex (ibv_devinfo format).&quot;&quot;&quot;</span>
-    <span class="n">words</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&gt;8H&#39;</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s1">04x</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Format 16 GID bytes as colon-separated hex (ibv_devinfo format)."""</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&gt;8H'</span><span class="p">,</span> <span class="n">gid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">':'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s1">04x</span><span class="si">}</span><span class="s1">'</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_host_ip_from_gid</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the IPv4 from an IPv4-mapped GID string (inverse of</span>
-<span class="sd">    ``_ip_to_gid_bytes``). Returns &#39;&#39; if ``gid`` is not a valid 8-group</span>
-<span class="sd">    IPv4-mapped (``...:ffff:HHHH:LLLL``) GID.&quot;&quot;&quot;</span>
-    <span class="n">groups</span> <span class="o">=</span> <span class="n">gid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span> <span class="ow">or</span> <span class="n">groups</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;ffff&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+<span class="w">    </span><span class="sd">"""Extract the IPv4 from an IPv4-mapped GID string (inverse of</span>
+<span class="sd">    ``_ip_to_gid_bytes``). Returns '' if ``gid`` is not a valid 8-group</span>
+<span class="sd">    IPv4-mapped (``...:ffff:HHHH:LLLL``) GID."""</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">gid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span> <span class="ow">or</span> <span class="n">groups</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">'ffff'</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">''</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">groups</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="s1">'.'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">+</span> <span class="n">groups</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="s1">''</span>
 
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># Transport-knob vocabulary — host-side enums + code→value maps referenced by</span>
-<span class="c1"># completeConnection()&#39;s validation and summary log, and exported in __all__.</span>
+<span class="c1"># completeConnection()'s validation and summary log, and exported in __all__.</span>
 <span class="c1"># The FPGA-facing metadata-bus codec that used to live here has been relocated</span>
 <span class="c1"># to surf (surf/ethernet/roce/_RoCEv2Protocol.py + _RoCEv2Engine.py), which is</span>
 <span class="c1"># now the single source of truth for it.</span>
@@ -177,7 +177,7 @@
 <div class="viewcode-block" id="RoCEv2Mtu">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Mtu">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2Mtu</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Path MTU codes (libibverbs ibv_mtu enum).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Path MTU codes (libibverbs ibv_mtu enum)."""</span>
     <span class="n">MTU_256</span>  <span class="o">=</span> <span class="mi">1</span>
     <span class="n">MTU_512</span>  <span class="o">=</span> <span class="mi">2</span>
     <span class="n">MTU_1024</span> <span class="o">=</span> <span class="mi">3</span>
@@ -198,9 +198,9 @@
 <div class="viewcode-block" id="RoCEv2RnrTimer">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2RnrTimer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2RnrTimer</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;IB-spec Min RNR NAK Timer Field codes (IBA Vol1 Table 45).  Member</span>
+<span class="w">    </span><span class="sd">"""IB-spec Min RNR NAK Timer Field codes (IBA Vol1 Table 45).  Member</span>
 <span class="sd">    name encodes the RNR wait in milliseconds; code 0 is the special</span>
-<span class="sd">    655.36ms slot.&quot;&quot;&quot;</span>
+<span class="sd">    655.36ms slot."""</span>
     <span class="n">MS_655_36</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">MS_0_01</span>   <span class="o">=</span> <span class="mi">1</span>
     <span class="n">MS_0_02</span>   <span class="o">=</span> <span class="mi">2</span>
@@ -260,11 +260,11 @@
 <span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># Public result type — the host-side params the FPGA engine needs to call</span>
 <span class="c1"># setupConnection(). Returned by RoCEv2Server.getHostParams(), the</span>
-<span class="c1"># host-side mirror of surf&#39;s RoCEv2FpgaParams.</span>
+<span class="c1"># host-side mirror of surf's RoCEv2FpgaParams.</span>
 <span class="c1"># ---------------------------------------------------------------------------</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2HostParams</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">NamedTuple</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Host-side params produced by getHostParams() for the FPGA hand-off.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Host-side params produced by getHostParams() for the FPGA hand-off."""</span>
     <span class="n">hostQpn</span><span class="p">:</span>   <span class="nb">int</span>
     <span class="n">hostRqPsn</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">hostSqPsn</span><span class="p">:</span> <span class="nb">int</span>
@@ -280,7 +280,7 @@
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2ServerCfg">[docs]</a>
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2ServerCfg</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bring-up / transport configuration for :class:`RoCEv2Server`.</span>
+<span class="w">    </span><span class="sd">"""Bring-up / transport configuration for :class:`RoCEv2Server`.</span>
 
 <span class="sd">    Bundles the ibverbs + QP-tuning knobs so the ``RoCEv2Server(...)`` call</span>
 <span class="sd">    site stays compact.  Most defaults mirror the historical ``RoCEv2Server``</span>
@@ -293,11 +293,11 @@
 <span class="sd">    ip : str</span>
 <span class="sd">        FPGA IP address. Used to derive the FPGA GID (IPv4-mapped IPv6).</span>
 <span class="sd">    deviceName : str</span>
-<span class="sd">        ibverbs device name (e.g. &#39;rxe0&#39; for softRoCE, &#39;mlx5_0&#39; for HW NIC).</span>
+<span class="sd">        ibverbs device name (e.g. 'rxe0' for softRoCE, 'mlx5_0' for HW NIC).</span>
 <span class="sd">    ibPort : int</span>
 <span class="sd">        ibverbs port number (default: 1).</span>
 <span class="sd">    gidIndex : int</span>
-<span class="sd">        GID table index for the host NIC&#39;s RoCEv2 IPv4 address.  -1 (the</span>
+<span class="sd">        GID table index for the host NIC's RoCEv2 IPv4 address.  -1 (the</span>
 <span class="sd">        default) auto-detects the index matching ``ip`` by scanning sysfs</span>
 <span class="sd">        (``/sys/class/infiniband/&lt;dev&gt;/ports/&lt;port&gt;/gid_attrs/types`` +</span>
 <span class="sd">        ``gids``); see :meth:`RoCEv2Server.detectGidIndex`.</span>
@@ -308,7 +308,7 @@
 <span class="sd">    rxQueueDepth : int | None</span>
 <span class="sd">        Number of pre-posted receive slots.  None (the default) uses the C++</span>
 <span class="sd">        DefaultRxQueueDepth (256).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">ip</span><span class="p">:</span>           <span class="nb">str</span>
     <span class="n">deviceName</span><span class="p">:</span>   <span class="nb">str</span>
     <span class="n">ibPort</span><span class="p">:</span>       <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
@@ -326,7 +326,7 @@
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2TransportCfg">[docs]</a>
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2TransportCfg</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transport / QP-tuning configuration for the RoCEv2 RC connection.</span>
+<span class="w">    </span><span class="sd">"""Transport / QP-tuning configuration for the RoCEv2 RC connection.</span>
 
 <span class="sd">    Symmetric companion to :class:`RoCEv2ServerCfg` — that one carries the</span>
 <span class="sd">    host-NIC config, this one carries the four transport/QP-tuning knobs that</span>
@@ -337,7 +337,7 @@
 <span class="sd">    that ``rnrRetry``/``retryCount`` are applied FPGA-side only — the host</span>
 <span class="sd">    server accepts them for call-site symmetry but does not program them into</span>
 <span class="sd">    the host QP (see :meth:`RoCEv2Server.completeConnection`), so those two</span>
-<span class="sd">    knobs govern only the FPGA&#39;s retry behavior.</span>
+<span class="sd">    knobs govern only the FPGA's retry behavior.</span>
 
 <span class="sd">    Defaults match the proven acceptance-gate config in ``rocev2PrbsTest.py``:</span>
 <span class="sd">    the same invariants that :meth:`RoCEv2Server.completeConnection`</span>
@@ -356,7 +356,7 @@
 <span class="sd">        RNR retry count.  Defaults to 7.</span>
 <span class="sd">    retryCount : int</span>
 <span class="sd">        Transport retry count.  Defaults to 3.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">pmtu</span><span class="p">:</span>        <span class="nb">int</span> <span class="o">=</span> <span class="n">RoCEv2Mtu</span><span class="o">.</span><span class="n">MTU_4096</span>
     <span class="n">minRnrTimer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span>
     <span class="n">rnrRetry</span><span class="p">:</span>    <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span>
@@ -365,16 +365,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pmtu</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_PMTU_BYTES</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;RoCEv2TransportCfg.__post_init__&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;pmtu must be a valid RoCEv2Mtu code &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">_PMTU_BYTES</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">); &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pmtu</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"RoCEv2TransportCfg.__post_init__"</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"pmtu must be a valid RoCEv2Mtu code "</span>
+                <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">_PMTU_BYTES</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">); "</span>
+                <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pmtu</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">minRnrTimer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_MIN_RNR_TIMER_MS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;RoCEv2TransportCfg.__post_init__&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;minRnrTimer must be an IB RNR timer code 0..31 &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(see _MIN_RNR_TIMER_MS); got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"RoCEv2TransportCfg.__post_init__"</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"minRnrTimer must be an IB RNR timer code 0..31 "</span>
+                <span class="sa">f</span><span class="s2">"(see _MIN_RNR_TIMER_MS); got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="p">)</span></div>
 
 
@@ -386,7 +386,7 @@
 <div class="viewcode-block" id="RoCEv2Server">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RoCEv2Server</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    RoCEv2 RC receive server — pyrogue Device.</span>
 
 <span class="sd">    Mirrors the interface of UdpRssiPack so the two can be used</span>
@@ -397,7 +397,7 @@
 <span class="sd">    rocev2Cfg : RoCEv2ServerCfg</span>
 <span class="sd">        Bring-up / host-NIC configuration (ip, deviceName, ibPort, gidIndex,</span>
 <span class="sd">        maxPayload, rxQueueDepth).  See :class:`RoCEv2ServerCfg`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -407,12 +407,12 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_ROCEV2_AVAILABLE</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s2">&quot;RoCEv2Server requires a Linux build of rogue with &quot;</span>
-                <span class="s2">&quot;libibverbs/rdma-core available at runtime.  This module is &quot;</span>
-                <span class="s2">&quot;also absent when rogue was built with -DNO_ROCEV2=ON.  &quot;</span>
-                <span class="s2">&quot;Install rdma-core (`conda install -c conda-forge rdma-core` &quot;</span>
-                <span class="s2">&quot;or `apt install libibverbs-dev`) and rebuild rogue on Linux &quot;</span>
-                <span class="s2">&quot;without -DNO_ROCEV2 and with those libraries available.&quot;</span>
+                <span class="s2">"RoCEv2Server requires a Linux build of rogue with "</span>
+                <span class="s2">"libibverbs/rdma-core available at runtime.  This module is "</span>
+                <span class="s2">"also absent when rogue was built with -DNO_ROCEV2=ON.  "</span>
+                <span class="s2">"Install rdma-core (`conda install -c conda-forge rdma-core` "</span>
+                <span class="s2">"or `apt install libibverbs-dev`) and rebuild rogue on Linux "</span>
+                <span class="s2">"without -DNO_ROCEV2 and with those libraries available."</span>
             <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -435,17 +435,17 @@
             <span class="n">detected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detectGidIndex</span><span class="p">(</span><span class="n">deviceName</span><span class="p">,</span> <span class="n">ip</span><span class="p">,</span> <span class="n">ibPort</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">detected</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                    <span class="s2">&quot;RoCEv2Server.__init__&quot;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;could not auto-detect a RoCE v2 IPv4 GID on &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2"> matching </span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">&#39;s subnet — pass gidIndex &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;explicitly (see: ibv_devinfo -v -d </span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+                    <span class="s2">"RoCEv2Server.__init__"</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"could not auto-detect a RoCE v2 IPv4 GID on "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2"> matching </span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">'s subnet — pass gidIndex "</span>
+                    <span class="sa">f</span><span class="s2">"explicitly (see: ibv_devinfo -v -d </span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="n">gidIndex</span> <span class="o">=</span> <span class="n">detected</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;RoCEv2 &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: device=</span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2">  ibPort=</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s2">  &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;gidIndex=</span><span class="si">{</span><span class="n">gidIndex</span><span class="si">}</span><span class="s2">  &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;maxPayload=</span><span class="si">{</span><span class="n">maxPayload</span><span class="si">}</span><span class="s2">  rxQueueDepth=</span><span class="si">{</span><span class="n">rxQueueDepth</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"RoCEv2 '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">': device=</span><span class="si">{</span><span class="n">deviceName</span><span class="si">}</span><span class="s2">  ibPort=</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s2">  "</span>
+            <span class="sa">f</span><span class="s2">"gidIndex=</span><span class="si">{</span><span class="n">gidIndex</span><span class="si">}</span><span class="s2">  "</span>
+            <span class="sa">f</span><span class="s2">"maxPayload=</span><span class="si">{</span><span class="n">maxPayload</span><span class="si">}</span><span class="s2">  rxQueueDepth=</span><span class="si">{</span><span class="n">rxQueueDepth</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_deviceName</span>    <span class="o">=</span> <span class="n">deviceName</span>
@@ -466,136 +466,136 @@
 
         <span class="c1"># Status variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FpgaIp&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">ip</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;FPGA IP address used for GID derivation&#39;</span><span class="p">))</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'FpgaIp'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">ip</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'FPGA IP address used for GID derivation'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FpgaGid&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'FpgaGid'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="n">_gid_bytes_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fpgaGidBytes</span><span class="p">),</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;FPGA GID (IPv4-mapped IPv6)&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'FPGA GID (IPv4-mapped IPv6)'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;HostQpn&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'HostQpn'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getQpn</span><span class="p">(),</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host RC QP number&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Host RC QP number'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;HostGid&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'HostGid'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getGid</span><span class="p">(),</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host GID (NIC RoCEv2 address)&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Host GID (NIC RoCEv2 address)'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;HostIp&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'HostIp'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">_host_ip_from_gid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getGid</span><span class="p">()),</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host IPv4 derived from the IPv4-mapped HostGid&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Host IPv4 derived from the IPv4-mapped HostGid'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MrAddr&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'MrAddr'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt64'</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrAddr</span><span class="p">(),</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host MR virtual address (base of the pre-posted RDMA SEND receive buffers)&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Host MR virtual address (base of the pre-posted RDMA SEND receive buffers)'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MrRkey&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'MrRkey'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrRkey</span><span class="p">(),</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Host MR rkey (local registration; not used by the RDMA SEND receive path)&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Host MR rkey (local registration; not used by the RDMA SEND receive path)'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RxFrameCount&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'RxFrameCount'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt64'</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getFrameCount</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total frames received&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Total frames received'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RxByteCount&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'RxByteCount'</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt64'</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getByteCount</span><span class="p">(),</span>
             <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total bytes received&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Total bytes received'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;MaxPayload&#39;</span><span class="p">,</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Max payload bytes per RDMA SEND receive slot&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'MaxPayload'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Max payload bytes per RDMA SEND receive slot'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="n">maxPayload</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;RxQueueDepth&#39;</span><span class="p">,</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Number of receive slots (rxQueueDepth)&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'RxQueueDepth'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Number of receive slots (rxQueueDepth)'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="n">rxQueueDepth</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;HostRqPsn&#39;</span><span class="p">,</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Host starting receive PSN — FPGA SQ PSN must match this&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'HostRqPsn'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Host starting receive PSN — FPGA SQ PSN must match this'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getRqPsn</span><span class="p">(),</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;HostSqPsn&#39;</span><span class="p">,</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Host starting send PSN — FPGA RQ PSN must match this&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'HostSqPsn'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Host starting send PSN — FPGA RQ PSN must match this'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getSqPsn</span><span class="p">(),</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;FpgaQpn&#39;</span><span class="p">,</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;FPGA QP number — set after RC connection is established&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'FpgaQpn'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'FPGA QP number — set after RC connection is established'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;FpgaLkey&#39;</span><span class="p">,</span>
-            <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;FPGA MR local key — set after RC connection is established&#39;</span><span class="p">,</span>
-            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'FpgaLkey'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'FPGA MR local key — set after RC connection is established'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">'UInt32'</span><span class="p">,</span>
         <span class="p">))</span>
 
 <div class="viewcode-block" id="RoCEv2Server.detectGidIndex">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.detectGidIndex">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">detectGidIndex</span><span class="p">(</span><span class="n">device</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ip</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ibPort</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve the host&#39;s RoCE v2 IPv4 GID-table index from sysfs.</span>
+<span class="w">        </span><span class="sd">"""Resolve the host's RoCE v2 IPv4 GID-table index from sysfs.</span>
 
 <span class="sd">        The mlx5 GID-table index of the RoCE v2 IPv4 GID drifts across NIC /</span>
 <span class="sd">        FPGA reloads, so callers that pass ``gidIndex=-1`` resolve it fresh</span>
-<span class="sd">        each session.  Matches the entry whose type is &#39;RoCE v2&#39; AND whose</span>
+<span class="sd">        each session.  Matches the entry whose type is 'RoCE v2' AND whose</span>
 <span class="sd">        IPv4-mapped GID (``::ffff:a.b.c.d``) is on the same /24 as ``ip`` —</span>
 <span class="sd">        this skips the RoCE v1 slot that shares the same IP.</span>
 
 <span class="sd">        Returns the integer index, or None if no matching GID is found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-        <span class="n">subnet</span>  <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span>
-        <span class="n">typ_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/sys/class/infiniband/</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">/ports/</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s1">/gid_attrs/types&#39;</span>
-        <span class="n">gid_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/sys/class/infiniband/</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">/ports/</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s1">/gids&#39;</span>
-        <span class="k">for</span> <span class="n">tpath</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typ_dir</span><span class="si">}</span><span class="s1">/*&#39;</span><span class="p">),</span>
+        <span class="n">subnet</span>  <span class="o">=</span> <span class="n">ip</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.'</span>
+        <span class="n">typ_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'/sys/class/infiniband/</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">/ports/</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s1">/gid_attrs/types'</span>
+        <span class="n">gid_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'/sys/class/infiniband/</span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s1">/ports/</span><span class="si">{</span><span class="n">ibPort</span><span class="si">}</span><span class="s1">/gids'</span>
+        <span class="k">for</span> <span class="n">tpath</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">typ_dir</span><span class="si">}</span><span class="s1">/*'</span><span class="p">),</span>
                             <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">p</span><span class="p">))):</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">tpath</span><span class="p">))</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;RoCE v2&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">'RoCE v2'</span><span class="p">:</span>
                         <span class="k">continue</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">gid_dir</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">groups</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">gid_dir</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">groups</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">':'</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="c1"># IPv4-mapped GID: 0000:0000:0000:0000:0000:ffff:HHHH:LLLL</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span> <span class="ow">or</span> <span class="n">groups</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">&#39;ffff&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">8</span> <span class="ow">or</span> <span class="n">groups</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s1">'ffff'</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">hi</span><span class="p">,</span> <span class="n">lo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="mi">16</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">groups</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span>
-            <span class="n">ipv4</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">hi</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">8</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">hi</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">lo</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">8</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">lo</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">ipv4</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">hi</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">8</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">hi</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">lo</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">8</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">lo</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xff</span><span class="si">}</span><span class="s1">'</span>
             <span class="k">if</span> <span class="n">ipv4</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">subnet</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">idx</span>
         <span class="k">return</span> <span class="kc">None</span></div>
@@ -603,16 +603,16 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Direct access to the C++ stream master — receives every channel</span>
+<span class="w">        </span><span class="sd">"""Direct access to the C++ stream master — receives every channel</span>
 <span class="sd">        the FPGA emits.  Use ``getChannel(n)`` instead to get a filtered</span>
 <span class="sd">        view of a single RDMA-immediate channel id (the per-channel</span>
-<span class="sd">        analogue of ``UdpRssiPack.application(n)``).&quot;&quot;&quot;</span>
+<span class="sd">        analogue of ``UdpRssiPack.application(n)``)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span>
 
 <div class="viewcode-block" id="RoCEv2Server.getChannel">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.getChannel">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">getChannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a channel-filtered view (channel id from immediate value bits [7:0]).</span>
+<span class="w">        </span><span class="sd">"""Return a channel-filtered view (channel id from immediate value bits [7:0]).</span>
 
 <span class="sd">        The RDMA SEND-with-Immediate carries the channel id in the low 8</span>
 <span class="sd">        bits of the immediate value (Server.cpp runThread decodes</span>
@@ -620,13 +620,13 @@
 <span class="sd">        of-range values would previously blow up with `OverflowError` inside</span>
 <span class="sd">        the Filter ctor — validate up front and raise a clear</span>
 <span class="sd">        `rogue.GeneralError` instead.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">channel</span> <span class="o">&lt;=</span> <span class="mh">0xFF</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;RoCEv2Server.getChannel&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;channel must be in the range 0..255 (bits [7:0] of the &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;RDMA immediate value, see Server.cpp::runThread); &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="s2">"RoCEv2Server.getChannel"</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"channel must be in the range 0..255 (bits [7:0] of the "</span>
+                <span class="sa">f</span><span class="s2">"RDMA immediate value, see Server.cpp::runThread); "</span>
+                <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">filt</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">&gt;&gt;</span> <span class="n">filt</span>
         <span class="k">return</span> <span class="n">filt</span></div>
@@ -635,33 +635,33 @@
 <div class="viewcode-block" id="RoCEv2Server.printConnInfo">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.printConnInfo">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">printConnInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the RC connection summary (QP/GID/MR + buffer sizing).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Print the RC connection summary (QP/GID/MR + buffer sizing)."""</span>
         <span class="n">max_payload</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaxPayload</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="n">rx_queue_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RxQueueDepth</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;--- RoCEv2 connection info ---</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  Host QPN        : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">HostQpn</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  Host GID        : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">HostGid</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  MR addr         : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MrAddr</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  MR rkey         : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MrRkey</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  FPGA lkey       : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FpgaLkey</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  MaxPayload      : </span><span class="si">{</span><span class="n">max_payload</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  RxQueueDepth    : </span><span class="si">{</span><span class="n">rx_queue_depth</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  MrLen           : </span><span class="si">{</span><span class="n">max_payload</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rx_queue_depth</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;------------------------------&quot;</span>
+            <span class="sa">f</span><span class="s2">"--- RoCEv2 connection info ---</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  Host QPN        : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">HostQpn</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  Host GID        : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">HostGid</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  MR addr         : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MrAddr</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  MR rkey         : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MrRkey</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  FPGA lkey       : </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FpgaLkey</span><span class="o">.</span><span class="n">get</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  MaxPayload      : </span><span class="si">{</span><span class="n">max_payload</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  RxQueueDepth    : </span><span class="si">{</span><span class="n">rx_queue_depth</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"  MrLen           : </span><span class="si">{</span><span class="n">max_payload</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rx_queue_depth</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"------------------------------"</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RoCEv2Server.getHostParams">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.getHostParams">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">getHostParams</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoCEv2HostParams</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the host RC QP params for the FPGA hand-off.</span>
+<span class="w">        </span><span class="sd">"""Read the host RC QP params for the FPGA hand-off.</span>
 
-<span class="sd">        Returns the five flat values the FPGA engine&#39;s setupConnection()</span>
+<span class="sd">        Returns the five flat values the FPGA engine's setupConnection()</span>
 <span class="sd">        consumes (hostQpn, hostRqPsn, hostSqPsn, mrAddr, mrLen) as a</span>
 <span class="sd">        RoCEv2HostParams, so the Root can call</span>
 <span class="sd">        ``engine.setupConnection(**server.getHostParams()._asdict(), pmtu=..., ...)``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">host_qpn</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getQpn</span><span class="p">()</span>
         <span class="n">host_rq_psn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getRqPsn</span><span class="p">()</span>
         <span class="n">host_sq_psn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getSqPsn</span><span class="p">()</span>
@@ -670,10 +670,10 @@
 
         <span class="k">if</span> <span class="n">mr_len</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;RoCEv2Server.getHostParams&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;FPGA MR length </span><span class="si">{</span><span class="n">mr_len</span><span class="si">}</span><span class="s2"> bytes (</span><span class="si">{</span><span class="n">mr_len</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GiB) exceeds &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;the 32-bit field of the metadata bus. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Reduce maxPayload (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="si">}</span><span class="s2">) or rxQueueDepth (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="s2">"RoCEv2Server.getHostParams"</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"FPGA MR length </span><span class="si">{</span><span class="n">mr_len</span><span class="si">}</span><span class="s2"> bytes (</span><span class="si">{</span><span class="n">mr_len</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="o">**</span><span class="mi">30</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GiB) exceeds "</span>
+                <span class="sa">f</span><span class="s2">"the 32-bit field of the metadata bus. "</span>
+                <span class="sa">f</span><span class="s2">"Reduce maxPayload (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="si">}</span><span class="s2">) or rxQueueDepth (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2">)."</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">RoCEv2HostParams</span><span class="p">(</span>
@@ -689,28 +689,28 @@
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/rocev2.html#pyrogue.protocols.RoCEv2Server.completeConnection">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">completeConnection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpgaQpn</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pmtu</span><span class="p">,</span> <span class="n">minRnrTimer</span><span class="p">,</span>
                            <span class="n">rnrRetry</span><span class="p">,</span> <span class="n">retryCount</span><span class="p">,</span> <span class="n">fpgaLkey</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finish the host RC QP once the FPGA side is up.</span>
+<span class="w">        </span><span class="sd">"""Finish the host RC QP once the FPGA side is up.</span>
 
 <span class="sd">        The Root calls this with the FPGA result (fpgaQpn/fpgaLkey from the</span>
-<span class="sd">        engine&#39;s RoCEv2FpgaParams) plus the transport knobs. Validates the</span>
+<span class="sd">        engine's RoCEv2FpgaParams) plus the transport knobs. Validates the</span>
 <span class="sd">        transport knobs at call time (the invariant displaced from __init__),</span>
 <span class="sd">        derives fpgaRqPsn internally, drives the C++ server, and sets the</span>
 <span class="sd">        FPGA status vars.</span>
 <span class="sd">        ``rnrRetry``/``retryCount`` are accepted for symmetry with the engine</span>
 <span class="sd">        call site but are not forwarded to the C++ surface.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">pmtu</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_PMTU_BYTES</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;RoCEv2Server.completeConnection&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;pmtu must be a valid RoCEv2Mtu code &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">&#39;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">_PMTU_BYTES</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">); &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">pmtu</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"RoCEv2Server.completeConnection"</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"pmtu must be a valid RoCEv2Mtu code "</span>
+                <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s1">'</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">_PMTU_BYTES</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">); "</span>
+                <span class="sa">f</span><span class="s2">"got </span><span class="si">{</span><span class="n">pmtu</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">minRnrTimer</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_MIN_RNR_TIMER_MS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">rogue</span><span class="o">.</span><span class="n">GeneralError</span><span class="p">(</span>
-                <span class="s2">&quot;RoCEv2Server.completeConnection&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;minRnrTimer must be an IB RNR timer code 0..31 &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(see _MIN_RNR_TIMER_MS); got </span><span class="si">{</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s2">"RoCEv2Server.completeConnection"</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"minRnrTimer must be an IB RNR timer code 0..31 "</span>
+                <span class="sa">f</span><span class="s2">"(see _MIN_RNR_TIMER_MS); got </span><span class="si">{</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="n">fpgaRqPsn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getSqPsn</span><span class="p">()</span>   <span class="c1"># host SQ PSN == FPGA RQ PSN</span>
@@ -725,24 +725,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">FpgaQpn</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">fpgaQpn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FpgaLkey</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">fpgaLkey</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RoCEv2 host RC connection summary&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Device      : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_deviceName</span><span class="si">}</span><span class="s2">  port=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ibPort</span><span class="si">}</span><span class="s2">  GID idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_gidIndex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host QPN    : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getQpn</span><span class="p">()</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Host GID    : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getGid</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  Host state  : RTS&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR addr     : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrAddr</span><span class="p">()</span><span class="si">:</span><span class="s2">016x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR rkey     : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrRkey</span><span class="p">()</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MR size     : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2"> bytes  (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2"> slots x </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA QPN    : 0x</span><span class="si">{</span><span class="n">fpgaQpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA lkey   : 0x</span><span class="si">{</span><span class="n">fpgaLkey</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  FPGA GID    : </span><span class="si">{</span><span class="n">_gid_bytes_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fpgaGidBytes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Path MTU    : </span><span class="si">{</span><span class="n">pmtu</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">_PMTU_BYTES</span><span class="p">[</span><span class="n">pmtu</span><span class="p">]</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  MinRnrTimer : </span><span class="si">{</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">_MIN_RNR_TIMER_MS</span><span class="p">[</span><span class="n">minRnrTimer</span><span class="p">]</span><span class="si">}</span><span class="s2">ms)&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RnrRetry    : </span><span class="si">{</span><span class="n">rnrRetry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  RetryCount  : </span><span class="si">{</span><span class="n">retryCount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  RC connection established — ready to receive RDMA SENDs&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"RoCEv2 host RC connection summary"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Device      : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_deviceName</span><span class="si">}</span><span class="s2">  port=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_ibPort</span><span class="si">}</span><span class="s2">  GID idx=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_gidIndex</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Host QPN    : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getQpn</span><span class="p">()</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Host GID    : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getGid</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"  Host state  : RTS"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  MR addr     : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrAddr</span><span class="p">()</span><span class="si">:</span><span class="s2">016x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  MR rkey     : 0x</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">getMrRkey</span><span class="p">()</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  MR size     : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2"> bytes  (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rxQueueDepth</span><span class="si">}</span><span class="s2"> slots x </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_maxPayload</span><span class="si">}</span><span class="s2"> bytes)"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  FPGA QPN    : 0x</span><span class="si">{</span><span class="n">fpgaQpn</span><span class="si">:</span><span class="s2">06x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  FPGA lkey   : 0x</span><span class="si">{</span><span class="n">fpgaLkey</span><span class="si">:</span><span class="s2">08x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  FPGA GID    : </span><span class="si">{</span><span class="n">_gid_bytes_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fpgaGidBytes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Path MTU    : </span><span class="si">{</span><span class="n">pmtu</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">_PMTU_BYTES</span><span class="p">[</span><span class="n">pmtu</span><span class="p">]</span><span class="si">}</span><span class="s2"> bytes)"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  MinRnrTimer : </span><span class="si">{</span><span class="n">minRnrTimer</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">_MIN_RNR_TIMER_MS</span><span class="p">[</span><span class="n">minRnrTimer</span><span class="p">]</span><span class="si">}</span><span class="s2">ms)"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  RnrRetry    : </span><span class="si">{</span><span class="n">rnrRetry</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  RetryCount  : </span><span class="si">{</span><span class="n">retryCount</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"  RC connection established — ready to receive RDMA SENDs"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -753,7 +753,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Host-side teardown only: stop the C++ server, then propagate stop()</span>
-        <span class="c1"># to children. The FPGA QP teardown is now the Root&#39;s responsibility —</span>
+        <span class="c1"># to children. The FPGA QP teardown is now the Root's responsibility —</span>
         <span class="c1"># it calls engine.teardownConnection() (surf) while transport is still</span>
         <span class="c1"># up, BEFORE super().stop() reaches this hook.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>

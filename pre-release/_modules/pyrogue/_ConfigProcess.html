@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._ConfigProcess &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue._ConfigProcess &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -126,7 +126,7 @@
 <div class="viewcode-block" id="LoadConfigProcess">
 <a class="viewcode-back" href="../../api/python/pyrogue/loadconfig.html#pyrogue.LoadConfigProcess">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LoadConfigProcess</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Process</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process that loads configuration into the tree from a file or YAML string.</span>
+<span class="w">    </span><span class="sd">"""Process that loads configuration into the tree from a file or YAML string.</span>
 
 <span class="sd">    Exposes the same configuration load paths as the built-in ``LoadConfig``</span>
 <span class="sd">    and ``SetYamlConfig`` Root commands, but as a ``Process`` with operator-</span>
@@ -151,33 +151,33 @@
 <span class="sd">    ----------</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``Process``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pr</span><span class="o">.</span><span class="n">Process</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;LoadMode&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'LoadMode'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;String&#39;</span><span class="p">},</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Source of configuration data: File reads from ConfigFile; String applies YamlString.&#39;</span><span class="p">))</span>
+            <span class="n">disp</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">'File'</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">'String'</span><span class="p">},</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Source of configuration data: File reads from ConfigFile; String applies YamlString.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ConfigFile&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
-            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Path to YAML configuration file. Used when LoadMode is File.&#39;</span><span class="p">))</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'ConfigFile'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Path to YAML configuration file. Used when LoadMode is File.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;YamlString&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
-            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;YAML configuration text to apply. Used when LoadMode is String.&#39;</span><span class="p">))</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'YamlString'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'YAML configuration text to apply. Used when LoadMode is String.'</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stopProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># loadYaml and setYaml are not interruptible; Stop is ignored.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: Stop is not supported; operation will run to completion.&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1">: Stop is not supported; operation will run to completion.'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Wait for any in-flight operation to finish before device teardown.</span>
@@ -187,36 +187,36 @@
         <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Running&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">'Running'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">LoadMode</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">cfg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ConfigFile</span><span class="o">.</span><span class="n">value</span><span class="p">())</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">cfg</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ConfigFile is empty&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'ConfigFile is empty'</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span>
                     <span class="n">name</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span>
                     <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">],</span>
+                    <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">],</span>
                     <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">excGroups</span><span class="o">=</span><span class="s1">&#39;NoConfig&#39;</span><span class="p">,</span>
+                    <span class="n">excGroups</span><span class="o">=</span><span class="s1">'NoConfig'</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">yml</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">YamlString</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">yml</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;YamlString is empty&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'YamlString is empty'</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setYaml</span><span class="p">(</span>
                     <span class="n">yml</span><span class="o">=</span><span class="n">yml</span><span class="p">,</span>
                     <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">],</span>
+                    <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">],</span>
                     <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">excGroups</span><span class="o">=</span><span class="s1">&#39;NoConfig&#39;</span><span class="p">,</span>
+                    <span class="n">excGroups</span><span class="o">=</span><span class="s1">'NoConfig'</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span></div>
 
 
@@ -224,7 +224,7 @@
 <div class="viewcode-block" id="SaveConfigProcess">
 <a class="viewcode-back" href="../../api/python/pyrogue/saveconfig.html#pyrogue.SaveConfigProcess">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SaveConfigProcess</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Process</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process that saves configuration or state to a file or YAML string variable.</span>
+<span class="w">    </span><span class="sd">"""Process that saves configuration or state to a file or YAML string variable.</span>
 
 <span class="sd">    Exposes the same save and export paths as the built-in ``SaveConfig``,</span>
 <span class="sd">    ``SaveState``, ``GetYamlConfig``, and ``GetYamlState`` Root commands, but</span>
@@ -255,40 +255,40 @@
 <span class="sd">    ----------</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``Process``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">pr</span><span class="o">.</span><span class="n">Process</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DataType&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'DataType'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;Config&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Status&#39;</span><span class="p">},</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Variable set to include: Config uses RW/WO modes excluding NoConfig; Status uses RW/RO/WO modes excluding NoState.&#39;</span><span class="p">))</span>
+            <span class="n">disp</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">'Config'</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">'Status'</span><span class="p">},</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Variable set to include: Config uses RW/WO modes excluding NoConfig; Status uses RW/RO/WO modes excluding NoState.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SaveMode&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'SaveMode'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;File&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;String&#39;</span><span class="p">},</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Output destination: File writes to ConfigFile; String stores the result in YamlString.&#39;</span><span class="p">))</span>
+            <span class="n">disp</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">'File'</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">'String'</span><span class="p">},</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Output destination: File writes to ConfigFile; String stores the result in YamlString.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ConfigFile&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
-            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Output file path. Used when SaveMode is File. Auto-named with a timestamp prefix if empty.&#39;</span><span class="p">))</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'ConfigFile'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Output file path. Used when SaveMode is File. Auto-named with a timestamp prefix if empty.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;YamlString&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
-            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Captured YAML output. Populated when SaveMode is String.&#39;</span><span class="p">))</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'YamlString'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Captured YAML output. Populated when SaveMode is String.'</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stopProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># saveYaml and getYaml are not interruptible; Stop is ignored.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">: Stop is not supported; operation will run to completion.&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">'</span><span class="si">%s</span><span class="s1">: Stop is not supported; operation will run to completion.'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Wait for any in-flight operation to finish before device teardown.</span>
@@ -298,19 +298,19 @@
         <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Running&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">'Running'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">]</span>
-                <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s1">&#39;NoConfig&#39;</span>
-                <span class="n">autoPrefix</span> <span class="o">=</span> <span class="s1">&#39;config&#39;</span>
+                <span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">]</span>
+                <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s1">'NoConfig'</span>
+                <span class="n">autoPrefix</span> <span class="o">=</span> <span class="s1">'config'</span>
                 <span class="n">autoCompress</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">]</span>
-                <span class="n">excGroups</span> <span class="o">=</span> <span class="s1">&#39;NoState&#39;</span>
-                <span class="n">autoPrefix</span> <span class="o">=</span> <span class="s1">&#39;state&#39;</span>
+                <span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'RO'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">]</span>
+                <span class="n">excGroups</span> <span class="o">=</span> <span class="s1">'NoState'</span>
+                <span class="n">autoPrefix</span> <span class="o">=</span> <span class="s1">'state'</span>
                 <span class="n">autoCompress</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SaveMode</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -333,10 +333,10 @@
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">YamlString</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">yml</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span></div>
 
 </pre></div>

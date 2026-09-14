@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -179,8 +179,8 @@ return <code class="docutils literal notranslate"><span class="pre">None</span><
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">macros</span><span class="o">=</span><span class="n">macros</span><span class="p">)</span>
 
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">SystemWindow</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">&#39;rogue://0/root&#39;</span><span class="p">))</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">DebugTree</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">&#39;rogue://0/root&#39;</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">SystemWindow</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">'rogue://0/root'</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">DebugTree</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">'rogue://0/root'</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">ui_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -191,26 +191,26 @@ return <code class="docutils literal notranslate"><span class="pre">None</span><
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
 <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
-    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span>
     <span class="n">display</span><span class="o">=</span><span class="n">MyTop</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'My System'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>If the display needs custom constructor behavior, pass a small factory
 instead:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
-    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
-    <span class="n">display_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MyTop</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;ops&#39;</span><span class="p">),</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span>
+    <span class="n">display_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MyTop</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">'ops'</span><span class="p">),</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'My System'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>The older file-based pattern still works:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
-    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
-    <span class="n">ui</span><span class="o">=</span><span class="s1">&#39;path/to/my_top.py&#39;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span>
+    <span class="n">ui</span><span class="o">=</span><span class="s1">'path/to/my_top.py'</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'My System'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -224,8 +224,8 @@ the direct <code class="docutils literal notranslate"><span class="pre">display=
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
 <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
-    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Remote System&#39;</span><span class="p">,</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'Remote System'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -238,7 +238,7 @@ to <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#p
 <span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
         <span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">'My System'</span><span class="p">,</span>
         <span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
         <span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
         <span class="n">linkTimeout</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
@@ -263,7 +263,7 @@ subclass) before calling <code class="docutils literal notranslate"><span class=
 <span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
-<span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>         <span class="c1"># don&#39;t do this</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>         <span class="c1"># don't do this</span>
 <span class="o">...</span>
 <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>             <span class="c1"># raises RuntimeError</span>
 </pre></div>
@@ -275,7 +275,7 @@ windows are bound to it instead, never reply to the compositor’s ping/sync
 messages, and get flagged as “not responding” (notably under
 GNOME-on-Wayland with XWayland).</p>
 <p><code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> detects this case at entry, prints a step-by-step diagnostic to
-<code class="docutils literal notranslate"><span class="pre">stderr</span></code>, and raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. Companion widgets that need a
+<code class="docutils literal notranslate"><span class="pre">stderr</span></code>, and raises <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. Companion widgets that need a
 live <code class="docutils literal notranslate"><span class="pre">QApplication</span></code> should be built inside a <code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code>
 subclass (see the <cite>Custom Python Top-Level Displays</cite> section above) or via
 the <code class="docutils literal notranslate"><span class="pre">display</span></code> / <code class="docutils literal notranslate"><span class="pre">display_factory</span></code> arguments, not before <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> is

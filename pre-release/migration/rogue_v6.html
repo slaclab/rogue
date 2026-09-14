@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Migrating To Rogue V6 &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Migrating To Rogue V6 &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -119,16 +119,16 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                              <span class="n">description</span><span class="o">=</span><span class="s2">"Example Root"</span><span class="p">,</span>
                               <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
                               <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Add zmq server, keep it as an attribute so we can access it later</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">ExampleRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
-     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Test UI&#39;</span><span class="p">,</span><span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">'Test UI'</span><span class="p">,</span><span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>More information can be found in:</p>
@@ -144,12 +144,12 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                              <span class="n">description</span><span class="o">=</span><span class="s2">"Example Root"</span><span class="p">,</span>
                               <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
                               <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Add sql logger</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">SqlLogger</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">&#39;sqlite:///test.db&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">SqlLogger</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">'sqlite:///test.db'</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>More information can be found in:</p>
@@ -165,7 +165,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                              <span class="n">description</span><span class="o">=</span><span class="s2">"Example Root"</span><span class="p">,</span>
                               <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
                               <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -185,11 +185,11 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                              <span class="n">description</span><span class="o">=</span><span class="s2">"Example Root"</span><span class="p">,</span>
                               <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
                               <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">pvserv</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epicsV4</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">pvserv</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epicsV4</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s2">"test"</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addProtocol</span><span class="p">(</span><span class="n">pvserv</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -202,13 +202,13 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Declare register</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
     <span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;egReg&#39;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">'egReg'</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">'Example'</span><span class="p">,</span>
         <span class="n">offset</span><span class="o">=</span><span class="n">address</span><span class="p">,</span>
         <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
         <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
    <span class="p">)</span>
 <span class="p">)</span>
 
@@ -227,8 +227,8 @@
 <span class="c1">## valueStride: word size (e.g.: 32bits)</span>
 
 <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-    <span class="n">name</span>         <span class="o">=</span> <span class="s1">&#39;ramReg&#39;</span><span class="p">,</span>
-    <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;Example&#39;</span><span class="p">,</span>
+    <span class="n">name</span>         <span class="o">=</span> <span class="s1">'ramReg'</span><span class="p">,</span>
+    <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Example'</span><span class="p">,</span>
     <span class="n">offset</span>       <span class="o">=</span> <span class="n">address</span><span class="p">,</span>
     <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span>
     <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -237,7 +237,7 @@
     <span class="n">valueStride</span>  <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
     <span class="n">bulkOpEn</span>     <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># FALSE for large variables</span>
     <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Int</span><span class="p">,</span>
-    <span class="n">mode</span>         <span class="o">=</span> <span class="s2">&quot;RW&quot;</span><span class="p">,</span>
+    <span class="n">mode</span>         <span class="o">=</span> <span class="s2">"RW"</span><span class="p">,</span>
 <span class="p">))</span>
 
 <span class="c1"># For the example, a random array of 1024 words is generated</span>
@@ -287,7 +287,7 @@ code to launch a generic tree GUI.</p>
 <span class="k">with</span> <span class="n">Root</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
         <span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;GUI Window Title&#39;</span><span class="p">)</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">'GUI Window Title'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

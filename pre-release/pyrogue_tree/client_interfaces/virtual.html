@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Virtual Client Interface &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Virtual Client Interface &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -133,15 +133,15 @@ on broader Rogue/PyRogue libraries.</p>
 <h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
 
-<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">'localhost'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">())</span>
 
     <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span>
-    <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;0x100&#39;</span><span class="p">)</span>
-    <span class="n">root</span><span class="o">.</span><span class="n">SomeCommand</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">&#39;0x100&#39;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">'0x100'</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">SomeCommand</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">'0x100'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -151,7 +151,7 @@ on broader Rogue/PyRogue libraries.</p>
 listeners in the same style as server-side code.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
 
-<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">'localhost'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">typeStr</span><span class="p">)</span>
@@ -159,7 +159,7 @@ listeners in the same style as server-side code.</p>
     <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">listener</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">varValue</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">varValue</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">varValue</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
     <span class="n">root</span><span class="o">.</span><span class="n">UpTime</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
 </pre></div>
@@ -171,7 +171,7 @@ listeners in the same style as server-side code.</p>
 Variable conditions are satisfied.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span><span class="p">,</span> <span class="n">VariableWait</span>
 
-<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">'localhost'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
 
     <span class="c1"># Wait until uptime exceeds 1000 seconds</span>
@@ -187,9 +187,9 @@ Variable conditions are satisfied.</p>
 <p><code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> exposes connection state and link monitor callbacks.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
 
-<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">'localhost'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">link_monitor</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Link state is now </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Link state is now </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
     <span class="n">client</span><span class="o">.</span><span class="n">addLinkMonitor</span><span class="p">(</span><span class="n">link_monitor</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">linked</span><span class="p">)</span>
@@ -216,7 +216,7 @@ threshold.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
 
 <span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span>
-    <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+    <span class="n">addr</span><span class="o">=</span><span class="s1">'localhost'</span><span class="p">,</span>
     <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">,</span>
     <span class="n">linkTimeout</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
     <span class="n">requestStallTimeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>

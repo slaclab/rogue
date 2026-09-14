@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AxiMemMap &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>AxiMemMap &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -151,7 +151,7 @@ then passed as <code class="docutils literal notranslate"><span class="pre">memB
 <span class="kn">import</span><span class="w"> </span><span class="nn">axipcie</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">BoardRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">memMap</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiMemMap</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
@@ -171,7 +171,7 @@ then passed as <code class="docutils literal notranslate"><span class="pre">memB
 plain Rogue memory endpoint:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
 
-<span class="n">mem_map</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiMemMap</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">)</span>
+<span class="n">mem_map</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiMemMap</span><span class="p">(</span><span class="s1">'/dev/datadev_0'</span><span class="p">)</span>
 <span class="n">mem_master</span> <span class="o">&gt;&gt;</span> <span class="n">mem_map</span>
 </pre></div>
 </div>
@@ -202,7 +202,7 @@ use, explicitly stop it when finished.</p>
 only if you want constructor or initial startup messages:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.axi.AxiMemMap&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">'pyrogue.axi.AxiMemMap'</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

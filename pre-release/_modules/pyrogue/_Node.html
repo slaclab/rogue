@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Node &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue._Node &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -127,7 +127,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">expose</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mark a property or method as exposed to external interfaces.</span>
+<span class="w">    </span><span class="sd">"""Mark a property or method as exposed to external interfaces.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -138,7 +138,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    Any</span>
 <span class="sd">        The original item for decorator chaining.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Property</span>
     <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isdatadescriptor</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
@@ -151,14 +151,14 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">NodeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when node operations fail.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when node operations fail."""</span>
     <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="Node">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Node</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for nodes in the PyRogue tree.</span>
+<span class="w">    </span><span class="sd">"""Base class for nodes in the PyRogue tree.</span>
 
 <span class="sd">    Each node is associated with a parent and has a link to the top node of a tree.</span>
 <span class="sd">    A node has a list of sub-nodes as well as each sub-node being attached as an</span>
@@ -168,7 +168,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        Global name of the node.</span>
-<span class="sd">    description : str, optional (default = &quot;&quot;)</span>
+<span class="sd">    description : str, optional (default = "")</span>
 <span class="sd">        Human-readable description.</span>
 <span class="sd">    expand : bool, optional (default = True)</span>
 <span class="sd">        Default GUI expand state.</span>
@@ -178,20 +178,20 @@
 <span class="sd">        Groups to assign.</span>
 <span class="sd">    guiGroup : str, optional</span>
 <span class="sd">        GUI grouping label.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">_nodeCount</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">expand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">guiGroup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the node.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize the node."""</span>
         <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="n">_nodeCount</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="c1"># Public attributes</span>
@@ -218,17 +218,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">groups</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">hidden</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">&#39;Hidden&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">'Hidden'</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a concise class/path representation.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="w">        </span><span class="sd">"""Return a concise class/path representation."""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">'</span>
 
 <div class="viewcode-block" id="Node.classLogName">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.classLogName">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">classLogName</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the canonical Python logger name for this Node class.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the canonical Python logger name for this Node class."""</span>
         <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">logName</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></div>
 
 
@@ -242,14 +242,14 @@
         <span class="n">includePython</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">includeRogue</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the logging level for this Node class logger family.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the logging level for this Node class logger family."""</span>
         <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">includePython</span><span class="o">=</span><span class="n">includePython</span><span class="p">,</span> <span class="n">includeRogue</span><span class="o">=</span><span class="n">includeRogue</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Node.logName">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.logName">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">logName</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the canonical logger name for this Node instance.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the canonical logger name for this Node instance."""</span>
         <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">logName</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
@@ -262,40 +262,40 @@
         <span class="n">includePython</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">includeRogue</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the logging level for this Node instance logger.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the logging level for this Node instance logger."""</span>
         <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">includePython</span><span class="o">=</span><span class="n">includePython</span><span class="p">,</span> <span class="n">includeRogue</span><span class="o">=</span><span class="n">includeRogue</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nodeCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the total node count.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the total node count."""</span>
         <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="n">_nodeCount</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the node name.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the node name."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the node description.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the node description."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">groups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the node groups.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the node groups."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span>
 
 <div class="viewcode-block" id="Node.inGroup">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.inGroup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">inGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the node is in the provided group or groups.</span>
+<span class="w">        </span><span class="sd">"""Return True if the node is in the provided group or groups.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        group : object</span>
 <span class="sd">            Group name or list of groups to test.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
@@ -309,7 +309,7 @@
         <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the node passes include/exclude filters.</span>
+<span class="w">        </span><span class="sd">"""Return True if the node passes include/exclude filters.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -317,7 +317,7 @@
 <span class="sd">            Group name or group names to include.</span>
 <span class="sd">        excGroups : str or list[str], optional</span>
 <span class="sd">            Group name or group names to exclude.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">((</span><span class="n">incGroups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">incGroups</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="p">)))</span> <span class="ow">and</span> \
                <span class="p">((</span><span class="n">excGroups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">excGroups</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">inGroup</span><span class="p">(</span><span class="n">excGroups</span><span class="p">)))</span></div>
 
@@ -325,13 +325,13 @@
 <div class="viewcode-block" id="Node.addToGroup">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.addToGroup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">addToGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add this node to a group and propagate to children.</span>
+<span class="w">        </span><span class="sd">"""Add this node to a group and propagate to children.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        group : str</span>
 <span class="sd">            Group name to add.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 
@@ -342,49 +342,49 @@
 <div class="viewcode-block" id="Node.removeFromGroup">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.removeFromGroup">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">removeFromGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove this node from a group.</span>
+<span class="w">        </span><span class="sd">"""Remove this node from a group.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        group : str</span>
 <span class="sd">            Group name to remove.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the node is hidden.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inGroup</span><span class="p">(</span><span class="s1">&#39;Hidden&#39;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Return True if the node is hidden."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inGroup</span><span class="p">(</span><span class="s1">'Hidden'</span><span class="p">)</span>
 
     <span class="nd">@hidden</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set whether the node is hidden.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set whether the node is hidden."""</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">&#39;Hidden&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">'Hidden'</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">removeFromGroup</span><span class="p">(</span><span class="s1">&#39;Hidden&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">removeFromGroup</span><span class="p">(</span><span class="s1">'Hidden'</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full node path.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the full node path."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the expand state.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the expand state."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">guiGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the GUI group label.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the GUI group label."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guiGroup</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allow child Nodes with the &#39;name[key]&#39; naming convention to be accessed as if they belong to a</span>
-<span class="sd">        dictionary of Nodes with that &#39;name&#39;.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a</span>
+<span class="sd">        dictionary of Nodes with that 'name'.</span>
 <span class="sd">        Raises AttributeError if no such named Nodes are found.</span>
 
 <span class="sd">        Parameters</span>
@@ -396,7 +396,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        Node</span>
 <span class="sd">            The node with the given name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Node matches name in node list</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
@@ -407,50 +407,50 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anodes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> has no attribute </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1"> has no attribute </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return default attributes plus child-node names.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return default attributes plus child-node names."""</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize virtual-node metadata for remote interfaces.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Serialize virtual-node metadata for remote interfaces."""</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;bases&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">genBaseList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;groups&#39;</span><span class="p">]</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;expand&#39;</span><span class="p">]</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;guiGroup&#39;</span><span class="p">]</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guiGroup</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="n">odict</span><span class="p">({</span><span class="n">k</span><span class="p">:</span><span class="kc">None</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">inGroup</span><span class="p">(</span><span class="s1">&#39;NoServe&#39;</span><span class="p">)})</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;props&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;funcs&#39;</span><span class="p">]</span>       <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'bases'</span><span class="p">]</span>       <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">genBaseList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'description'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'groups'</span><span class="p">]</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'path'</span><span class="p">]</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'expand'</span><span class="p">]</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'guiGroup'</span><span class="p">]</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guiGroup</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'nodes'</span><span class="p">]</span>       <span class="o">=</span> <span class="n">odict</span><span class="p">({</span><span class="n">k</span><span class="p">:</span><span class="kc">None</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">inGroup</span><span class="p">(</span><span class="s1">'NoServe'</span><span class="p">)})</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'props'</span><span class="p">]</span>       <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">attr</span><span class="p">[</span><span class="s1">'funcs'</span><span class="p">]</span>       <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># Get properties</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="nb">property</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">fget</span><span class="p">,</span><span class="s1">&#39;_rogueExposed&#39;</span><span class="p">):</span>
-                <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;props&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">fget</span><span class="p">,</span><span class="s1">'_rogueExposed'</span><span class="p">):</span>
+                <span class="n">attr</span><span class="p">[</span><span class="s1">'props'</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
         <span class="c1"># Get methods</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="nb">callable</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="s1">&#39;_rogueExposed&#39;</span><span class="p">):</span>
-                <span class="n">attr</span><span class="p">[</span><span class="s1">&#39;funcs&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;args&#39;</span>   <span class="p">:</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span><span class="p">],</span>
-                                    <span class="s1">&#39;kwargs&#39;</span> <span class="p">:</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">kwonlyargs</span><span class="p">}</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="s1">'_rogueExposed'</span><span class="p">):</span>
+                <span class="n">attr</span><span class="p">[</span><span class="s1">'funcs'</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'args'</span>   <span class="p">:</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="s1">'self'</span><span class="p">],</span>
+                                    <span class="s1">'kwargs'</span> <span class="p">:</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">kwonlyargs</span><span class="p">}</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">VirtualFactory</span><span class="p">,</span> <span class="p">(</span><span class="n">attr</span><span class="p">,))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if ``item`` is a direct child node.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return True if ``item`` is a direct child node."""</span>
         <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Node.add">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.add">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Node</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node as a child.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Add a node as a child."""</span>
 
         <span class="c1"># Special case if list (or iterable of nodes) is passed</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">Node</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">node</span><span class="p">):</span>
@@ -460,24 +460,24 @@
 
         <span class="c1"># Fail if added to a non device node (may change in future)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">&#39;Attempting to add node with name </span><span class="si">%s</span><span class="s1"> to non device node </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">'Attempting to add node with name </span><span class="si">%s</span><span class="s1"> to non device node </span><span class="si">%s</span><span class="s1">.'</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
         <span class="c1"># Fail if root already exists</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">&#39;Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Tree is already started.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">'Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Tree is already started.'</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
         <span class="c1"># Error if added node already has a parent</span>
         <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">&#39;Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Node is already attached.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">'Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Node is already attached.'</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
         <span class="c1"># Names of all sub-nodes must be unique</span>
         <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">()</span> <span class="ow">or</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anodes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">&#39;Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Name collision.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">'Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Name collision.'</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
         <span class="c1"># Add some checking for characters which will make lookups problematic</span>
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^[</span><span class="se">\\</span><span class="s1">w_</span><span class="se">\\</span><span class="s1">[</span><span class="se">\\</span><span class="s1">]]+$&#39;</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">'^[</span><span class="se">\\</span><span class="s1">w_</span><span class="se">\\</span><span class="s1">[</span><span class="se">\\</span><span class="s1">]]+$'</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Node </span><span class="si">%s</span><span class="s2"> with one or more special characters will cause lookup errors.&quot;</span><span class="p">,</span>
+                <span class="s2">"Node </span><span class="si">%s</span><span class="s2"> with one or more special characters will cause lookup errors."</span><span class="p">,</span>
                 <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -489,10 +489,10 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_addArrayNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register ``name[idx]`` children in array lookup dictionaries.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Register ``name[idx]`` children in array lookup dictionaries."""</span>
 
         <span class="c1"># Generic test array method</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1">[|</span><span class="se">\\</span><span class="s1">[|</span><span class="se">\\</span><span class="s1">]&#39;</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1">[|</span><span class="se">\\</span><span class="s1">[|</span><span class="se">\\</span><span class="s1">]'</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -501,12 +501,12 @@
         <span class="n">keys</span>  <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">key</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Array node </span><span class="si">%s</span><span class="s2"> with non numeric key will cause lookup errors.&quot;</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Array node </span><span class="si">%s</span><span class="s2"> with non numeric key will cause lookup errors."</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Detect collisions</span>
         <span class="k">if</span> <span class="n">aname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">&#39;Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Name collision.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">'Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Name collision.'</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
         <span class="c1"># Create dictionary containers</span>
         <span class="k">if</span> <span class="n">aname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anodes</span><span class="p">:</span>
@@ -522,7 +522,7 @@
             <span class="c1"># Last key, set node, check for overlaps</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sub</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">&#39;Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Name collision.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">'Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Name collision.'</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
                 <span class="n">sub</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
                 <span class="k">return</span>
@@ -533,7 +533,7 @@
 
             <span class="c1"># check for overlaps</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub</span><span class="p">[</span><span class="n">k</span><span class="p">],</span><span class="n">Node</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">&#39;Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Name collision.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">NodeError</span><span class="p">(</span><span class="s1">'Error adding node with name </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">. Name collision.'</span> <span class="o">%</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
             <span class="n">sub</span> <span class="o">=</span> <span class="n">sub</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 
@@ -541,7 +541,7 @@
 <div class="viewcode-block" id="Node.addNode">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.addNode">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">addNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeClass</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Node</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct and add a node of ``nodeClass``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Construct and add a node of ``nodeClass``."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nodeClass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
 
@@ -554,16 +554,16 @@
         <span class="n">stride</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a series of nodes with indexed names.&quot;&quot;&quot;</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;offset&#39;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Add a series of nodes with indexed names."""</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'name'</span><span class="p">)</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'offset'</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nodeClass</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:s}</span><span class="s1">[</span><span class="si">{:d}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="n">stride</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nodeClass</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'</span><span class="si">{:s}</span><span class="s1">[</span><span class="si">{:d}</span><span class="s1">]'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="o">+</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="n">stride</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nodeList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a recursive list of nodes.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return a recursive list of nodes."""</span>
         <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -579,7 +579,7 @@
         <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Node</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get a filtered ordered dictionary of nodes.</span>
 <span class="sd">        pass a class to typ to receive a certain type of node</span>
 <span class="sd">        exc is a class type to exclude,</span>
@@ -601,19 +601,19 @@
 <span class="sd">        -------</span>
 <span class="sd">        OrderedDict[str, Node]</span>
 <span class="sd">            Ordered dictionary of nodes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">odict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                       <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="n">excTyp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">n</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">excTyp</span><span class="p">)))</span> <span class="ow">and</span> <span class="n">n</span><span class="o">.</span><span class="n">filterByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="p">))])</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Node</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an ordered dictionary of direct child nodes.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return an ordered dictionary of direct child nodes."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return direct child variables (excluding commands).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return direct child variables (excluding commands)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">,</span><span class="n">excTyp</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Node.variablesByGroup">
@@ -623,13 +623,13 @@
         <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return variables filtered by group.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return variables filtered by group."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">,</span><span class="n">excTyp</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">variableList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a recursive list of variables and commands.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return a recursive list of variables and commands."""</span>
         <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">):</span>
@@ -640,7 +640,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">commands</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return direct child commands.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return direct child commands."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Node.commandsByGroup">
@@ -650,13 +650,13 @@
         <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return commands filtered by group.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return commands filtered by group."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">devices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return direct child devices.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return direct child devices."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Node.devicesByGroup">
@@ -666,13 +666,13 @@
         <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return devices filtered by group.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return devices filtered by group."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">deviceList</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a recursive list of devices.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return a recursive list of devices."""</span>
         <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
@@ -682,24 +682,24 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the parent node.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the parent node."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the root node.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the root node."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
 
 <div class="viewcode-block" id="Node.node">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.node">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Node</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a direct child node by name.</span>
+<span class="w">        </span><span class="sd">"""Return a direct child node by name.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        name : str</span>
 <span class="sd">            Child node name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -708,17 +708,17 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">isDevice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if this node is a device.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return True if this node is a device."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">isVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if this node is a variable (excluding commands).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return True if this node is a variable (excluding commands)."""</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">)))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">isCommand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if this node is a command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return True if this node is a command."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Node.find">
@@ -730,8 +730,8 @@
         <span class="n">typ</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Node</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Find all child nodes that are a base class of &#39;typ&#39;</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Find all child nodes that are a base class of 'typ'</span>
 <span class="sd">        and whose properties match all of the kwargs.</span>
 <span class="sd">        For string properties, accepts regexes.</span>
 
@@ -748,7 +748,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        list[Node]</span>
 <span class="sd">            List of nodes that match the criteria.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">typ</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">typ</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Node</span>
@@ -784,7 +784,7 @@
         <span class="n">nodeTypes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">Node</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call a named method on this node and matching children.</span>
+<span class="w">        </span><span class="sd">"""Call a named method on this node and matching children.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -794,7 +794,7 @@
 <span class="sd">            Node types to include.</span>
 <span class="sd">        **kwargs : Any</span>
 <span class="sd">            Arguments forwarded to the method call.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Call the function</span>
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -815,7 +815,7 @@
         <span class="n">func</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">nodeTypes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">Node</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a recursive wrapper for a named method.</span>
+<span class="w">        </span><span class="sd">"""Create a recursive wrapper for a named method.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -823,9 +823,9 @@
 <span class="sd">            Method name to call.</span>
 <span class="sd">        nodeTypes : iterable, optional</span>
 <span class="sd">            Node types to include.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">closure</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Invoke the wrapped recursive method call.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Invoke the wrapped recursive method call."""</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">callRecursive</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">nodeTypes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">closure</span></div>
 
@@ -833,12 +833,12 @@
 <div class="viewcode-block" id="Node.isinstance">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.isinstance">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Node</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if this node is an instance of ``typ``.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return True if this node is an instance of ``typ``."""</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">typ</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_rootAttached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">:</span> <span class="n">Node</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Called once the root node is attached.</span>
 
 <span class="sd">        Parameters</span>
@@ -850,10 +850,10 @@
 <span class="sd">            The root node.</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>   <span class="o">=</span> <span class="n">root</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>   <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>   <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">'.'</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span>    <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
 
         <span class="c1"># Inherit groups from parent</span>
@@ -861,7 +861,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_finishInit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finish initialization recursively on child nodes.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Finish initialization recursively on child nodes."""</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">value</span><span class="o">.</span><span class="n">_finishInit</span><span class="p">()</span>
 
@@ -871,19 +871,19 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">getYaml</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">readFirst</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span><span class="s1">&#39;WO&#39;</span><span class="p">],</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span><span class="s1">'RO'</span><span class="p">,</span><span class="s1">'WO'</span><span class="p">],</span>
         <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return current values as YAML text.</span>
+<span class="w">        </span><span class="sd">"""Return current values as YAML text.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        readFirst : bool, optional (default = False)</span>
 <span class="sd">            If True, perform a full hardware read before exporting.</span>
-<span class="sd">        modes : list[&#39;RW&#39; | &#39;WO&#39; | &#39;RO&#39;], optional (default = [&#39;RW&#39;,&#39;RO&#39;,&#39;WO&#39;])</span>
-<span class="sd">            Variable modes to include. Allowed values are ``&#39;RW&#39;``, ``&#39;WO&#39;``, and ``&#39;RO&#39;``.</span>
+<span class="sd">        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW','RO','WO'])</span>
+<span class="sd">            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.</span>
 <span class="sd">        incGroups : str or list[str], optional</span>
 <span class="sd">            Group name or group names to include.</span>
 <span class="sd">        excGroups : str or list[str], optional</span>
@@ -895,7 +895,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            YAML-formatted representation of the node subtree.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">readFirst</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">_read</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">dataToYaml</span><span class="p">({</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_getDict</span><span class="p">(</span><span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">,</span> <span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">)})</span></div>
@@ -906,46 +906,46 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">printYaml</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">readFirst</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span><span class="s1">&#39;WO&#39;</span><span class="p">],</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span><span class="s1">'RO'</span><span class="p">,</span><span class="s1">'WO'</span><span class="p">],</span>
         <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the YAML representation to stdout.</span>
+<span class="w">        </span><span class="sd">"""Print the YAML representation to stdout.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        readFirst : bool, optional (default = False)</span>
 <span class="sd">            If True, perform a full hardware read before exporting.</span>
-<span class="sd">        modes : list[&#39;RW&#39; | &#39;WO&#39; | &#39;RO&#39;], optional (default = [&#39;RW&#39;,&#39;RO&#39;,&#39;WO&#39;])</span>
-<span class="sd">            Variable modes to include. Allowed values are ``&#39;RW&#39;``, ``&#39;WO&#39;``, and ``&#39;RO&#39;``.</span>
+<span class="sd">        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW','RO','WO'])</span>
+<span class="sd">            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.</span>
 <span class="sd">        incGroups : str or list[str], optional</span>
 <span class="sd">            Group name or group names to include.</span>
 <span class="sd">        excGroups : str or list[str], optional</span>
 <span class="sd">            Group name or group names to exclude.</span>
 <span class="sd">        recurse : bool, optional (default = False)</span>
 <span class="sd">            If True, recurse into child devices.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getYaml</span><span class="p">(</span><span class="n">readFirst</span><span class="o">=</span><span class="n">readFirst</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">,</span> <span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">))</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getDict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">],</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'RO'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">],</span>
         <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">properties</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderedDict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get variable values in a dictionary starting from this level.</span>
 <span class="sd">        Attributes that are Nodes are recursed.</span>
 <span class="sd">        modes is a list of variable modes to include.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        modes : list[&#39;RW&#39; | &#39;WO&#39; | &#39;RO&#39;], optional (default = [&#39;RW&#39;, &#39;RO&#39;, &#39;WO&#39;])</span>
-<span class="sd">            Variable modes to include. Allowed values are ``&#39;RW&#39;``, ``&#39;WO&#39;``, and ``&#39;RO&#39;``.</span>
+<span class="sd">        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])</span>
+<span class="sd">            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.</span>
 
 <span class="sd">        incGroups : str or list[str], optional</span>
 <span class="sd">            Group name or group names to include.</span>
@@ -961,7 +961,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        OrderedDict[str, Any]</span>
 <span class="sd">            Dictionary of variable values.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">odict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variablesByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">nv</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">_getDict</span><span class="p">(</span><span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="n">properties</span><span class="p">)</span>
@@ -988,7 +988,7 @@
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set variable values from a dictionary.</span>
+<span class="w">        </span><span class="sd">"""Set variable values from a dictionary.</span>
 
 <span class="sd">        Invoked recursively to set values for entire subtree.</span>
 <span class="sd">        Override in BaseVariable subclasses to set values using setDisp method.</span>
@@ -998,11 +998,11 @@
 <span class="sd">        d : dict[str, str]</span>
 <span class="sd">            Dictionary of variable values.</span>
 <span class="sd">            Variable names are the keys.</span>
-<span class="sd">            Values are the values to set using the Variable&#39;s setDisp method.</span>
+<span class="sd">            Values are the values to set using the Variable's setDisp method.</span>
 <span class="sd">        writeEach : bool</span>
 <span class="sd">            If True, wait for each variable write transaction to complete before setting the next variable.</span>
-<span class="sd">        modes : list[&#39;RW&#39; | &#39;WO&#39; | &#39;RO&#39;]</span>
-<span class="sd">            Variable modes to include. Allowed values are ``&#39;RW&#39;``, ``&#39;WO&#39;``, and ``&#39;RO&#39;``.</span>
+<span class="sd">        modes : list['RW' | 'WO' | 'RO']</span>
+<span class="sd">            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.</span>
 <span class="sd">        incGroups : str or list[str], optional</span>
 <span class="sd">            Group name or group names to include.</span>
 <span class="sd">        excGroups : str or list[str], optional</span>
@@ -1014,27 +1014,27 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># If keys is not none, someone tried to access this node with array</span>
         <span class="c1"># attributes incorrectly. This should only happen in the variable class.</span>
         <span class="k">if</span> <span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Entry </span><span class="si">%s</span><span class="s2"> with key </span><span class="si">%s</span><span class="s2"> not found&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Entry </span><span class="si">%s</span><span class="s2"> with key </span><span class="si">%s</span><span class="s2"> not found"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">nodes</span><span class="p">,</span><span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeMatch</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Entry </span><span class="si">%s</span><span class="s2"> not found&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Entry </span><span class="si">%s</span><span class="s2"> not found"</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">filterByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="p">):</span>
                             <span class="n">n</span><span class="o">.</span><span class="n">_setDict</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">writeEach</span><span class="p">,</span><span class="n">modes</span><span class="p">,</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="p">,</span><span class="n">keys</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the timeout for this Node&#39;s get and set operations.</span>
+<span class="w">        </span><span class="sd">"""Set the timeout for this Node's get and set operations.</span>
 <span class="sd">        Not implemented in Node class.</span>
-<span class="sd">        Override in subclasses to set the timeout for this Node&#39;s get and set operations.</span>
+<span class="sd">        Override in subclasses to set the timeout for this Node's get and set operations.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1044,13 +1044,13 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="Node.nodeMatch">
 <a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.nodeMatch">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">nodeMatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Match a node name, including array-style accessors.</span>
+<span class="w">        </span><span class="sd">"""Match a node name, including array-style accessors.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1061,7 +1061,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        list of Node</span>
 <span class="sd">            Matching nodes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Node matches name in node list</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">name</span><span class="p">]],</span><span class="kc">None</span>
@@ -1070,7 +1070,7 @@
         <span class="k">else</span><span class="p">:</span>
 
             <span class="c1"># Generic test array method</span>
-            <span class="n">fields</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1">[|</span><span class="se">\\</span><span class="s1">[|</span><span class="se">\\</span><span class="s1">]&#39;</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1">[|</span><span class="se">\\</span><span class="s1">[|</span><span class="se">\\</span><span class="s1">]'</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
 
             <span class="c1"># Extract name and keys</span>
             <span class="n">aname</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1090,11 +1090,11 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_iterateDict</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Iterate into a nested dict using array-style keys.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Iterate into a nested dict using array-style keys."""</span>
     <span class="n">retList</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># Wildcard, full list</span>
-    <span class="k">if</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span> <span class="ow">or</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'*'</span> <span class="ow">or</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">':'</span><span class="p">:</span>
         <span class="n">subList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="c1"># Single item</span>
@@ -1113,7 +1113,7 @@
             <span class="n">tmpList</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">subList</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tmpList[</span><span class="si">{</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
+            <span class="n">subList</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s1">'tmpList[</span><span class="si">{</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">]'</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">subList</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -1123,7 +1123,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">Node</span><span class="p">):</span>
             <span class="n">retList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-        <span class="c1"># Don&#39;t go deeper in tree than the keys provided to avoid over-matching nodes</span>
+        <span class="c1"># Don't go deeper in tree than the keys provided to avoid over-matching nodes</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
             <span class="n">retList</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_iterateDict</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">keys</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
 
@@ -1131,7 +1131,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">genBaseList</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a list of base class names for a class.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return a list of base class names for a class."""</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="p">)]</span>
 
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span>

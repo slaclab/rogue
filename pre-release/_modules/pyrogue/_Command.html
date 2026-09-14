@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Command &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue._Command &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -127,20 +127,20 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">CommandError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when command execution or verification fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when command execution or verification fails."""</span>
     <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="BaseCommand">
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseCommand</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for PyRogue commands.</span>
+<span class="w">    </span><span class="sd">"""Base class for PyRogue commands.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    name : str, optional</span>
 <span class="sd">        Command name.</span>
-<span class="sd">    description : str, optional (default = &quot;&quot;)</span>
+<span class="sd">    description : str, optional (default = "")</span>
 <span class="sd">        Human-readable description.</span>
 <span class="sd">    value : object, optional (default = 0)</span>
 <span class="sd">        Default command value.</span>
@@ -165,13 +165,13 @@
 <span class="sd">        GUI grouping label.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``BaseVariable``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">retValue</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">enum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -183,12 +183,12 @@
         <span class="n">guiGroup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a command variable.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize a command variable."""</span>
         <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;WO&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'WO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
             <span class="n">enum</span><span class="o">=</span><span class="n">enum</span><span class="p">,</span>
             <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span>
@@ -200,22 +200,22 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_function</span> <span class="o">=</span> <span class="n">function</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">functionWrapper</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">callArgs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;arg&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">functionWrapper</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">callArgs</span><span class="o">=</span><span class="p">[</span><span class="s1">'root'</span><span class="p">,</span> <span class="s1">'dev'</span><span class="p">,</span> <span class="s1">'cmd'</span><span class="p">,</span> <span class="s1">'arg'</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_retDisp</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_retDisp</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{}</span><span class="s2">"</span>
 
         <span class="k">if</span> <span class="n">retValue</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">retValue</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;List[</span><span class="si">{</span><span class="n">retValue</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">]&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'List[</span><span class="si">{</span><span class="n">retValue</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">]'</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span> <span class="o">=</span> <span class="n">retValue</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
         <span class="c1"># args flag</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_arg</span> <span class="o">=</span> <span class="s1">&#39;arg&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arg</span> <span class="o">=</span> <span class="s1">'arg'</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
 
         <span class="c1"># C++ functions</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -224,27 +224,27 @@
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">arg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the command accepts an argument.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return True if the command accepts an argument."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg</span>
 
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">retTypeStr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the display string for the return type.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the display string for the return type."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke the command.</span>
+<span class="w">        </span><span class="sd">"""Invoke the command.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        arg : object, optional</span>
 <span class="sd">            Command argument. If ``None``, uses the default value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_doFunc</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_doFunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute command callback.</span>
+<span class="w">        </span><span class="sd">"""Execute command callback.</span>
 
 <span class="sd">        Execute command: TODO: Update comments.</span>
 
@@ -252,7 +252,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        arg : object</span>
 <span class="sd">            Command argument.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">enable</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">):</span>
             <span class="k">return</span>
 
@@ -281,13 +281,13 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.call">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke the command and return the raw result.</span>
+<span class="w">        </span><span class="sd">"""Invoke the command and return the raw result.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        arg : object, optional</span>
 <span class="sd">            Command argument.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
 
 
@@ -295,13 +295,13 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.callDisp">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">callDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke the command and return the display-formatted result.</span>
+<span class="w">        </span><span class="sd">"""Invoke the command and return the display-formatted result.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        arg : object, optional</span>
 <span class="sd">            Command argument.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">genDisp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">arg</span><span class="p">),</span><span class="n">useDisp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_retDisp</span><span class="p">)</span></div>
 
 
@@ -309,7 +309,7 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.nothing">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nothing</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;No-op command handler.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""No-op command handler."""</span>
         <span class="k">pass</span></div>
 
 
@@ -317,13 +317,13 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.read">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the command variable.</span>
+<span class="w">        </span><span class="sd">"""Read the command variable.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cmd : BaseCommand</span>
 <span class="sd">            Command to read.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
@@ -331,7 +331,7 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.setArg">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">setArg</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the command argument.</span>
+<span class="w">        </span><span class="sd">"""Set the command argument.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -339,7 +339,7 @@
 <span class="sd">            Command to write.</span>
 <span class="sd">        arg : object</span>
 <span class="sd">            Value to write.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
 
 
@@ -347,7 +347,7 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.setAndVerifyArg">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">setAndVerifyArg</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the argument and verify by reading it back.</span>
+<span class="w">        </span><span class="sd">"""Set the argument and verify by reading it back.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -355,26 +355,26 @@
 <span class="sd">            Command to write.</span>
 <span class="sd">        arg : object</span>
 <span class="sd">            Value to write and verify.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="n">arg</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Verification failed for </span><span class="si">{</span><span class="n">cmd</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">. </span><span class="se">\n</span><span class="s1">Set to </span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s1"> but read back </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Verification failed for </span><span class="si">{</span><span class="n">cmd</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">. </span><span class="se">\n</span><span class="s1">Set to </span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s1"> but read back </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseCommand.createToggle">
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.createToggle">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">createToggle</span><span class="p">(</span><span class="n">sets</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a toggle function that iterates over provided values.</span>
+<span class="w">        </span><span class="sd">"""Create a toggle function that iterates over provided values.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        sets : iterable</span>
 <span class="sd">            Values to write sequentially.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">toggle</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Write each configured toggle value to ``cmd``.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Write each configured toggle value to ``cmd``."""</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">:</span>
                 <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">toggle</span></div>
@@ -384,13 +384,13 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.toggle">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">toggle</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Toggle a command by writing 1 then 0.</span>
+<span class="w">        </span><span class="sd">"""Toggle a command by writing 1 then 0.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cmd : BaseCommand</span>
 <span class="sd">            Command to toggle.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
@@ -399,15 +399,15 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.createTouch">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">createTouch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a touch function that writes a fixed value.</span>
+<span class="w">        </span><span class="sd">"""Create a touch function that writes a fixed value.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        value : object</span>
 <span class="sd">            Value to write when the touch function is called.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">touch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Write the captured fixed value to ``cmd``.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Write the captured fixed value to ``cmd``."""</span>
             <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">touch</span></div>
 
@@ -416,7 +416,7 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.touch">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">touch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with a provided argument or 1.</span>
+<span class="w">        </span><span class="sd">"""Touch the command with a provided argument or 1.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -424,7 +424,7 @@
 <span class="sd">            Command to touch.</span>
 <span class="sd">        arg : object</span>
 <span class="sd">            Value to write. If ``None``, writes ``1``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -435,13 +435,13 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.touchZero">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">touchZero</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with 0.</span>
+<span class="w">        </span><span class="sd">"""Touch the command with 0.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cmd : BaseCommand</span>
 <span class="sd">            Command to touch.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
 
@@ -449,13 +449,13 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.touchOne">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">touchOne</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with 1.</span>
+<span class="w">        </span><span class="sd">"""Touch the command with 1.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cmd : BaseCommand</span>
 <span class="sd">            Command to touch.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 
@@ -463,15 +463,15 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.createPostedTouch">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">createPostedTouch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a posted touch function for asynchronous writes.</span>
+<span class="w">        </span><span class="sd">"""Create a posted touch function for asynchronous writes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        value : object</span>
 <span class="sd">            Value to post.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">postedTouch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Post the captured fixed value to ``cmd`` asynchronously.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Post the captured fixed value to ``cmd`` asynchronously."""</span>
             <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">postedTouch</span></div>
 
@@ -480,7 +480,7 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.postedTouch">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postedTouch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a command value without waiting for completion.</span>
+<span class="w">        </span><span class="sd">"""Post a command value without waiting for completion.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -488,7 +488,7 @@
 <span class="sd">            Command to post.</span>
 <span class="sd">        arg : object</span>
 <span class="sd">            Value to post.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
 
 
@@ -496,13 +496,13 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.postedTouchOne">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postedTouchOne</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a value of 1.</span>
+<span class="w">        </span><span class="sd">"""Post a value of 1.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cmd : BaseCommand</span>
 <span class="sd">            Command to post.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 
@@ -510,20 +510,20 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.postedTouchZero">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postedTouchZero</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a value of 0.</span>
+<span class="w">        </span><span class="sd">"""Post a value of 0.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cmd : BaseCommand</span>
 <span class="sd">            Command to post.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseCommand.replaceFunction">
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.replaceFunction">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">replaceFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the command callback function.</span>
+<span class="w">        </span><span class="sd">"""Replace the command callback function.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -531,9 +531,9 @@
 <span class="sd">            New callback for this command. The wrapper provides keyword</span>
 <span class="sd">            arguments ``root``, ``dev``, ``cmd``, and ``arg``; the callback</span>
 <span class="sd">            may accept any subset of these names.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_function</span> <span class="o">=</span> <span class="n">function</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">functionWrapper</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">callArgs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;arg&#39;</span><span class="p">])</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">functionWrapper</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">callArgs</span><span class="o">=</span><span class="p">[</span><span class="s1">'root'</span><span class="p">,</span> <span class="s1">'dev'</span><span class="p">,</span> <span class="s1">'cmd'</span><span class="p">,</span> <span class="s1">'arg'</span><span class="p">])</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setDict</span><span class="p">(</span>
@@ -545,7 +545,7 @@
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keys</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Commands do not support dict writes.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Commands do not support dict writes."""</span>
         <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getDict</span><span class="p">(</span>
@@ -555,13 +555,13 @@
         <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">properties</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Commands do not support dict reads.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Commands do not support dict reads."""</span>
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BaseCommand.get">
 <a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cached command argument value.</span>
+<span class="w">        </span><span class="sd">"""Return the cached command argument value.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -569,24 +569,24 @@
 <span class="sd">            Unused for commands.</span>
 <span class="sd">        index : int, optional (default = -1)</span>
 <span class="sd">            Unused for commands.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_genDocs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emit Sphinx documentation for this command.&quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.. topic:: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Emit Sphinx documentation for this command."""</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">".. topic:: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocDesc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocTableHeader</span><span class="p">([</span><span class="s1">&#39;Field&#39;</span><span class="p">,</span><span class="s1">&#39;Value&#39;</span><span class="p">],</span><span class="mi">4</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocTableHeader</span><span class="p">([</span><span class="s1">'Field'</span><span class="p">,</span><span class="s1">'Value'</span><span class="p">],</span><span class="mi">4</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;enum&#39;</span><span class="p">,</span> <span class="s1">&#39;typeStr&#39;</span><span class="p">,</span> <span class="s1">&#39;disp&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'path'</span><span class="p">,</span> <span class="s1">'enum'</span><span class="p">,</span> <span class="s1">'typeStr'</span><span class="p">,</span> <span class="s1">'disp'</span><span class="p">]:</span>
             <span class="n">astr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">))</span>
 
-            <span class="k">if</span> <span class="n">astr</span> <span class="o">!=</span> <span class="s1">&#39;None&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">astr</span> <span class="o">!=</span> <span class="s1">'None'</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocTableRow</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">astr</span><span class="p">],</span><span class="mi">4</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
 
 
@@ -598,13 +598,13 @@
 <div class="viewcode-block" id="RemoteCommand">
 <a class="viewcode-back" href="../../api/python/pyrogue/remotecommand.html#pyrogue.RemoteCommand">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoteCommand</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remote command backed by a memory-mapped variable.</span>
+<span class="w">    </span><span class="sd">"""Remote command backed by a memory-mapped variable.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
 <span class="sd">        Command name.</span>
-<span class="sd">    description : str, optional (default = &quot;&quot;)</span>
+<span class="sd">    description : str, optional (default = "")</span>
 <span class="sd">        Human-readable description.</span>
 <span class="sd">    value : object, optional</span>
 <span class="sd">        Default value.</span>
@@ -639,13 +639,13 @@
 <span class="sd">        GUI grouping label.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``RemoteVariable``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">''</span><span class="p">,</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">retValue</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">enum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -662,7 +662,7 @@
         <span class="n">guiGroup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a remote command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize a remote command."""</span>
 
         <span class="c1"># RemoteVariable constructor will handle assignment of most params</span>
         <span class="n">BaseCommand</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -677,7 +677,7 @@
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;WO&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'WO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
             <span class="n">enum</span><span class="o">=</span><span class="n">enum</span><span class="p">,</span>
             <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span>
@@ -697,7 +697,7 @@
 <div class="viewcode-block" id="RemoteCommand.set">
 <a class="viewcode-back" href="../../api/python/pyrogue/remotecommand.html#pyrogue.RemoteCommand.set">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>  <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a value to the remote command variable.</span>
+<span class="w">        </span><span class="sd">"""Write a value to the remote command variable.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -707,8 +707,8 @@
 <span class="sd">            Optional index for array variables.</span>
 <span class="sd">        write : bool, optional (default = True)</span>
 <span class="sd">            If True, perform a hardware write transaction.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.set(</span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2">.set(</span><span class="si">%r</span><span class="s2">)"</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
@@ -726,7 +726,7 @@
 <div class="viewcode-block" id="RemoteCommand.get">
 <a class="viewcode-back" href="../../api/python/pyrogue/remotecommand.html#pyrogue.RemoteCommand.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">read</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a value from the remote command variable.</span>
+<span class="w">        </span><span class="sd">"""Read a value from the remote command variable.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -739,7 +739,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        object</span>
 <span class="sd">            Retrieved value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
@@ -754,13 +754,13 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_genDocs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emit Sphinx documentation for this remote command.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Emit Sphinx documentation for this remote command."""</span>
         <span class="n">BaseCommand</span><span class="o">.</span><span class="n">_genDocs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">file</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="s1">&#39;bitSize&#39;</span><span class="p">,</span> <span class="s1">&#39;bitOffset&#39;</span><span class="p">,</span> <span class="s1">&#39;varBytes&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'offset'</span><span class="p">,</span> <span class="s1">'bitSize'</span><span class="p">,</span> <span class="s1">'bitOffset'</span><span class="p">,</span> <span class="s1">'varBytes'</span><span class="p">]:</span>
             <span class="n">astr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">))</span>
 
-            <span class="k">if</span> <span class="n">astr</span> <span class="o">!=</span> <span class="s1">&#39;None&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">astr</span> <span class="o">!=</span> <span class="s1">'None'</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocTableRow</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">astr</span><span class="p">],</span><span class="mi">4</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
 
 

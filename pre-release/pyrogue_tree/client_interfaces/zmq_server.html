@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python ZMQServer &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Python ZMQServer &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -143,13 +143,13 @@ monitor value updates.</p>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Root&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Root'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Example'</span><span class="p">)</span>
 
         <span class="c1"># Expose this root over TCP/ZeroMQ.</span>
         <span class="c1"># port=0 enables automatic base-port selection.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span>
             <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-            <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+            <span class="n">addr</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
@@ -173,16 +173,16 @@ which Variable updates are published.</p></li>
 <p>Simple client (lightweight, string operations):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleClient</span>
 
-<span class="k">with</span> <span class="n">SimpleClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">getDisp</span><span class="p">(</span><span class="s1">&#39;root.RogueVersion&#39;</span><span class="p">))</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;root.AxiVersion.ScratchPad&#39;</span><span class="p">,</span> <span class="s1">&#39;0x100&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">(</span><span class="s1">&#39;root.AxiVersion.ScratchPad&#39;</span><span class="p">))</span>
+<span class="k">with</span> <span class="n">SimpleClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">getDisp</span><span class="p">(</span><span class="s1">'root.RogueVersion'</span><span class="p">))</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">'root.AxiVersion.ScratchPad'</span><span class="p">,</span> <span class="s1">'0x100'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">(</span><span class="s1">'root.AxiVersion.ScratchPad'</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Virtual client (mirrored remote tree):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
 
-<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">())</span>
     <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span>
@@ -210,8 +210,8 @@ which Variable updates are published.</p></li>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span>
 
 <span class="n">pyrogue</span><span class="o">.</span><span class="n">setUnifiedLogging</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">&#39;pyrogue.ZmqServer&#39;</span><span class="p">,</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
-<span class="n">server</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">'pyrogue.ZmqServer'</span><span class="p">,</span> <span class="s1">'DEBUG'</span><span class="p">)</span>
+<span class="n">server</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>That enables the C++ transport logger. Separately, <code class="docutils literal notranslate"><span class="pre">ZmqServer._start()</span></code>

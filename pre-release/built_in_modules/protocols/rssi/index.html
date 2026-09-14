@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RSSI Protocol &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>RSSI Protocol &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -224,12 +224,12 @@ control.</p>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MyRoot'</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">UdpRssiPack</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Net&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Net'</span><span class="p">,</span>
             <span class="n">server</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">host</span><span class="o">=</span><span class="s1">&#39;10.0.0.5&#39;</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="s1">'10.0.0.5'</span><span class="p">,</span>
             <span class="n">port</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
             <span class="n">jumbo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">packVer</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -241,7 +241,7 @@ control.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">Net</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">srp</span>
 
         <span class="c1"># Example device using SRP as memBase</span>
-        <span class="c1"># self.add(MyDevice(name=&#39;Dev&#39;, offset=0x0, memBase=srp))</span>
+        <span class="c1"># self.add(MyDevice(name='Dev', offset=0x0, memBase=srp))</span>
 </pre></div>
 </div>
 <p>For custom wiring or lower-level debugging, instantiate the direct RSSI
@@ -260,7 +260,7 @@ shape:</p>
 <span class="n">s_rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="n">s_pack</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
 
 <span class="c1"># Client side</span>
-<span class="n">c_udp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">s_udp</span><span class="o">.</span><span class="n">getPort</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">c_udp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="s2">"127.0.0.1"</span><span class="p">,</span> <span class="n">s_udp</span><span class="o">.</span><span class="n">getPort</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
 <span class="n">c_rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">c_udp</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">()</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
 <span class="n">c_pack</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">CoreV2</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
@@ -288,7 +288,7 @@ shape:</p>
 <span class="k">auto</span><span class="w"> </span><span class="n">sUdp</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">rpu</span><span class="o">::</span><span class="n">Server</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">sRssi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpr</span><span class="o">::</span><span class="n">Server</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">sUdp</span><span class="o">-&gt;</span><span class="n">maxPayload</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">8</span><span class="p">);</span>
 
-<span class="k">auto</span><span class="w"> </span><span class="n">cUdp</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">rpu</span><span class="o">::</span><span class="n">Client</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sUdp</span><span class="o">-&gt;</span><span class="n">getPort</span><span class="p">(),</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">cUdp</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">rpu</span><span class="o">::</span><span class="n">Client</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">,</span><span class="w"> </span><span class="n">sUdp</span><span class="o">-&gt;</span><span class="n">getPort</span><span class="p">(),</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">cRssi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpr</span><span class="o">::</span><span class="n">Client</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">cUdp</span><span class="o">-&gt;</span><span class="n">maxPayload</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">8</span><span class="p">);</span>
 
 <span class="n">sUdp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">sRssi</span><span class="o">-&gt;</span><span class="n">transport</span><span class="p">();</span>

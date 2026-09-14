@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pgp2bSim &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Pgp2bSim &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -157,7 +157,7 @@ sideband <code class="docutils literal notranslate"><span class="pre">opCode</sp
 <span class="c1"># Create one simulated endpoint with 4 virtual channels.</span>
 <span class="n">pgp</span> <span class="o">=</span> <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span>
     <span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+    <span class="n">host</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span>
     <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -192,14 +192,14 @@ simulated PGP endpoint. Internally it uses <code class="docutils literal notrans
 
 <span class="k">def</span><span class="w"> </span><span class="nf">on_a_sideband</span><span class="p">(</span><span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">):</span>
     <span class="c1"># Called when endpoint A receives sideband data.</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A sideband:&quot;</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"A sideband:"</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">on_b_sideband</span><span class="p">(</span><span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">):</span>
     <span class="c1"># Called when endpoint B receives sideband data.</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B sideband:&quot;</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"B sideband:"</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">)</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> \
-     <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9100</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">)</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> \
+     <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9100</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
 
     <span class="n">pis</span><span class="o">.</span><span class="n">connectPgp2bSim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 
@@ -222,9 +222,9 @@ co-simulation.</p>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">on_sideband</span><span class="p">(</span><span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">):</span>
     <span class="c1"># Receive emulated opcode/remData notifications.</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sideband rx:&quot;</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"sideband rx:"</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">SideBandSim</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">9008</span><span class="p">)</span> <span class="k">as</span> <span class="n">sb</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">SideBandSim</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="mi">9008</span><span class="p">)</span> <span class="k">as</span> <span class="n">sb</span><span class="p">:</span>
     <span class="c1"># Register receive callback.</span>
     <span class="n">sb</span><span class="o">.</span><span class="n">setRecvCb</span><span class="p">(</span><span class="n">on_sideband</span><span class="p">)</span>
 
@@ -239,8 +239,8 @@ co-simulation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces.simulation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pis</span>
 
 <span class="c1"># Build two simulated endpoints using different base-port ranges.</span>
-<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">)</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> \
-     <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9100</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">)</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> \
+     <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9100</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
 
     <span class="c1"># Connect all VCs bidirectionally and link sideband callbacks.</span>
     <span class="n">pis</span><span class="o">.</span><span class="n">connectPgp2bSim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>

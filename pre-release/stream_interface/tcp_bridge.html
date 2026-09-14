@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stream TCP Bridge &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Stream TCP Bridge &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -174,7 +174,7 @@ endpoints.</p>
 <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
 
 <span class="c1"># Listen on localhost using ports 8000 and 8001</span>
-<span class="n">tcp</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+<span class="n">tcp</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1"># The local transmitter sends to the remote client, and the local receiver</span>
 <span class="c1"># accepts data arriving from the remote client.</span>
@@ -194,7 +194,7 @@ endpoints.</p>
 <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
 
 <span class="c1"># Connect to the remote server using ports 8000 and 8001</span>
-<span class="n">tcp</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">&#39;192.168.1.1&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+<span class="n">tcp</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">'192.168.1.1'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1"># The local transmitter sends to the remote server, and the local receiver</span>
 <span class="c1"># accepts data arriving from the remote server.</span>
@@ -204,10 +204,10 @@ endpoints.</p>
 </section>
 <section id="c-server-example">
 <h2>C++ Server Example<a class="headerlink" href="#c-server-example" title="Link to this heading"></a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/TcpServer.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MyCustomMaster.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MyCustomSlave.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/Helpers.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/TcpServer.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"MyCustomMaster.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"MyCustomSlave.h"</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">   </span><span class="c1">// Local transmitter</span>
@@ -217,7 +217,7 @@ endpoints.</p>
 <span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="w">   </span><span class="c1">// Listen on localhost using ports 8000 and 8001</span>
-<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">tcp</span><span class="p">);</span>
 <span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">);</span>
@@ -228,10 +228,10 @@ endpoints.</p>
 </section>
 <section id="c-client-example">
 <h2>C++ Client Example<a class="headerlink" href="#c-client-example" title="Link to this heading"></a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/TcpClient.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MyCustomMaster.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MyCustomSlave.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/Helpers.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/TcpClient.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"MyCustomMaster.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"MyCustomSlave.h"</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">   </span><span class="c1">// Local transmitter</span>
@@ -241,7 +241,7 @@ endpoints.</p>
 <span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="w">   </span><span class="c1">// Connect to the remote server using ports 8000 and 8001</span>
-<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"192.168.1.1"</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">tcp</span><span class="p">);</span>
 <span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">);</span>
@@ -282,14 +282,14 @@ startup messages in addition to later implementation messages:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
 
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.stream.TcpCore&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
-<span class="n">tcp</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">'pyrogue.stream.TcpCore'</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">tcp</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can also target one specific bridge instance when the full dynamic logger
 name is known.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span>
-    <span class="s1">&#39;pyrogue.stream.TcpCore.127.0.0.1.Client.8000&#39;</span>
+    <span class="s1">'pyrogue.stream.TcpCore.127.0.0.1.Client.8000'</span>
 <span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 </pre></div>
 </div>

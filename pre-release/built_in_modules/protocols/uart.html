@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UART Memory &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>UART Memory &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -159,16 +159,16 @@ supported by this implementation.</p>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MyRoot'</span><span class="p">)</span>
 
         <span class="n">uart_mem</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">UartMemory</span><span class="p">(</span>
-            <span class="s1">&#39;/dev/ttyUSB0&#39;</span><span class="p">,</span>
+            <span class="s1">'/dev/ttyUSB0'</span><span class="p">,</span>
             <span class="mi">115200</span><span class="p">,</span>
             <span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">UartRegBlock</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;UartRegs&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'UartRegs'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">,</span>
             <span class="n">memBase</span><span class="o">=</span><span class="n">uart_mem</span><span class="p">,</span>
         <span class="p">))</span>
@@ -203,7 +203,7 @@ path, following the pattern <code class="docutils literal notranslate"><span cla
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">&#39;pyrogue.UartMemory&#39;</span><span class="p">,</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">'pyrogue.UartMemory'</span><span class="p">,</span> <span class="s1">'DEBUG'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The current implementation has several transaction-level debug statements in

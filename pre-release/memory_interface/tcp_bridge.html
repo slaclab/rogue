@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory TCP Bridge &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Memory TCP Bridge &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -157,7 +157,7 @@ hardware-facing memory endpoint.</p>
 <span class="n">srpv3</span> <span class="o">=</span> <span class="n">rps</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
 
 <span class="c1"># Listen on all interfaces using ports 8000 and 8001</span>
-<span class="n">tcp</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+<span class="n">tcp</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s1">'*'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1"># Connect the TCP bridge to the local memory Slave</span>
 <span class="n">tcp</span> <span class="o">&gt;&gt;</span> <span class="n">srpv3</span>
@@ -174,7 +174,7 @@ transactions remotely.</p>
 <span class="n">mst</span> <span class="o">=</span> <span class="n">MyMemMaster</span><span class="p">()</span>
 
 <span class="c1"># Connect to the remote server using ports 8000 and 8001</span>
-<span class="n">tcp</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">&#39;192.168.1.1&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+<span class="n">tcp</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">'192.168.1.1'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1"># Connect the local Master to the remote bridge</span>
 <span class="n">mst</span> <span class="o">&gt;&gt;</span> <span class="n">tcp</span>
@@ -183,9 +183,9 @@ transactions remotely.</p>
 </section>
 <section id="c-server-example">
 <h2>C++ Server Example<a class="headerlink" href="#c-server-example" title="Link to this heading"></a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/TcpServer.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/protocols/srp/SrpV3.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/Helpers.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/memory/TcpServer.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/protocols/srp/SrpV3.h"</span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">rim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">memory</span><span class="p">;</span>
 <span class="k">namespace</span><span class="w"> </span><span class="nn">rps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">protocols</span><span class="o">::</span><span class="nn">srp</span><span class="p">;</span>
@@ -195,7 +195,7 @@ transactions remotely.</p>
 <span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">srpv3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rps</span><span class="o">::</span><span class="n">SrpV3</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="w">   </span><span class="c1">// Listen on all interfaces using ports 8000 and 8001</span>
-<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"*"</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="w">   </span><span class="c1">// Connect the TCP bridge to the local memory Slave</span>
 <span class="w">   </span><span class="o">*</span><span class="n">tcp</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">srpv3</span><span class="p">;</span>
@@ -206,8 +206,8 @@ transactions remotely.</p>
 </section>
 <section id="c-client-example">
 <h2>C++ Client Example<a class="headerlink" href="#c-client-example" title="Link to this heading"></a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/TcpClient.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/Helpers.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/memory/TcpClient.h"</span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">rim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">memory</span><span class="p">;</span>
 
@@ -216,7 +216,7 @@ transactions remotely.</p>
 <span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">mst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyMemMaster</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="w">   </span><span class="c1">// Connect to the remote server using ports 8000 and 8001</span>
-<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"192.168.1.1"</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="w">   </span><span class="c1">// Connect the local Master to the remote bridge</span>
 <span class="w">   </span><span class="o">*</span><span class="n">mst</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tcp</span><span class="p">;</span>
@@ -258,8 +258,8 @@ connection-startup messages:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
 
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.memory.TcpServer&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
-<span class="n">server</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">'pyrogue.memory.TcpServer'</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">server</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s1">'*'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>At debug level these classes log socket setup and transaction forwarding

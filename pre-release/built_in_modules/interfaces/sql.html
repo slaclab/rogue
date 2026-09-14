@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SQL Logging &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>SQL Logging &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -154,18 +154,18 @@ stream topology or the structure of the device tree.</p>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MyRoot'</span><span class="p">)</span>
 
         <span class="c1"># Attach SQL logger as a root interface.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span>
             <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">SqlLogger</span><span class="p">(</span>
                 <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
                 <span class="c1"># SQLAlchemy URL: sqlite:///..., postgresql://..., etc.</span>
-                <span class="n">url</span><span class="o">=</span><span class="s1">&#39;sqlite:///rogue_run.db&#39;</span><span class="p">,</span>
+                <span class="n">url</span><span class="o">=</span><span class="s1">'sqlite:///rogue_run.db'</span><span class="p">,</span>
                 <span class="c1"># Optional include filter for variable groups.</span>
                 <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="c1"># Exclude groups tagged as NoSql.</span>
-                <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NoSql&#39;</span><span class="p">],</span>
+                <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">'NoSql'</span><span class="p">],</span>
             <span class="p">)</span>
         <span class="p">)</span>
 </pre></div>

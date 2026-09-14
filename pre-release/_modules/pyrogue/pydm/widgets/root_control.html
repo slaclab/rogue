@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm.widgets.root_control &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.pydm.widgets.root_control &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -131,7 +131,7 @@
 <div class="viewcode-block" id="RootControl">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/rootcontrol.html#pyrogue.pydm.widgets.RootControl">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RootControl</span><span class="p">(</span><span class="n">PyDMFrame</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;PyDM widget exposing common root control actions.</span>
+<span class="w">    </span><span class="sd">"""PyDM widget exposing common root control actions.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -139,7 +139,7 @@
 <span class="sd">        Parent Qt widget.</span>
 <span class="sd">    init_channel : str | None, optional</span>
 <span class="sd">        Initial Rogue channel address.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">PyDMFrame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">)</span>
@@ -148,7 +148,7 @@
 <div class="viewcode-block" id="RootControl.connection_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/rootcontrol.html#pyrogue.pydm.widgets.RootControl.connection_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">connection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build controls after first successful channel connection.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build controls after first successful channel connection."""</span>
         <span class="n">build</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">!=</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">connected</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RootControl</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">connection_changed</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span>
 
@@ -161,7 +161,7 @@
         <span class="n">vb</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vb</span><span class="p">)</span>
 
-        <span class="n">gb</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s1">&#39;Reset And Configuration&#39;</span><span class="p">)</span>
+        <span class="n">gb</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s1">'Reset And Configuration'</span><span class="p">)</span>
         <span class="n">vb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">gb</span><span class="p">)</span>
 
         <span class="n">vb</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
@@ -176,10 +176,10 @@
         <span class="n">fl</span><span class="o">.</span><span class="n">setLabelAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">fl</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMEnumComboBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.PollEn&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMEnumComboBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.PollEn'</span><span class="p">)</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">&#39;Poll Enable:&#39;</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">'Poll Enable:'</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
 
         <span class="n">fl</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">()</span>
         <span class="n">fl</span><span class="o">.</span><span class="n">setRowWrapPolicy</span><span class="p">(</span><span class="n">QFormLayout</span><span class="o">.</span><span class="n">DontWrapRows</span><span class="p">)</span>
@@ -187,10 +187,10 @@
         <span class="n">fl</span><span class="o">.</span><span class="n">setLabelAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">fl</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyRogueLineEdit</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.LocalTime&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyRogueLineEdit</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.LocalTime'</span><span class="p">)</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">&#39;Local Time:&#39;</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">'Local Time:'</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
 
         <span class="n">fl</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">()</span>
         <span class="n">fl</span><span class="o">.</span><span class="n">setRowWrapPolicy</span><span class="p">(</span><span class="n">QFormLayout</span><span class="o">.</span><span class="n">DontWrapRows</span><span class="p">)</span>
@@ -198,21 +198,21 @@
         <span class="n">fl</span><span class="o">.</span><span class="n">setLabelAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">fl</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyRogueLineEdit</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.RogueVersion&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyRogueLineEdit</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.RogueVersion'</span><span class="p">)</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">&#39;Rogue Version:&#39;</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">'Rogue Version:'</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
 
         <span class="n">hb</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">vb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hard Reset&#39;</span><span class="p">,</span><span class="n">pressValue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.HardReset&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Hard Reset'</span><span class="p">,</span><span class="n">pressValue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.HardReset'</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Initialize&#39;</span><span class="p">,</span><span class="n">pressValue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.Initialize&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Initialize'</span><span class="p">,</span><span class="n">pressValue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.Initialize'</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Count Reset&#39;</span><span class="p">,</span><span class="n">pressValue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.CountReset&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Count Reset'</span><span class="p">,</span><span class="n">pressValue</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.CountReset'</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
         <span class="c1"># Load Config</span>
@@ -221,9 +221,9 @@
         <span class="n">hb</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">vb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigCmd</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Load Config&#39;</span><span class="p">,</span>
-                                             <span class="n">pressValue</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                             <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.LoadConfig&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigCmd</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Load Config'</span><span class="p">,</span>
+                                             <span class="n">pressValue</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+                                             <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.LoadConfig'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigCmd</span><span class="o">.</span><span class="n">check_enable_state</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span>
 
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigCmd</span><span class="p">)</span>
@@ -232,7 +232,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigValue</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigChanged</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigValue</span><span class="p">)</span>
 
-        <span class="n">pb</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Browse&#39;</span><span class="p">)</span>
+        <span class="n">pb</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">'Browse'</span><span class="p">)</span>
         <span class="n">pb</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigBrowse</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
 
@@ -242,9 +242,9 @@
         <span class="n">hb</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">vb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigCmd</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Save Config&#39;</span><span class="p">,</span>
-                                             <span class="n">pressValue</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                             <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.SaveConfig&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigCmd</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Save Config'</span><span class="p">,</span>
+                                             <span class="n">pressValue</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+                                             <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.SaveConfig'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigCmd</span><span class="o">.</span><span class="n">check_enable_state</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span>
 
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigCmd</span><span class="p">)</span>
@@ -253,7 +253,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigValue</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigChanged</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigValue</span><span class="p">)</span>
 
-        <span class="n">pb</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Browse&#39;</span><span class="p">)</span>
+        <span class="n">pb</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">'Browse'</span><span class="p">)</span>
         <span class="n">pb</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigBrowse</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
 
@@ -263,9 +263,9 @@
         <span class="n">hb</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">vb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_saveStateCmd</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Save State &#39;</span><span class="p">,</span>
-                                            <span class="n">pressValue</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                            <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.SaveState&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_saveStateCmd</span> <span class="o">=</span> <span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">'Save State '</span><span class="p">,</span>
+                                            <span class="n">pressValue</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+                                            <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.SaveState'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_saveStateCmd</span><span class="o">.</span><span class="n">check_enable_state</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">None</span>
 
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saveStateCmd</span><span class="p">)</span>
@@ -274,7 +274,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_saveStateValue</span><span class="o">.</span><span class="n">textChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saveStateChanged</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saveStateValue</span><span class="p">)</span>
 
-        <span class="n">pb</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Browse&#39;</span><span class="p">)</span>
+        <span class="n">pb</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">'Browse'</span><span class="p">)</span>
         <span class="n">pb</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saveStateBrowse</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span></div>
 
@@ -282,7 +282,7 @@
 
     <span class="nd">@Slot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_loadConfigChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the load-config command argument from text entry.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update the load-config command argument from text entry."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigCmd</span><span class="o">.</span><span class="n">pressValue</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigValue</span><span class="o">.</span><span class="n">text</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigCmd</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -291,22 +291,22 @@
 
     <span class="nd">@Slot</span><span class="p">()</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_loadConfigBrowse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open file browser and populate load-config path field.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Open file browser and populate load-config path field."""</span>
         <span class="n">dlg</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="p">()</span>
 
-        <span class="n">loadFile</span> <span class="o">=</span> <span class="n">dlg</span><span class="o">.</span><span class="n">getOpenFileNames</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s1">&#39;Read config file&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Config Files(*.yml);;All Files(*.*)&#39;</span><span class="p">)</span>
+        <span class="n">loadFile</span> <span class="o">=</span> <span class="n">dlg</span><span class="o">.</span><span class="n">getOpenFileNames</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s1">'Read config file'</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">'Config Files(*.yml);;All Files(*.*)'</span><span class="p">)</span>
 
         <span class="c1"># Detect QT5 return</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loadFile</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span>
             <span class="n">loadFile</span> <span class="o">=</span> <span class="n">loadFile</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">loadFile</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigValue</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">loadFile</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigValue</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">loadFile</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loadConfigCmd</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@Slot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_saveConfigChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the save-config command argument from text entry.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update the save-config command argument from text entry."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigCmd</span><span class="o">.</span><span class="n">pressValue</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigValue</span><span class="o">.</span><span class="n">text</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_saveConfigCmd</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -315,11 +315,11 @@
 
     <span class="nd">@Slot</span><span class="p">()</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_saveConfigBrowse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open file browser and populate save-config path field.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Open file browser and populate save-config path field."""</span>
         <span class="n">dlg</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="p">()</span>
-        <span class="n">sug</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;config_%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S.yml&quot;</span><span class="p">)</span>
+        <span class="n">sug</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"config_%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S.yml"</span><span class="p">)</span>
 
-        <span class="n">saveFile</span> <span class="o">=</span> <span class="n">dlg</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s1">&#39;Save config file&#39;</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">sug</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Config Files(*.yml);;All Files(*.*)&#39;</span><span class="p">)</span>
+        <span class="n">saveFile</span> <span class="o">=</span> <span class="n">dlg</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s1">'Save config file'</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">sug</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">'Config Files(*.yml);;All Files(*.*)'</span><span class="p">)</span>
 
         <span class="c1"># Detect QT5 return</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">saveFile</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span>
@@ -332,7 +332,7 @@
 
     <span class="nd">@Slot</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_saveStateChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the save-state command argument from text entry.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update the save-state command argument from text entry."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_saveStateCmd</span><span class="o">.</span><span class="n">pressValue</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveStateValue</span><span class="o">.</span><span class="n">text</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_saveStateCmd</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -341,11 +341,11 @@
 
     <span class="nd">@Slot</span><span class="p">()</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_saveStateBrowse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open file browser and populate save-state path field.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Open file browser and populate save-state path field."""</span>
         <span class="n">dlg</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="p">()</span>
-        <span class="n">sug</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;state_%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S.yml.zip&quot;</span><span class="p">)</span>
+        <span class="n">sug</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"state_%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S.yml.zip"</span><span class="p">)</span>
 
-        <span class="n">stateFile</span> <span class="o">=</span> <span class="n">dlg</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s1">&#39;Save State file&#39;</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">sug</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;State Files(*.yml *.yml.zip);;All Files(*.*)&#39;</span><span class="p">)</span>
+        <span class="n">stateFile</span> <span class="o">=</span> <span class="n">dlg</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="n">caption</span><span class="o">=</span><span class="s1">'Save State file'</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="n">sug</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">'State Files(*.yml *.yml.zip);;All Files(*.*)'</span><span class="p">)</span>
 
         <span class="c1"># Detect QT5 return</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stateFile</span><span class="p">,</span><span class="nb">tuple</span><span class="p">):</span>

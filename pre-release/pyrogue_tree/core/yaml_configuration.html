@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YAML Configuration &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>YAML Configuration &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -258,7 +258,7 @@ configuration of individual devices without needing to know the full tree
 structure.</p>
 <p><strong>Device-level YAML format</strong> uses the device name or child names as top-level
 keys (not absolute paths like <code class="docutils literal notranslate"><span class="pre">root.Top.Child</span></code>):</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load on a device named &quot;MyDevice&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load on a device named "MyDevice"</span>
 <span class="nt">MyDevice</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">Variable1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="w">  </span><span class="nt">SubDevice</span><span class="p">:</span>
@@ -266,7 +266,7 @@ keys (not absolute paths like <code class="docutils literal notranslate"><span c
 </pre></div>
 </div>
 <p>Or target children directly:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load on &quot;MyDevice&quot; — keys are children</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load on "MyDevice" — keys are children</span>
 <span class="nt">Variable1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="nt">SubDevice</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">Variable2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
@@ -285,18 +285,18 @@ to the device and its descendants are written, verified, and waited on. The
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">root</span><span class="p">:</span>
     <span class="c1"># Save config from a specific device</span>
     <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">saveYaml</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;board_config.yml&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"board_config.yml"</span><span class="p">,</span>
         <span class="n">readFirst</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;RW&quot;</span><span class="p">,</span> <span class="s2">&quot;WO&quot;</span><span class="p">],</span>
-        <span class="n">excGroups</span><span class="o">=</span><span class="s2">&quot;NoConfig&quot;</span><span class="p">,</span>
+        <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">"RW"</span><span class="p">,</span> <span class="s2">"WO"</span><span class="p">],</span>
+        <span class="n">excGroups</span><span class="o">=</span><span class="s2">"NoConfig"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Load it back on the same device</span>
     <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;board_config.yml&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"board_config.yml"</span><span class="p">,</span>
         <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;RW&quot;</span><span class="p">,</span> <span class="s2">&quot;WO&quot;</span><span class="p">],</span>
-        <span class="n">excGroups</span><span class="o">=</span><span class="s2">&quot;NoConfig&quot;</span><span class="p">,</span>
+        <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">"RW"</span><span class="p">,</span> <span class="s2">"WO"</span><span class="p">],</span>
+        <span class="n">excGroups</span><span class="o">=</span><span class="s2">"NoConfig"</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>

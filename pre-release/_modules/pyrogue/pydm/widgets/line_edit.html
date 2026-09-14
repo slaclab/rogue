@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm.widgets.line_edit &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.pydm.widgets.line_edit &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -134,7 +134,7 @@
 <div class="viewcode-block" id="PyRogueLineEdit">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelineedit.html#pyrogue.pydm.widgets.PyRogueLineEdit">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PyRogueLineEdit</span><span class="p">(</span><span class="n">PyDMLineEdit</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;PyDM line edit with Rogue-specific display and unit handling.</span>
+<span class="w">    </span><span class="sd">"""PyDM line edit with Rogue-specific display and unit handling.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -146,7 +146,7 @@
 <span class="sd">        If ``True``, display channel units in a dedicated unit label.</span>
 <span class="sd">    read_only : bool, optional</span>
 <span class="sd">        Unused compatibility parameter retained for legacy call sites.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -161,15 +161,15 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">textEdited</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_edited</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dirty</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;*[dirty=&#39;true&#39;]</span><span class="se">\</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">"*[dirty='true']</span><span class="se">\</span>
 <span class="s2">                           {background-color: orange;}</span><span class="se">\</span>
-<span class="s2">                           *[readOnly=&#39;true&#39;] { color: black; background-color: WhiteSmoke;}&quot;</span><span class="p">)</span>
+<span class="s2">                           *[readOnly='true'] { color: black; background-color: WhiteSmoke;}"</span><span class="p">)</span>
 
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span> <span class="o">=</span> <span class="n">PyDMLabel</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">&quot;QLabel { color : DimGrey; }&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="s2">"QLabel { color : DimGrey; }"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 
         <span class="n">hbox</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">hbox</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -181,7 +181,7 @@
 <div class="viewcode-block" id="PyRogueLineEdit.text_edited">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelineedit.html#pyrogue.pydm.widgets.PyRogueLineEdit.text_edited">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">text_edited</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mark widget dirty when user edits text.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Mark widget dirty when user edits text."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dirty</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">refresh_style</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
@@ -189,7 +189,7 @@
 <div class="viewcode-block" id="PyRogueLineEdit.focusOutEvent">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelineedit.html#pyrogue.pydm.widgets.PyRogueLineEdit.focusOutEvent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">focusOutEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QFocusEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear dirty state when focus leaves the widget.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Clear dirty state when focus leaves the widget."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dirty</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PyRogueLineEdit</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">focusOutEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
         <span class="n">refresh_style</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
@@ -199,7 +199,7 @@
 <div class="viewcode-block" id="PyRogueLineEdit.check_enable_state">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelineedit.html#pyrogue.pydm.widgets.PyRogueLineEdit.check_enable_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">check_enable_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update read-only state based on channel write access.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update read-only state based on channel write access."""</span>
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_access</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="ow">not</span> <span class="n">status</span><span class="p">)</span>
         <span class="n">refresh_style</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
@@ -207,13 +207,13 @@
 
     <span class="nd">@Property</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dirty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether user-edited text is pending commit.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Whether user-edited text is pending commit."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dirty</span>
 
 <div class="viewcode-block" id="PyRogueLineEdit.unit_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelineedit.html#pyrogue.pydm.widgets.PyRogueLineEdit.unit_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">unit_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update displayed units text.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update displayed units text."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">unit_changed</span><span class="p">(</span><span class="n">new_unit</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_show_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_unitWidget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">new_unit</span><span class="p">)</span></div>
@@ -222,13 +222,13 @@
 <div class="viewcode-block" id="PyRogueLineEdit.send_value">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelineedit.html#pyrogue.pydm.widgets.PyRogueLineEdit.send_value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">send_value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Emit a :attr:`send_value_signal` to update channel value.</span>
 
 <span class="sd">        The text is cleaned of all units, user-formatting and scale values</span>
 <span class="sd">        before being sent back to the channel. This function is attached the</span>
 <span class="sd">        ReturnPressed signal of the PyDMLineEdit</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">send_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -258,7 +258,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">send_value_signal</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">send_value</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">arr_value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                        <span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">send_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()))))</span>
+                        <span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">send_value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"["</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"]"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()))))</span>
                     <span class="n">arr_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">subtype</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">send_value_signal</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">arr_value</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">channeltype</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
@@ -267,13 +267,13 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">send_value_signal</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                     <span class="c1"># might want to add error to application screen</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Not a valid boolean: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">send_value</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Not a valid boolean: </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="n">send_value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Channel Type is String</span>
                 <span class="c1"># Lets just send what we have after all</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">send_value_signal</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">send_value</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Error trying to set data &#39;</span><span class="si">{0}</span><span class="s2">&#39; with type &#39;</span><span class="si">{1}</span><span class="s2">&#39; and format &#39;</span><span class="si">{2}</span><span class="s2">&#39; at widget &#39;</span><span class="si">{3}</span><span class="s2">&#39;.&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"Error trying to set data '</span><span class="si">{0}</span><span class="s2">' with type '</span><span class="si">{1}</span><span class="s2">' and format '</span><span class="si">{2}</span><span class="s2">' at widget '</span><span class="si">{3}</span><span class="s2">'."</span>
                          <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">channeltype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_format_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">objectName</span><span class="p">()))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">clearFocus</span><span class="p">()</span>
@@ -285,14 +285,14 @@
 <div class="viewcode-block" id="PyRogueLineEdit.set_display">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/pyroguelineedit.html#pyrogue.pydm.widgets.PyRogueLineEdit.set_display">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_display</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Set the text display of the PyDMLineEdit.</span>
 
 <span class="sd">        The original value given by the PV is converted to a text entry based</span>
 <span class="sd">        on the current settings for scale value, precision, a user-defined</span>
 <span class="sd">        format, and the current units. If the user is currently entering a</span>
 <span class="sd">        value in the PyDMLineEdit the text will not be changed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -310,7 +310,7 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">new_value</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channeltype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot convert the value &#39;</span><span class="si">%s</span><span class="s2">&#39;, for channel &#39;</span><span class="si">%s</span><span class="s2">&#39;, to type &#39;</span><span class="si">%s</span><span class="s2">&#39;. &quot;</span><span class="p">,</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Cannot convert the value '</span><span class="si">%s</span><span class="s2">', for channel '</span><span class="si">%s</span><span class="s2">', to type '</span><span class="si">%s</span><span class="s2">'. "</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="p">,</span>
                                  <span class="bp">self</span><span class="o">.</span><span class="n">channeltype</span><span class="p">)</span>

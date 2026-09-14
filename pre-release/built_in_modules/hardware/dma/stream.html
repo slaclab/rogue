@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AxiStreamDma &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -206,16 +206,16 @@ traffic, and another carries a framed data stream that is written to disk.</p>
 
         <span class="c1"># Example register block reached through the SRPv3 control channel.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ScratchPad&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example RW register&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'ScratchPad'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Example RW register'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
         <span class="p">))</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">BoardRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Destination 0 is reserved for register access.</span>
@@ -230,7 +230,7 @@ traffic, and another carries a framed data stream that is written to disk.</p>
 
         <span class="c1"># The top-level register tree talks to hardware through SRPv3.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyRegs</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Regs&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Regs'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x00000000</span><span class="p">,</span>
             <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">srp</span><span class="p">,</span>
             <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -240,7 +240,7 @@ traffic, and another carries a framed data stream that is written to disk.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataStream</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Tree-managed file writer for captured data.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Writer&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Writer'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">)</span>
 
         <span class="c1"># Route the DMA data stream into channel 0 of the file writer.</span>
@@ -261,7 +261,7 @@ stream stages between the hardware channel and the final sink.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">puf</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">CaptureRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Open the hardware data channel at destination 1.</span>
@@ -273,10 +273,10 @@ stream stages between the hardware channel and the final sink.</p>
         <span class="c1"># Optional debug tap. Attach it after the primary path so frame</span>
         <span class="c1"># allocation still follows the main processing chain.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="s1">&#39;DMA Debug&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="s1">'DMA Debug'</span><span class="p">)</span>
 
         <span class="c1"># Tree-managed file writer.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Writer&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Writer'</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">)</span>
 
         <span class="c1"># Primary capture path: DMA -&gt; FIFO -&gt; file writer.</span>
@@ -297,9 +297,9 @@ to diagnose driver behavior or tune a platform-specific setup.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
 
 <span class="c1"># Disable zero-copy before constructing any DMA object for this device path.</span>
-<span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="o">.</span><span class="n">zeroCopyDisable</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">)</span>
+<span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="o">.</span><span class="n">zeroCopyDisable</span><span class="p">(</span><span class="s1">'/dev/datadev_0'</span><span class="p">)</span>
 
-<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Enable kernel-driver debug messages. These usually appear in dmesg.</span>
 <span class="n">dma</span><span class="o">.</span><span class="n">setDriverDebug</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -377,7 +377,7 @@ errored-frame handling</p></li>
 construction only if you want constructor or initial startup messages:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.axi.AxiStreamDma&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">'pyrogue.axi.AxiStreamDma'</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Driver debug usually appears in <code class="docutils literal notranslate"><span class="pre">dmesg</span></code> rather than in Rogue’s own logger

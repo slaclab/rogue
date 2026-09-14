@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Epics PV Holder (V7 Protocol) &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Epics PV Holder (V7 Protocol) &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -192,8 +192,8 @@ EPICS client — no RPC protocol is involved.</p>
 <h3>Invoking a No-Arg Command<a class="headerlink" href="#invoking-a-no-arg-command" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
-<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
-<span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;MyIoc:MyRoot:MyDevice:ResetCounter&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">'pva'</span><span class="p">)</span>
+<span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'MyIoc:MyRoot:MyDevice:ResetCounter'</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -201,8 +201,8 @@ EPICS client — no RPC protocol is involved.</p>
 <h3>Invoking a Command With an Argument<a class="headerlink" href="#invoking-a-command-with-an-argument" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
-<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
-<span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;MyIoc:MyRoot:MyDevice:SetThreshold&#39;</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">'pva'</span><span class="p">)</span>
+<span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'MyIoc:MyRoot:MyDevice:SetThreshold'</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The value <code class="docutils literal notranslate"><span class="pre">42</span></code> is forwarded to the PyRogue command as its argument.</p>

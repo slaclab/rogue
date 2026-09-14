@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._DataWriter &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue._DataWriter &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -126,7 +126,7 @@
 <div class="viewcode-block" id="DataWriter">
 <a class="viewcode-back" href="../../api/python/pyrogue/datawriter.html#pyrogue.DataWriter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DataWriter</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for constructing data writer devices.</span>
+<span class="w">    </span><span class="sd">"""Base class for constructing data writer devices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -138,7 +138,7 @@
 <span class="sd">        Maximum file size in bytes before rolling.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``Device``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -148,7 +148,7 @@
         <span class="n">maxFileSize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the data writer device.</span>
+<span class="w">        </span><span class="sd">"""Initialize the data writer device.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -160,116 +160,116 @@
 <span class="sd">            Maximum file size in bytes before rolling.</span>
 <span class="sd">        **kwargs : Any</span>
 <span class="sd">            Additional keyword arguments forwarded to :class:`pyrogue.Device`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                            <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span>
-                           <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Class which stores received data to a file.&#39;</span><span class="p">,</span>
+                           <span class="n">description</span> <span class="o">=</span> <span class="s1">'Class which stores received data to a file.'</span><span class="p">,</span>
                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DataFile&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
-            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Data file for storing frames for connected streams.&#39;</span>
-                        <span class="s1">&#39;This is the file opened when the Open command is executed.&#39;</span><span class="p">))</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'DataFile'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Data file for storing frames for connected streams.'</span>
+                        <span class="s1">'This is the file opened when the Open command is executed.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Open'</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_open</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Open data file. The new file name will be the contents of the DataFile variable.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Open data file. The new file name will be the contents of the DataFile variable.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Close&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Close'</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Close data file.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Close data file.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;IsOpen&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'IsOpen'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_isOpen</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Status field which is True when the Data file is open.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Status field which is True when the Data file is open.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;BufferSize&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'BufferSize'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="n">bufferSize</span><span class="p">,</span>
-            <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_setBufferSize</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;File buffering size. Enables caching of data before call to file system.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'File buffering size. Enables caching of data before call to file system.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MaxFileSize&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'MaxFileSize'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="n">maxFileSize</span><span class="p">,</span>
-            <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt64'</span><span class="p">,</span>
             <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_setMaxFileSize</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;CurrentSize&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'CurrentSize'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt64'</span><span class="p">,</span>
             <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_getCurrentSize</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Size of current data files in bytes.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Size of current data files in bytes.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TotalSize&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'TotalSize'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt64'</span><span class="p">,</span>
             <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_getTotalSize</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total bytes written.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Total bytes written.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Bandwidth&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Bandwidth'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-            <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;Float64&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span><span class="o">=</span><span class="s1">'Float64'</span><span class="p">,</span>
             <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_getBandwidth</span><span class="p">,</span>
-            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bytes/sec&#39;</span><span class="p">,</span>
-            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:,.3f}</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Instantaneous write bandwidth in bytes per second.&#39;</span><span class="p">))</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">'Bytes/sec'</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">'</span><span class="si">{:,.3f}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Instantaneous write bandwidth in bytes per second.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrameCount&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'FrameCount'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">typeStr</span><span class="o">=</span><span class="s1">'UInt32'</span><span class="p">,</span>
             <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_getFrameCount</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total frames received and written.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Total frames received and written.'</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;AutoName&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'AutoName'</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_genFileName</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Auto create data file name using data and time.&#39;</span><span class="p">))</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Auto create data file name using data and time.'</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open the currently selected output file.</span>
+<span class="w">        </span><span class="sd">"""Open the currently selected output file.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the current output file.</span>
+<span class="w">        </span><span class="sd">"""Close the current output file.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_isOpen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return file-open status.</span>
+<span class="w">        </span><span class="sd">"""Return file-open status.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -279,11 +279,11 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setBufferSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set file buffer size.</span>
+<span class="w">        </span><span class="sd">"""Set file buffer size.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -293,11 +293,11 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setMaxFileSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set maximum file size before rolling.</span>
+<span class="w">        </span><span class="sd">"""Set maximum file size before rolling.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -307,11 +307,11 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getCurrentSize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return current output file size.</span>
+<span class="w">        </span><span class="sd">"""Return current output file size.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -321,11 +321,11 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getTotalSize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total bytes written.</span>
+<span class="w">        </span><span class="sd">"""Return total bytes written.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -335,11 +335,11 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getBandwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return instantaneous write bandwidth.</span>
+<span class="w">        </span><span class="sd">"""Return instantaneous write bandwidth.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -349,11 +349,11 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="mf">0.0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getFrameCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total frame count.</span>
+<span class="w">        </span><span class="sd">"""Return total frame count.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -363,23 +363,23 @@
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        Override in subclasses.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_genFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a timestamped output filename.</span>
+<span class="w">        </span><span class="sd">"""Generate a timestamped output filename.</span>
 
 <span class="sd">        Generates ``data_%Y%m%d_%H%M%S.dat`` and preserves the directory part</span>
 <span class="sd">        of the current ``DataFile`` value, if present.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">base</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="s1">''</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">value</span><span class="p">()[:</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;data_%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S.dat&quot;</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"data_%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S.dat"</span><span class="p">))</span></div>
 
 </pre></div>
 

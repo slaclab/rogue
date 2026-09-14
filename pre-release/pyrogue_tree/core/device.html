@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Device &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -159,16 +159,16 @@ runtime path for reads, writes, resets, and startup behavior.</p>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example device&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Example device'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Mode&#39;</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Mode'</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
             <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Reset&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Reset'</span><span class="p">,</span>
             <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">,</span>
         <span class="p">))</span>
 
@@ -212,37 +212,37 @@ permit access.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">surf.protocols.pgp</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FrontEnd</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registers implemented by the FPGA at the far end of the link.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Registers implemented by the FPGA at the far end of the link."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Remote front-end FPGA&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Remote front-end FPGA'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FpgaVersion&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Front-end firmware version&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'FpgaVersion'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Front-end firmware version'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RO'</span><span class="p">,</span>
         <span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;AcquisitionEnable&#39;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Enable front-end data acquisition&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'AcquisitionEnable'</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">'Enable front-end data acquisition'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x0004</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
-            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">,</span>
         <span class="p">))</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">PgpFrontEndLane</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;One local PGP4 link and the front end reached through that link.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""One local PGP4 link and the front end reached through that link."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pgpMemBase</span><span class="p">,</span> <span class="n">frontEndMemBase</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;PGP-connected front end&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'PGP-connected front end'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Local PGP4 control and status registers.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">surf</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">pgp</span><span class="o">.</span><span class="n">Pgp4AxiL</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Pgp4&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Pgp4'</span><span class="p">,</span>
             <span class="n">memBase</span><span class="o">=</span><span class="n">pgpMemBase</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
             <span class="n">numVc</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
@@ -250,7 +250,7 @@ permit access.</p>
 
         <span class="c1"># Registers implemented by the FPGA at the far end of the link.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">FrontEnd</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrontEnd&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'FrontEnd'</span><span class="p">,</span>
             <span class="n">memBase</span><span class="o">=</span><span class="n">frontEndMemBase</span><span class="p">,</span>
             <span class="n">enableDeps</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Pgp4</span><span class="o">.</span><span class="n">RxStatus</span><span class="o">.</span><span class="n">RemRxLinkReady</span><span class="p">],</span>
         <span class="p">))</span>
@@ -615,9 +615,9 @@ override operational hooks such as:</p>
 application logic.</p>
 <p>Device also supports decorators that create <code class="xref py py-class docutils literal notranslate"><span class="pre">LocalCommand</span></code>
 Nodes from local functions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pyrogue</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReadConfig&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Load config file&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pyrogue</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'ReadConfig'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Load config file'</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_readConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>
@@ -629,16 +629,16 @@ configuration of individual devices without needing to know the full tree
 structure above the device.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">root</span><span class="p">:</span>
     <span class="c1"># Save config from a specific device</span>
-    <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">saveYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;board.yml&quot;</span><span class="p">,</span> <span class="n">readFirst</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;RW&quot;</span><span class="p">,</span> <span class="s2">&quot;WO&quot;</span><span class="p">])</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">saveYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"board.yml"</span><span class="p">,</span> <span class="n">readFirst</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">"RW"</span><span class="p">,</span> <span class="s2">"WO"</span><span class="p">])</span>
 
     <span class="c1"># Load config back — YAML uses device-relative paths</span>
-    <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;board.yml&quot;</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;RW&quot;</span><span class="p">,</span> <span class="s2">&quot;WO&quot;</span><span class="p">])</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"board.yml"</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">"RW"</span><span class="p">,</span> <span class="s2">"WO"</span><span class="p">])</span>
 
     <span class="c1"># Apply YAML text directly</span>
     <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">setYaml</span><span class="p">(</span>
-        <span class="n">yml</span><span class="o">=</span><span class="s2">&quot;SubDevice:</span><span class="se">\n</span><span class="s2">  Variable: 42</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">yml</span><span class="o">=</span><span class="s2">"SubDevice:</span><span class="se">\n</span><span class="s2">  Variable: 42</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
         <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;RW&quot;</span><span class="p">],</span>
+        <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">"RW"</span><span class="p">],</span>
     <span class="p">)</span>
 </pre></div>
 </div>

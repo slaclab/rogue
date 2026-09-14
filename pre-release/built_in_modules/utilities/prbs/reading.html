@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Receiving PRBS Frames &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Receiving PRBS Frames &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -177,12 +177,12 @@ same transmit and receive wrappers together.</p>
 <span class="n">prbs</span> <span class="o">&lt;&lt;</span> <span class="n">fread</span>
 
 <span class="c1"># Replay full split-file sequence and wait for completion.</span>
-<span class="n">fread</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;myFile.dat.1&quot;</span><span class="p">)</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"myFile.dat.1"</span><span class="p">)</span>
 <span class="n">fread</span><span class="o">.</span><span class="n">closeWait</span><span class="p">()</span>
 
 <span class="c1"># Summarize checker statistics.</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="n">prbs</span><span class="o">.</span><span class="n">getRxCount</span><span class="p">()</span><span class="si">}</span><span class="s2"> frames&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="n">prbs</span><span class="o">.</span><span class="n">getRxErrors</span><span class="p">()</span><span class="si">}</span><span class="s2"> errors&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Received </span><span class="si">{</span><span class="n">prbs</span><span class="o">.</span><span class="n">getRxCount</span><span class="p">()</span><span class="si">}</span><span class="s2"> frames"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Received </span><span class="si">{</span><span class="n">prbs</span><span class="o">.</span><span class="n">getRxErrors</span><span class="p">()</span><span class="si">}</span><span class="s2"> errors"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -219,12 +219,12 @@ same transmit and receive wrappers together.</p>
 <span class="o">*</span><span class="n">prbs</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">fread</span><span class="p">;</span>
 
 <span class="c1">// Replay full split-file sequence and wait for completion.</span>
-<span class="n">fread</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;myFile.dat.1&quot;</span><span class="p">);</span>
+<span class="n">fread</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">"myFile.dat.1"</span><span class="p">);</span>
 <span class="n">fread</span><span class="o">-&gt;</span><span class="n">closeWait</span><span class="p">();</span>
 
 <span class="c1">// Summarize checker statistics.</span>
-<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Received %u frames</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">prbs</span><span class="o">-&gt;</span><span class="n">getRxCount</span><span class="p">());</span>
-<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Received %u errors</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">prbs</span><span class="o">-&gt;</span><span class="n">getRxErrors</span><span class="p">());</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"Received %u frames</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">prbs</span><span class="o">-&gt;</span><span class="n">getRxCount</span><span class="p">());</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"Received %u errors</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">prbs</span><span class="o">-&gt;</span><span class="n">getRxErrors</span><span class="p">());</span>
 </pre></div>
 </div>
 </section>

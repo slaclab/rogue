@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._StreamWriter &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.utilities.fileio._StreamWriter &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,7 +125,7 @@
 <div class="viewcode-block" id="StreamWriter">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/utilities/fileio/streamwriter.html#pyrogue.utilities.fileio.StreamWriter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StreamWriter</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">DataWriter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper ``pyrogue.DataWriter`` around ``rogue.utilities.fileio.StreamWriter``.</span>
+<span class="w">    </span><span class="sd">"""Wrapper ``pyrogue.DataWriter`` around ``rogue.utilities.fileio.StreamWriter``.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -147,7 +147,7 @@
 <span class="sd">        written, with no per-frame Rogue headers.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional keyword arguments forwarded to ``pyrogue.DataWriter``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -173,7 +173,7 @@
             <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open output file and emit initial configuration records.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Open output file and emit initial configuration records."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
 
         <span class="c1"># Dump config/status to file</span>
@@ -184,7 +184,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">IsOpen</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emit final configuration records and close output file.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Emit final configuration records and close output file."""</span>
 
         <span class="c1"># Dump config/status to file</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configStream</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -194,52 +194,52 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">IsOpen</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_isOpen</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the writer currently has an open file.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return whether the writer currently has an open file."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">isOpen</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setBufferSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update writer file buffer size.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update writer file buffer size."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">setBufferSize</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setMaxFileSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update writer maximum file size.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Update writer maximum file size."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">setMaxSize</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getCurrentSize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return current output file size in bytes.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return current output file size in bytes."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getCurrentSize</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getTotalSize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total bytes written across files.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return total bytes written across files."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getTotalSize</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getBandwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return file-write bandwidth in bytes/second over the recent ~1 second window.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return file-write bandwidth in bytes/second over the recent ~1 second window."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getBandwidth</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getFrameCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total written frame count.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return total written frame count."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getFrameCount</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_waitFrameCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for total frame count to reach ``count`` within timeout seconds.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Wait for total frame count to reach ``count`` within timeout seconds."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">waitFrameCount</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_waitFrameChannelCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for channel frame count to reach ``count`` within timeout seconds.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Wait for channel frame count to reach ``count`` within timeout seconds."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="n">chan</span><span class="p">)</span><span class="o">.</span><span class="n">waitFrameCount</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">timeout</span> <span class="o">*</span> <span class="mi">1000000</span><span class="p">)</span>
 
 <div class="viewcode-block" id="StreamWriter.getChannel">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/utilities/fileio/streamwriter.html#pyrogue.utilities.fileio.StreamWriter.getChannel">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">getChannel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chan</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Slave</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return writer channel object by index.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return writer channel object by index."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="n">chan</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="StreamWriter.setDropErrors">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/utilities/fileio/streamwriter.html#pyrogue.utilities.fileio.StreamWriter.setDropErrors">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setDropErrors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable or disable dropping errored frames.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Enable or disable dropping errored frames."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">setDropErrors</span><span class="p">(</span><span class="n">drop</span><span class="p">)</span></div>
 </div>
 

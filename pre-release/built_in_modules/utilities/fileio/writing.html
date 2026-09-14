@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing Frames To A File &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Writing Frames To A File &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -239,7 +239,7 @@ writer, so the most useful logging usually comes from the underlying
 <span class="n">streamA</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">streamB</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">fwrite</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;myFile.dat&quot;</span><span class="p">)</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"myFile.dat"</span><span class="p">)</span>
 <span class="c1"># ... stream traffic is captured while file is open ...</span>
 <span class="n">fwrite</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
@@ -258,16 +258,16 @@ writer, so the most useful logging usually comes from the underlying
 
         <span class="c1"># Tree-managed writer with a reserved metadata channel.</span>
         <span class="n">status_stream</span> <span class="o">=</span> <span class="n">pis</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Writer&#39;</span><span class="p">,</span> <span class="n">configStream</span><span class="o">=</span><span class="p">{</span><span class="mi">255</span><span class="p">:</span> <span class="n">status_stream</span><span class="p">}))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Writer'</span><span class="p">,</span> <span class="n">configStream</span><span class="o">=</span><span class="p">{</span><span class="mi">255</span><span class="p">:</span> <span class="n">status_stream</span><span class="p">}))</span>
 
         <span class="c1"># Real stream source feeding capture channel 0.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pup</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;PrbsTx&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pup</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'PrbsTx'</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">root</span> <span class="o">=</span> <span class="n">MyRoot</span><span class="p">()</span>
 
 <span class="c1"># File control can be performed through Device variables/commands.</span>
-<span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;myFile.dat&quot;</span><span class="p">)</span>
+<span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"myFile.dat"</span><span class="p">)</span>
 <span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
 <span class="c1"># ...</span>
 <span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
@@ -291,7 +291,7 @@ writer, so the most useful logging usually comes from the underlying
 <span class="n">streamA</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="n">streamB</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
-<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;myFile.dat&quot;</span><span class="p">);</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">"myFile.dat"</span><span class="p">);</span>
 <span class="c1">// ... stream traffic is captured while file is open ...</span>
 <span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>
 </pre></div>

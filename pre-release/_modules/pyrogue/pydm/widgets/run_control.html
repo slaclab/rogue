@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm.widgets.run_control &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>pyrogue.pydm.widgets.run_control &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -129,7 +129,7 @@
 <div class="viewcode-block" id="RunControl">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/runcontrol.html#pyrogue.pydm.widgets.RunControl">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RunControl</span><span class="p">(</span><span class="n">PyDMFrame</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;PyDM widget for controlling a ``pyrogue.RunControl`` node.</span>
+<span class="w">    </span><span class="sd">"""PyDM widget for controlling a ``pyrogue.RunControl`` node.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -137,7 +137,7 @@
 <span class="sd">        Parent Qt widget.</span>
 <span class="sd">    init_channel : str | None, optional</span>
 <span class="sd">        Initial Rogue channel address.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">PyDMFrame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">)</span>
@@ -146,7 +146,7 @@
 <div class="viewcode-block" id="RunControl.connection_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/runcontrol.html#pyrogue.pydm.widgets.RunControl.connection_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">connection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build controls after first successful channel connection.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build controls after first successful channel connection."""</span>
         <span class="n">build</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">!=</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">connected</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RunControl</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">connection_changed</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span>
 
@@ -159,7 +159,7 @@
         <span class="n">vb</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vb</span><span class="p">)</span>
 
-        <span class="n">gb</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s1">&#39;Run Control (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">gb</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="s1">'Run Control (</span><span class="si">{}</span><span class="s1">)'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
         <span class="n">vb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">gb</span><span class="p">)</span>
 
         <span class="n">vb</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
@@ -171,10 +171,10 @@
         <span class="n">fl</span><span class="o">.</span><span class="n">setLabelAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
         <span class="n">vb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">fl</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMEnumComboBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.runRate&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMEnumComboBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.runRate'</span><span class="p">)</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">&#39;Run Rate:&#39;</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">'Run Rate:'</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
 
         <span class="n">hb</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">vb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
@@ -185,10 +185,10 @@
         <span class="n">fl</span><span class="o">.</span><span class="n">setLabelAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">fl</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMEnumComboBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.runState&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMEnumComboBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.runState'</span><span class="p">)</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">&#39;Run State:&#39;</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">'Run State:'</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
 
         <span class="n">fl</span> <span class="o">=</span> <span class="n">QFormLayout</span><span class="p">()</span>
         <span class="n">fl</span><span class="o">.</span><span class="n">setRowWrapPolicy</span><span class="p">(</span><span class="n">QFormLayout</span><span class="o">.</span><span class="n">DontWrapRows</span><span class="p">)</span>
@@ -196,13 +196,13 @@
         <span class="n">fl</span><span class="o">.</span><span class="n">setLabelAlignment</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
         <span class="n">hb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">fl</span><span class="p">)</span>
 
-        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMLabel</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.runCount&#39;</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMLabel</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">'.runCount'</span><span class="p">)</span>
         <span class="n">w</span><span class="o">.</span><span class="n">showUnits</span>             <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">precisionFromPV</span>       <span class="o">=</span> <span class="kc">True</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">&#39;Run Count:&#39;</span><span class="p">,</span><span class="n">w</span><span class="p">)</span></div>
+        <span class="n">fl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s1">'Run Count:'</span><span class="p">,</span><span class="n">w</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

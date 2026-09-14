@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Epics PV Server (V7 Protocol) &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Epics PV Server (V7 Protocol) &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -184,16 +184,16 @@ called explicitly. If you are migrating from V4, remove the
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MyRoot'</span><span class="p">)</span>
         <span class="c1"># Add variables/devices here as usual.</span>
 
         <span class="c1"># Passing root=self auto-registers with the Root lifecycle.</span>
         <span class="c1"># Do NOT also call self.addProtocol(self.epics).</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epics</span> <span class="o">=</span> <span class="n">pep7</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span>
-            <span class="n">base</span><span class="o">=</span><span class="s1">&#39;MyIoc&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="s1">'MyIoc'</span><span class="p">,</span>
             <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
             <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NoServe&#39;</span><span class="p">],</span>
+            <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">'NoServe'</span><span class="p">],</span>
             <span class="n">pvMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -201,7 +201,7 @@ called explicitly. If you are migrating from V4, remove the
     <span class="c1"># Inspect active mapping.</span>
     <span class="n">root</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
     <span class="c1"># Optionally write mapping to file for IOC/client integration.</span>
-    <span class="n">root</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s1">&#39;epics_map.txt&#39;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s1">'epics_map.txt'</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -256,10 +256,10 @@ long name, and vice versa — with no feedback loops.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
-<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">'pva'</span><span class="p">)</span>
 
 <span class="c1"># PVA clients always use the full name — no knowledge of the hash required.</span>
-<span class="n">full_name</span> <span class="o">=</span> <span class="s1">&#39;MyIoc:LocalRoot:MyDevice:ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit&#39;</span>
+<span class="n">full_name</span> <span class="o">=</span> <span class="s1">'MyIoc:LocalRoot:MyDevice:ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit'</span>
 <span class="n">value</span> <span class="o">=</span> <span class="n">ctxt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span>
 <span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">full_name</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>
 </pre></div>
@@ -284,9 +284,9 @@ longOut EPICS records. Clients invoke them with a plain put:</p>
 <h3>Invoking a No-Arg Command<a class="headerlink" href="#invoking-a-no-arg-command" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
-<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">'pva'</span><span class="p">)</span>
 
-<span class="n">pv_name</span> <span class="o">=</span> <span class="s1">&#39;MyIoc:MyRoot:MyDevice:ResetCounter&#39;</span>
+<span class="n">pv_name</span> <span class="o">=</span> <span class="s1">'MyIoc:MyRoot:MyDevice:ResetCounter'</span>
 <span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">pv_name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>   <span class="c1"># value=0 triggers no-arg command call</span>
 </pre></div>
 </div>
@@ -295,9 +295,9 @@ longOut EPICS records. Clients invoke them with a plain put:</p>
 <h3>Invoking a Command With an Argument<a class="headerlink" href="#invoking-a-command-with-an-argument" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
-<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">'pva'</span><span class="p">)</span>
 
-<span class="n">pv_name</span> <span class="o">=</span> <span class="s1">&#39;MyIoc:MyRoot:MyDevice:SetThreshold&#39;</span>
+<span class="n">pv_name</span> <span class="o">=</span> <span class="s1">'MyIoc:MyRoot:MyDevice:SetThreshold'</span>
 <span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">pv_name</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>   <span class="c1"># value is forwarded to command as arg</span>
 </pre></div>
 </div>

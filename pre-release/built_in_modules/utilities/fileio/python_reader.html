@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python File Reader &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Python File Reader &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,19 +141,19 @@ metadata/configuration records from captured files.</p>
 <h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileReader</span>
 
-<span class="k">with</span> <span class="n">FileReader</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s2">&quot;mydata.dat&quot;</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">FileReader</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s2">"mydata.dat"</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
    <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">fd</span><span class="o">.</span><span class="n">records</span><span class="p">():</span>
-      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record </span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">currCount</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">totCount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Channel = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Size    = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Flags   = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">flags</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Error   = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">error</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Record </span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">currCount</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">totCount</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Channel = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">channel</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Size    = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Flags   = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">flags</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Error   = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">error</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
       <span class="c1"># data is a numpy array view of payload bytes</span>
-      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  First byte = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  First byte = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
    <span class="c1"># Configuration/status state decoded from config channel frames</span>
-   <span class="nb">print</span><span class="p">(</span><span class="n">fd</span><span class="o">.</span><span class="n">configDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;root.Time&quot;</span><span class="p">))</span>
+   <span class="nb">print</span><span class="p">(</span><span class="n">fd</span><span class="o">.</span><span class="n">configDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"root.Time"</span><span class="p">))</span>
 </pre></div>
 </div>
 </section>
@@ -168,10 +168,10 @@ of treating the payload as one opaque byte block.</p>
 <p>For protocol background, see <a class="reference internal" href="../../protocols/batcher/index.html"><span class="doc">Batcher Protocol</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileReader</span>
 
-<span class="k">with</span> <span class="n">FileReader</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s2">&quot;mydata.dat&quot;</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">FileReader</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s2">"mydata.dat"</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
    <span class="k">for</span> <span class="n">header</span><span class="p">,</span> <span class="n">bheader</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">fd</span><span class="o">.</span><span class="n">records</span><span class="p">():</span>
-      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channel = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">channel</span><span class="si">}</span><span class="s2">, RecordBytes = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;BatchBytes = </span><span class="si">{</span><span class="n">bheader</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">, TDest = </span><span class="si">{</span><span class="n">bheader</span><span class="o">.</span><span class="n">tdest</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Channel = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">channel</span><span class="si">}</span><span class="s2">, RecordBytes = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"BatchBytes = </span><span class="si">{</span><span class="n">bheader</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">, TDest = </span><span class="si">{</span><span class="n">bheader</span><span class="o">.</span><span class="n">tdest</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Module Source &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Custom Module Source &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -203,7 +203,7 @@ own bindings, so no explicit thread initialization is needed.</p></li>
 <span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">setup_python</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span>
 <span class="w">                    </span><span class="n">bp</span><span class="o">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">                    </span><span class="n">boost</span><span class="o">::</span><span class="n">noncopyable</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;BitInverter&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bp</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">());</span>
+<span class="w">                    </span><span class="n">boost</span><span class="o">::</span><span class="n">noncopyable</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"BitInverter"</span><span class="p">,</span><span class="w"> </span><span class="n">bp</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">());</span>
 <span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">SlavePtr</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">MasterPtr</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">      </span><span class="p">}</span>

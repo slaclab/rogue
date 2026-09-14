@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Compiling A Rogue Application &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Compiling A Rogue Application &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -133,7 +133,7 @@ $ make
 <p>The outputs will be placed in a <strong>bin</strong> sub-directory.</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Add support for building in conda environment</span>
 <span class="nb">if</span><span class="w"> </span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ENV{CONDA_PREFIX}</span><span class="p">)</span>
-<span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_PREFIX_PATH</span><span class="w"> </span><span class="s2">&quot;$ENV{CONDA_PREFIX}&quot;</span><span class="p">)</span>
+<span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_PREFIX_PATH</span><span class="w"> </span><span class="s2">"$ENV{CONDA_PREFIX}"</span><span class="p">)</span>
 <span class="w">   </span><span class="nb">link_directories</span><span class="p">(</span><span class="o">$ENV{</span><span class="nv">CONDA_PREFIX</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
 <span class="nb">endif</span><span class="p">()</span>
 
@@ -146,7 +146,7 @@ $ make
 
 <span class="c"># C/C++</span>
 <span class="nb">enable_language</span><span class="p">(</span><span class="s">CXX</span><span class="p">)</span>
-<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_FLAGS</span><span class="w"> </span><span class="s2">&quot;${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_FLAGS</span><span class="w"> </span><span class="s2">"${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated"</span><span class="p">)</span>
 
 <span class="c">#####################################</span>
 <span class="c"># Find Rogue &amp; Support Libraries</span>

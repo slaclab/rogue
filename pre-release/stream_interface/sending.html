@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sending Frames &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Sending Frames &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -203,10 +203,10 @@ block of memory.</p>
 when it is already implemented in C++, or when it needs tight control over the
 layout and copy path used to populate the <code class="docutils literal notranslate"><span class="pre">Frame</span></code>.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Master.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Frame.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/FrameIterator.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/FrameLock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/Master.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/Frame.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/FrameIterator.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/FrameLock.h"</span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
 
@@ -294,8 +294,8 @@ show that more realistic pattern in both languages.</p>
 <h3>C++ Header And Payload Example<a class="headerlink" href="#c-header-and-payload-example" title="Link to this heading"></a></h3>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;array&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Frame.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/FrameIterator.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/Frame.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/FrameIterator.h"</span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
 

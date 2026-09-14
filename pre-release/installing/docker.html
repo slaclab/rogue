@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Running Rogue With Docker &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Running Rogue With Docker &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -172,9 +172,9 @@ $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority 
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker run -ti \
    -u $(id -u) \
    -e DISPLAY=unix$DISPLAY \
-   -v &quot;/tmp/.X11-unix:/tmp/.X11-unix&quot; \
-   -v &quot;/etc/group:/etc/group:ro&quot; \
-   -v &quot;/etc/passwd:/etc/passwd:ro&quot; \
+   -v "/tmp/.X11-unix:/tmp/.X11-unix" \
+   -v "/etc/group:/etc/group:ro" \
+   -v "/etc/passwd:/etc/passwd:ro" \
    -v &lt;APP_DIR&gt;:/python \
    ghcr.io/slaclab/rogue /python/&lt;APP_NAME&gt;
 </pre></div>
@@ -186,7 +186,7 @@ $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority 
 preferences, under the Security tab, ensure that
 <code class="docutils literal notranslate"><span class="pre">Allow</span> <span class="pre">connections</span> <span class="pre">from</span> <span class="pre">network</span> <span class="pre">clients</span></code> is enabled.</p>
 <p>Now run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ IP=$(ifconfig en0 | grep inet | awk &#39;$1==&quot;inet&quot; {print $2}&#39;)
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
 $ xhost + $IP
 $ docker run -ti -e DISPLAY=$IP:0 -v &lt;APP_DIR&gt;:/python ghcr.io/slaclab/rogue /python/&lt;APP_NAME&gt;
 </pre></div>

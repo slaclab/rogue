@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Connecting Streams &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>Connecting Streams &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../_static/documentation_options.js?v=87065462"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -190,17 +190,17 @@ secondary branch for reduced-rate diagnostics.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ruf</span>
 
 <span class="c1"># Open a DMA stream</span>
-<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Primary processing path: fifo + rate limit + file writer</span>
 <span class="n">fifo</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Fifo</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 <span class="n">rate</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># about 5 Hz</span>
 <span class="n">writer</span> <span class="o">=</span> <span class="n">ruf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">()</span>
-<span class="n">writer</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;diagnostic.dat&#39;</span><span class="p">)</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'diagnostic.dat'</span><span class="p">)</span>
 
 <span class="c1"># Dump raw DMA traffic to terminal</span>
 <span class="n">debug</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span><span class="p">()</span>
-<span class="n">debug</span><span class="o">.</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="s1">&#39;DMA Debug&#39;</span><span class="p">)</span>
+<span class="n">debug</span><span class="o">.</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="s1">'DMA Debug'</span><span class="p">)</span>
 
 <span class="c1"># Connect the streams</span>
 <span class="c1"># Attach processing chain first (primary), then add debug branch</span>
@@ -211,25 +211,25 @@ secondary branch for reduced-rate diagnostics.</p>
 </section>
 <section id="c">
 <h3>C++<a class="headerlink" href="#c" title="Link to this heading"></a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/hardware/axi/AxiStreamDma.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Fifo.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/RateDrop.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/utilities/fileio/StreamWriter.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/Helpers.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/hardware/axi/AxiStreamDma.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/Fifo.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/RateDrop.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/utilities/fileio/StreamWriter.h"</span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">rha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">hardware</span><span class="o">::</span><span class="nn">axi</span><span class="p">;</span>
 <span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
 <span class="k">namespace</span><span class="w"> </span><span class="nn">ruf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">utilities</span><span class="o">::</span><span class="nn">fileio</span><span class="p">;</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dma</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">rha</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dma</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">rha</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"/dev/datadev_0"</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
 <span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">fifo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Fifo</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
 <span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">RateDrop</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">);</span>
 <span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">debug</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
-<span class="w">   </span><span class="n">debug</span><span class="o">-&gt;</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DMA Debug&quot;</span><span class="p">);</span>
+<span class="w">   </span><span class="n">debug</span><span class="o">-&gt;</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="s">"DMA Debug"</span><span class="p">);</span>
 
 <span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ruf</span><span class="o">::</span><span class="n">StreamWriter</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
-<span class="w">   </span><span class="n">writer</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;diagnostic.dat&quot;</span><span class="p">);</span>
+<span class="w">   </span><span class="n">writer</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">"diagnostic.dat"</span><span class="p">);</span>
 
 <span class="w">   </span><span class="c1">// Attach processing chain first (primary), then add debug branch</span>
 <span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">dma</span><span class="p">,</span><span class="w"> </span><span class="n">fifo</span><span class="p">);</span>
@@ -260,8 +260,8 @@ paired and avoids accidentally connecting only half of the link.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
 
-<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-<span class="n">net</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">&#39;192.168.1.10&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">'/dev/datadev_0'</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">'192.168.1.10'</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1"># Preferred operator form</span>
 <span class="n">dma</span> <span class="o">==</span> <span class="n">net</span>
@@ -270,16 +270,16 @@ paired and avoids accidentally connecting only half of the link.</p>
 </section>
 <section id="id2">
 <h3>C++<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/hardware/axi/AxiStreamDma.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/TcpClient.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/Helpers.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/hardware/axi/AxiStreamDma.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/stream/TcpClient.h"</span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">rha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">hardware</span><span class="o">::</span><span class="nn">axi</span><span class="p">;</span>
 <span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rha</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
-<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">net</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.10&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rha</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"/dev/datadev_0"</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">net</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">"192.168.1.10"</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="w">   </span><span class="o">*</span><span class="n">dma</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">net</span><span class="p">;</span>
 <span class="w">   </span><span class="c1">// or: rogueStreamConnectBiDir(dma, net);</span>

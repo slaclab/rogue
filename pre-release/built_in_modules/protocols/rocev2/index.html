@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RoCEv2 Protocol &mdash; Rogue v6.15.0-7-g4dbda87d7 documentation</title>
+  <title>RoCEv2 Protocol &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=206e623b"></script>
+      <script src="../../../_static/documentation_options.js?v=87065462"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -249,16 +249,16 @@ and host sides cannot drift on <code class="docutils literal notranslate"><span 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rocev2Cfg</span><span class="p">,</span> <span class="n">transportCfg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MyRoot'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_transportCfg</span> <span class="o">=</span> <span class="n">transportCfg</span>
 
         <span class="c1"># FPGA register tree (carries surf.ethernet.roce.RoCEv2Engine).</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyFpgaCore</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Core&#39;</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=...</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyFpgaCore</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Core'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=...</span><span class="p">))</span>
 
         <span class="c1"># The host-side RX server. The FPGA-side RoCEv2Engine is a</span>
         <span class="c1"># separate node (self.Core.RoCEv2Engine), not a child of the server.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">RoCEv2Server</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;RoCEv2&#39;</span><span class="p">,</span> <span class="n">rocev2Cfg</span><span class="o">=</span><span class="n">rocev2Cfg</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">RoCEv2Server</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'RoCEv2'</span><span class="p">,</span> <span class="n">rocev2Cfg</span><span class="o">=</span><span class="n">rocev2Cfg</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RoCEv2</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -293,8 +293,8 @@ and host sides cannot drift on <code class="docutils literal notranslate"><span 
 <span class="c1"># Construct with the two cfg bundles (mirrors rocev2PrbsTest.py):</span>
 <span class="n">root</span> <span class="o">=</span> <span class="n">MyRoot</span><span class="p">(</span>
     <span class="n">rocev2Cfg</span> <span class="o">=</span> <span class="n">RoCEv2ServerCfg</span><span class="p">(</span>
-        <span class="n">ip</span>         <span class="o">=</span> <span class="s1">&#39;192.168.2.10&#39;</span><span class="p">,</span>   <span class="c1"># FPGA IP</span>
-        <span class="n">deviceName</span> <span class="o">=</span> <span class="s1">&#39;mlx5_0&#39;</span><span class="p">,</span>          <span class="c1"># HW NIC (&#39;rxe0&#39; for SoftRoCE)</span>
+        <span class="n">ip</span>         <span class="o">=</span> <span class="s1">'192.168.2.10'</span><span class="p">,</span>   <span class="c1"># FPGA IP</span>
+        <span class="n">deviceName</span> <span class="o">=</span> <span class="s1">'mlx5_0'</span><span class="p">,</span>          <span class="c1"># HW NIC ('rxe0' for SoftRoCE)</span>
         <span class="n">gidIndex</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>                <span class="c1"># auto-detect the RoCE v2 IPv4 GID</span>
     <span class="p">),</span>
     <span class="n">transportCfg</span> <span class="o">=</span> <span class="n">RoCEv2TransportCfg</span><span class="p">(</span>  <span class="c1"># proven acceptance-gate defaults</span>
