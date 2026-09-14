@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Server &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
+  <title>Server &mdash; Rogue v6.15.0-34-gd7f317b6b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=87065462"></script>
+      <script src="../../../../_static/documentation_options.js?v=4318a8c9"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -153,6 +153,11 @@ calls.</p></li>
 <li><p>An ibverbs failure inside <code class="docutils literal notranslate"><span class="pre">postRecvWr()</span></code> is caught inside the poll
 thread; the thread logs the error and exits cleanly instead of
 escaping the thread entry point and triggering <code class="docutils literal notranslate"><span class="pre">std::terminate</span></code>.</p></li>
+<li><p>Before calling <code class="docutils literal notranslate"><span class="pre">stop()</span></code>, callers must quiesce <code class="docutils literal notranslate"><span class="pre">completeConnection()</span></code>
+and other public operations that use the Server’s ibverbs resources.
+Deferred returns from zero-copy buffers already issued by the Server may
+overlap <code class="docutils literal notranslate"><span class="pre">stop()</span></code>; their receive-WR re-posts are serialized against QP/MR
+teardown internally.</p></li>
 </ul>
 </section>
 <section id="python-binding">
@@ -207,18 +212,29 @@ are released before the throw propagates.</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26ServerD0Ev">
 <span id="_CPPv3N5rogue9protocols6rocev26ServerD0Ev"></span><span id="_CPPv2N5rogue9protocols6rocev26ServerD0Ev"></span><span id="rogue::protocols::rocev2::Server::~Server"></span><span class="sig-name descname"><span class="n"><span class="pre">~Server</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26ServerD0Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">stop()</span></code>; <code class="docutils literal notranslate"><span class="pre">stop()</span></code> releases the slab MR and CQ/QP
-resources, and the inherited <code class="docutils literal notranslate"><span class="pre">Core</span></code> destructor releases the PD
-and ibverbs context.</p>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">stop()</span></code> to release the CQ/QP and MR resources, then frees
+the RX slab <strong>last</strong>. The slab is deliberately freed here rather than
+in <code class="docutils literal notranslate"><span class="pre">stop()</span></code>: it is this <code class="docutils literal notranslate"><span class="pre">Pool</span></code>’s buffer backing, and every
+zero-copy <code class="docutils literal notranslate"><span class="pre">Buffer</span></code> handed downstream holds a <code class="docutils literal notranslate"><span class="pre">shared_ptr</span></code> to this
+<code class="docutils literal notranslate"><span class="pre">Server</span></code>, so the destructor cannot run until the last outstanding
+frame is released — the slab is therefore never freed while a
+downstream frame still references it. The inherited <code class="docutils literal notranslate"><span class="pre">Core</span></code>
+destructor then releases the PD and ibverbs context.</p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server4stopEv">
 <span id="_CPPv3N5rogue9protocols6rocev26Server4stopEv"></span><span id="_CPPv2N5rogue9protocols6rocev26Server4stopEv"></span><span id="rogue::protocols::rocev2::Server::stop"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server4stopEv" title="Link to this definition"></a><br /></dt>
 <dd><p>Signals the receive thread to exit, joins and deletes it, then
-releases the ibverbs resources owned by <code class="docutils literal notranslate"><span class="pre">Server</span></code>: destroys the
-QP and CQ, deregisters the MR, and frees the slab. Idempotent —
-safe to call multiple times (also called by <code class="docutils literal notranslate"><span class="pre">~Server()</span></code>).</p>
+releases the external ibverbs resources owned by <code class="docutils literal notranslate"><span class="pre">Server</span></code>: destroys
+the QP and CQ and deregisters the MR. Does <strong>not</strong> free the RX slab —
+that is the <code class="docutils literal notranslate"><span class="pre">Pool</span></code> buffer backing and is freed by <code class="docutils literal notranslate"><span class="pre">~Server()</span></code> (see
+above), so a zero-copy <code class="docutils literal notranslate"><span class="pre">Buffer</span></code> still held downstream is never
+stranded. Idempotent — safe to call multiple times (also called by
+<code class="docutils literal notranslate"><span class="pre">~Server()</span></code>). Callers must first quiesce <code class="docutils literal notranslate"><span class="pre">completeConnection()</span></code> and
+other public ibverbs-resource operations. Deferred zero-copy buffer
+returns may overlap <code class="docutils literal notranslate"><span class="pre">stop()</span></code> and are serialized internally against
+destruction of the QP and MR.</p>
 </dd></dl>
 
 <dl class="cpp function">
@@ -236,7 +252,8 @@ safe to call multiple times (also called by <code class="docutils literal notran
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server18completeConnectionE8uint32_t8uint32_t8uint32_t8uint32_t">
 <span id="_CPPv3N5rogue9protocols6rocev26Server18completeConnectionE8uint32_t8uint32_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue9protocols6rocev26Server18completeConnectionE8uint32_t8uint32_t8uint32_t8uint32_t"></span><span id="rogue::protocols::rocev2::Server::completeConnection__uint32_t.uint32_t.uint32_t.uint32_t"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">completeConnection</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fpgaQpn</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fpgaRqPsn</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pmtu</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">5</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">minRnrTimer</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server18completeConnectionE8uint32_t8uint32_t8uint32_t8uint32_t" title="Link to this definition"></a><br /></dt>
 <dd><p>Transitions the QP from <code class="docutils literal notranslate"><span class="pre">INIT</span></code> to <code class="docutils literal notranslate"><span class="pre">RTR</span></code> and then <code class="docutils literal notranslate"><span class="pre">RTS</span></code> using
-the FPGA’s QPN and RQ PSN.</p>
+the FPGA’s QPN and RQ PSN. Single-use. Throws <code class="docutils literal notranslate"><span class="pre">rogue::GeneralError</span></code>
+if called after <code class="docutils literal notranslate"><span class="pre">stop()</span></code> has released the QP and MR.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

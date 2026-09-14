@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Server &mdash; Rogue v6.15.0-24-gf286e7b7b documentation</title>
+  <title>Server &mdash; Rogue v6.15.0-34-gd7f317b6b documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=87065462"></script>
+      <script src="../../../../../_static/documentation_options.js?v=4318a8c9"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -245,7 +245,8 @@
 <dt class="sig sig-object py" id="rogue.protocols.rocev2.Server.stop">
 <span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rocev2.Server.stop" title="Link to this definition"></a></dt>
 <dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rocev2/server.html#_CPPv4N5rogue9protocols6rocev26Server4stopEv" title="rogue::protocols::rocev2::Server::stop"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rocev2::Server::stop()</span></code></a></p>
-<p>No binding docstring provided.</p>
+<p>Stops the receive thread and releases external ibverbs resources.</p>
+<p>Before calling <code class="docutils literal notranslate"><span class="pre">stop()</span></code>, callers must ensure that <code class="docutils literal notranslate"><span class="pre">completeConnection()</span></code> and any other public operations using the Server’s ibverbs resources have completed and that no new ones can begin. Deferred returns from previously issued zero-copy buffers may overlap <code class="docutils literal notranslate"><span class="pre">stop()</span></code>; their receive-WR re-posts are serialized against QP/MR teardown internally. The RX slab remains valid until destruction so retained zero-copy buffers do not reference freed memory after <code class="docutils literal notranslate"><span class="pre">stop()</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
