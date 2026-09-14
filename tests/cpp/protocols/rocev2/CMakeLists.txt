@@ -19,3 +19,16 @@ rogue_add_cpp_test(rogue-cpp-rocev2
    LIBRARIES
       ibverbs
 )
+
+# Isolated in its own binary: on a buggy (unpatched) build this test provokes a
+# genuine use-after-free (SIGSEGV) at the teardown read, so keeping it separate
+# means a regression here cannot abort the other rocev2 cpp cases.
+rogue_add_cpp_test(rogue-cpp-rocev2-teardown
+   SOURCES
+      test_rocev2_teardown.cpp
+   LABELS
+      cpp-rocev2
+      requires-python
+   LIBRARIES
+      ibverbs
+)
