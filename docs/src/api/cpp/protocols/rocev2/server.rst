@@ -108,7 +108,8 @@ Class Reference
    .. cpp:function:: void completeConnection(uint32_t fpgaQpn, uint32_t fpgaRqPsn, uint32_t pmtu = 5, uint32_t minRnrTimer = 1)
 
       Transitions the QP from ``INIT`` to ``RTR`` and then ``RTS`` using
-      the FPGA's QPN and RQ PSN.
+      the FPGA's QPN and RQ PSN. Single-use. Throws ``rogue::GeneralError``
+      if called after ``stop()`` has released the QP and MR.
 
       :param fpgaQpn: FPGA QP number (24-bit)
       :param fpgaRqPsn: FPGA receive-queue starting PSN

@@ -123,7 +123,11 @@ class Server : public rogue::protocols::rocev2::Core,
     // -----------------------------------------------------------------------
     // Zero-copy hook — called by Buffer::~Buffer() when the last downstream
     // reference to a frame is released.  Re-posts the slab slot to the QP.
-    // The slot index is encoded in the lower 24 bits of meta.
+    // The slot index is encoded in the lower 24 bits of meta.  May run
+    // concurrently with stop(): postRecvWr() validates the QP and MR and posts
+    // the WR under resourcesMtx_, the same lock cleanupResources() holds while
+    // destroying them, so the re-post either lands before teardown or is
+    // skipped.
     // -----------------------------------------------------------------------
     void retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize) override;
 
@@ -160,6 +164,10 @@ class Server : public rogue::protocols::rocev2::Core,
 
     void setFpgaGid(const std::string& gidBytes);
 
+    // Single-use bring-up: moves the QP INIT -> RTR -> RTS and starts the
+    // receive thread.  Throws rogue::GeneralError if called after stop() has
+    // released the QP and MR.
+    //
     // minRnrTimer: IB spec RNR timer code embedded in RNR NAK packets.
     //   1=0.01ms  14=1ms  18=4ms  22=16ms  31=491ms
     void completeConnection(uint32_t fpgaQpn,

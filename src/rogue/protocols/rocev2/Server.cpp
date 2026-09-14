@@ -366,6 +366,16 @@ void rpr::Server::completeConnection(uint32_t fpgaQpn, uint32_t fpgaRqPsn,
     // held.  Mirrors the GIL handling in AxiStreamDma's construction/bring-up.
     rogue::GilRelease noGil;
 
+    // Reject use after stop() before touching the QP.  stop() deliberately keeps
+    // slab_ alive so retained zero-copy buffers stay valid, but it destroys the
+    // QP and deregisters the MR, so every ibverbs call below would operate on a
+    // released resource.  Fail fast with a lifecycle error rather than relying on
+    // the pre-post loop to surface it as an out-of-resources failure, mirroring
+    // the entry guards in AxiStreamDma::acceptReq() / acceptFrame().
+    if (!qp_ || !mr_)
+        throw(rogue::GeneralError("rocev2::Server::completeConnection",
+                                  "instance has been stopped or did not finish construction"));
+
     // Single-use: a second call would reassign thread_ and orphan the
     // original std::thread.  Real misuse would also be caught by
     // ibv_modify_qp rejecting INIT→RTR when the QP is already in RTS,
@@ -540,12 +550,21 @@ void rpr::Server::retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize) {
 
     log_->debug("retBuffer: re-posting slot=%u", slot);
 
-    if (threadEn_.load()) {
-        try {
-            postRecvWr(slot);
-        } catch (...) {
-            // Swallow errors during shutdown
-        }
+    // Re-post only while the QP and MR are still registered.  That condition is
+    // evaluated inside postRecvWr() under resourcesMtx_, together with the
+    // ibv_post_recv() call itself, so a return that overlaps stop() either
+    // completes its re-post before cleanupResources() destroys the QP or throws
+    // because the resources are already gone — it can never post to a QP that is
+    // being destroyed.  Deliberately NOT gated on threadEn_ here: that read would
+    // be outside the mutex and is not what makes the re-post safe.  Mirrors
+    // AxiStreamDma::retBuffer(), which likewise validates its descriptor inside
+    // the lock that stop() takes to close it.
+    try {
+        postRecvWr(slot);
+    } catch (...) {
+        // A failed re-post only forfeits one receive credit, and after stop()
+        // there is no consumer for it.  Never propagate: retBuffer() runs from
+        // Buffer::~Buffer().
     }
 
     decCounter(rawSize);
@@ -803,14 +822,15 @@ void rpr::Server::stop() {
         thread_ = nullptr;
     }
     // Release the external ibverbs resources now — QP/CQ/MR(dereg)/comp-channel
-    // and the wake pipe — mirroring AxiStreamDma::stop(), which closes its
-    // per-instance fd while leaving zero-copy backing memory alive until
-    // destruction.  The RX slab is this Pool's buffer backing, and zero-copy
-    // Buffers handed downstream still point into it.  Per the base Pool contract
-    // (ris::Pool::~Pool() frees its buffer memory at destruction, and every
-    // Buffer holds a shared_ptr to its Pool), the slab's lifetime is the Server
-    // object's; it is freed in ~Server (below), after the last outstanding Buffer
-    // has released the Server.
+    // and the wake pipe.  The RX slab is NOT released here: it is this Pool's
+    // buffer backing and zero-copy Buffers handed downstream still point into
+    // it.  The governing rule is the base Pool contract — ris::Pool::~Pool()
+    // frees its buffer memory at destruction, and every Buffer holds a
+    // shared_ptr to its Pool — so the slab's lifetime is the Server object's.
+    // It is freed in ~Server (below), after the last outstanding Buffer has
+    // released the Server.  AxiStreamDma::stop() now follows the same split
+    // (see #1277): it closes its per-instance descriptor while leaving the
+    // shared zero-copy mapping alive until destruction.
     cleanupResources();
 }
 

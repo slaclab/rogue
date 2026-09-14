@@ -53,6 +53,7 @@
 
 #include "doctest/doctest.h"
 
+#include "rogue/GeneralError.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameIterator.h"
 #include "rogue/interfaces/stream/Slave.h"
@@ -475,6 +476,25 @@ TEST_CASE("rocev2 Server preserves zero-copy lifetime and serializes returns wit
     CHECK(returnedFrames.empty());
     if (stopError) std::rethrow_exception(stopError);
     if (returnError) std::rethrow_exception(returnError);
+
+    // stop() released the QP and MR, so bring-up must fail fast with a clean
+    // lifecycle error raised by completeConnection() itself.  Asserting the
+    // reporting source (not just "it threw") is what distinguishes the entry
+    // guard from the fallback: without it the call falls through to the
+    // recv-WR pre-post loop and the error surfaces from postRecvWr() instead,
+    // after ibverbs work has already been attempted on destroyed resources.
+    bool completeAfterStopThrew = false;
+    try {
+        server->completeConnection(client.qp->qp_num, kClientSqPsn, pmtu, kMinRnrTimer);
+    } catch (const rogue::GeneralError& e) {
+        completeAfterStopThrew = true;
+        CHECK(std::string(e.what()).find("completeConnection") != std::string::npos);
+    }
+    CHECK(completeAfterStopThrew);
+
+    // stop() is idempotent: a second call must be a no-op, not a double free of
+    // the QP/CQ/MR or a second join of the already-deleted receive thread.
+    CHECK_NOTHROW(server->stop());
 
     // TEARDOWN completed while `frame` remains held.  On the buggy build,
     // Server::stop() -> cleanupResources() free()s the slab that `frame` still
