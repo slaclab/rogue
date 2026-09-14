@@ -53,6 +53,7 @@ function(rogue_add_cpp_test target)
 endfunction()
 
 add_subdirectory(core)
+add_subdirectory(hardware)
 add_subdirectory(memory)
 add_subdirectory(stream)
 add_subdirectory(protocols)
