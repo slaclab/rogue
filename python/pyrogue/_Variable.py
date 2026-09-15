@@ -877,7 +877,7 @@ class BaseVariable(pr.Node):
         """
         try:
             if not isinstance(sValue,str):
-                return sValue
+                value = sValue
             elif self.nativeType is np.ndarray:
                 return np.array(ast.literal_eval(sValue),self._ndType)
             elif self.disp == 'enum':
@@ -885,7 +885,14 @@ class BaseVariable(pr.Node):
             elif self.nativeType is str:
                 return sValue
             else:
-                return ast.literal_eval(sValue)
+                value = ast.literal_eval(sValue)
+
+            if self.nativeType is float:
+                if isinstance(value, bool):
+                    raise ValueError('Boolean display values are not valid for float variables')
+                return float(value)
+
+            return value
 
         except Exception as e:
             msg = "Invalid value {} for variable {} with type {}: {}".format(sValue,self.name,self.nativeType,e)
