@@ -188,6 +188,9 @@ class Root(pr.Device):
         Enable polling on start.
     maxLog : int, optional (default = 1000)
         Maximum log entries to retain.
+    defaultVerify : bool, optional (default = True)
+        Default write-verification setting inherited by RemoteVariables unless
+        a Device or the RemoteVariable supplies an explicit override.
     unifyLogs : bool, optional (default = False)
         Forward Rogue C++ logs into Python logging and disable the native Rogue
         stdout sink to avoid duplicate output in mixed PyRogue applications.
@@ -211,6 +214,7 @@ class Root(pr.Device):
                  initWrite: bool = False,
                  pollEn: bool = True,
                  maxLog: int = 1000,
+                 defaultVerify: bool = True,
                  unifyLogs: bool = False) -> None:
         """Initialize the root node, workers, and built-in variables/commands."""
         rogue.interfaces.stream.Master.__init__(self)
@@ -254,7 +258,13 @@ class Root(pr.Device):
         self._updateTrack  = {}
 
         # Init
-        pr.Device.__init__(self, name=name, description=description, expand=expand)
+        pr.Device.__init__(
+            self,
+            name=name,
+            description=description,
+            expand=expand,
+            defaultVerify=defaultVerify,
+        )
 
         # Variables
         self.add(pr.LocalVariable(name='RogueVersion', value=rogue.Version.current(), mode='RO', hidden=False,

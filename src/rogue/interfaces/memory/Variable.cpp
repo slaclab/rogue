@@ -109,6 +109,7 @@ void rim::Variable::setup_python() {
         .def("_updatePath", &rim::Variable::updatePath)
         .def("_overlapEn", &rim::Variable::overlapEn)
         .def("_verifyEn", &rim::Variable::verifyEn)
+        .def("_setVerifyEn", &rim::VariableWrap::setVerifyEn)
         .def("_bitOffset", &rim::VariableWrap::bitOffset)
         .def("_bitSize", &rim::VariableWrap::bitSize)
         .def("_get", &rim::VariableWrap::get)
