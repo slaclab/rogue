@@ -510,7 +510,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         # Create monitoring thread
         self._monEnable = True
-        self._monThread = threading.Thread(target=self._monWorker)
+        self._monThread = threading.Thread(target=self._monWorker, daemon=True)
         self._monThread.start()
 
     def _removeFromCache(self) -> None:

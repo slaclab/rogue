@@ -19,6 +19,8 @@ from pyrogue.pydm.widgets.data_writer          import DataWriter
 from pyrogue.pydm.widgets.root_control         import RootControl
 from pyrogue.pydm.widgets.run_control          import RunControl
 from pyrogue.pydm.widgets.system_log           import SystemLog
+from pyrogue.pydm.widgets.terminal             import LinuxTerminal, TerminalPanel
+from pyrogue.pydm.widgets.ipython              import IPythonPanel
 from pyrogue.pydm.widgets.system_window        import SystemWindow
 from pyrogue.pydm.widgets.debug_tree           import DebugTree
 from pyrogue.pydm.widgets.process              import Process
