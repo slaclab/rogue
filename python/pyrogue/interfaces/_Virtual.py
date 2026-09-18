@@ -13,6 +13,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import atexit
 import os
 import pyrogue as pr
 import rogue.interfaces
@@ -317,6 +318,68 @@ class VirtualNode(pr.Node):
             func(self.path,val)
 
 
+_shutdownHookRegistered = False
+
+
+def _stopCachedClients() -> None:
+    """Stop every live ``VirtualClient`` before the interpreter tears down.
+
+    Walks ``VirtualClient.ClientCache`` rather than holding per-instance
+    references: ``stop()`` removes its own cache entry, so clients the caller
+    already stopped drop out of this sweep on their own. The list copy is
+    required because ``stop()`` mutates the cache while we iterate.
+
+    Exceptions are swallowed because this runs during interpreter shutdown,
+    where a raising hook only adds noise to an exit that is already ending.
+    """
+    for client in list(VirtualClient.ClientCache.values()):
+        try:
+            client.stop()
+        except Exception:
+            pass
+
+
+def _registerShutdownHook() -> None:
+    """Arrange for ``_stopCachedClients`` to run before threads are joined.
+
+    CPython runs ``threading._shutdown()`` -- which joins every non-daemon
+    thread -- *before* ``atexit`` handlers. An ``atexit`` hook that would end
+    the monitor thread is therefore queued behind the very join it is meant to
+    release, which is why registering ``stop`` with ``atexit`` does not cure
+    the hang. ``threading._register_atexit`` is the only hook that runs early
+    enough. It is a private CPython name, so rogue holds that dependency here
+    rather than pushing it onto every caller.
+
+    ``daemon=True`` on the monitor thread is not sufficient by itself: it
+    removes the guaranteed hang but leaves an intermittent ``SIGABRT`` at exit,
+    because quiescing the Python loop while the C++ ``ZmqClient`` is still live
+    can unwind ``pthread_exit`` through C++ frames. Running the full ``stop()``,
+    which tears the native client down, is what makes shutdown clean.
+
+    Registered once per process; ``_register_atexit`` offers no way to
+    unregister, so a per-instance hook would strand one callback and one dead
+    client reference per connect/stop cycle.
+    """
+    global _shutdownHookRegistered
+
+    if _shutdownHookRegistered:
+        return
+
+    register = getattr(threading, '_register_atexit', None)
+
+    if register is not None:
+        try:
+            register(_stopCachedClients)
+        except RuntimeError:
+            # Raised when interpreter shutdown has already begun; the public
+            # hook is the only one left that can still accept a callback.
+            atexit.register(_stopCachedClients)
+    else:
+        atexit.register(_stopCachedClients)
+
+    _shutdownHookRegistered = True
+
+
 class VirtualClient(rogue.interfaces.ZmqClient):
     """
     A full featured client interface for Rogue. This can be used in
@@ -325,6 +388,12 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     This class ues a custom factory ensuring that only one instance of this
     class is created in a python script for a given remote connection.
+
+    Calling ``stop()`` is optional: any client still live at interpreter
+    shutdown is torn down automatically, so a script that simply constructs a
+    client and ends still exits. Callers that want the connection released
+    earlier, or that need the monitor's dead-server detection to stop at a
+    specific point, should still call ``stop()`` explicitly.
 
     Parameters
     ----------
@@ -508,10 +577,14 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._link  = True
         self._ltime = self._root.Time.value()
 
-        # Create monitoring thread
+        # Create monitoring thread. daemon=True keeps the interpreter from
+        # blocking on a join of _monWorker, which loops until _monEnable is
+        # cleared; the shutdown hook then runs the full stop() so the C++
+        # client is torn down instead of being killed mid-call.
         self._monEnable = True
-        self._monThread = threading.Thread(target=self._monWorker)
+        self._monThread = threading.Thread(target=self._monWorker, daemon=True)
         self._monThread.start()
+        _registerShutdownHook()
 
     def _removeFromCache(self) -> None:
         """Remove this client from the shared cache when it is no longer valid."""
