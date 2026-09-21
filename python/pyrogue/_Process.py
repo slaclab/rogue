@@ -36,6 +36,9 @@ class Process(pr.Device):
         Progress may be updated either as a direct fractional value with
         :meth:`setProgress`, or as a step-based ratio using
         :meth:`setTotalSteps`, :meth:`setStep`, and :meth:`incrementSteps`.
+        On return, a completed run reports ``Done`` and full progress. If
+        stopped, progress is preserved and the message becomes ``Stopped``,
+        unless it already starts with ``Stopped`` or ``Error:``.
     **kwargs : Any
         Additional arguments forwarded to ``Device``.
     """
@@ -318,8 +321,11 @@ class Process(pr.Device):
             if self._retVar is not None:
                 self._retVar.set(ret)
 
-            self.Message.setDisp("Done")
-            self.setProgress(1.0)
+            if self._runEn:
+                self.Message.setDisp("Done")
+                self.setProgress(1.0)
+            elif not self.Message.value().startswith(("Stopped", "Error:")):
+                self.Message.setDisp("Stopped")
 
         # No function run example process
         else:
@@ -332,4 +338,4 @@ class Process(pr.Device):
                 time.sleep(1)
                 self.setStep(i+1)
                 self.Message.setDisp(f"Running for {i} seconds.")
-            self.Message.setDisp("Done")
+            self.Message.setDisp("Done" if self._runEn else "Stopped")

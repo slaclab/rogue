@@ -176,6 +176,15 @@ calling the object directly with an optional argument:
 When an argument is supplied and ``argVariable`` exists, the argument is first
 written to that Variable before the background thread starts.
 
+The ``Stop`` command requests a cooperative stop and waits for the worker to
+exit. A callback should check ``dev._runEn`` and return when it becomes false.
+When a supplied ``function`` returns normally, the base class reports ``Done``
+and sets ``Progress`` to ``1.0``. If a stop was requested, it preserves the
+current progress and reports ``Stopped``, retaining any callback message that
+already begins with ``Stopped`` or ``Error:``. The callback's return value is
+published in either case. Subclasses that override ``_process()`` manage their
+own terminal status and progress.
+
 Design Guidance
 ===============
 

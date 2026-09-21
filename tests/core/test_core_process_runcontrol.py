@@ -11,6 +11,8 @@
 import threading
 import time
 
+import pytest
+
 import pyrogue as pr
 import pyrogue._Process as process_module
 
@@ -171,6 +173,41 @@ def test_process_error_path_sets_message(wait_until):
         assert root.Proc.Message.value() == "Stopped after error!"
 
 
+@pytest.mark.parametrize("message, expected", [
+    (None, "Stopped"),
+    ("Finishing step", "Stopped"),
+    ("Stopped", "Stopped"),
+    ("Stopped by user", "Stopped by user"),
+    ("Error: acquisition interrupted", "Error: acquisition interrupted"),
+])
+def test_process_stop_preserves_progress_and_specific_message(wait_until, message, expected):
+    started = threading.Event()
+
+    def run_process(*, dev):
+        dev.setProgress(0.25)
+        started.set()
+        assert wait_until(lambda: not dev._runEn)
+        if message is not None:
+            dev.Message.setDisp(message)
+        return "partial result"
+
+    root = pr.Root(name="root", pollEn=False)
+    root.add(pr.Process(
+        name="Proc",
+        function=run_process,
+        returnVariable=pr.LocalVariable(name="Result", value=""),
+    ))
+    with root:
+        root.Proc.Start()
+        assert started.wait(timeout=2.0)
+        root.Proc.Stop()
+
+        assert root.Proc.Running.value() is False
+        assert root.Proc.Message.value() == expected
+        assert root.Proc.Progress.value() == 0.25
+        assert root.Proc.Result.value() == "partial result"
+
+
 def test_process_call_sets_argument_and_progress_helpers():
     with ProcessRoot() as root:
         root.ArgProc(17)
@@ -305,7 +342,7 @@ def test_process_stop_stops_default_loop(monkeypatch):
     proc._runEn = True
     proc._process()
 
-    assert proc.Message.value() == "Done"
+    assert proc.Message.value() == "Stopped"
     assert proc.Step.value() == 1
     assert proc.Progress.value() == 0.01
     assert call_count["count"] == 1
