@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import sys
 import threading
-import datetime
+import time
 import itertools
 import heapq
 from typing import Any, Iterator
@@ -26,12 +26,17 @@ import rogue.interfaces.memory
 
 
 class PollQueueEntry(object):
-    """Data class for a poll queue entry."""
+    """Data class for a poll queue entry.
+
+    ``readTime`` and ``interval`` are monotonic-clock seconds as returned by
+    ``time.monotonic()``, not wall-clock timestamps. Scheduling must not be
+    perturbed by an NTP correction or a manual clock change.
+    """
     def __init__(
         self,
-        readTime: datetime.datetime,
+        readTime: float,
         count: int,
-        interval: datetime.timedelta,
+        interval: float,
         block: Any,
     ) -> None:
         """Initialize a poll-scheduler queue entry."""
@@ -94,12 +99,10 @@ class PollQueue(object):
         None
         """
         with self._condLock:
-            timedelta = datetime.timedelta(seconds=interval)
-            # new entries are always polled first immediately
-            # (rounded up to the next second)
-            readTime = datetime.datetime.now()
-            readTime = readTime.replace(microsecond=0)
-            entry = PollQueueEntry(readTime, next(self._counter), timedelta, block)
+            # New entries are always polled immediately: a readTime of "now"
+            # on the monotonic clock is already due.
+            readTime = time.monotonic()
+            entry = PollQueueEntry(readTime, next(self._counter), float(interval), block)
             self._entries[block] = entry
             heapq.heappush(self._pq, entry)
             # Wake up the thread
@@ -142,7 +145,7 @@ class PollQueue(object):
                 blockVars = [v for v in var._block.variables if v.pollInterval > 0]
                 if len(blockVars) > 0:
                     minVar = min(blockVars, key=lambda x: x.pollInterval)
-                    newInterval = datetime.timedelta(seconds=minVar.pollInterval)
+                    newInterval = float(minVar.pollInterval)
                     # If block interval has changed, invalidate the current entry for the block
                     # and re-add it with the new interval
                     if newInterval != oldInterval:
@@ -174,9 +177,11 @@ class PollQueue(object):
             else:
                 # Sleep until the top entry is ready to be polled
                 # Or a new entry is added by updatePollInterval
-                now = datetime.datetime.now()
+                now = time.monotonic()
                 readTime = self.peek().readTime
-                waitTime = (readTime - now).total_seconds()
+                # Clamp: an already-due entry yields a negative delta, which
+                # Condition.wait() rejects.
+                waitTime = max(0.0, readTime - now)
                 with self._condLock:
                     self._log.debug("Poll thread sleeping for %s", waitTime)
                     self._condLock.wait(waitTime)
@@ -197,7 +202,7 @@ class PollQueue(object):
                 with self._root.updateGroup():
 
                     # Pop all timed out entries from the queue
-                    now = datetime.datetime.now()
+                    now = time.monotonic()
                     blockEntries = []
                     for entry in self._expiredEntries(now):
                         self._log.debug("Polling Block %s", entry.block.path)
@@ -220,25 +225,25 @@ class PollQueue(object):
                             pr.logException(self._log,e)
 
 
-    def _expiredEntries(self, time: datetime.datetime | None = None) -> Iterator[PollQueueEntry]:
+    def _expiredEntries(self, cutoff: float | None = None) -> Iterator[PollQueueEntry]:
         """
         An iterator of all entries that expire by a given time.
-        Use datetime.datetime.now() if no time provided.
+        Use time.monotonic() if no cutoff provided.
         Each entry is popped from the queue before being yielded by the iterator
 
         Parameters
         ----------
-        time : datetime.datetime, optional
-            Time cutoff to use; defaults to ``datetime.datetime.now()``.
+        cutoff : float, optional
+            Monotonic-clock cutoff in seconds; defaults to ``time.monotonic()``.
 
         Returns
         -------
         Iterator of expired entries
         """
         with self._condLock:
-            if time is None:
-                time = datetime.datetime.now()
-            while self.empty() is False and self.peek().readTime <= time:
+            if cutoff is None:
+                cutoff = time.monotonic()
+            while self.empty() is False and self.peek().readTime <= cutoff:
                 entry = heapq.heappop(self._pq)
                 if entry.block is not None:
                     yield entry
