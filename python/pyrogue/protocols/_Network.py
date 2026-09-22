@@ -354,13 +354,13 @@ class UdpRssiPack(pr.Device):
         self._rssi._start()
 
         if self._wait and not self._server:
-            curr = int(time.time())
+            curr = int(time.monotonic())
             last = curr
             cnt = 0
 
             while not self._rssi.getOpen():
                 time.sleep(.0001)
-                curr = int(time.time())
+                curr = int(time.monotonic())
                 if last != curr:
                     last = curr
 

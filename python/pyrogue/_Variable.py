@@ -111,13 +111,13 @@ class VariableWaitClass(object):
 
     def wait(self) -> bool:
         """Wait until the condition is met or timeout occurs."""
-        start  = time.time()
+        start  = time.monotonic()
 
         with self._cv:
             ret = self._check()
 
             # Run until timeout or all conditions have been met
-            while (not ret) and ((self._timeout == 0) or ((time.time()-start) < self._timeout)):
+            while (not ret) and ((self._timeout == 0) or ((time.monotonic()-start) < self._timeout)):
                 self._cv.wait(0.5)
                 ret = self._check()
 
