@@ -455,7 +455,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._monitors = []
         self._root  = None
         self._link  = False
-        self._ltime = time.time()
+        self._ltime = time.monotonic()
         self._reqLock = threading.Lock()
         self._reqCount = 0
         self._reqSince = None
@@ -504,9 +504,12 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         setattr(self,self._root.name,self._root)
 
-        # Link tracking
+        # Link tracking. Seed the activity baseline from the local monotonic
+        # clock, not the server's Root.Time: _ltime is only ever compared
+        # against local readings, so a remote epoch value mixed in host-to-host
+        # clock skew. The handshake just completed, so "now" is the baseline.
         self._link  = True
-        self._ltime = self._root.Time.value()
+        self._ltime = time.monotonic()
 
         # Create monitoring thread
         self._monEnable = True
@@ -616,7 +619,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         """Record that a request/reply transaction is in flight."""
         with self._reqLock:
             if self._reqCount == 0:
-                self._reqSince = time.time()
+                self._reqSince = time.monotonic()
             self._reqCount += 1
 
     def _requestDone(self, success: bool) -> None:
@@ -629,7 +632,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             if self._reqCount == 0:
                 self._reqSince = None
             if success:
-                self._ltime = time.time()
+                self._ltime = time.monotonic()
                 if not self._link:
                     self._link = True
                     notify = True
@@ -649,7 +652,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         notify_link: bool | None = None
 
         with self._reqLock:
-            now = time.time()
+            now = time.monotonic()
             delta = now - self._ltime
             link = self._link
             reqPending = self._reqCount > 0
@@ -731,7 +734,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         """Process variable update data from the server."""
         # Publishes count as link activity; mutate _ltime under _reqLock.
         with self._reqLock:
-            self._ltime = time.time()
+            self._ltime = time.monotonic()
 
         if self._root is None:
             return
