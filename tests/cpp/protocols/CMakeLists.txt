@@ -5,5 +5,6 @@ if (NOT NO_PYTHON AND CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT NO_ROCEV2)
 endif()
 
 if (NOT NO_PYTHON)
+   add_subdirectory(srp)
    add_subdirectory(xilinx)
 endif()
