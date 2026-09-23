@@ -44,9 +44,9 @@ at the top. Create ``my_app.py``:
 
 .. code-block:: python
 
-   import pyrogue
+   import pyrogue as pr
 
-   class MyRoot(pyrogue.Root):
+   class MyRoot(pr.Root):
        def __init__(self, **kwargs):
            super().__init__(description='Minimal example root',
                             timeout=2.0, pollEn=True, **kwargs)
@@ -73,10 +73,10 @@ Add the import and the three highlighted lines:
 .. code-block:: python
    :emphasize-lines: 2, 9-11
 
-   import pyrogue
+   import pyrogue as pr
    import rogue.interfaces.memory
 
-   class MyRoot(pyrogue.Root):
+   class MyRoot(pr.Root):
        def __init__(self, **kwargs):
            super().__init__(description='Minimal example root',
                             timeout=2.0, pollEn=True, **kwargs)
@@ -102,20 +102,20 @@ Add this class above ``MyRoot``:
 
 .. code-block:: python
 
-   class MyDevice(pyrogue.Device):
+   class MyDevice(pr.Device):
        def __init__(self, **kwargs):
            super().__init__(description='Minimal register map', **kwargs)
 
-           self.add(pyrogue.RemoteVariable(
+           self.add(pr.RemoteVariable(
                name        = 'ScratchPad',
                description = 'Read/write test register',
                offset      = 0x04,
                bitSize     = 32,
-               base        = pyrogue.UInt,
+               base        = pr.UInt,
                mode        = 'RW',
                disp        = '{:#010x}'))
 
-           self.add(pyrogue.LocalVariable(
+           self.add(pr.LocalVariable(
                name        = 'Doubled',
                mode        = 'RO',
                value       = 0,
@@ -154,8 +154,8 @@ Add the import and, at the end of ``MyRoot.__init__``:
 
 .. code-block:: python
 
-   self._prbsTx = pyrogue.utilities.prbs.PrbsTx(name='PrbsTx')
-   self._prbsRx = pyrogue.utilities.prbs.PrbsRx(name='PrbsRx')
+   self._prbsTx = pr.utilities.prbs.PrbsTx(name='PrbsTx')
+   self._prbsRx = pr.utilities.prbs.PrbsRx(name='PrbsRx')
    self._prbsTx >> self._prbsRx
    self.add(self._prbsTx)
    self.add(self._prbsRx)
@@ -220,30 +220,30 @@ The whole application:
 
    import time
 
-   import pyrogue
+   import pyrogue as pr
    import pyrogue.utilities.prbs
    import rogue.interfaces.memory
 
-   class MyDevice(pyrogue.Device):
+   class MyDevice(pr.Device):
        def __init__(self, **kwargs):
            super().__init__(description='Minimal register map', **kwargs)
 
-           self.add(pyrogue.RemoteVariable(
+           self.add(pr.RemoteVariable(
                name        = 'ScratchPad',
                description = 'Read/write test register',
                offset      = 0x04,
                bitSize     = 32,
-               base        = pyrogue.UInt,
+               base        = pr.UInt,
                mode        = 'RW',
                disp        = '{:#010x}'))
 
-           self.add(pyrogue.LocalVariable(
+           self.add(pr.LocalVariable(
                name        = 'Doubled',
                mode        = 'RO',
                value       = 0,
                localGet    = lambda: self.ScratchPad.value() * 2))
 
-   class MyRoot(pyrogue.Root):
+   class MyRoot(pr.Root):
        def __init__(self, **kwargs):
            super().__init__(description='Minimal example root',
                             timeout=2.0, pollEn=True, **kwargs)
@@ -254,8 +254,8 @@ The whole application:
 
            self.add(MyDevice(name='MyDevice', memBase=sim, offset=0x0))
 
-           self._prbsTx = pyrogue.utilities.prbs.PrbsTx(name='PrbsTx')
-           self._prbsRx = pyrogue.utilities.prbs.PrbsRx(name='PrbsRx')
+           self._prbsTx = pr.utilities.prbs.PrbsTx(name='PrbsTx')
+           self._prbsRx = pr.utilities.prbs.PrbsRx(name='PrbsRx')
            self._prbsTx >> self._prbsRx
            self.add(self._prbsTx)
            self.add(self._prbsRx)
@@ -285,7 +285,7 @@ First, add the server inside ``MyRoot.__init__`` (this also needs
 
 .. code-block:: python
 
-   self.zmqServer = pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=9103)
+   self.zmqServer = pr.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=9103)
    self.addInterface(self.zmqServer)
 
 All three arguments are keyword-only and required. Passing ``port=0`` lets the
@@ -298,7 +298,7 @@ script exits after one second. Replace ``time.sleep(1.0)`` with:
 
 .. code-block:: python
 
-   pyrogue.waitCntrlC()
+   pr.waitCntrlC()
 
 Start the application. It now prints the server details on startup:
 

@@ -19,11 +19,11 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import pyrogue
+import pyrogue as pr
 import rogue.interfaces.memory
 
 
-class CommandDevice(pyrogue.Device):
+class CommandDevice(pr.Device):
     """All three command flavours on one Device.
 
     ``RemoteCommand`` writes to hardware, the ``@self.command`` decorator runs
@@ -34,24 +34,24 @@ class CommandDevice(pyrogue.Device):
     def __init__(self, **kwargs):
         super().__init__(description='Commands demonstration', **kwargs)
 
-        self.add(pyrogue.RemoteVariable(
+        self.add(pr.RemoteVariable(
             name        = 'Control',
             description = 'Control register written by commands',
             offset      = 0x00,
             bitSize     = 32,
-            base        = pyrogue.UInt,
+            base        = pr.UInt,
             mode        = 'RW',
             disp        = '{:#010x}'))
 
         # A RemoteCommand writes a value to an address. ``post()`` fires the
         # write without waiting for a response, which is what you want for a
         # self-clearing trigger bit.
-        self.add(pyrogue.RemoteCommand(
+        self.add(pr.RemoteCommand(
             name        = 'Pulse',
             description = 'Strobe a self-clearing trigger bit',
             offset      = 0x10,
             bitSize     = 1,
-            base        = pyrogue.UInt,
+            base        = pr.UInt,
             function    = lambda cmd: cmd.post(1)))
 
         # The decorator form is the shortest way to attach a procedure that
@@ -62,14 +62,14 @@ class CommandDevice(pyrogue.Device):
 
         # A LocalCommand touches no registers at all. Use it for host-side
         # helpers that report something back.
-        self.add(pyrogue.LocalCommand(
+        self.add(pr.LocalCommand(
             name        = 'Describe',
             description = 'Return a host-side summary string',
             function    = lambda: 'CommandDevice ready',
             retValue    = ''))
 
 
-class PackedDevice(pyrogue.Device):
+class PackedDevice(pr.Device):
     """Three fields sharing one 32-bit register.
 
     Because all three use ``offset=0x00`` and differ only in ``bitOffset``,
@@ -81,17 +81,17 @@ class PackedDevice(pyrogue.Device):
         super().__init__(description='Three fields, one register', **kwargs)
 
         for name, bitOffset in (('Low', 0), ('Middle', 8), ('High', 16)):
-            self.add(pyrogue.RemoteVariable(
+            self.add(pr.RemoteVariable(
                 name      = name,
                 offset    = 0x00,
                 bitSize   = 8,
                 bitOffset = bitOffset,
-                base      = pyrogue.UInt,
+                base      = pr.UInt,
                 mode      = 'RW',
                 disp      = '{:#04x}'))
 
 
-class SpreadDevice(pyrogue.Device):
+class SpreadDevice(pr.Device):
     """The same three fields at separate addresses, for contrast.
 
     Identical API, but each Variable now owns a Block of its own, so the same
@@ -102,16 +102,16 @@ class SpreadDevice(pyrogue.Device):
         super().__init__(description='Three fields, three registers', **kwargs)
 
         for index, name in enumerate(('Low', 'Middle', 'High')):
-            self.add(pyrogue.RemoteVariable(
+            self.add(pr.RemoteVariable(
                 name    = name,
                 offset  = index * 4,
                 bitSize = 8,
-                base    = pyrogue.UInt,
+                base    = pr.UInt,
                 mode    = 'RW',
                 disp    = '{:#04x}'))
 
 
-class GroupDevice(pyrogue.Device):
+class GroupDevice(pr.Device):
     """Variables tagged with Groups so bulk operations can skip them.
 
     Groups are labels, not access control. Bulk operations such as
@@ -122,27 +122,27 @@ class GroupDevice(pyrogue.Device):
     def __init__(self, **kwargs):
         super().__init__(description='Groups demonstration', **kwargs)
 
-        self.add(pyrogue.RemoteVariable(
+        self.add(pr.RemoteVariable(
             name='Saved', offset=0x00, bitSize=32,
-            base=pyrogue.UInt, mode='RW'))
+            base=pr.UInt, mode='RW'))
 
         # 'NoConfig' is the convention for values that should not be captured
         # in a saved configuration -- counters, status, scratch registers.
-        volatile = pyrogue.RemoteVariable(
+        volatile = pr.RemoteVariable(
             name='Volatile', offset=0x04, bitSize=32,
-            base=pyrogue.UInt, mode='RW')
+            base=pr.UInt, mode='RW')
         self.add(volatile)
         volatile.addToGroup('NoConfig')
 
         # 'NoServe' keeps a value out of EPICS and other servers by default.
-        private = pyrogue.RemoteVariable(
+        private = pr.RemoteVariable(
             name='Private', offset=0x08, bitSize=32,
-            base=pyrogue.UInt, mode='RW')
+            base=pr.UInt, mode='RW')
         self.add(private)
         private.addToGroup('NoServe')
 
 
-class TutorialRoot(pyrogue.Root):
+class TutorialRoot(pr.Root):
     """Hosts every Device above against one emulated memory space."""
 
     def __init__(self, **kwargs):

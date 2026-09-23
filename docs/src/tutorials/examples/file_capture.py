@@ -23,14 +23,14 @@ import os
 import tempfile
 import time
 
-import pyrogue
+import pyrogue as pr
 import pyrogue.utilities.fileio
 import pyrogue.utilities.prbs
 import rogue.interfaces.stream
 import rogue.utilities
 
 
-class CaptureRoot(pyrogue.Root):
+class CaptureRoot(pr.Root):
     """PRBS generator -> rate limiter -> file writer.
 
     The ``RateDrop`` stage matters. An unthrottled ``PrbsTx`` saturates the
@@ -42,13 +42,13 @@ class CaptureRoot(pyrogue.Root):
     def __init__(self, period=0.01, **kwargs):
         super().__init__(description='Throttled capture to disk', **kwargs)
 
-        self._prbs = pyrogue.utilities.prbs.PrbsTx(name='PrbsTx')
+        self._prbs = pr.utilities.prbs.PrbsTx(name='PrbsTx')
         self.add(self._prbs)
 
         # True selects time-based dropping; period is in seconds.
         self._rate = rogue.interfaces.stream.RateDrop(True, period)
 
-        self._writer = pyrogue.utilities.fileio.StreamWriter(name='Writer')
+        self._writer = pr.utilities.fileio.StreamWriter(name='Writer')
         self.add(self._writer)
 
         self._prbs >> self._rate >> self._writer.getChannel(0)
@@ -70,7 +70,7 @@ class CaptureRoot(pyrogue.Root):
         return os.path.getsize(path)
 
 
-class CompressedCaptureRoot(pyrogue.Root):
+class CompressedCaptureRoot(pr.Root):
     """The same capture path with compression inserted before the writer.
 
     ``StreamZip`` compresses each frame as it passes. PRBS data is
@@ -82,13 +82,13 @@ class CompressedCaptureRoot(pyrogue.Root):
     def __init__(self, period=0.01, **kwargs):
         super().__init__(description='Compressed capture to disk', **kwargs)
 
-        self._prbs = pyrogue.utilities.prbs.PrbsTx(name='PrbsTx')
+        self._prbs = pr.utilities.prbs.PrbsTx(name='PrbsTx')
         self.add(self._prbs)
 
         self._rate = rogue.interfaces.stream.RateDrop(True, period)
         self._zip = rogue.utilities.StreamZip()
 
-        self._writer = pyrogue.utilities.fileio.StreamWriter(name='Writer')
+        self._writer = pr.utilities.fileio.StreamWriter(name='Writer')
         self.add(self._writer)
 
         self._prbs >> self._rate >> self._zip >> self._writer.getChannel(0)
@@ -109,7 +109,7 @@ def countRecords(path, limit=None):
     ``FileReader`` iterates records rather than raw bytes, so each iteration
     hands back one frame's worth of payload with its channel intact.
     """
-    reader = pyrogue.utilities.fileio.FileReader(path)
+    reader = pr.utilities.fileio.FileReader(path)
     count = 0
     for _ in reader.records():
         count += 1

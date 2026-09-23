@@ -69,7 +69,7 @@ transactions.
            self.addInterface(self.memMap)
 
            # Expose the tree to remote tools.
-           self.zmqServer = pyrogue.interfaces.ZmqServer(
+           self.zmqServer = pr.interfaces.ZmqServer(
                root=self,
                addr='127.0.0.1',
                port=0,

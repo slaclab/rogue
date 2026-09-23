@@ -22,7 +22,7 @@
 
 import time
 
-import pyrogue
+import pyrogue as pr
 import rogue.interfaces.stream
 
 
@@ -50,7 +50,7 @@ class ByteCapture(rogue.interfaces.stream.Slave):
             self.frames.append(bytes(buffer))
 
 
-class BitInverterDevice(pyrogue.Device):
+class BitInverterDevice(pr.Device):
     """Wraps the C++ module so it belongs to a tree.
 
     The C++ object is a stream endpoint, not a Device, so it has no place in a
@@ -63,7 +63,7 @@ class BitInverterDevice(pyrogue.Device):
         super().__init__(description='C++ bit-inverting stream module', **kwargs)
         self._inverter = inverter
 
-        self.add(pyrogue.LocalVariable(
+        self.add(pr.LocalVariable(
             name        = 'Description',
             description = 'What the underlying C++ module does',
             mode        = 'RO',

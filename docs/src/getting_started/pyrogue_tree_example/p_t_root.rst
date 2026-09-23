@@ -25,7 +25,7 @@ Steps:
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
 
         def __init__(self, epics4En=False):
             self._scnt = 0
@@ -33,7 +33,7 @@ Steps:
 
             self._fig = None
             self._ax = None
-            pyrogue.Root.__init__(self,
+            pr.Root.__init__(self,
                                 description="Example Root",
                                 timeout=2.0,
                                 pollEn=True)
@@ -46,7 +46,7 @@ Create a Memory Space Emulator
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
             # Use a memory space emulator
@@ -62,14 +62,14 @@ Add Your Devices
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
             # Add Device
-            self.add(pyrogue.examples.AxiVersion(memBase=sim,
+            self.add(pr.examples.AxiVersion(memBase=sim,
                                                 guiGroup='TestGroup',
                                                 offset=0x0))
-            self.add(pyrogue.examples.LargeDevice(guiGroup='TestGroup'))
+            self.add(pr.examples.LargeDevice(guiGroup='TestGroup'))
 
 
 Configuration Stream
@@ -79,11 +79,11 @@ Configuration Stream
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
             # Create configuration stream
-            stream = pyrogue.interfaces.stream.Variable(root=self)
+            stream = pr.interfaces.stream.Variable(root=self)
 
 
 Add Special Devices
@@ -97,25 +97,25 @@ Add Special Devices
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
             # PRBS Transmitter
-            self._prbsTx = pyrogue.utilities.prbs.PrbsTx()
+            self._prbsTx = pr.utilities.prbs.PrbsTx()
             self.add(self._prbsTx)
 
             # Add Data Writer, configuration goes to channel 1
-            self._fw = pyrogue.utilities.fileio.StreamWriter(configStream={1: stream},rawMode=True)
+            self._fw = pr.utilities.fileio.StreamWriter(configStream={1: stream},rawMode=True)
             self.add(self._fw)
             self._prbsTx >> self._fw.getChannel(0)
 
             # Data Receiver
-            drx = pyrogue.DataReceiver()
+            drx = pr.DataReceiver()
             self._prbsTx >> drx
             self.add(drx)
 
             # Add Run Control
-            self.add(pyrogue.RunControl())
+            self.add(pr.RunControl())
 
 
 Add ZMQServer
@@ -125,11 +125,11 @@ Add ZMQServer
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
             # Add zmq server
-            self.zmqServer = pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)
+            self.zmqServer = pr.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)
             self.addInterface(self.zmqServer)
 
 
@@ -140,13 +140,13 @@ Add Process Controller
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
             # Add process controller
-            p = pyrogue.Process()
-            p.add(pyrogue.LocalVariable(name='Test1',value=''))
-            p.add(pyrogue.LocalVariable(name='Test2',value=''))
+            p = pr.Process()
+            p.add(pr.LocalVariable(name='Test1',value=''))
+            p.add(pr.LocalVariable(name='Test2',value=''))
             self.add(p)
 
 
@@ -158,10 +158,10 @@ Add Linked and Local Variables
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
-            self.add(pyrogue.LocalVariable(
+            self.add(pr.LocalVariable(
                 name = 'TestPlot',
                 mode = 'RO',
                 pollInterval=1.0,
@@ -171,7 +171,7 @@ Add Linked and Local Variables
                 disp='{:1.2f}',
                 value = 0.0))
 
-            self.add(pyrogue.LocalVariable(
+            self.add(pr.LocalVariable(
                 name = 'TestXAxis',
                 mode = 'RO',
                 pollInterval=1.0,
@@ -179,7 +179,7 @@ Add Linked and Local Variables
                 disp='{:1.2f}',
                 value = 1.0))
 
-            self.add(pyrogue.LocalVariable(
+            self.add(pr.LocalVariable(
                 name = 'TestArray',
                 mode = 'RO',
                 pollInterval=1.0,
@@ -187,7 +187,7 @@ Add Linked and Local Variables
                 disp='{:1.2f}'))
                 #value = np.zeros(100,dtype=np.float64)))
 
-            self.add(pyrogue.LinkVariable(
+            self.add(pr.LinkVariable(
                 name = 'TestPlotFigure',
                 mode = 'RO',
                 dependencies = [self.TestArray],
@@ -201,11 +201,11 @@ Connect To EPICS If Needed
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
             if epics4En:
-                self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
+                self._epics4=pr.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
                 self.addProtocol(self._epics4)
 
 
@@ -216,14 +216,14 @@ Create and Connect Memory Commands
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         def __init__(self, epics4En=False):
             ...
             # Remote memory command slave example
-            osSlave = pyrogue.examples.OsMemSlave()
+            osSlave = pr.examples.OsMemSlave()
             osSlave.setName("OsSlave")
             self.addInterface(osSlave)
-            self.add(pyrogue.examples.OsMemMaster(memBase=osSlave))
+            self.add(pr.examples.OsMemMaster(memBase=osSlave))
 
 
 Override Necessary Functions
@@ -231,7 +231,7 @@ Override Necessary Functions
 
 .. code-block:: python
 
-    class ExampleRoot(pyrogue.Root):
+    class ExampleRoot(pr.Root):
         ...
         def _mySin(self):
             val = math.sin(2*math.pi*self._scnt / 100)

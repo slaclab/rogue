@@ -21,30 +21,30 @@
 
 import time
 
-import pyrogue
+import pyrogue as pr
 import pyrogue.protocols
 import rogue.interfaces.memory
 import rogue.protocols.srp
 
 
-class ScratchDevice(pyrogue.Device):
+class ScratchDevice(pr.Device):
     """One read/write register, used to prove each transport works."""
 
     def __init__(self, **kwargs):
         super().__init__(description='Register map reached over a protocol stack',
                          **kwargs)
 
-        self.add(pyrogue.RemoteVariable(
+        self.add(pr.RemoteVariable(
             name        = 'ScratchPad',
             description = 'Read/write test register',
             offset      = 0x04,
             bitSize     = 32,
-            base        = pyrogue.UInt,
+            base        = pr.UInt,
             mode        = 'RW',
             disp        = '{:#010x}'))
 
 
-class SrpRoot(pyrogue.Root):
+class SrpRoot(pr.Root):
     """Stage 1: SRPv3 talking to a software SRP endpoint.
 
     ``SrpV3Emulation`` answers SRP requests from an internal memory store, so
@@ -66,7 +66,7 @@ class SrpRoot(pyrogue.Root):
         self.add(ScratchDevice(name='Dev', memBase=self._srp, offset=0x0))
 
 
-class TcpBridgeRoot(pyrogue.Root):
+class TcpBridgeRoot(pr.Root):
     """Stage 2: the same register path crossing a TCP socket.
 
     ``TcpServer`` fronts the memory slave and ``TcpClient`` feeds the Device.
@@ -93,7 +93,7 @@ class TcpBridgeRoot(pyrogue.Root):
         self.add(ScratchDevice(name='Dev', memBase=self._client, offset=0x0))
 
 
-class NetworkRoot(pyrogue.Root):
+class NetworkRoot(pr.Root):
     """Stage 3: UDP + RSSI + packetizer + SRP, client and server on loopback.
 
     ``UdpRssiPack`` bundles the three transport layers that normally sit
@@ -106,7 +106,7 @@ class NetworkRoot(pyrogue.Root):
                          timeout=10.0, **kwargs)
 
         # Firmware side: server transport with an SRP endpoint behind it.
-        self._server = pyrogue.protocols.UdpRssiPack(
+        self._server = pr.protocols.UdpRssiPack(
             name='Server', host='127.0.0.1', port=port,
             server=True, jumbo=False, wait=False, packVer=2)
         self.add(self._server)
@@ -116,7 +116,7 @@ class NetworkRoot(pyrogue.Root):
         self._server.application(0) == self._emu
 
         # Host side: client transport driving an SRP master.
-        self._client = pyrogue.protocols.UdpRssiPack(
+        self._client = pr.protocols.UdpRssiPack(
             name='Client', host='127.0.0.1', port=port,
             server=False, jumbo=False, wait=False, packVer=2)
         self.add(self._client)
