@@ -118,7 +118,7 @@ Root start/stop sequencing manages the transport lifecycle.
            super().__init__(name='MyRoot')
 
            # Add bundled UDP + RSSI + packetizer stack.
-           self.add(pyrogue.protocols.UdpRssiPack(
+           self.add(pr.protocols.UdpRssiPack(
                name='Net',
                server=False,
                host='10.0.0.5',
@@ -135,7 +135,7 @@ Root start/stop sequencing manages the transport lifecycle.
            self.Net.application(dest=0) == srp
 
            # VC 1: data path to file writer
-           self.add(pyrogue.utilities.fileio.StreamWriter(
+           self.add(pr.utilities.fileio.StreamWriter(
                name='DataWriter'
            ))
            self.Net.application(dest=1) >> self.DataWriter.getChannel(1)
@@ -163,7 +163,7 @@ This is not the common deployment for FPGA RSSI endpoints.
 
 .. code-block:: python
 
-   self.add(pyrogue.protocols.UdpRssiPack(
+   self.add(pr.protocols.UdpRssiPack(
        name='Net',
        server=True,
        port=8192,
