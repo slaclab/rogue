@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commands, Blocks, And Groups &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5645df5b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=51977998"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Capture Data To Disk And Replay It" href="file_capture.html" />
+    <link rel="prev" title="Build A Protocol Stack With No Hardware" href="protocol_stack.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html">Build Your First Rogue Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol_stack.html">Build A Protocol Stack With No Hardware</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Commands, Blocks, And Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_capture.html">Capture Data To Disk And Replay It</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_cpp_module.html">Extend Rogue With C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_workflow_tutorial.html">Device Workflow Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_integration_tutorial.html">System Integration Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Commands, Blocks, And Groups</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/commands_and_groups.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="commands-blocks-and-groups">
+<span id="tutorial-commands-and-groups"></span><h1>Commands, Blocks, And Groups<a class="headerlink" href="#commands-blocks-and-groups" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a> used variables to read and write registers. That
+covers state, but not actions — and it says nothing about how Rogue batches
+register access or how bulk operations decide what to include.</p>
+<p>This tutorial covers three mechanisms that work together in every real
+application:</p>
+<ul class="simple">
+<li><p><strong>Commands</strong> perform actions rather than holding values.</p></li>
+<li><p><strong>Blocks</strong> decide how many memory transactions your variables actually cost.</p></li>
+<li><p><strong>Groups</strong> label nodes so bulk operations can skip them.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>No hardware required.</strong> Everything here runs against
+<code class="docutils literal notranslate"><span class="pre">rogue.interfaces.memory.Emulate</span></code>, the same software memory space used in
+<a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a>.</p>
+</div>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Finish <a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a>. All examples below attach to one emulated
+memory space:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TutorialRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Hosts every Device above against one emulated memory space."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Commands, Blocks and Groups'</span><span class="p">,</span>
+                         <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sim</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Emulate</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mh">0x10000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sim</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="s1">'SimSlave'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">CommandDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Cmds'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PackedDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Packed'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SpreadDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Spread'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x2000</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">GroupDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Groups'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x3000</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="part-1-commands">
+<h2>Part 1: Commands<a class="headerlink" href="#part-1-commands" title="Link to this heading"></a></h2>
+<p>A <a class="reference internal" href="../pyrogue_tree/core/command.html#pyrogue-tree-node-command"><span class="std std-ref">Command</span></a> is a node you invoke. Rogue offers
+three kinds, and picking the wrong one is a common source of awkward code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CommandDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""All three command flavours on one Device.</span>
+
+<span class="sd">    ``RemoteCommand`` writes to hardware, the ``@self.command`` decorator runs</span>
+<span class="sd">    arbitrary Python, and ``LocalCommand`` wraps a plain callable that returns</span>
+<span class="sd">    a value.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Commands demonstration'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'Control'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Control register written by commands'</span><span class="p">,</span>
+            <span class="n">offset</span>      <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span>     <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span>        <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">disp</span>        <span class="o">=</span> <span class="s1">'</span><span class="si">{:#010x}</span><span class="s1">'</span><span class="p">))</span>
+
+        <span class="c1"># A RemoteCommand writes a value to an address. ``post()`` fires the</span>
+        <span class="c1"># write without waiting for a response, which is what you want for a</span>
+        <span class="c1"># self-clearing trigger bit.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'Pulse'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Strobe a self-clearing trigger bit'</span><span class="p">,</span>
+            <span class="n">offset</span>      <span class="o">=</span> <span class="mh">0x10</span><span class="p">,</span>
+            <span class="n">bitSize</span>     <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">base</span>        <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">cmd</span><span class="p">:</span> <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)))</span>
+
+        <span class="c1"># The decorator form is the shortest way to attach a procedure that</span>
+        <span class="c1"># touches several Variables. ``arg`` carries the caller's value.</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Write an arbitrary Control value'</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">SetControl</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Control</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+
+        <span class="c1"># A LocalCommand touches no registers at all. Use it for host-side</span>
+        <span class="c1"># helpers that report something back.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'Describe'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Return a host-side summary string'</span><span class="p">,</span>
+            <span class="n">function</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="s1">'CommandDevice ready'</span><span class="p">,</span>
+            <span class="n">retValue</span>    <span class="o">=</span> <span class="s1">''</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> writes a value to an address. The <code class="docutils literal notranslate"><span class="pre">function</span></code> argument says
+what writing means: <code class="docutils literal notranslate"><span class="pre">cmd.post(1)</span></code> fires a write without waiting for a
+response, which is right for a self-clearing trigger bit where the hardware
+resets the bit itself and reading it back is pointless.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;self.command</span></code> decorator is the shortest form when the action is Python
+rather than a single register write — sequencing several variables, validating
+an argument, computing a value. The <code class="docutils literal notranslate"><span class="pre">arg</span></code> parameter carries whatever the
+caller passed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> touches no registers. Use it for host-side helpers, and set
+<code class="docutils literal notranslate"><span class="pre">retValue</span></code> when the caller should get something back.</p>
+<p>Invoke all three the same way:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="o">.</span><span class="n">Cmds</span><span class="o">.</span><span class="n">Pulse</span><span class="p">()</span>                 <span class="c1"># RemoteCommand</span>
+<span class="n">root</span><span class="o">.</span><span class="n">Cmds</span><span class="o">.</span><span class="n">SetControl</span><span class="p">(</span><span class="mh">0x55</span><span class="p">)</span>        <span class="c1"># decorator form, takes an argument</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">Cmds</span><span class="o">.</span><span class="n">Describe</span><span class="p">())</span>       <span class="c1"># LocalCommand, returns a value</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Control after SetControl : 0x00000055
+Describe returned        : CommandDevice ready
+</pre></div>
+</div>
+</section>
+<section id="part-2-blocks">
+<h2>Part 2: Blocks<a class="headerlink" href="#part-2-blocks" title="Link to this heading"></a></h2>
+<p>This is the part that surprises people. A <a class="reference internal" href="../pyrogue_tree/core/block.html#pyrogue-tree-node-block"><span class="std std-ref">Block</span></a> is
+the unit Rogue actually reads and writes. Variables do not map one-to-one onto
+transactions — Rogue coalesces variables that share a register into a single
+Block, so one transaction serves all of them.</p>
+<p>Three fields packed into one 32-bit register at the same <code class="docutils literal notranslate"><span class="pre">offset</span></code>, differing
+only in <code class="docutils literal notranslate"><span class="pre">bitOffset</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PackedDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Three fields sharing one 32-bit register.</span>
+
+<span class="sd">    Because all three use ``offset=0x00`` and differ only in ``bitOffset``,</span>
+<span class="sd">    PyRogue coalesces them into a single ``Block`` -- so setting all three</span>
+<span class="sd">    costs one memory transaction, not three.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Three fields, one register'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">bitOffset</span> <span class="ow">in</span> <span class="p">((</span><span class="s1">'Low'</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s1">'Middle'</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="s1">'High'</span><span class="p">,</span> <span class="mi">16</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+                <span class="n">name</span>      <span class="o">=</span> <span class="n">name</span><span class="p">,</span>
+                <span class="n">offset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+                <span class="n">bitSize</span>   <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="n">bitOffset</span> <span class="o">=</span> <span class="n">bitOffset</span><span class="p">,</span>
+                <span class="n">base</span>      <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+                <span class="n">mode</span>      <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+                <span class="n">disp</span>      <span class="o">=</span> <span class="s1">'</span><span class="si">{:#04x}</span><span class="s1">'</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The same three fields given addresses of their own:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SpreadDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The same three fields at separate addresses, for contrast.</span>
+
+<span class="sd">    Identical API, but each Variable now owns a Block of its own, so the same</span>
+<span class="sd">    three writes become three transactions.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Three fields, three registers'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">((</span><span class="s1">'Low'</span><span class="p">,</span> <span class="s1">'Middle'</span><span class="p">,</span> <span class="s1">'High'</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+                <span class="n">name</span>    <span class="o">=</span> <span class="n">name</span><span class="p">,</span>
+                <span class="n">offset</span>  <span class="o">=</span> <span class="n">index</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+                <span class="n">bitSize</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+                <span class="n">base</span>    <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+                <span class="n">mode</span>    <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+                <span class="n">disp</span>    <span class="o">=</span> <span class="s1">'</span><span class="si">{:#04x}</span><span class="s1">'</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Identical API from the caller’s side, but the cost differs:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Blocks used by Packed (offset 0x00 x3) : 1
+Blocks used by Spread (0x00/0x04/0x08) : 3
+</pre></div>
+</div>
+<p>Writing all three packed fields is <strong>one</strong> transaction; writing the spread
+fields is <strong>three</strong>. Over a high-latency link, or across a register map with
+hundreds of fields, that ratio decides whether a tree scan takes milliseconds or
+seconds.</p>
+<p>The fields remain independent — setting one does not disturb its neighbours,
+because Rogue performs a read-modify-write on the shared Block:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">root</span><span class="o">.</span><span class="n">Packed</span><span class="o">.</span><span class="n">Middle</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x00</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">root</span><span class="o">.</span><span class="n">Packed</span><span class="o">.</span><span class="n">Low</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="mh">0xAA</span>    <span class="c1"># untouched</span>
+<span class="k">assert</span> <span class="n">root</span><span class="o">.</span><span class="n">Packed</span><span class="o">.</span><span class="n">High</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="mh">0xCC</span>   <span class="c1"># untouched</span>
+</pre></div>
+</div>
+<p>You rarely construct Blocks yourself. What matters is knowing they exist, since
+they explain why bit-packed register maps are worth the effort. See
+<a class="reference internal" href="../pyrogue_tree/core/block.html"><span class="doc">Blocks</span></a> and
+<a class="reference internal" href="../pyrogue_tree/core/block_operations.html"><span class="doc">Device Block Operations</span></a> for the full model.</p>
+</section>
+<section id="part-3-groups">
+<h2>Part 3: Groups<a class="headerlink" href="#part-3-groups" title="Link to this heading"></a></h2>
+<p>A large tree contains values that should not be treated uniformly. Counters
+should not be written back from a saved configuration. Diagnostics need not be
+served to EPICS. <a class="reference internal" href="../pyrogue_tree/core/groups.html#pyrogue-tree-node-groups"><span class="std std-ref">Groups</span></a> are labels that let bulk
+operations make those distinctions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">GroupDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Variables tagged with Groups so bulk operations can skip them.</span>
+
+<span class="sd">    Groups are labels, not access control. Bulk operations such as</span>
+<span class="sd">    ``getYaml()`` accept ``incGroups``/``excGroups`` and honour them; nothing</span>
+<span class="sd">    stops a direct ``.get()`` on a tagged Variable.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Groups demonstration'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Saved'</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">))</span>
+
+        <span class="c1"># 'NoConfig' is the convention for values that should not be captured</span>
+        <span class="c1"># in a saved configuration -- counters, status, scratch registers.</span>
+        <span class="n">volatile</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Volatile'</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x04</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">volatile</span><span class="p">)</span>
+        <span class="n">volatile</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">'NoConfig'</span><span class="p">)</span>
+
+        <span class="c1"># 'NoServe' keeps a value out of EPICS and other servers by default.</span>
+        <span class="n">private</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Private'</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x08</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'RW'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">private</span><span class="p">)</span>
+        <span class="n">private</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">'NoServe'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Two conventional names appear here. <code class="docutils literal notranslate"><span class="pre">NoConfig</span></code> marks values that should not be
+captured in a saved configuration; <code class="docutils literal notranslate"><span class="pre">NoServe</span></code> keeps a value out of EPICS and
+similar servers by default.</p>
+<p>Groups take effect when a bulk operation filters on them:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">everything</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">getYaml</span><span class="p">(</span><span class="n">readFirst</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">'RW'</span><span class="p">],</span>
+                          <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">config</span>     <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">getYaml</span><span class="p">(</span><span class="n">readFirst</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">'RW'</span><span class="p">],</span>
+                          <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">'NoConfig'</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Volatile in full dump   : True
+Volatile in saved config: False
+Volatile groups         : ['NoConfig']
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Groups are labels, not access control. A variable tagged <code class="docutils literal notranslate"><span class="pre">NoServe</span></code> is still
+fully readable and writable through <code class="docutils literal notranslate"><span class="pre">.get()</span></code> and <code class="docutils literal notranslate"><span class="pre">.set()</span></code> — the tag only
+affects operations that choose to honour it. Do not use Groups to protect
+dangerous registers.</p>
+</div>
+</section>
+<section id="running-it">
+<h2>Running It<a class="headerlink" href="#running-it" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>commands_and_groups.py
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>--- Commands
+   Control after SetControl : 0x00000055
+   Describe returned        : CommandDevice ready
+--- Blocks
+   packed values  : 0xaa 0xbb 0xcc
+   Blocks used by Packed (offset 0x00 x3) : 1
+   Blocks used by Spread (0x00/0x04/0x08) : 3
+--- Groups
+   Saved in full dump      : True
+   Volatile in full dump   : True
+   Volatile in saved config: False
+   Volatile groups         : ['NoConfig']
+</pre></div>
+</div>
+</section>
+<section id="where-to-go-next">
+<h2>Where To Go Next<a class="headerlink" href="#where-to-go-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../pyrogue_tree/core/command.html"><span class="doc">Command</span></a> — command reference, including argument
+and return-value handling.</p></li>
+<li><p><a class="reference internal" href="../pyrogue_tree/core/block.html"><span class="doc">Blocks</span></a> — the Block model in detail.</p></li>
+<li><p><a class="reference internal" href="../pyrogue_tree/core/groups.html"><span class="doc">Groups</span></a> — group semantics and framework conventions.</p></li>
+<li><p><a class="reference internal" href="../pyrogue_tree/core/yaml_configuration.html"><span class="doc">YAML Configuration</span></a> — saving and loading
+configuration, where <code class="docutils literal notranslate"><span class="pre">NoConfig</span></code> earns its place.</p></li>
+<li><p><a class="reference internal" href="file_capture.html"><span class="doc">Capture Data To Disk And Replay It</span></a> — continue with capturing data to disk.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="protocol_stack.html" class="btn btn-neutral float-left" title="Build A Protocol Stack With No Hardware" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="file_capture.html" class="btn btn-neutral float-right" title="Capture Data To Disk And Replay It" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

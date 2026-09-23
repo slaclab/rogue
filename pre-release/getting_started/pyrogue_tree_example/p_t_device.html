@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create A Custom PyRogue Device &mdash; Rogue v6.15.0-34-gd7f317b6b documentation</title>
+  <title>Create A Custom PyRogue Device &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4318a8c9"></script>
+      <script src="../../_static/documentation_options.js?v=5645df5b"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,31 +63,42 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../index.html">PyRogue Tree Getting Started Guide</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Build Your First Rogue Application</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="p_t_root.html">Build Your First PyRogue Root</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Create A Custom PyRogue Device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="full_root.html">Review The Complete Root Example</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/protocol_stack.html">Build A Protocol Stack With No Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/commands_and_groups.html">Commands, Blocks, And Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/file_capture.html">Capture Data To Disk And Replay It</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/custom_cpp_module.html">Extend Rogue With C++</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorials/device_workflow_tutorial.html">Device Workflow Tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../tutorials/system_integration_tutorial.html">System Integration Tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced_examples/index.html">Advanced Tutorials</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -105,7 +116,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../tutorials/index.html">Tutorials</a></li>
-          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree Getting Started Guide</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Build Your First Rogue Application</a></li>
       <li class="breadcrumb-item active">Create A Custom PyRogue Device</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/getting_started/pyrogue_tree_example/p_t_device.rst.txt" rel="nofollow"> View page source</a>
@@ -121,347 +132,350 @@
 <p>A representative custom <cite>pyrogue.Device</cite> implementation is shown here. Use it
 as a pattern for adding strongly-typed register maps, helper <cite>LinkVariable</cite>
 values, and command interfaces.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AxiVersion</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span>
 
-<span class="c1"># Last comment added by rherbst for demonstration.</span>
-<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span>             <span class="o">=</span> <span class="s1">'AxiVersion'</span><span class="p">,</span>
-        <span class="n">description</span>      <span class="o">=</span> <span class="s1">'AXI-Lite Version Module'</span><span class="p">,</span>
-        <span class="n">numUserConstants</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AxiVersion</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
 
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="n">name</span>        <span class="o">=</span> <span class="n">name</span><span class="p">,</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="n">description</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">name</span>             <span class="o">=</span> <span class="s1">'AxiVersion'</span><span class="p">,</span>
+            <span class="n">description</span>      <span class="o">=</span> <span class="s1">'AXI-Lite Version Module'</span><span class="p">,</span>
+            <span class="n">numUserConstants</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
-    <span class="c1">##############################</span>
-    <span class="c1"># Variables</span>
-    <span class="c1">##############################</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="n">name</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="n">description</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FpgaVersion'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'FPGA Firmware Version Number'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
-        <span class="n">disp</span>         <span class="o">=</span> <span class="s1">'</span><span class="si">{:#08x}</span><span class="s1">'</span><span class="p">,</span>
-    <span class="p">))</span>
+        <span class="c1">##############################</span>
+        <span class="c1"># Variables</span>
+        <span class="c1">##############################</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'ScratchPad'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Register to test reads and writes'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x04</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">units</span>        <span class="o">=</span> <span class="s1">'Test'</span><span class="p">,</span>
-        <span class="n">disp</span>         <span class="o">=</span> <span class="s1">'</span><span class="si">{:#08x}</span><span class="s1">'</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FpgaVersion'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'FPGA Firmware Version Number'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">disp</span>         <span class="o">=</span> <span class="s1">'</span><span class="si">{:#08x}</span><span class="s1">'</span><span class="p">,</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'UpTimeCnt'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Number of seconds since last reset'</span><span class="p">,</span>
-        <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x08</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
-        <span class="n">disp</span>         <span class="o">=</span> <span class="s1">'</span><span class="si">{:d}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="n">units</span>        <span class="o">=</span> <span class="s1">'seconds'</span><span class="p">,</span>
-        <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'ScratchPad'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Register to test reads and writes'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x04</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">units</span>        <span class="o">=</span> <span class="s1">'Test'</span><span class="p">,</span>
+            <span class="n">disp</span>         <span class="o">=</span> <span class="s1">'</span><span class="si">{:#08x}</span><span class="s1">'</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'UpTime'</span><span class="p">,</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
-        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">UpTimeCnt</span><span class="p">],</span>
-        <span class="n">linkedGet</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">UpTimeCnt</span><span class="o">.</span><span class="n">value</span><span class="p">()))</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'UpTimeCnt'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Number of seconds since last reset'</span><span class="p">,</span>
+            <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x08</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">disp</span>         <span class="o">=</span> <span class="s1">'</span><span class="si">{:d}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="n">units</span>        <span class="o">=</span> <span class="s1">'seconds'</span><span class="p">,</span>
+            <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FpgaReloadHalt'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Used to halt automatic reloads via AxiVersion'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x100</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'UpTime'</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">UpTimeCnt</span><span class="p">],</span>
+            <span class="n">linkedGet</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">UpTimeCnt</span><span class="o">.</span><span class="n">value</span><span class="p">()))</span>
+        <span class="p">))</span>
 
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FpgaReload'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Reload the FPGA from the attached PROM (if supported)'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x104</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">function</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">cmd</span><span class="p">:</span> <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">))</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FpgaReloadAddress'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Reload start address'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x108</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-    <span class="p">))</span>
-
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">FpgaReloadAtAddress</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FpgaReloadAddress</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FpgaReload</span><span class="p">()</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'UserReset'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'User Reset (if supported)'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x10C</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-    <span class="p">))</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FdSerial'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Board ID value read from DS2411 chip'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x300</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
-    <span class="p">))</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">addRemoteVariables</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'UserConstants'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'User input values (if supported)'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x400</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
-        <span class="n">number</span>       <span class="o">=</span> <span class="n">numUserConstants</span><span class="p">,</span>
-        <span class="n">stride</span>       <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-        <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'DeviceId'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Device Identification  (configured by generic)'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x500</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
-    <span class="p">))</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'GitHash'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'GIT SHA-1 Hash'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x600</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">160</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
-        <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">))</span>
-
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'GitHashShort'</span><span class="p">,</span>
-        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GitHash</span><span class="p">],</span>
-        <span class="n">disp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:07x}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="n">linkedGet</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">GitHash</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="mi">132</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FpgaReloadHalt'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Used to halt automatic reloads via AxiVersion'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x100</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+        <span class="p">))</span>
 
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'DeviceDna'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Xilinx Device DNA value burned into FPGA'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x700</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FpgaReload'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Reload the FPGA from the attached PROM (if supported)'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x104</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span>     <span class="o">=</span> <span class="k">lambda</span> <span class="n">cmd</span><span class="p">:</span> <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'TestEnum'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'ENUM Test Field'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x900</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
-        <span class="n">enum</span>         <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">'Test0'</span><span class="p">,</span>
-                        <span class="mi">1</span><span class="p">:</span> <span class="s1">'Test1'</span><span class="p">,</span>
-                        <span class="mi">2</span><span class="p">:</span> <span class="s1">'Test2'</span><span class="p">,</span>
-                        <span class="mi">3</span><span class="p">:</span> <span class="s1">'Test3'</span><span class="p">,</span>
-                        <span class="mi">4</span><span class="p">:</span> <span class="s1">'Test4'</span><span class="p">},</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FpgaReloadAddress'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Reload start address'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x108</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+        <span class="p">))</span>
 
-    <span class="c1">#self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">FpgaReloadAtAddress</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FpgaReloadAddress</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FpgaReload</span><span class="p">()</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'TestArray[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">][</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">][</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">]'</span><span class="p">,</span>
-                                          <span class="n">guiGroup</span><span class="o">=</span><span class="s1">'TestArray'</span><span class="p">,</span>
-                                          <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'UserReset'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'User Reset (if supported)'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x10C</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'TestArray[4][5]'</span><span class="p">,</span>
-                              <span class="n">guiGroup</span><span class="o">=</span><span class="s1">'TestArray'</span><span class="p">,</span>
-                              <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'TestArray[6]'</span><span class="p">,</span>
-                              <span class="n">guiGroup</span><span class="o">=</span><span class="s1">'TestArray'</span><span class="p">,</span>
-                              <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'FdSerial'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Board ID value read from DS2411 chip'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x300</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+        <span class="p">))</span>
 
-    <span class="c1">#self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addRemoteVariables</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'UserConstants'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'User input values (if supported)'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x400</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">number</span>       <span class="o">=</span> <span class="n">numUserConstants</span><span class="p">,</span>
+            <span class="n">stride</span>       <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'TestArray2[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">]'</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'DeviceId'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Device Identification  (configured by generic)'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x500</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'GitHash'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'GIT SHA-1 Hash'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x600</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">160</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'GitHashShort'</span><span class="p">,</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">GitHash</span><span class="p">],</span>
+            <span class="n">disp</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:07x}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="n">linkedGet</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">GitHash</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="mi">132</span>
+        <span class="p">))</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'DeviceDna'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Xilinx Device DNA value burned into FPGA'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x700</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'TestEnum'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'ENUM Test Field'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x900</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">enum</span>         <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">'Test0'</span><span class="p">,</span>
+                            <span class="mi">1</span><span class="p">:</span> <span class="s1">'Test1'</span><span class="p">,</span>
+                            <span class="mi">2</span><span class="p">:</span> <span class="s1">'Test2'</span><span class="p">,</span>
+                            <span class="mi">3</span><span class="p">:</span> <span class="s1">'Test3'</span><span class="p">,</span>
+                            <span class="mi">4</span><span class="p">:</span> <span class="s1">'Test4'</span><span class="p">},</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="c1">#self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'TestArray[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">][</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">][</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">]'</span><span class="p">,</span>
+                                              <span class="n">guiGroup</span><span class="o">=</span><span class="s1">'TestArray'</span><span class="p">,</span>
+                                              <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'TestArray[4][5]'</span><span class="p">,</span>
+                                  <span class="n">guiGroup</span><span class="o">=</span><span class="s1">'TestArray'</span><span class="p">,</span>
+                                  <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'TestArray[6]'</span><span class="p">,</span>
                                   <span class="n">guiGroup</span><span class="o">=</span><span class="s1">'TestArray'</span><span class="p">,</span>
                                   <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'TestSpareArray[5][5]'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Array Test Field'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x2000</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-    <span class="p">))</span>
+        <span class="c1">#self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'TestSpareArray[8][8]'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Array Test Field'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x2004</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-    <span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'TestArray2[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">]'</span><span class="p">,</span>
+                                      <span class="n">guiGroup</span><span class="o">=</span><span class="s1">'TestArray'</span><span class="p">,</span>
+                                      <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'Test10Bit'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Test 10 bits'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x2008</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'TestSpareArray[5][5]'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Array Test Field'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x2000</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
-        <span class="n">name</span>         <span class="o">=</span> <span class="s1">'AlarmTest'</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Alarm Test Field'</span><span class="p">,</span>
-        <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x8000</span><span class="p">,</span>
-        <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
-        <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-        <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">minimum</span>      <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="n">maximum</span>      <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
-        <span class="n">lowAlarm</span>     <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
-        <span class="n">lowWarning</span>   <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
-        <span class="n">highWarning</span>  <span class="o">=</span> <span class="mi">800</span><span class="p">,</span>
-        <span class="n">highAlarm</span>    <span class="o">=</span> <span class="mi">900</span><span class="p">,</span>
-        <span class="n">value</span>        <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="n">disp</span>         <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">groups</span>       <span class="o">=</span> <span class="p">[</span><span class="s1">'NoConfig'</span><span class="p">,</span><span class="s1">'NoAlarm'</span><span class="p">],</span>
-    <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'TestSpareArray[8][8]'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Array Test Field'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x2004</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestRealArray'</span><span class="p">,</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'Test10Bit'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Test 10 bits'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x2008</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestReal2dArray'</span><span class="p">,</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">]],</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>         <span class="o">=</span> <span class="s1">'AlarmTest'</span><span class="p">,</span>
+            <span class="n">description</span>  <span class="o">=</span> <span class="s1">'Alarm Test Field'</span><span class="p">,</span>
+            <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x8000</span><span class="p">,</span>
+            <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>         <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">minimum</span>      <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="n">maximum</span>      <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+            <span class="n">lowAlarm</span>     <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+            <span class="n">lowWarning</span>   <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+            <span class="n">highWarning</span>  <span class="o">=</span> <span class="mi">800</span><span class="p">,</span>
+            <span class="n">highAlarm</span>    <span class="o">=</span> <span class="mi">900</span><span class="p">,</span>
+            <span class="n">value</span>        <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="n">disp</span>         <span class="o">=</span> <span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="p">,</span>
+            <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">groups</span>       <span class="o">=</span> <span class="p">[</span><span class="s1">'NoConfig'</span><span class="p">,</span><span class="s1">'NoAlarm'</span><span class="p">],</span>
+        <span class="p">))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestListA'</span><span class="p">,</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestRealArray'</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestList2'</span><span class="p">,</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">]]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestReal2dArray'</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">]],</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestListB'</span><span class="p">,</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">11.0</span><span class="p">,</span><span class="mf">12.0</span><span class="p">,</span><span class="mf">13.0</span><span class="p">,</span><span class="mf">14.0</span><span class="p">,</span><span class="mf">15.0</span><span class="p">,</span><span class="mf">16.0</span><span class="p">,</span><span class="mf">17.0</span><span class="p">,</span><span class="mf">18.0</span><span class="p">,</span><span class="mf">19.0</span><span class="p">,</span><span class="mf">20.0</span><span class="p">])))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestListA'</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestBool'</span><span class="p">,</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestList2'</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">],[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">]]))</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestBoolArray'</span><span class="p">,</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestListB'</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">11.0</span><span class="p">,</span><span class="mf">12.0</span><span class="p">,</span><span class="mf">13.0</span><span class="p">,</span><span class="mf">14.0</span><span class="p">,</span><span class="mf">15.0</span><span class="p">,</span><span class="mf">16.0</span><span class="p">,</span><span class="mf">17.0</span><span class="p">,</span><span class="mf">18.0</span><span class="p">,</span><span class="mf">19.0</span><span class="p">,</span><span class="mf">20.0</span><span class="p">])))</span>
 
-    <span class="c1">#self.add(pr.LocalVariable(</span>
-    <span class="c1">#    name = 'TestBadArray[x]',</span>
-    <span class="c1">#    mode = 'RW',</span>
-    <span class="c1">#    value = ''))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestBool'</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))</span>
 
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">TestCommand</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">'Got </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
-        <span class="k">return</span> <span class="s1">'Got </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">'TestBoolArray'</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span><span class="p">))</span>
 
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">TestMemoryException</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">MemoryError</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'blah'</span><span class="p">,</span><span class="n">address</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1">#self.add(pr.LocalVariable(</span>
+        <span class="c1">#    name = 'TestBadArray[x]',</span>
+        <span class="c1">#    mode = 'RW',</span>
+        <span class="c1">#    value = ''))</span>
 
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">TestErrorLog</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Test error message"</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">TestCommand</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'Got </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s1">'Got </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
 
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">TestOtherLog</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">93</span><span class="p">,</span><span class="s2">"Test log level 39 message"</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">TestMemoryException</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">MemoryError</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'blah'</span><span class="p">,</span><span class="n">address</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">TestGeneralException</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">'/dev/not_a_device'</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">TestErrorLog</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Test error message"</span><span class="p">)</span>
 
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">TestOtherError</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">'/dev/not_a_device'</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">TestOtherLog</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">93</span><span class="p">,</span><span class="s2">"Test log level 39 message"</span><span class="p">)</span>
 
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">'blah blah'</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">TestCmdString</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"Send command string: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">TestGeneralException</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">'/dev/not_a_device'</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">enum</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="s1">'One'</span><span class="p">,</span><span class="mi">2</span><span class="p">:</span><span class="s1">'Two'</span><span class="p">,</span><span class="mi">3</span><span class="p">:</span><span class="s1">'Three'</span><span class="p">})</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">TestCmdEnum</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"Send command Enum: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">TestOtherError</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">'/dev/not_a_device'</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">hardReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'AxiVersion hard reset called'</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">'blah blah'</span><span class="p">,</span><span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">TestCmdString</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Send command string: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">softReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'AxiVersion soft reset called'</span><span class="p">)</span>
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">retValue</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">enum</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="s1">'One'</span><span class="p">,</span><span class="mi">2</span><span class="p">:</span><span class="s1">'Two'</span><span class="p">,</span><span class="mi">3</span><span class="p">:</span><span class="s1">'Three'</span><span class="p">})</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">TestCmdEnum</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Send command Enum: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'AxiVersion count reset called'</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hardReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'AxiVersion hard reset called'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">softReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'AxiVersion soft reset called'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'AxiVersion count reset called'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This example uses <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.addRemoteVariables" title="pyrogue.Device.addRemoteVariables"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addRemoteVariables()</span></code></a> to build an

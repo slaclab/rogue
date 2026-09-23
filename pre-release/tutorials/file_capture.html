@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capture Data To Disk And Replay It &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5645df5b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=51977998"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Extend Rogue With C++" href="custom_cpp_module.html" />
+    <link rel="prev" title="Commands, Blocks, And Groups" href="commands_and_groups.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html">Build Your First Rogue Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol_stack.html">Build A Protocol Stack With No Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands_and_groups.html">Commands, Blocks, And Groups</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Capture Data To Disk And Replay It</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_cpp_module.html">Extend Rogue With C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_workflow_tutorial.html">Device Workflow Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_integration_tutorial.html">System Integration Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Capture Data To Disk And Replay It</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/file_capture.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="capture-data-to-disk-and-replay-it">
+<span id="tutorial-file-capture"></span><h1>Capture Data To Disk And Replay It<a class="headerlink" href="#capture-data-to-disk-and-replay-it" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a> built a stream that validated itself and threw the
+data away. Real acquisition systems keep it. This tutorial writes a stream to
+disk, reads it back, and measures what compression buys.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>No hardware required.</strong> The PRBS generator produces test frames in
+software, so the whole capture and replay path is exercised without a
+detector or a DMA card.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">PrbsTx</span></code> runs as fast as the CPU allows. During development of this
+tutorial, an unthrottled one-second capture wrote <strong>281 MB</strong>. Every example
+here includes a <code class="docutils literal notranslate"><span class="pre">RateDrop</span></code> stage. Keep it, or expect to fill a disk.</p>
+</div>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Finish <a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a>. You should recognise <code class="docutils literal notranslate"><span class="pre">PrbsTx</span></code> and the
+<code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> stream operator.</p>
+</section>
+<section id="writing-a-capture">
+<h2>Writing A Capture<a class="headerlink" href="#writing-a-capture" title="Link to this heading"></a></h2>
+<p>Three stages: a generator, a rate limiter, and a writer.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CaptureRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""PRBS generator -&gt; rate limiter -&gt; file writer.</span>
+
+<span class="sd">    The ``RateDrop`` stage matters. An unthrottled ``PrbsTx`` saturates the</span>
+<span class="sd">    CPU and writes hundreds of megabytes per second, which is useful for</span>
+<span class="sd">    benchmarking and hostile to a tutorial. ``RateDrop(True, period)`` forwards</span>
+<span class="sd">    at most one frame per ``period`` seconds.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Throttled capture to disk'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">prbs</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'PrbsTx'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="p">)</span>
+
+        <span class="c1"># True selects time-based dropping; period is in seconds.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">period</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Writer'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">captureTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Record for a fixed wall-clock duration, then close the file.</span>
+
+<span class="sd">        The file must be closed before it is read: the writer buffers, so a</span>
+<span class="sd">        reader opening it early sees a truncated final record.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RateDrop(True,</span> <span class="pre">period)</span></code> selects time-based limiting — at most one frame per
+<code class="docutils literal notranslate"><span class="pre">period</span></code> seconds. Passing <code class="docutils literal notranslate"><span class="pre">False</span></code> instead switches to count-based dropping,
+forwarding one frame in every N. Time-based is usually what you want for a
+monitor or a sampled capture; count-based suits decimating a known frame rate.</p>
+<p><code class="docutils literal notranslate"><span class="pre">StreamWriter</span></code> is a <code class="docutils literal notranslate"><span class="pre">Device</span></code>, so it joins the tree with <code class="docutils literal notranslate"><span class="pre">self.add()</span></code> and
+exposes its controls as variables. Note that <code class="docutils literal notranslate"><span class="pre">getChannel(0)</span></code> is what you
+connect a stream to — a single writer can capture several channels into one file,
+tagging each record with its channel number.</p>
+<p>Opening and closing the file is done through variables and commands rather than
+Python methods:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">captureTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Record for a fixed wall-clock duration, then close the file.</span>
+
+<span class="sd">        The file must be closed before it is read: the writer buffers, so a</span>
+<span class="sd">        reader opening it early sees a truncated final record.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The API is <code class="docutils literal notranslate"><span class="pre">DataFile.set(path)</span></code> followed by the <code class="docutils literal notranslate"><span class="pre">Open()</span></code> command — <strong>not</strong>
+<code class="docutils literal notranslate"><span class="pre">open(path)</span></code>. Likewise <code class="docutils literal notranslate"><span class="pre">Close()</span></code>, capitalised. Lowercase <code class="docutils literal notranslate"><span class="pre">open</span></code> raises
+<code class="docutils literal notranslate"><span class="pre">AttributeError</span></code> with a hint pointing at <code class="docutils literal notranslate"><span class="pre">Open</span></code>.</p>
+</div>
+<p>Closing matters. The writer buffers, so a reader that opens the file before
+<code class="docutils literal notranslate"><span class="pre">Close()</span></code> sees a truncated final record.</p>
+</section>
+<section id="replaying-a-capture">
+<h2>Replaying A Capture<a class="headerlink" href="#replaying-a-capture" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">FileReader</span></code> iterates <em>records</em> rather than raw bytes, handing back one frame’s
+payload at a time with its channel intact:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">countRecords</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Replay a capture file and count the records inside it.</span>
+
+<span class="sd">    ``FileReader`` iterates records rather than raw bytes, so each iteration</span>
+<span class="sd">    hands back one frame's worth of payload with its channel intact.</span>
+<span class="sd">    """</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">FileReader</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">records</span><span class="p">():</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">count</span> <span class="o">&gt;=</span> <span class="n">limit</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">count</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>plain capture bytes      : 103200
+records read back        : 100
+</pre></div>
+</div>
+<p>One hundred records for a one-second capture at a 0.01 s period — exactly what
+the rate limiter should produce. That arithmetic is worth checking in your own
+captures; if the record count does not match the expected rate, the limiter is
+not doing what you think.</p>
+</section>
+<section id="adding-compression">
+<h2>Adding Compression<a class="headerlink" href="#adding-compression" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">StreamZip</span></code> compresses each frame in flight, and <code class="docutils literal notranslate"><span class="pre">StreamUnZip</span></code> reverses it.
+Insert the compressor before the writer:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CompressedCaptureRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The same capture path with compression inserted before the writer.</span>
+
+<span class="sd">    ``StreamZip`` compresses each frame as it passes. PRBS data is</span>
+<span class="sd">    pseudo-random and therefore close to incompressible, so expect little or</span>
+<span class="sd">    no saving here -- real detector payloads with headers, padding, or idle</span>
+<span class="sd">    regions compress far better.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Compressed capture to disk'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">prbs</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'PrbsTx'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">period</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zip</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">StreamZip</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Writer'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rate</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zip</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">captureTo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>plain capture bytes      : 103200
+compressed capture bytes : 96819
+</pre></div>
+</div>
+<p>About 6% — an honest result that is worth understanding rather than hiding. PRBS
+data is <em>pseudo-random</em>, and random data is close to incompressible. This is the
+worst case for a compressor, and it is exactly why you should measure with your
+own payloads instead of trusting a documented ratio. Real detector frames with
+headers, fixed padding, zero-suppressed regions, or idle patterns often compress
+by large factors.</p>
+<p>Compression is lossless regardless of ratio. Proving that does not need a file at
+all — put the two stages back to back and compare bytes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">roundTripCheck</span><span class="p">(</span><span class="n">payload</span><span class="o">=</span><span class="sa">b</span><span class="s1">'ABCD'</span> <span class="o">*</span> <span class="mi">256</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Prove StreamZip/StreamUnZip is lossless, without involving a file."""</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Source</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">sendBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+                <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">Capture</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_acceptFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+                <span class="n">buffer</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">getPayload</span><span class="p">())</span>
+                <span class="n">frame</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+
+    <span class="n">source</span> <span class="o">=</span> <span class="n">Source</span><span class="p">()</span>
+    <span class="n">capture</span> <span class="o">=</span> <span class="n">Capture</span><span class="p">()</span>
+    <span class="n">source</span> <span class="o">&gt;&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">StreamZip</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">StreamUnZip</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">capture</span>
+
+    <span class="n">source</span><span class="o">.</span><span class="n">sendBytes</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">capture</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">payload</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>zip -&gt; unzip is lossless : True
+</pre></div>
+</div>
+<p>Note that reading a file written by <code class="docutils literal notranslate"><span class="pre">StreamZip</span></code> requires decompressing it:
+either insert <code class="docutils literal notranslate"><span class="pre">StreamUnZip</span></code> in the replay path, or keep captures uncompressed
+if you want them directly readable by other tools.</p>
+</section>
+<section id="running-it">
+<h2>Running It<a class="headerlink" href="#running-it" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>file_capture.py
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>plain capture bytes      : 103200
+records read back        : 100
+compressed capture bytes : 96819
+zip -&gt; unzip is lossless : True
+</pre></div>
+</div>
+<p>Sizes vary slightly between runs, since the capture is bounded by wall-clock
+time rather than frame count.</p>
+</section>
+<section id="choosing-a-capture-strategy">
+<h2>Choosing A Capture Strategy<a class="headerlink" href="#choosing-a-capture-strategy" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Goal</p></th>
+<th class="head"><p>Approach</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Capture everything at full rate</p></td>
+<td><p>No <code class="docutils literal notranslate"><span class="pre">RateDrop</span></code>; watch disk space and use <code class="docutils literal notranslate"><span class="pre">MaxFileSize</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Sampled monitoring</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">RateDrop(True,</span> <span class="pre">period)</span></code> — one frame per interval</p></td>
+</tr>
+<tr class="row-even"><td><p>Decimate a known rate</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">RateDrop(False,</span> <span class="pre">N)</span></code> — one frame in N</p></td>
+</tr>
+<tr class="row-odd"><td><p>Long unattended runs</p></td>
+<td><p>Set <code class="docutils literal notranslate"><span class="pre">MaxFileSize</span></code> and enable <code class="docutils literal notranslate"><span class="pre">AutoName</span></code> to roll files</p></td>
+</tr>
+<tr class="row-even"><td><p>Compressible payloads</p></td>
+<td><p>Add <code class="docutils literal notranslate"><span class="pre">StreamZip</span></code>; measure your own ratio first</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="where-to-go-next">
+<h2>Where To Go Next<a class="headerlink" href="#where-to-go-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../built_in_modules/utilities/fileio/index.html"><span class="doc">File I/O Utilities</span></a> — file format, multi-channel
+captures, and file rolling.</p></li>
+<li><p><a class="reference internal" href="../built_in_modules/utilities/fileio/reading.html"><span class="doc">Reading Frames From A File</span></a> — replay options beyond
+<code class="docutils literal notranslate"><span class="pre">countRecords</span></code>.</p></li>
+<li><p><a class="reference internal" href="../built_in_modules/utilities/compression/index.html"><span class="doc">Compression Utilities</span></a> — compression modules in
+detail.</p></li>
+<li><p><a class="reference internal" href="../stream_interface/rate_drop.html"><span class="doc">Rate Limiting With RateDrop</span></a> — rate limiting options.</p></li>
+<li><p><a class="reference internal" href="custom_cpp_module.html"><span class="doc">Extend Rogue With C++</span></a> — continue by extending Rogue in C++.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="commands_and_groups.html" class="btn btn-neutral float-left" title="Commands, Blocks, And Groups" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom_cpp_module.html" class="btn btn-neutral float-right" title="Extend Rogue With C++" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

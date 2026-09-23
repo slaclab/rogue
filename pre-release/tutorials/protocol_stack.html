@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build A Protocol Stack With No Hardware &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5645df5b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=51977998"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Commands, Blocks, And Groups" href="commands_and_groups.html" />
+    <link rel="prev" title="Review The Complete Root Example" href="../getting_started/pyrogue_tree_example/full_root.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html">Build Your First Rogue Application</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Build A Protocol Stack With No Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands_and_groups.html">Commands, Blocks, And Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_capture.html">Capture Data To Disk And Replay It</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_cpp_module.html">Extend Rogue With C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_workflow_tutorial.html">Device Workflow Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_integration_tutorial.html">System Integration Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Build A Protocol Stack With No Hardware</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/protocol_stack.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="build-a-protocol-stack-with-no-hardware">
+<span id="tutorial-protocol-stack"></span><h1>Build A Protocol Stack With No Hardware<a class="headerlink" href="#build-a-protocol-stack-with-no-hardware" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a> reached registers through
+<code class="docutils literal notranslate"><span class="pre">rogue.interfaces.memory.Emulate</span></code>, which stands in for a memory space
+directly. Real systems rarely look like that. Between a host and a board sit
+several protocol layers, each solving one problem: framing requests, recovering
+from packet loss, multiplexing channels over one link.</p>
+<p>This tutorial builds that stack in three stages, adding one layer at a time so
+you can see what each contributes. Every stage runs on one machine with no
+hardware and no network interface beyond loopback.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>No hardware required.</strong> Rogue ships software endpoints for each protocol
+layer — most importantly <code class="docutils literal notranslate"><span class="pre">SrpV3Emulation</span></code>, which answers register requests
+from an internal store. That lets you develop and test a complete transport
+stack before a board exists.</p>
+</div>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Finish <a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a> first. You should be comfortable with
+<code class="docutils literal notranslate"><span class="pre">Root</span></code>, <code class="docutils literal notranslate"><span class="pre">Device</span></code>, and <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code>.</p>
+<p>Every stage below uses the same one-register device, so the only thing changing
+between stages is the transport underneath it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ScratchDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""One read/write register, used to prove each transport works."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Register map reached over a protocol stack'</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'ScratchPad'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Read/write test register'</span><span class="p">,</span>
+            <span class="n">offset</span>      <span class="o">=</span> <span class="mh">0x04</span><span class="p">,</span>
+            <span class="n">bitSize</span>     <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span>        <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">disp</span>        <span class="o">=</span> <span class="s1">'</span><span class="si">{:#010x}</span><span class="s1">'</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="stage-1-srp-without-a-network">
+<h2>Stage 1: SRP Without A Network<a class="headerlink" href="#stage-1-srp-without-a-network" title="Link to this heading"></a></h2>
+<p><strong>SRP</strong> (Streaming Register Protocol) is how Rogue turns register reads and
+writes into stream frames. <code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> is the host-side master: it accepts memory
+transactions from a <code class="docutils literal notranslate"><span class="pre">Device</span></code> and emits SRP request frames.</p>
+<p>Something has to answer those frames. On real hardware that is firmware; here
+<code class="docutils literal notranslate"><span class="pre">SrpV3Emulation</span></code> plays the role, servicing requests from its own memory store:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SrpRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Stage 1: SRPv3 talking to a software SRP endpoint.</span>
+
+<span class="sd">    ``SrpV3Emulation`` answers SRP requests from an internal memory store, so</span>
+<span class="sd">    the whole register path is exercised with no transport and no hardware.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'SRP over emulation'</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emu</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3Emulation</span><span class="p">()</span>
+
+        <span class="c1"># Bi-directional: requests flow to the emulator, responses come back.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_srp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emu</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_srp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_emu</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ScratchDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Dev'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_srp</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Two details matter. The <code class="docutils literal notranslate"><span class="pre">==</span></code> operator makes a <strong>bi-directional</strong> connection,
+which SRP needs because every request expects a response — <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> would only
+wire the outbound half. And <code class="docutils literal notranslate"><span class="pre">memBase=self._srp</span></code> points the <code class="docutils literal notranslate"><span class="pre">Device</span></code> at the
+SRP master rather than at a memory space, so its transactions become SRP frames.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ScratchPad = 0xcafebabe
+</pre></div>
+</div>
+<p>The register round-trips through a real protocol implementation. No emulated
+memory space is involved this time: <code class="docutils literal notranslate"><span class="pre">Emulate</span></code> is gone, replaced by an
+endpoint that speaks SRP.</p>
+</section>
+<section id="stage-2-cross-a-process-boundary">
+<h2>Stage 2: Cross A Process Boundary<a class="headerlink" href="#stage-2-cross-a-process-boundary" title="Link to this heading"></a></h2>
+<p>SRP frames are still moving inside one process. The TCP bridge changes that:
+<code class="docutils literal notranslate"><span class="pre">TcpServer</span></code> exposes a local memory slave on a socket, and <code class="docutils literal notranslate"><span class="pre">TcpClient</span></code>
+forwards a <code class="docutils literal notranslate"><span class="pre">Device</span></code>’s transactions to it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TcpBridgeRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Stage 2: the same register path crossing a TCP socket.</span>
+
+<span class="sd">    ``TcpServer`` fronts the memory slave and ``TcpClient`` feeds the Device.</span>
+<span class="sd">    In a real system these two halves live in different processes, or on</span>
+<span class="sd">    different machines; here both ends run locally so the example is runnable.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">11000</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Registers over a TCP bridge'</span><span class="p">,</span>
+                         <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sim</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Emulate</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span>
+
+        <span class="c1"># Server side: bridge -&gt; emulated memory space.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sim</span>
+
+        <span class="c1"># Client side: Device -&gt; bridge.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">interface</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ScratchDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Dev'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Note the connection direction: <code class="docutils literal notranslate"><span class="pre">self._server</span> <span class="pre">&gt;&gt;</span> <span class="pre">self._sim</span></code>. The bridge is the
+master here — it receives transactions from the network and drives them into the
+memory slave. Writing <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> raises <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ScratchPad = 0xabcd1234
+</pre></div>
+</div>
+<p>Both halves run in one process here so the example is a single file. In practice
+the point of this bridge is that they need not: the server can run on an
+embedded CPU next to the hardware while the client runs on a workstation. See
+<a class="reference internal" href="../memory_interface/tcp_bridge.html"><span class="doc">Memory TCP Bridge</span></a> for the two-process form.</p>
+</section>
+<section id="stage-3-the-full-transport-stack">
+<h2>Stage 3: The Full Transport Stack<a class="headerlink" href="#stage-3-the-full-transport-stack" title="Link to this heading"></a></h2>
+<p>Real links are lossy and carry more than one kind of traffic. Three layers
+handle that, and <code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> bundles them:</p>
+<ul class="simple">
+<li><p><strong>UDP</strong> moves datagrams. Fast, and makes no delivery guarantee.</p></li>
+<li><p><strong>RSSI</strong> adds reliability on top — sequence numbers, acknowledgements,
+retransmission. This is what makes a dropped register write recoverable.</p></li>
+<li><p><strong>Packetizer</strong> multiplexes several logical channels over the single link, so
+register access and bulk data can share one connection.</p></li>
+</ul>
+<p>Instantiating <code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> twice, once with <code class="docutils literal notranslate"><span class="pre">server=True</span></code>, gives a complete
+link with no firmware at either end:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">NetworkRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Stage 3: UDP + RSSI + packetizer + SRP, client and server on loopback.</span>
+
+<span class="sd">    ``UdpRssiPack`` bundles the three transport layers that normally sit</span>
+<span class="sd">    between a host and a board. Running it twice -- once with ``server=True``</span>
+<span class="sd">    -- gives a complete link with no NIC or firmware involved.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Registers over UDP + RSSI + packetizer'</span><span class="p">,</span>
+                         <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Firmware side: server transport with an SRP endpoint behind it.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">UdpRssiPack</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Server'</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">server</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">jumbo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">packVer</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_emu</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3Emulation</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_emu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_emu</span>
+
+        <span class="c1"># Host side: client transport driving an SRP master.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">UdpRssiPack</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Client'</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">server</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">jumbo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">packVer</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_srp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_srp</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ScratchDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Dev'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_srp</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">waitForLink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">15.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Block until RSSI reports the link open.</span>
+
+<span class="sd">        RSSI performs a handshake, so the link is not usable the instant the</span>
+<span class="sd">        tree starts. Poll rather than guessing a sleep duration.</span>
+<span class="sd">        """</span>
+        <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
+        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Client</span><span class="o">.</span><span class="n">rssiOpen</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">application(0)</span></code> selects packetizer channel 0 and connects it to the SRP
+endpoint. Other channels are free for data streams — that is the multiplexing
+the packetizer provides.</p>
+<p>RSSI performs a handshake, so the link is not usable the instant the tree
+starts. Poll for it rather than guessing a sleep:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span><span class="w"> </span><span class="nf">waitForLink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">15.0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Block until RSSI reports the link open.</span>
+
+<span class="sd">        RSSI performs a handshake, so the link is not usable the instant the</span>
+<span class="sd">        tree starts. Poll rather than guessing a sleep duration.</span>
+<span class="sd">        """</span>
+        <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
+        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Client</span><span class="o">.</span><span class="n">rssiOpen</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rssi link open: True
+ScratchPad = 0xfeedface
+</pre></div>
+</div>
+</section>
+<section id="running-all-three">
+<h2>Running All Three<a class="headerlink" href="#running-all-three" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>protocol_stack.py
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>--- Stage 1: SRP over emulation
+   ScratchPad = 0xcafebabe
+--- Stage 2: registers over a TCP bridge
+   ScratchPad = 0xabcd1234
+--- Stage 3: registers over UDP + RSSI + packetizer
+   rssi link open: True
+   ScratchPad = 0xfeedface
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Device</span></code> code never changed. That is the point of the layering: a
+<code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> does not know or care whether its transactions end up in an
+emulator, cross a socket, or traverse UDP with retransmission. Swapping the
+transport is a change to the <code class="docutils literal notranslate"><span class="pre">Root</span></code>, not to the register map.</p>
+</section>
+<section id="choosing-a-stack">
+<h2>Choosing A Stack<a class="headerlink" href="#choosing-a-stack" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Situation</p></th>
+<th class="head"><p>Reasonable choice</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Unit tests, CI, register-map development</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> + <code class="docutils literal notranslate"><span class="pre">SrpV3Emulation</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Hardware on an embedded CPU, control from a workstation</p></td>
+<td><p>TCP bridge, or <code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> if the link is lossy</p></td>
+</tr>
+<tr class="row-even"><td><p>Ethernet-attached FPGA</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> — the usual production choice</p></td>
+</tr>
+<tr class="row-odd"><td><p>Local PCIe or DMA hardware</p></td>
+<td><p>No protocol stack; see <a class="reference internal" href="../built_in_modules/hardware/index.html"><span class="doc">Hardware</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="where-to-go-next">
+<h2>Where To Go Next<a class="headerlink" href="#where-to-go-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../built_in_modules/protocols/index.html"><span class="doc">Protocols</span></a> — every protocol module, with
+options this tutorial did not use.</p></li>
+<li><p><a class="reference internal" href="../built_in_modules/protocols/srp/index.html"><span class="doc">SRP Protocol</span></a> — SRP versions and when each
+applies.</p></li>
+<li><p><a class="reference internal" href="../built_in_modules/protocols/rssi/index.html"><span class="doc">RSSI Protocol</span></a> — RSSI tuning: buffer counts,
+timeouts, retransmission.</p></li>
+<li><p><a class="reference internal" href="../memory_interface/index.html"><span class="doc">Memory Interface</span></a> — the transaction model underneath all of this.</p></li>
+<li><p><a class="reference internal" href="commands_and_groups.html"><span class="doc">Commands, Blocks, And Groups</span></a> — continue with commands, blocks,
+and groups.</p></li>
+</ul>
+</section>
+<section id="hardware-based-walkthroughs">
+<h2>Hardware-Based Walkthroughs<a class="headerlink" href="#hardware-based-walkthroughs" title="Link to this heading"></a></h2>
+<p>To point this stack at a real board, replace <code class="docutils literal notranslate"><span class="pre">UdpRssiPack(server=True)</span></code> with
+actual firmware and give the client the board’s IP address — the host-side code
+is otherwise unchanged. See
+<a class="reference external" href="https://slaclab.github.io/Simple-PGPv4-KCU105-Example/">Simple-PGPv4-KCU105 Example</a>
+for a complete hardware bring-up.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../getting_started/pyrogue_tree_example/full_root.html" class="btn btn-neutral float-left" title="Review The Complete Root Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="commands_and_groups.html" class="btn btn-neutral float-right" title="Commands, Blocks, And Groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

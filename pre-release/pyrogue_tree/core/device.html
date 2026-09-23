@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device &mdash; Rogue v6.15.0-34-gd7f317b6b documentation</title>
+  <title>Device &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4318a8c9"></script>
+      <script src="../../_static/documentation_options.js?v=5645df5b"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,10 +63,19 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
@@ -93,10 +102,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -565,9 +572,10 @@ tree traversal. Common reasons include:</p>
 <li><p>Commit or strobe registers that must be pulsed around updates.</p></li>
 <li><p>Custom ordering across child Devices.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SequencedDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SequencedDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="c1"># Pre-transaction behavior.</span>
+        <span class="c1"># ...</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span>
             <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
             <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span>
@@ -576,6 +584,7 @@ tree traversal. Common reasons include:</p>
             <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="c1"># Post-transaction behavior.</span>
+        <span class="c1"># ...</span>
 </pre></div>
 </div>
 <p>For the lower-level transaction and grouping model behind those APIs, see
@@ -615,7 +624,7 @@ override operational hooks such as:</p>
 application logic.</p>
 <p>Device also supports decorators that create <code class="xref py py-class docutils literal notranslate"><span class="pre">LocalCommand</span></code>
 Nodes from local functions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pyrogue</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'ReadConfig'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Load config file'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pr</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'ReadConfig'</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Load config file'</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_readConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">])</span>
 </pre></div>

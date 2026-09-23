@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PyRogue Tree Getting Started Guide &mdash; Rogue v6.15.0-34-gd7f317b6b documentation</title>
+  <title>Build Your First Rogue Application &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=4318a8c9"></script>
+      <script src="../_static/documentation_options.js?v=5645df5b"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,31 +63,42 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">PyRogue Tree Getting Started Guide</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Build Your First Rogue Application</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pyrogue_tree_example/p_t_root.html">Build Your First PyRogue Root</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyrogue_tree_example/p_t_device.html">Create A Custom PyRogue Device</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyrogue_tree_example/full_root.html">Review The Complete Root Example</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/protocol_stack.html">Build A Protocol Stack With No Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/commands_and_groups.html">Commands, Blocks, And Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/file_capture.html">Capture Data To Disk And Replay It</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/custom_cpp_module.html">Extend Rogue With C++</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/device_workflow_tutorial.html">Device Workflow Tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/system_integration_tutorial.html">System Integration Tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -105,7 +116,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../tutorials/index.html">Tutorials</a></li>
-      <li class="breadcrumb-item active">PyRogue Tree Getting Started Guide</li>
+      <li class="breadcrumb-item active">Build Your First Rogue Application</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/getting_started/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -115,32 +126,331 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pyrogue-tree-getting-started-guide">
-<span id="starting-tutorials"></span><span id="getting-started"></span><h1>PyRogue Tree Getting Started Guide<a class="headerlink" href="#pyrogue-tree-getting-started-guide" title="Link to this heading"></a></h1>
-<p>This guide provides a quick walkthrough of a basic PyRogue tree application.
-It walks from a minimal root setup through custom device definition, then
-finishes with complete reference code.</p>
-<section id="recommended-learning-path">
-<h2>Recommended Learning Path<a class="headerlink" href="#recommended-learning-path" title="Link to this heading"></a></h2>
-<ol class="arabic simple">
-<li><p><a class="reference internal" href="pyrogue_tree_example/p_t_root.html#tutorials-p-t-root"><span class="std std-ref">Build Your First PyRogue Root</span></a> - build a minimal working root and add common
-components.</p></li>
-<li><p><a class="reference internal" href="pyrogue_tree_example/p_t_device.html#tutorials-p-t-device"><span class="std std-ref">Create A Custom PyRogue Device</span></a> - define a custom <cite>pyrogue.Device</cite> with
-<cite>RemoteVariable</cite>, <cite>LinkVariable</cite>, and <cite>RemoteCommand</cite> entries.</p></li>
-<li><p><a class="reference internal" href="pyrogue_tree_example/full_root.html#full-root-definition"><span class="std std-ref">Review The Complete Root Example</span></a> - review the full assembled example in one place.</p></li>
-<li><p><a class="reference internal" href="../pyrogue_tree/index.html#pyrogue-tree"><span class="std std-ref">PyRogue Tree</span></a> - review the PyRogue Tree architecture and concepts.</p></li>
-<li><p><a class="reference internal" href="../stream_interface/index.html#stream-interface-docs"><span class="std std-ref">Stream Interface</span></a> and <a class="reference internal" href="../memory_interface/index.html#memory-interface-docs"><span class="std std-ref">Memory Interface</span></a> - review lower-level interfaces as needed.</p></li>
-</ol>
+  <section id="build-your-first-rogue-application">
+<span id="starting-tutorials"></span><span id="getting-started"></span><h1>Build Your First Rogue Application<a class="headerlink" href="#build-your-first-rogue-application" title="Link to this heading"></a></h1>
+<p>Build a complete, working Rogue application from an empty file, run it, and
+read and write registers from it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>No hardware required.</strong> This guide uses Rogue’s built-in memory emulator
+and PRBS data generator, so everything here runs on a laptop with nothing
+attached. For board-level walkthroughs that do use real hardware, see
+<a class="reference internal" href="#getting-started-hardware"><span class="std std-ref">Hardware-Based Walkthroughs</span></a> at the end of this page.</p>
+</div>
+<p>By the end you will have a single Python file, about 45 lines, containing a
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> with an emulated register space, a custom <code class="docutils literal notranslate"><span class="pre">Device</span></code> with registers you
+can read and write, and a self-testing data stream.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>A working Rogue installation is the only requirement. If you do not have one
+yet, <a class="reference internal" href="../installing/index.html"><span class="doc">Installing &amp; Compiling Rogue</span></a> covers the options; the Miniforge route in
+<a class="reference internal" href="../installing/miniforge.html"><span class="doc">Installing Rogue With Miniforge</span></a> is the quickest. Verify it before continuing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import pyrogue; print(pyrogue.__version__)"</span>
+</pre></div>
+</div>
+<p>This should print a version such as <code class="docutils literal notranslate"><span class="pre">6.15.0</span></code>. If it raises
+<code class="docutils literal notranslate"><span class="pre">ImportError</span></code>, Rogue is not on your <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> yet — return to
+<a class="reference internal" href="../installing/index.html"><span class="doc">Installing &amp; Compiling Rogue</span></a>.</p>
+<p>Some familiarity with Python classes is assumed. No C++ is needed.</p>
+</section>
+<section id="step-1-a-root-that-runs">
+<h2>Step 1: A Root That Runs<a class="headerlink" href="#step-1-a-root-that-runs" title="Link to this heading"></a></h2>
+<p>Every Rogue application is a tree with a <a class="reference internal" href="../pyrogue_tree/core/root.html#pyrogue-tree-node-root"><span class="std std-ref">Root</span></a>
+at the top. Create <code class="docutils literal notranslate"><span class="pre">my_app.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Minimal example root'</span><span class="p">,</span>
+                         <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Tree is running'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Run it with <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">my_app.py</span></code>. The <code class="docutils literal notranslate"><span class="pre">with</span></code> block is what starts and cleanly
+stops the tree, so always use it rather than constructing <code class="docutils literal notranslate"><span class="pre">MyRoot()</span></code> bare.</p>
+<p>This tree is empty but functional. The next step gives it something to talk to.</p>
+</section>
+<section id="step-2-an-emulated-register-space">
+<h2>Step 2: An Emulated Register Space<a class="headerlink" href="#step-2-an-emulated-register-space" title="Link to this heading"></a></h2>
+<p>Normally a <code class="docutils literal notranslate"><span class="pre">Root</span></code> reaches hardware over PCIe, Ethernet, or similar. Instead we
+attach a <a class="reference internal" href="../built_in_modules/simulation/mememulate.html#interfaces-simulation-mememulate"><span class="std std-ref">memory emulator</span></a> — a software
+stand-in that behaves like a register space, which is what makes this guide
+hardware-free.</p>
+<p>Add the import and the three highlighted lines:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="hll"><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span>
+</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Minimal example root'</span><span class="p">,</span>
+                         <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="hll">        <span class="n">sim</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Emulate</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span>
+</span><span class="hll">        <span class="n">sim</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="s1">'SimSlave'</span><span class="p">)</span>
+</span><span class="hll">        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</span></pre></div>
+</div>
+<p>The arguments are the word size in bytes (4) and the size of the emulated space
+(<code class="docutils literal notranslate"><span class="pre">0x1000</span></code>, so 4 KiB). <code class="docutils literal notranslate"><span class="pre">addInterface</span></code> hands ownership to the <code class="docutils literal notranslate"><span class="pre">Root</span></code> so the
+emulator is started and stopped with the tree.</p>
+</section>
+<section id="step-3-a-device-with-registers">
+<h2>Step 3: A Device With Registers<a class="headerlink" href="#step-3-a-device-with-registers" title="Link to this heading"></a></h2>
+<p>A <a class="reference internal" href="../pyrogue_tree/core/device.html#pyrogue-tree-node-device"><span class="std std-ref">Device</span></a> groups registers. Each
+<a class="reference internal" href="../pyrogue_tree/core/remote_variable.html#pyrogue-tree-node-variable-remote-variable"><span class="std std-ref">RemoteVariable</span></a> maps to an
+address in the memory space; a
+<a class="reference internal" href="../pyrogue_tree/core/local_variable.html#pyrogue-tree-node-variable-local-variable"><span class="std std-ref">LocalVariable</span></a> is computed in
+Python and touches no hardware at all.</p>
+<p>Add this class above <code class="docutils literal notranslate"><span class="pre">MyRoot</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Minimal register map'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'ScratchPad'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Read/write test register'</span><span class="p">,</span>
+            <span class="n">offset</span>      <span class="o">=</span> <span class="mh">0x04</span><span class="p">,</span>
+            <span class="n">bitSize</span>     <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span>        <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">disp</span>        <span class="o">=</span> <span class="s1">'</span><span class="si">{:#010x}</span><span class="s1">'</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'Doubled'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">offset</span></code> is the byte address within the device, <code class="docutils literal notranslate"><span class="pre">bitSize</span></code> the register
+width, <code class="docutils literal notranslate"><span class="pre">mode</span></code> the access policy (<code class="docutils literal notranslate"><span class="pre">'RW'</span></code> or <code class="docutils literal notranslate"><span class="pre">'RO'</span></code>), and <code class="docutils literal notranslate"><span class="pre">disp</span></code> the
+display format — <code class="docutils literal notranslate"><span class="pre">'{:#010x}'</span></code> renders values as <code class="docutils literal notranslate"><span class="pre">0x1234abcd</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Doubled</span></code> reads no register. Its <code class="docutils literal notranslate"><span class="pre">localGet</span></code> callback runs on demand, which is
+the normal way to expose a derived quantity.</p>
+<p>Then add the device inside <code class="docutils literal notranslate"><span class="pre">MyRoot.__init__</span></code>, after the emulator:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MyDevice'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="n">sim</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">memBase=sim</span></code> points the device at the emulator, and <code class="docutils literal notranslate"><span class="pre">offset=0x0</span></code> places it
+at the base of that space. A register’s final address is the device <code class="docutils literal notranslate"><span class="pre">offset</span></code>
+plus the variable <code class="docutils literal notranslate"><span class="pre">offset</span></code> — so <code class="docutils literal notranslate"><span class="pre">ScratchPad</span></code> lands at <code class="docutils literal notranslate"><span class="pre">0x04</span></code>.</p>
+</section>
+<section id="step-4-a-self-testing-data-stream">
+<h2>Step 4: A Self-Testing Data Stream<a class="headerlink" href="#step-4-a-self-testing-data-stream" title="Link to this heading"></a></h2>
+<p>Rogue’s other half is the <a class="reference internal" href="../stream_interface/index.html#interfaces-stream"><span class="std std-ref">stream interface</span></a>, for bulk
+data rather than registers. A PRBS transmitter generates test frames and a
+matching receiver validates them, so you get a working data path with no
+hardware and no custom code.</p>
+<p>Add the import and, at the end of <code class="docutils literal notranslate"><span class="pre">MyRoot.__init__</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.prbs</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">prbs</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'PrbsTx'</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_prbsRx</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">prbs</span><span class="o">.</span><span class="n">PrbsRx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'PrbsRx'</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbsRx</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbsRx</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> operator connects a stream source to a destination — covered further
+in <a class="reference internal" href="../stream_interface/connecting.html"><span class="doc">Connecting Streams</span></a>.</p>
+</section>
+<section id="step-5-drive-it">
+<h2>Step 5: Drive It<a class="headerlink" href="#step-5-drive-it" title="Link to this heading"></a></h2>
+<p>Replace the <code class="docutils literal notranslate"><span class="pre">__main__</span></code> block so it writes a register, reads it back, and runs
+the stream for one second:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">MyDevice</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x1234ABCD</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'ScratchPad ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">MyDevice</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Doubled    ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">MyDevice</span><span class="o">.</span><span class="n">Doubled</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+
+        <span class="n">root</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Frames sent     ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txCount</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Frames received ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">rxCount</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Errors          ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">rxErrors</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Nodes are reached by name as plain attributes, so <code class="docutils literal notranslate"><span class="pre">MyDevice</span></code> becomes
+<code class="docutils literal notranslate"><span class="pre">root.MyDevice</span></code>. Use <code class="docutils literal notranslate"><span class="pre">.set()</span></code> to write, <code class="docutils literal notranslate"><span class="pre">.get()</span></code> to read, and
+<code class="docutils literal notranslate"><span class="pre">.valueDisp()</span></code> to get the value formatted through <code class="docutils literal notranslate"><span class="pre">disp</span></code>.</p>
+</section>
+<section id="running-it">
+<h2>Running It<a class="headerlink" href="#running-it" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>my_app.py
+</pre></div>
+</div>
+<p>Output, with the frame counts depending on your machine’s speed:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ScratchPad = 0x1234abcd
+Doubled    = 610883482
+Frames sent     = 30254
+Frames received = 30254
+Errors          = 0
+</pre></div>
+</div>
+<p>Three things worth noting. <code class="docutils literal notranslate"><span class="pre">ScratchPad</span></code> reads back what was written, so the
+emulated register space works. <code class="docutils literal notranslate"><span class="pre">Doubled</span></code> is exactly twice <code class="docutils literal notranslate"><span class="pre">0x1234ABCD</span></code>
+(<code class="docutils literal notranslate"><span class="pre">305441741</span> <span class="pre">×</span> <span class="pre">2</span></code>), confirming the computed variable. Sent and received counts
+match at zero errors, so the stream path is intact.</p>
+</section>
+<section id="complete-listing">
+<h2>Complete Listing<a class="headerlink" href="#complete-listing" title="Link to this heading"></a></h2>
+<p>The whole application:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.prbs</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Minimal register map'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'ScratchPad'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'Read/write test register'</span><span class="p">,</span>
+            <span class="n">offset</span>      <span class="o">=</span> <span class="mh">0x04</span><span class="p">,</span>
+            <span class="n">bitSize</span>     <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span>        <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RW'</span><span class="p">,</span>
+            <span class="n">disp</span>        <span class="o">=</span> <span class="s1">'</span><span class="si">{:#010x}</span><span class="s1">'</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'Doubled'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'Minimal example root'</span><span class="p">,</span>
+                         <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">sim</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Emulate</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span>
+        <span class="n">sim</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="s1">'SimSlave'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'MyDevice'</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="n">sim</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">prbs</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'PrbsTx'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbsRx</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">prbs</span><span class="o">.</span><span class="n">PrbsRx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'PrbsRx'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbsRx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbsRx</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">MyDevice</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x1234ABCD</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'ScratchPad ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">MyDevice</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Doubled    ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">MyDevice</span><span class="o">.</span><span class="n">Doubled</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+
+        <span class="n">root</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Frames sent     ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">txCount</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Frames received ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">rxCount</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Errors          ='</span><span class="p">,</span> <span class="n">root</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">rxErrors</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-a-gui">
+<h2>Adding A GUI<a class="headerlink" href="#adding-a-gui" title="Link to this heading"></a></h2>
+<p>External tools such as the PyDM GUI attach over a ZMQ control server. A
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> does <strong>not</strong> start one by default, so two changes are needed.</p>
+<p>First, add the server inside <code class="docutils literal notranslate"><span class="pre">MyRoot.__init__</span></code> (this also needs
+<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyrogue.interfaces</span></code> at the top of the file):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">'127.0.0.1'</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9103</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All three arguments are keyword-only and required. Passing <code class="docutils literal notranslate"><span class="pre">port=0</span></code> lets the
+operating system choose a free port instead, which avoids collisions when
+several applications run at once — but then the port is not known in advance, so
+read it back from <code class="docutils literal notranslate"><span class="pre">root.zmqServer.address</span></code> rather than assuming <code class="docutils literal notranslate"><span class="pre">9103</span></code>.</p>
+<p>Second, the tree must stay alive for a client to connect to it. As written, the
+script exits after one second. Replace <code class="docutils literal notranslate"><span class="pre">time.sleep(1.0)</span></code> with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pr</span><span class="o">.</span><span class="n">waitCntrlC</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Start the application. It now prints the server details on startup:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Start: Started zmqServer on ports 9103-9105
+    To start a gui: python -m pyrogue gui --server='localhost:9103'
+    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port=9103)
+</pre></div>
+</div>
+<p>Then, in a second terminal, run the command from that banner:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>gui<span class="w"> </span>--server<span class="o">=</span><span class="s1">'localhost:9103'</span>
+</pre></div>
+</div>
+<p>Your device and variables appear in a tree you can edit live. Press <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code>
+in the first terminal to shut down.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">ConnectionError</span></code> mentioning <code class="docutils literal notranslate"><span class="pre">Failed</span> <span class="pre">to</span> <span class="pre">connect</span></code> almost always means
+one of three things: no <code class="docutils literal notranslate"><span class="pre">ZmqServer</span></code> was added to the <code class="docutils literal notranslate"><span class="pre">Root</span></code>, the
+application already exited (so nothing is listening), or the port does not
+match the one the server actually chose. Use the exact command from the
+startup banner, since with <code class="docutils literal notranslate"><span class="pre">port=0</span></code> the ports vary between runs.</p>
+</div>
+<p>See <a class="reference internal" href="../pydm/index.html"><span class="doc">Using The PyDM GUI</span></a> for the GUI itself, and
+<a class="reference internal" href="../pyrogue_tree/client_interfaces/index.html"><span class="doc">Client Interfaces</span></a> for scripted access instead of a
+GUI.</p>
+</section>
+<section id="a-larger-worked-example">
+<h2>A Larger Worked Example<a class="headerlink" href="#a-larger-worked-example" title="Link to this heading"></a></h2>
+<p>Rogue ships a much fuller version of this application, adding a realistic
+AXI-Lite register map, a file writer, run control, EPICS support, and live
+plotting. Run it directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue.examples<span class="w"> </span>--gui
+</pre></div>
+</div>
+<p>The source is at <code class="docutils literal notranslate"><span class="pre">python/pyrogue/examples/</span></code> in the Rogue repository. The pages
+below walk through it, and follow naturally from what you just built:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="pyrogue_tree_example/p_t_root.html#tutorials-p-t-root"><span class="std std-ref">Build Your First PyRogue Root</span></a> — the same <code class="docutils literal notranslate"><span class="pre">Root</span></code> pattern with production
+components attached.</p></li>
+<li><p><a class="reference internal" href="pyrogue_tree_example/p_t_device.html#tutorials-p-t-device"><span class="std std-ref">Create A Custom PyRogue Device</span></a> — a full <code class="docutils literal notranslate"><span class="pre">AxiVersion</span></code> device using
+<code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> and indexed register arrays.</p></li>
+<li><p><a class="reference internal" href="pyrogue_tree_example/full_root.html#full-root-definition"><span class="std std-ref">Review The Complete Root Example</span></a> — that example assembled in one listing.</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 </div>
 </section>
-<section id="external-hardware-oriented-walkthrough">
-<h2>External Hardware-Oriented Walkthrough<a class="headerlink" href="#external-hardware-oriented-walkthrough" title="Link to this heading"></a></h2>
-<p>For a board-focused example using Rogue with hardware:</p>
+<section id="where-to-go-next">
+<h2>Where To Go Next<a class="headerlink" href="#where-to-go-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../pyrogue_tree/index.html"><span class="doc">PyRogue Tree</span></a> — the tree model in depth: devices, variables,
+commands, and lifecycle.</p></li>
+<li><p><a class="reference internal" href="../pyrogue_tree/core/remote_variable.html"><span class="doc">RemoteVariable</span></a> — register addressing, bit packing,
+and access modes beyond the basics.</p></li>
+<li><p><a class="reference internal" href="../stream_interface/index.html"><span class="doc">Stream Interface</span></a> — the data path: frames, sources, sinks, and
+the built-in stream modules.</p></li>
+<li><p><a class="reference internal" href="../memory_interface/index.html"><span class="doc">Memory Interface</span></a> — how register transactions work below the
+<code class="docutils literal notranslate"><span class="pre">Device</span></code> layer.</p></li>
+<li><p><a class="reference internal" href="../cookbook/index.html"><span class="doc">Cookbook</span></a> — task-oriented recipes for common patterns.</p></li>
+<li><p><a class="reference internal" href="../tutorials/index.html"><span class="doc">Tutorials</span></a> — longer guided workflows.</p></li>
+</ul>
+</section>
+<section id="hardware-based-walkthroughs">
+<span id="getting-started-hardware"></span><h2>Hardware-Based Walkthroughs<a class="headerlink" href="#hardware-based-walkthroughs" title="Link to this heading"></a></h2>
+<p>Everything above is deliberately hardware-free. When you are ready to drive a
+real board, these external examples replace the emulator with actual
+transports:</p>
 <ul class="simple">
 <li><p>Tutorial page: <a class="reference external" href="https://slaclab.github.io/Simple-PGPv4-KCU105-Example/">Simple-PGPv4-KCU105 Example</a></p></li>
 <li><p>Source repository: <a class="reference external" href="https://github.com/slaclab/Simple-PGPv4-KCU105-Example">slaclab/Simple-PGPv4-KCU105-Example</a></p></li>
 </ul>
+<p>Within this documentation, <a class="reference internal" href="../built_in_modules/hardware/index.html"><span class="doc">Hardware</span></a> covers the
+driver-backed endpoints (AXI, DMA, raw memory maps) that take the emulator’s
+place, and <a class="reference internal" href="../built_in_modules/protocols/index.html"><span class="doc">Protocols</span></a> covers network transports
+such as UDP, RSSI, and SRP.</p>
 </section>
 </section>
 

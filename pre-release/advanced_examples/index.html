@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced Tutorials &mdash; Rogue v6.15.0-34-gd7f317b6b documentation</title>
+  <title>Advanced Tutorials &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=4318a8c9"></script>
+      <script src="../_static/documentation_options.js?v=5645df5b"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,26 +63,37 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials/index.html">Tutorials</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html">Build Your First Rogue Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/protocol_stack.html">Build A Protocol Stack With No Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/commands_and_groups.html">Commands, Blocks, And Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/file_capture.html">Capture Data To Disk And Replay It</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/custom_cpp_module.html">Extend Rogue With C++</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/device_workflow_tutorial.html">Device Workflow Tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/system_integration_tutorial.html">System Integration Tutorial</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Advanced Tutorials</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -114,7 +125,7 @@
 <span id="complex-tutorials"></span><h1>Advanced Tutorials<a class="headerlink" href="#advanced-tutorials" title="Link to this heading"></a></h1>
 <p>This section preserves older end-to-end examples that are still useful as
 reference material. Canonical learning paths now start from
-<a class="reference internal" href="../tutorials/index.html"><span class="doc">Tutorials</span></a>, <a class="reference internal" href="../getting_started/index.html"><span class="doc">PyRogue Tree Getting Started Guide</span></a>, and
+<a class="reference internal" href="../tutorials/index.html"><span class="doc">Tutorials</span></a>, <a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a>, and
 <a class="reference internal" href="../pyrogue_tree/index.html"><span class="doc">PyRogue Tree</span></a>.</p>
 </section>
 

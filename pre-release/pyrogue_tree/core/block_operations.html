@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device Block Operations &mdash; Rogue v6.15.0-34-gd7f317b6b documentation</title>
+  <title>Device Block Operations &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=4318a8c9"></script>
+      <script src="../../_static/documentation_options.js?v=5645df5b"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,10 +63,19 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
@@ -93,10 +102,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -399,7 +406,7 @@ verifies by setting:</p>
 <p>There is not a separate <code class="docutils literal notranslate"><span class="pre">Device(...,</span> <span class="pre">waitEach=...)</span></code> constructor argument in
 this implementation. If a Device should always use this stricter behavior, set
 <code class="docutils literal notranslate"><span class="pre">forceWaitEach</span></code> in the subclass:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">forceWaitEach</span> <span class="o">=</span> <span class="kc">True</span>
@@ -442,13 +449,13 @@ one.</p>
 <p>This pattern is often needed for ADC and similar devices whose configuration
 registers are shadowed internally and do not take effect until a separate
 update strobe is written:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">'DeviceUpdate'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0x3FC</span><span class="p">,</span>
-            <span class="n">function</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">touchZero</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">touchZero</span><span class="p">,</span>
         <span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -473,17 +480,17 @@ written through the normal block path. A closely related pattern is an
 <p>Another common pattern is to bracket reads with a hardware control action when
 the live status registers would otherwise change while the read sequence is in
 progress:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyReader</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyReader</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="s1">'FreezeDebug'</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="s1">'Freeze debug snapshot registers during readout'</span><span class="p">,</span>
             <span class="n">offset</span><span class="o">=</span><span class="mh">0xA0</span><span class="p">,</span>
             <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">base</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
-            <span class="n">function</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="o">.</span><span class="n">touch</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="o">.</span><span class="n">touch</span><span class="p">,</span>
         <span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">readBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -515,7 +522,7 @@ trees need a stricter sequence.</p>
 generator must be configured first, some DAC setup must complete before a JESD
 initialization step runs, and the ADC devices should only be configured after
 that intermediate hardware procedure:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyCarrier</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyCarrier</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span>
             <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>

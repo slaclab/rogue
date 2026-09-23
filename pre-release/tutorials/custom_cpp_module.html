@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extend Rogue With C++ &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5645df5b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=51977998"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Device Workflow Tutorial" href="device_workflow_tutorial.html" />
+    <link rel="prev" title="Capture Data To Disk And Replay It" href="file_capture.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html">Build Your First Rogue Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol_stack.html">Build A Protocol Stack With No Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands_and_groups.html">Commands, Blocks, And Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_capture.html">Capture Data To Disk And Replay It</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Extend Rogue With C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device_workflow_tutorial.html">Device Workflow Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="system_integration_tutorial.html">System Integration Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Extend Rogue With C++</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/custom_cpp_module.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="extend-rogue-with-c">
+<span id="tutorial-custom-cpp-module"></span><h1>Extend Rogue With C++<a class="headerlink" href="#extend-rogue-with-c" title="Link to this heading"></a></h1>
+<p>Python is fast enough for most stream work, because the heavy lifting already
+happens in Rogue’s C++ core. But when a per-frame transform sits in the data
+path at high rate, the Python callback becomes the bottleneck — and the fix is to
+write that stage in C++ and expose it to Python.</p>
+<p>This tutorial builds a working C++ stream module, loads it into Python, and wraps
+it in a <code class="docutils literal notranslate"><span class="pre">Device</span></code>. Rather than inventing new code, it walks the module Rogue’s
+own continuous integration compiles as a downstream build test, so the source is
+guaranteed to work.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>No hardware required.</strong> The module is a pure stream transform, driven by a
+Python source and sink.</p>
+</div>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Finish <a class="reference internal" href="../getting_started/index.html"><span class="doc">Build Your First Rogue Application</span></a>, and read
+<a class="reference internal" href="../stream_interface/sending.html"><span class="doc">Sending Frames</span></a> and <a class="reference internal" href="../stream_interface/receiving.html"><span class="doc">Receiving Frames</span></a> — the C++
+class implements the same <code class="docutils literal notranslate"><span class="pre">Master</span></code> and <code class="docutils literal notranslate"><span class="pre">Slave</span></code> roles in native code.</p>
+<p>You also need a C++ toolchain (<code class="docutils literal notranslate"><span class="pre">g++</span></code>), <code class="docutils literal notranslate"><span class="pre">cmake</span></code>, and a Rogue installation
+built with Python support.</p>
+</section>
+<section id="the-module">
+<h2>The Module<a class="headerlink" href="#the-module" title="Link to this heading"></a></h2>
+<p>The source lives at <code class="docutils literal notranslate"><span class="pre">tests/downstream/src/BitInverter.cpp</span></code> in the Rogue
+repository. It inverts every payload byte (<code class="docutils literal notranslate"><span class="pre">byte</span> <span class="pre">^</span> <span class="pre">0xFF</span></code>) and forwards the
+result downstream, subclassing both <code class="docutils literal notranslate"><span class="pre">Master</span></code> and <code class="docutils literal notranslate"><span class="pre">Slave</span></code> so it can sit in the
+middle of a pipeline.</p>
+<p>Four patterns in that file are worth understanding, because every custom module
+repeats them:</p>
+<ul class="simple">
+<li><p>A static <code class="docutils literal notranslate"><span class="pre">create()</span></code> factory returns a <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code>. That is the
+ownership model Rogue uses throughout its graph — never construct these
+objects on the stack.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> is the single ingress hook. It takes the frame lock, walks
+the payload with a <code class="docutils literal notranslate"><span class="pre">FrameIterator</span></code> (which transparently spans the frame’s
+underlying buffers), mutates bytes in place, releases the lock, and calls
+<code class="docutils literal notranslate"><span class="pre">sendFrame()</span></code> inherited from <code class="docutils literal notranslate"><span class="pre">Master</span></code>.</p></li>
+<li><p>The Python bindings are guarded by <code class="docutils literal notranslate"><span class="pre">#ifndef</span> <span class="pre">NO_PYTHON</span></code>, so the same source
+compiles into a Python-free C++ build.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BOOST_PYTHON_MODULE</span></code> registers the bindings. Rogue manages the GIL in its
+own bindings, so no explicit thread initialisation is needed.</p></li>
+</ul>
+<p>The full annotated source is in <a class="reference internal" href="../custom_module/sourcefile.html"><span class="doc">Custom Module Source</span></a>.</p>
+</section>
+<section id="building-it">
+<h2>Building It<a class="headerlink" href="#building-it" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">find_package(Rogue)</span></code> supplies the include paths and libraries. Configure
+against the Rogue installation you will <strong>import from</strong> — see
+<a class="reference internal" href="#tutorial-custom-cpp-module-troubleshooting"><span class="std std-ref">Troubleshooting</span></a> for why that matters:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tests/downstream
+cmake<span class="w"> </span>-B<span class="w"> </span>build<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_PREFIX_PATH<span class="o">=</span><span class="nv">$CONDA_PREFIX</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-DCMAKE_SHARED_LINKER_FLAGS<span class="o">=</span><span class="s2">"-L</span><span class="nv">$CONDA_PREFIX</span><span class="s2">/lib"</span>
+cmake<span class="w"> </span>--build<span class="w"> </span>build
+</pre></div>
+</div>
+<p>The linker flag is needed because <code class="docutils literal notranslate"><span class="pre">RogueConfig.cmake</span></code> lists the core library
+by bare name (<code class="docutils literal notranslate"><span class="pre">rogue-core</span></code>) without a search path, so the linker fails with
+<code class="docutils literal notranslate"><span class="pre">cannot</span> <span class="pre">find</span> <span class="pre">-lrogue-core</span></code> unless you supply one. If your Rogue lives
+somewhere other than a conda environment, substitute that prefix in both places.</p>
+<p>This produces <code class="docutils literal notranslate"><span class="pre">BitInverter.so</span></code>. Put its directory on <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code>, and make
+sure the Rogue library is findable at run time:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$PWD</span>/build:<span class="nv">$PYTHONPATH</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$CONDA_PREFIX</span>/lib:<span class="nv">$LD_LIBRARY_PATH</span>
+</pre></div>
+</div>
+</section>
+<section id="using-it-from-python">
+<h2>Using It From Python<a class="headerlink" href="#using-it-from-python" title="Link to this heading"></a></h2>
+<p>The compiled class behaves exactly like a built-in stream module — it connects
+with <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> and needs no wrapper to function. Drive it with a Python source and
+sink:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ByteSource</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Sends one frame carrying the supplied bytes."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">sendBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ByteCapture</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Keeps the payload of every frame it receives."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_acceptFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="n">buffer</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">getPayload</span><span class="p">())</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">buffer</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Then put the C++ module between them:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">invertThroughModule</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Push bytes through the compiled module and return what comes out."""</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">BitInverter</span>
+
+    <span class="n">source</span> <span class="o">=</span> <span class="n">ByteSource</span><span class="p">()</span>
+    <span class="n">capture</span> <span class="o">=</span> <span class="n">ByteCapture</span><span class="p">()</span>
+
+    <span class="n">source</span> <span class="o">&gt;&gt;</span> <span class="n">BitInverter</span><span class="o">.</span><span class="n">BitInverter</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">capture</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">sendBytes</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">capture</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">capture</span><span class="o">.</span><span class="n">frames</span> <span class="k">else</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>input  : 000fff
+output : fff000
+correct: True
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">0x00</span></code> became <code class="docutils literal notranslate"><span class="pre">0xFF</span></code>, <code class="docutils literal notranslate"><span class="pre">0x0F</span></code> became <code class="docutils literal notranslate"><span class="pre">0xF0</span></code>, <code class="docutils literal notranslate"><span class="pre">0xFF</span></code> became <code class="docutils literal notranslate"><span class="pre">0x00</span></code>.
+A Python <code class="docutils literal notranslate"><span class="pre">Master</span></code> fed a C++ transform which fed a Python <code class="docutils literal notranslate"><span class="pre">Slave</span></code> — mixing
+languages freely in one pipeline is the point of the binding layer.</p>
+</section>
+<section id="wrapping-it-in-a-device">
+<h2>Wrapping It In A Device<a class="headerlink" href="#wrapping-it-in-a-device" title="Link to this heading"></a></h2>
+<p>The C++ object is a stream endpoint, not a <code class="docutils literal notranslate"><span class="pre">Device</span></code>, so it has no place in a
+tree by itself. A thin wrapper gives it a name, a description, and somewhere to
+expose status:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">BitInverterDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Wraps the C++ module so it belongs to a tree.</span>
+
+<span class="sd">    The C++ object is a stream endpoint, not a Device, so it has no place in a</span>
+<span class="sd">    tree by itself. A thin Device wrapper gives it a name, a description, and</span>
+<span class="sd">    somewhere to hang status Variables -- and exposes the raw object so stream</span>
+<span class="sd">    connections can still be made.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inverter</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">'C++ bit-inverting stream module'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inverter</span> <span class="o">=</span> <span class="n">inverter</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">'Description'</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s1">'What the underlying C++ module does'</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">'RO'</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="s1">'Inverts every payload byte (b ^ 0xFF)'</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Let the wrapper sit in a ``a &gt;&gt; wrapper &gt;&gt; b`` chain."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inverter</span> <span class="o">&gt;&gt;</span> <span class="n">other</span>
+        <span class="k">return</span> <span class="n">other</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inverter</span> <span class="o">&lt;&lt;</span> <span class="n">other</span>
+        <span class="k">return</span> <span class="n">other</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">__rshift__</span></code>/<code class="docutils literal notranslate"><span class="pre">__lshift__</span></code> overrides let the wrapper stand in for the raw
+object inside a <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">&gt;&gt;</span> <span class="pre">wrapper</span> <span class="pre">&gt;&gt;</span> <span class="pre">b</span></code> chain, so tree membership does not cost you
+the connection syntax. <a class="reference internal" href="../custom_module/wrapper.html"><span class="doc">Wrapping Custom Module With PyRogue Device</span></a> covers richer wrappers that
+surface C++ counters as PyRogue variables.</p>
+</section>
+<section id="troubleshooting">
+<span id="tutorial-custom-cpp-module-troubleshooting"></span><h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<p>Two failures are worth calling out, because both produce errors that do not
+obviously point at their cause.</p>
+<p><strong>“extension class wrapper … has not been created yet”</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RuntimeError: extension class wrapper for base class
+rogue::interfaces::stream::Master has not been created yet
+</pre></div>
+</div>
+<p>The module was compiled against one Rogue installation and imported alongside a
+different one. Boost.Python registers a class hierarchy per library instance, so
+two copies of <code class="docutils literal notranslate"><span class="pre">librogue-core</span></code> mean the base class your module inherits from is
+not the one Python already knows about.</p>
+<p>This is easy to hit when a source-tree build and a packaged install coexist. Find
+out how many you have:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>find<span class="w"> </span>/<span class="w"> </span>-name<span class="w"> </span><span class="s1">'librogue-core.so*'</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null
+</pre></div>
+</div>
+<p>Then make sure <code class="docutils literal notranslate"><span class="pre">CMAKE_PREFIX_PATH</span></code> at build time, <code class="docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code> at run
+time, and the <code class="docutils literal notranslate"><span class="pre">rogue</span></code> package Python actually imports all refer to the same
+installation.</p>
+<p><strong>“No rule to make target …/lib/librogue-core.so”</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>make: *** No rule to make target '&lt;path&gt;/lib/librogue-core.so.v6.15',
+needed by 'BitInverter.so'.  Stop.
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RogueConfig.cmake</span></code> records an absolute library path assuming an installed
+layout, with the library under <code class="docutils literal notranslate"><span class="pre">lib/</span></code>. A plain in-place source build leaves it
+in the build directory instead, so that path does not exist. Point
+<code class="docutils literal notranslate"><span class="pre">CMAKE_PREFIX_PATH</span></code> at a proper installation — a conda environment, or the
+result of <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> — rather than at a raw build tree.</p>
+</section>
+<section id="when-to-reach-for-c">
+<h2>When To Reach For C++<a class="headerlink" href="#when-to-reach-for-c" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Situation</p></th>
+<th class="head"><p>Recommendation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Prototyping any stream stage</p></td>
+<td><p>Start in Python; it is far quicker to iterate</p></td>
+</tr>
+<tr class="row-odd"><td><p>Python stage measurably limiting throughput</p></td>
+<td><p>Port that one stage to C++</p></td>
+</tr>
+<tr class="row-even"><td><p>Per-frame work on a high-rate path</p></td>
+<td><p>C++ from the outset</p></td>
+</tr>
+<tr class="row-odd"><td><p>Orchestration, configuration, tree logic</p></td>
+<td><p>Keep it in Python regardless of rate</p></td>
+</tr>
+</tbody>
+</table>
+<p>Measure before porting. A Python <code class="docutils literal notranslate"><span class="pre">Slave</span></code> handles modest frame rates without
+difficulty, and a C++ module you did not need is a maintenance cost with no
+return.</p>
+</section>
+<section id="where-to-go-next">
+<h2>Where To Go Next<a class="headerlink" href="#where-to-go-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../custom_module/index.html"><span class="doc">Creating Custom Modules</span></a> — the reference treatment of this workflow.</p></li>
+<li><p><a class="reference internal" href="../custom_module/sourcefile.html"><span class="doc">Custom Module Source</span></a> — the annotated C++ source.</p></li>
+<li><p><a class="reference internal" href="../custom_module/makefile.html"><span class="doc">Building The Custom Module</span></a> — build configuration in detail.</p></li>
+<li><p><a class="reference internal" href="../custom_module/rogueconfig.html"><span class="doc">The RogueConfig.cmake Package</span></a> — the variables <code class="docutils literal notranslate"><span class="pre">find_package(Rogue)</span></code>
+exports.</p></li>
+<li><p><a class="reference internal" href="../custom_module/testing.html"><span class="doc">Testing The Custom Module</span></a> — testing custom modules.</p></li>
+<li><p><a class="reference internal" href="../api/cpp/index.html"><span class="doc">C++ API</span></a> — the C++ API reference.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="file_capture.html" class="btn btn-neutral float-left" title="Capture Data To Disk And Replay It" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="device_workflow_tutorial.html" class="btn btn-neutral float-right" title="Device Workflow Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
