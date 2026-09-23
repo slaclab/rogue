@@ -31,7 +31,7 @@ What Root Usually Owns
 ``Root`` is not just a container. It is the object that turns a static tree
 definition into a live system.
 
-A typical ``Root`` subclass does four things:
+A typical ``Root`` subclass does three things:
 
 1. Creates the hardware-facing interface path used for register access.
 2. Adds top-level ``Device`` instances to the tree and connects them to the hardware interface.
@@ -69,7 +69,7 @@ transactions.
            self.addInterface(self.memMap)
 
            # Expose the tree to remote tools.
-           self.zmqServer = pyrogue.interfaces.ZmqServer(
+           self.zmqServer = pr.interfaces.ZmqServer(
                root=self,
                addr='127.0.0.1',
                port=0,

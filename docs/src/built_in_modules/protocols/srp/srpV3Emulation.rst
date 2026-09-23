@@ -13,7 +13,7 @@ This module is **not** intended for use with hardware. It is purely a
 software construct for testing the :doc:`srpV3` client module.
 
 When To Use ``SrpV3Emulation``
-===========================
+==============================
 
 - Use for CI regression testing of the SRPv3 protocol path.
 - Use for software-only integration tests that exercise the full SRPv3
