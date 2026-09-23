@@ -31,7 +31,7 @@ What Root Usually Owns
 ``Root`` is not just a container. It is the object that turns a static tree
 definition into a live system.
 
-A typical ``Root`` subclass does four things:
+A typical ``Root`` subclass does three things:
 
 1. Creates the hardware-facing interface path used for register access.
 2. Adds top-level ``Device`` instances to the tree and connects them to the hardware interface.

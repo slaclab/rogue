@@ -315,6 +315,7 @@ tree traversal. Common reasons include:
    class SequencedDevice(pyrogue.Device):
        def writeBlocks(self, *, force=False, recurse=True, variable=None, waitEach=False, index=-1):
            # Pre-transaction behavior.
+           # ...
            super().writeBlocks(
                force=force,
                recurse=recurse,
@@ -323,6 +324,7 @@ tree traversal. Common reasons include:
                index=index,
            )
            # Post-transaction behavior.
+           # ...
 
 For the lower-level transaction and grouping model behind those APIs, see
 :doc:`/pyrogue_tree/core/block` and
