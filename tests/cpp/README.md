@@ -75,3 +75,9 @@ Current Python-enabled smoke test files:
 
 - `smoke/test_api_smoke.cpp`
 - `protocols/xilinx/test_xvc_smoke.cpp`
+- `stream/test_fifo_nocopy_python_frame_release.cpp`
+- `protocols/srp/test_srpv3_python_frame_release.cpp`
+
+The last two each live in their own binary on purpose: they exercise a release
+path that aborts the interpreter on an unpatched build, so sharing a binary
+would let a regression take unrelated cases down with it.

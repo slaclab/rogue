@@ -29,6 +29,7 @@
 
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/ScopedGil.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameIterator.h"
 #include "rogue/interfaces/stream/FrameLock.h"
@@ -113,6 +114,21 @@ void rps::SrpV3Emulation::runThread() {
         }
 
         processFrame(frame);
+
+        // acceptFrame() queues the caller's frame uncopied, so a Python-owned
+        // FramePtr carries a Boost.Python deleter that calls Py_DECREF without the
+        // GIL, which is fatal on this thread. Release here under the GIL instead of
+        // at the next queue_.front() overwrite or thread exit.
+#ifndef NO_PYTHON
+        if (Py_IsInitialized()) {
+            rogue::ScopedGil gil;
+            frame.reset();
+        } else {
+            frame.reset();
+        }
+#else
+        frame.reset();
+#endif
     }
 
     log_->debug("Worker thread stopped");
