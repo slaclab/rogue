@@ -36,6 +36,11 @@ class Process(pr.Device):
         Progress may be updated either as a direct fractional value with
         :meth:`setProgress`, or as a step-based ratio using
         :meth:`setTotalSteps`, :meth:`setStep`, and :meth:`incrementSteps`.
+        On return, a completed run reports ``Done`` and full progress. If
+        stopped, progress is preserved and the message becomes ``Stopped``,
+        unless it already starts with ``Stopped`` or ``Error:``.
+        Call :meth:`pausePoint` between atomic actions to opt into cooperative
+        pausing through the ``Pause`` and ``Resume`` commands.
     **kwargs : Any
         Additional arguments forwarded to ``Device``.
     """
@@ -53,6 +58,8 @@ class Process(pr.Device):
         pr.Device.__init__(self, **kwargs)
 
         self._lock   = threading.Lock()
+        self._pauseCondition = threading.Condition(self._lock)
+        self._pauseRequested = False
         self._thread = None
         self._runEn  = False
         self._argVar = argVariable
@@ -70,6 +77,23 @@ class Process(pr.Device):
             name='Stop',
             function=self._stopProcess,
             description='Stop process. No Args.'))
+
+        self.add(pr.LocalCommand(
+            name='Pause',
+            function=self._pauseProcess,
+            description='Request a pause at the next pausePoint(). No Args.'))
+
+        self.add(pr.LocalCommand(
+            name='Resume',
+            function=self._resumeProcess,
+            description='Cancel a pending pause or resume a paused process. No Args.'))
+
+        self.add(pr.LocalVariable(
+            name='Paused',
+            mode='RO',
+            value=False,
+            pollInterval=1.0,
+            description='True while the worker is waiting at a pausePoint().'))
 
         self.add(pr.LocalVariable(
             name='Running',
@@ -238,19 +262,71 @@ class Process(pr.Device):
         self.setStep(value)
 
     def _startProcess(self) -> None:
-        """ """
-        with self._lock:
-            if self.Running.value() is False:
-                self._runEn  = True
-                self._thread = threading.Thread(target=self._run)
-                self._thread.start()
-            else:
-                self._log.warning("Process already running!")
+        """Start a new worker; use Resume to continue a paused worker."""
+        Process.__call__(self)
+
+    def _pauseProcess(self) -> None:
+        """Request a pause without waiting for the worker's checkpoint."""
+        with self._pauseCondition:
+            if self._runEn:
+                self._pauseRequested = True
+
+    def _resumeProcess(self) -> None:
+        """Cancel a pause request and wake a paused worker."""
+        with self._pauseCondition:
+            self._pauseRequested = False
+            self._pauseCondition.notify_all()
+
+    def pausePoint(self, publish: Callable[[], Any] | None = None) -> bool:
+        """Wait at a safe checkpoint if a pause has been requested.
+
+        Call this from the process worker between atomic actions. Processes
+        that never call this method continue to run when Pause is requested.
+        Running remains true while paused; progress and Message are preserved.
+
+        Parameters
+        ----------
+        publish : callable, optional
+            No-argument callback run by the worker before acknowledging a
+            pending pause. Use it to publish a partial result. It runs without
+            the process lock; exceptions follow normal process error handling.
+            Checkpoint updates are queued for listeners before the worker
+            waits, even inside an updateGroup. Resume or Stop during this
+            callback cancels the wait.
+
+        Returns
+        -------
+        bool
+            True if processing may continue, or False if stopped. Callers
+            should return from their process body when False is returned.
+        """
+        with self._pauseCondition:
+            if not self._runEn or not self._pauseRequested:
+                return self._runEn
+
+        if publish is not None:
+            publish()
+
+        with self._pauseCondition:
+            if not self._runEn or not self._pauseRequested:
+                return self._runEn
+
+            try:
+                self.Paused.set(True)
+                self.root._flushUpdates()
+                while self._runEn and self._pauseRequested:
+                    self._pauseCondition.wait()
+            finally:
+                self.Paused.set(False)
+                self.root._flushUpdates()
+            return self._runEn
 
     def _stopProcess(self) -> None:
         """Signal the worker to stop and wait for it to exit."""
-        with self._lock:
+        with self._pauseCondition:
             self._runEn  = False
+            self._pauseRequested = False
+            self._pauseCondition.notify_all()
             thr = self._thread
 
         # Self-thread guard: _run() can land here via setDisp('Stopped').
@@ -274,13 +350,19 @@ class Process(pr.Device):
             Argument to set on ``argVariable`` before running.
         """
         with self._lock:
-            if self.Running.value() is False:
+            if (self.Running.value() is False
+                    and (self._thread is None or not self._thread.is_alive())):
                 if arg is not None and self._argVar is not None:
                     self._argVar.setDisp(arg)
 
                 self._runEn  = True
+                self._pauseRequested = False
                 self._thread = threading.Thread(target=self._run)
-                self._thread.start()
+                try:
+                    self._thread.start()
+                except Exception:
+                    self._runEn = False
+                    raise
             else:
                 self._log.warning("Process already running!")
 
@@ -288,16 +370,21 @@ class Process(pr.Device):
 
     def _run(self) -> None:
         """ """
-        self.Running.set(True)
-
         try:
+            self.Running.set(True)
             with self.root.updateGroup(period=self.UpdatePeriod.value()):
                 self._process()
         except Exception as e:
             pr.logException(self._log,e)
             self.Message.setDisp("Stopped after error!")
 
-        self.Running.set(False)
+        finally:
+            with self._pauseCondition:
+                self._runEn = False
+                self._pauseRequested = False
+                self.Paused.set(False)
+                self.Running.set(False)
+                self._pauseCondition.notify_all()
 
     def _process(self) -> None:
         """ """
@@ -318,8 +405,11 @@ class Process(pr.Device):
             if self._retVar is not None:
                 self._retVar.set(ret)
 
-            self.Message.setDisp("Done")
-            self.setProgress(1.0)
+            if self._runEn:
+                self.Message.setDisp("Done")
+                self.setProgress(1.0)
+            elif not self.Message.value().startswith(("Stopped", "Error:")):
+                self.Message.setDisp("Stopped")
 
         # No function run example process
         else:
@@ -332,4 +422,4 @@ class Process(pr.Device):
                 time.sleep(1)
                 self.setStep(i+1)
                 self.Message.setDisp(f"Running for {i} seconds.")
-            self.Message.setDisp("Done")
+            self.Message.setDisp("Done" if self._runEn else "Stopped")
