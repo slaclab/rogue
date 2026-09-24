@@ -145,10 +145,10 @@ def data_path(ver,jumbo):
 
     # Wait for the stack to drain rather than assuming a fixed wall-clock delay.
     print("Waiting for frame drain")
-    drain_start = time.time()
+    drain_start = time.monotonic()
     while prbsRx.getRxCount() != FrameCount:
         time.sleep(0.1)
-        if (time.time() - drain_start) > DrainTimeout:
+        if (time.monotonic() - drain_start) > DrainTimeout:
             cRssi._stop()
             sRssi._stop()
             break

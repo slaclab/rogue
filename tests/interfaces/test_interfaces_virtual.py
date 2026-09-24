@@ -244,8 +244,8 @@ def test_virtual_client_cache_update_dispatch_and_monitor(monkeypatch):
     client._link = True
     client._ltime = 0.0
 
-    # Link checks and warning-log records both consume time.time(), so use a
-    # stable tail value instead of assuming an exact call count.
+    # Link checks consume time.monotonic(), so use a stable tail value instead
+    # of assuming an exact call count.
     times = itertools.chain([20.0, 5.0], itertools.repeat(5.0))
     sleeps = {"count": 0}
 
@@ -261,7 +261,7 @@ def test_virtual_client_cache_update_dispatch_and_monitor(monkeypatch):
         elif sleeps["count"] == 3:
             client._monEnable = False
 
-    monkeypatch.setattr(virtual_mod.time, "time", fake_time)
+    monkeypatch.setattr(virtual_mod.time, "monotonic", fake_time)
     monkeypatch.setattr(virtual_mod.time, "sleep", fake_sleep)
 
     client._monEnable = True

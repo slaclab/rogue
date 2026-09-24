@@ -17,10 +17,15 @@
 # causing spurious link-down/link-up oscillations.
 #
 # Rather than trying to trigger the race via timing, these tests assert
-# the invariant directly: each test patches time.time() (or installs a
+# the invariant directly: each test patches time.monotonic() (or installs a
 # tracking lock) to record whether _reqLock was held at the moment the
 # shared state is read or written.  A violation shows up as a locked=False
 # observation, regardless of scheduler behavior.
+#
+# The patched clock is an observability probe, not a time source: _ltime is
+# assigned from it, so every assignment is observable.  The len(...) > 0
+# guards below keep the probe honest -- if production code stops calling the
+# patched function, the test fails loudly instead of passing vacuously.
 
 import importlib.util
 import threading
@@ -66,7 +71,7 @@ def _make_client(link_timeout=10.0, request_stall_timeout=None):
     client._reqLock = threading.Lock()
     client._reqCount = 0
     client._reqSince = None
-    client._ltime = time.time()
+    client._ltime = time.monotonic()
     client._link = True
     client._linkTimeout = link_timeout
     client._requestStallTimeout = request_stall_timeout
@@ -93,16 +98,16 @@ def test_ltime_written_under_lock():
     original_requestDone = VirtualClient._requestDone
 
     def instrumented_requestDone(self, success):
-        original_time = time.time
+        original_time = time.monotonic
 
         def tracking_time():
-            # When time.time() is called for _ltime assignment,
+            # When time.monotonic() is called for _ltime assignment,
             # check if the lock is held
             locked = self._reqLock.locked()
             lock_held_during_ltime_write.append(locked)
             return original_time()
 
-        with patch.object(_virtual_mod.time, 'time', side_effect=tracking_time):
+        with patch.object(_virtual_mod.time, 'monotonic', side_effect=tracking_time):
             original_requestDone(self, success)
 
     with patch.object(VirtualClient, '_requestDone', instrumented_requestDone):
@@ -110,16 +115,16 @@ def test_ltime_written_under_lock():
         client._requestDone(True)
 
     assert len(lock_held_during_ltime_write) > 0, (
-        "_requestDone did not call time.time() — test is broken"
+        "_requestDone did not call time.monotonic() — test is broken"
     )
-    # _requestDone only calls time.time() once, to assign _ltime on a
+    # _requestDone only calls time.monotonic() once, to assign _ltime on a
     # successful reply (_reqSince is managed by _requestStart). On
     # unpatched code that assignment happened outside the lock; after
     # the fix it must happen while _reqLock is held.
     ltime_call_locked = lock_held_during_ltime_write[-1]
     assert ltime_call_locked, (
         "_ltime was written outside _reqLock — race condition present. "
-        f"Lock states per time.time() call: {lock_held_during_ltime_write}"
+        f"Lock states per time.monotonic() call: {lock_held_during_ltime_write}"
     )
 
 
@@ -133,7 +138,7 @@ def test_checkLinkState_reads_under_lock():
     whether _checkLinkState ever acquires it.
     """
     client = _make_client(link_timeout=10.0)
-    client._ltime = time.time()
+    client._ltime = time.monotonic()
 
     class TrackingLock:
         def __init__(self):
@@ -179,18 +184,18 @@ def test_doUpdate_writes_ltime_under_lock():
     client._root = None
 
     lock_held = []
-    original_time = time.time
+    original_time = time.monotonic
 
     def tracking_time():
         locked = client._reqLock.locked()
         lock_held.append(locked)
         return original_time()
 
-    with patch.object(_virtual_mod.time, 'time', side_effect=tracking_time):
+    with patch.object(_virtual_mod.time, 'monotonic', side_effect=tracking_time):
         client._doUpdate(b'\x80\x03}q\x00.')  # pickle.dumps({})
 
     assert len(lock_held) > 0, (
-        "_doUpdate did not call time.time() — test is broken"
+        "_doUpdate did not call time.monotonic() — test is broken"
     )
     assert lock_held[0], (
         "_doUpdate wrote _ltime outside _reqLock — race condition present. "

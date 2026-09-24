@@ -338,8 +338,8 @@ def test_runcontrol_does_not_spawn_second_thread_when_restarted_from_worker():
     with RestartingRunControlRoot() as root:
         root.RC.runState.set(1)
 
-        deadline = time.time() + 2.0
-        while time.time() < deadline:
+        deadline = time.monotonic() + 2.0
+        while time.monotonic() < deadline:
             with root.RC._stateLock:
                 cmd_calls = root.RC._cmdCalls
             with root.RC._threadLock:

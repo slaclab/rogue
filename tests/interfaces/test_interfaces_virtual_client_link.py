@@ -44,7 +44,7 @@ def _make_client(link_timeout=10.0, request_stall_timeout=None):
     client._reqLock = threading.Lock()
     client._reqCount = 0
     client._reqSince = None
-    client._ltime = time.time()
+    client._ltime = time.monotonic()
     client._link = True
     client._linkTimeout = link_timeout
     client._requestStallTimeout = request_stall_timeout
@@ -55,7 +55,7 @@ def test_virtual_client_stays_linked_while_request_is_pending():
     client = _make_client()
     states = []
     client._monitors.append(states.append)
-    client._ltime = time.time() - 30.0
+    client._ltime = time.monotonic() - 30.0
     client._requestStart()
 
     client._checkLinkState()
@@ -68,7 +68,7 @@ def test_virtual_client_disconnects_after_idle_timeout():
     client = _make_client()
     states = []
     client._monitors.append(states.append)
-    client._ltime = time.time() - 30.0
+    client._ltime = time.monotonic() - 30.0
 
     client._checkLinkState()
 
@@ -93,9 +93,9 @@ def test_virtual_client_declares_stalled_request_after_configured_timeout():
     client = _make_client(request_stall_timeout=5.0)
     states = []
     client._monitors.append(states.append)
-    client._ltime = time.time() - 30.0
+    client._ltime = time.monotonic() - 30.0
     client._requestStart()
-    client._reqSince = time.time() - 6.0
+    client._reqSince = time.monotonic() - 6.0
 
     client._checkLinkState()
 

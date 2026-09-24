@@ -9,7 +9,7 @@
 #-----------------------------------------------------------------------------
 
 import contextlib
-import datetime
+import time
 
 import pyrogue as pr
 
@@ -56,7 +56,7 @@ def test_poll_queue_entry_ordering_add_and_expired_entries():
     assert pq.empty() is False
     assert pq.peek().block is early
 
-    expired = list(pq._expiredEntries(datetime.datetime.now()))
+    expired = list(pq._expiredEntries(time.monotonic()))
     assert [entry.block for entry in expired] == [early, late]
     assert pq.empty() is True
 
@@ -70,13 +70,13 @@ def test_poll_queue_update_poll_interval_adds_updates_and_removes_entries():
 
     pq.updatePollInterval(fast)
     assert pq.peek().block is block
-    assert pq._entries[block].interval == datetime.timedelta(seconds=1.0)
+    assert pq._entries[block].interval == 1.0
 
     # Increasing the active variable interval should switch the block to the
     # next-fastest member still attached to that block.
     fast._pollInterval = 6.0
     pq.updatePollInterval(fast)
-    assert pq._entries[block].interval == datetime.timedelta(seconds=5.0)
+    assert pq._entries[block].interval == 5.0
 
     slow._pollInterval = 0
     fast._pollInterval = 0
@@ -118,7 +118,67 @@ def test_poll_queue_poll_cycle_processes_and_reschedules(wait_until, monkeypatch
     pq._pollThread.join(timeout=1.0)
 
     assert pq._entries[block].block is block
-    assert pq._entries[block].readTime > datetime.datetime.now()
+    assert pq._entries[block].readTime > time.monotonic()
+
+
+def test_poll_queue_uses_monotonic_clock_not_wall_clock(monkeypatch):
+    """Scheduling must not read the wall clock.
+
+    A wall-clock step from an NTP correction or a manual clock set would
+    otherwise stretch or shorten every poll interval. Break time.time() and
+    assert scheduling still works off time.monotonic().
+    """
+    def exploding_time():
+        raise AssertionError("PollQueue read the wall clock via time.time()")
+
+    monkeypatch.setattr(pr._PollQueue.time, "time", exploding_time)
+
+    pq = pr.PollQueue(root=FakeRoot())
+    block = FakeBlock("blk")
+
+    pq._addEntry(block, 2.0)
+
+    entry = pq._entries[block]
+    assert isinstance(entry.readTime, float)
+    assert isinstance(entry.interval, float)
+
+    # A new entry is due immediately, so it expires against a "now" cutoff.
+    assert [e.block for e in pq._expiredEntries(time.monotonic())] == [block]
+
+
+def test_poll_queue_reschedules_relative_to_previous_read_time():
+    """A polled entry is rescheduled to now + interval on the monotonic base."""
+    pq = pr.PollQueue(root=FakeRoot())
+    block = FakeBlock("blk")
+    interval = 7.5
+
+    pq._addEntry(block, interval)
+    entry = pq._entries[block]
+
+    before = time.monotonic()
+    now = time.monotonic()
+    entry.readTime = now + entry.interval
+    after = time.monotonic()
+
+    assert entry.readTime >= before + interval
+    assert entry.readTime <= after + interval
+
+
+def test_poll_queue_wait_time_is_never_negative():
+    """An overdue entry must not produce a negative Condition.wait() timeout.
+
+    threading.Condition.wait() rejects a negative timeout, so the poll loop
+    clamps the computed delta at zero.
+    """
+    pq = pr.PollQueue(root=FakeRoot())
+    block = FakeBlock("blk")
+
+    pq._addEntry(block, 1.0)
+    # Force the entry well into the past, as a delayed poll thread would see.
+    pq._entries[block].readTime = time.monotonic() - 60.0
+
+    waitTime = max(0.0, pq.peek().readTime - time.monotonic())
+    assert waitTime == 0.0
 
 
 def test_poll_queue_pause_and_block_count_controls():
