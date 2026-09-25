@@ -100,9 +100,10 @@ Rogue now supports passing that top-level class directly to
 
 .. code-block:: python
 
+   import pyrogue as pr
    import pyrogue.pydm
 
-   pyrogue.pydm.runPyDM(
+   pr.pydm.runPyDM(
        serverList='localhost:9099',
        display=MyTop,
        title='My System',
@@ -113,7 +114,7 @@ instead:
 
 .. code-block:: python
 
-   pyrogue.pydm.runPyDM(
+   pr.pydm.runPyDM(
        serverList='localhost:9099',
        display_factory=lambda: MyTop(mode='ops'),
        title='My System',
@@ -123,7 +124,7 @@ The older file-based pattern still works:
 
 .. code-block:: python
 
-   pyrogue.pydm.runPyDM(
+   pr.pydm.runPyDM(
        serverList='localhost:9099',
        ui='path/to/my_top.py',
        title='My System',
@@ -140,9 +141,10 @@ The Python entry point is :py:func:`pyrogue.pydm.runPyDM`:
 
 .. code-block:: python
 
+   import pyrogue as pr
    import pyrogue.pydm
 
-   pyrogue.pydm.runPyDM(
+   pr.pydm.runPyDM(
        serverList='localhost:9099',
        title='Remote System',
    )
@@ -157,7 +159,7 @@ to :py:func:`pyrogue.pydm.runPyDM`:
    import pyrogue.pydm
 
    with MyRoot() as root:
-       pyrogue.pydm.runPyDM(
+       pr.pydm.runPyDM(
            serverList=root.zmqServer.address,
            title='My System',
            sizeX=1000,
@@ -186,11 +188,12 @@ subclass) before calling ``runPyDM`` is unsupported and will be rejected:
 
    import sys
    from qtpy.QtWidgets import QApplication
+   import pyrogue as pr
    import pyrogue.pydm
 
    app = QApplication(sys.argv)         # don't do this
    ...
-   pyrogue.pydm.runPyDM(...)             # raises RuntimeError
+   pr.pydm.runPyDM(...)                 # raises RuntimeError
 
 The reason is that PyDM's window-management hooks (``XSync`` counter updates
 and ``_NET_WM_PING`` reply registration) only attach to
@@ -237,7 +240,7 @@ expected busy period:
 
 .. code-block:: python
 
-   pyrogue.pydm.runPyDM(
+   pr.pydm.runPyDM(
        serverList=root.zmqServer.address,
        linkTimeout=600.0,
        requestStallTimeout=None,

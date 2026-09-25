@@ -46,10 +46,10 @@ register operations.
 
 .. code-block:: python
 
-   import pyrogue
+   import pyrogue as pr
    import rogue.interfaces.memory as rim
 
-   class MyTranslationDevice(pyrogue.Device):
+   class MyTranslationDevice(pr.Device):
        def __init__(self, **kwargs):
            # Local register space is 12 bytes. Upstream transactions are fixed
            # at 4 bytes for this example.
@@ -110,9 +110,9 @@ way to deploy a hub-style translation layer in practice.
 
 .. code-block:: python
 
-   import pyrogue
+   import pyrogue as pr
 
-   class ExampleRoot(pyrogue.Root):
+   class ExampleRoot(pr.Root):
        def __init__(self):
            super().__init__(name="MyRoot")
 

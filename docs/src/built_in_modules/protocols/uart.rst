@@ -43,7 +43,7 @@ Configuration Example
        def __init__(self):
            super().__init__(name='MyRoot')
 
-           uart_mem = pyrogue.protocols.UartMemory(
+           uart_mem = pr.protocols.UartMemory(
                '/dev/ttyUSB0',
                115200,
                timeout=1.0,
@@ -84,9 +84,9 @@ path, following the pattern ``pyrogue.UartMemory.<device>``.
 
 .. code-block:: python
 
-   import pyrogue
+   import pyrogue as pr
 
-   pyrogue.setLogLevel('pyrogue.UartMemory', 'DEBUG')
+   pr.setLogLevel('pyrogue.UartMemory', 'DEBUG')
 
 The current implementation has several transaction-level debug statements in
 the code commented out, so enabling the logger is most useful when those debug

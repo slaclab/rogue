@@ -13,7 +13,7 @@ If you already have the object instance, prefer:
 .. code-block:: python
 
    print(my_obj.logName())
-   print(pyrogue.logName(my_obj))
+   print(pr.logName(my_obj))
 
 Protocols
 =========
