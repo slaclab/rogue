@@ -6,3 +6,12 @@ rogue_add_cpp_test(rogue-cpp-srp-backpressure
       no-python
 )
 set_tests_properties(rogue-cpp-srp-backpressure PROPERTIES TIMEOUT 30)
+
+rogue_add_cpp_test(rogue-cpp-srp-rssi
+   SOURCES
+      test_srp_rssi.cpp
+   LABELS
+      integration
+      no-python
+)
+set_tests_properties(rogue-cpp-srp-rssi PROPERTIES TIMEOUT 60)

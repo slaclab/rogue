@@ -1,10 +1,13 @@
 # Hardware-free SRP / RSSI burst diagnostic
 
-This opt-in performance/integration experiment uses the real C++
+This manual diagnostic (not collected by pytest or CTest) uses the real C++
 `SrpV3 -> PacketizerV2 -> RSSI -> transport -> RSSI -> PacketizerV2 ->
 SrpV3Emulation` path. It borrows the data-integrity/concurrency contract of
 `tests/protocols/test_srpv3_concurrent.py` and the client/server connection of
-`tests/integration/test_rssi_loopback.py`. The native workload excludes Python;
+`tests/integration/test_rssi_loopback.py`. Automated regressions live in
+`tests/cpp/protocols/srp/`: the focused SRPv0/SRPv3 lock tests and the
+asynchronous RSSI/PacketizerV2/SRPv3 integration test. This directory is for
+revision comparisons, timing sweeps, injected faults, and timeline plots. The native workload excludes Python;
 optional PyRogue workloads exercise the real device/block machinery over the
 same asynchronous stack. It is not an automatic timing gate.
 
@@ -25,11 +28,11 @@ in `AGENTS.md`. Do not create or refresh environments just to run this diagnosti
 From the repository root:
 
 ```sh
-python tests/perf/srp_rssi/build.py
-python tests/perf/srp_rssi/run.py --output build/srp-rssi/baseline
-python tests/perf/srp_rssi/run.py --windows 600 --sizes 4 4096 \
+python scripts/diagnostics/srp_rssi/build.py
+python scripts/diagnostics/srp_rssi/run.py --output build/srp-rssi/baseline
+python scripts/diagnostics/srp_rssi/run.py --windows 600 --sizes 4 4096 \
   --modes app srp tx submit ack --repeat 2 --output build/srp-rssi/delays
-python tests/perf/srp_rssi/run.py --windows 600 --sizes 4 4096 \
+python scripts/diagnostics/srp_rssi/run.py --windows 600 --sizes 4 4096 \
   --workers 4 --modes none submit tx --repeat 2 --output build/srp-rssi/concurrent
 ```
 
@@ -56,10 +59,10 @@ For a historical comparison, select an explicit Git revision. For example, to
 compare the unfixed reference with the current commit:
 
 ```sh
-python tests/perf/srp_rssi/build.py --variants baseline current \
+python scripts/diagnostics/srp_rssi/build.py --variants baseline current \
   --baseline-ref 4dbda87d7fe60f4ced851770e3d37b51b05be619 \
   --output build/srp-rssi-compare
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-compare \
+python scripts/diagnostics/srp_rssi/run.py --build-root build/srp-rssi-compare \
   --variants baseline current --windows 600 --sizes 4096 --repeat 2 \
   --segment 1024 --rssi-window 8 --peer-requests 1 --peer-responses 1 \
   --output build/srp-rssi-compare/paired
@@ -181,16 +184,16 @@ without reset; do not interpret the residence estimate across a reset. Native
 CSV retains the evidence needed to inspect those cases directly.
 
 ```sh
-python tests/perf/srp_rssi/plot.py build/srp-rssi/delays/current-4-600-srp-0.csv \
+python scripts/diagnostics/srp_rssi/plot.py build/srp-rssi/delays/current-4-600-srp-0.csv \
   --output build/srp-rssi/timeline.svg
 ```
 
 ## Separate scheduling experiments
 
 ```sh
-python tests/perf/srp_rssi/run.py --windows 1 600 --sizes 4 4096 \
+python scripts/diagnostics/srp_rssi/run.py --windows 1 600 --sizes 4 4096 \
   --transport udp --retran-ms 200 --repeat 1 --output build/srp-rssi/udp
-python tests/perf/srp_rssi/run.py --windows 1 600 --sizes 4 4096 \
+python scripts/diagnostics/srp_rssi/run.py --windows 1 600 --sizes 4 4096 \
   --no-trace --output build/srp-rssi/untraced
 ```
 
@@ -204,9 +207,9 @@ The initial investigation used this option; default full probes additionally mea
 transaction-map and timer-refresh locks. To exercise cross-transaction locking:
 
 ```sh
-python tests/perf/srp_rssi/run.py --windows 600 --sizes 4 4096 \
+python scripts/diagnostics/srp_rssi/run.py --windows 600 --sizes 4 4096 \
   --modes tx --stall-after 8 --repeat 2 --output build/srp-rssi/tx-late
-python tests/perf/srp_rssi/run.py --windows 600 --sizes 4 4096 \
+python scripts/diagnostics/srp_rssi/run.py --windows 600 --sizes 4 4096 \
   --modes submit --stall-after 2 --workers 4 --repeat 2 --output build/srp-rssi/refresh-lock
 ```
 
@@ -223,14 +226,14 @@ builds stay `NO_PYTHON=1`; Python builds use that revision's real Rogue extensio
 and PyRogue sources. Keep these in separate output directories:
 
 ```sh
-python tests/perf/srp_rssi/build.py \
+python scripts/diagnostics/srp_rssi/build.py \
   --output build/srp-rssi-native
-python tests/perf/srp_rssi/build.py --python \
+python scripts/diagnostics/srp_rssi/build.py --python \
   --output build/srp-rssi-python
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-native \
+python scripts/diagnostics/srp_rssi/run.py --build-root build/srp-rssi-native \
   --segment 1024 --rssi-window 8 --repeat 2 \
   --output build/srp-rssi-native/native-control
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-python \
+python scripts/diagnostics/srp_rssi/run.py --build-root build/srp-rssi-python \
   --workload blocks --segment 1024 --rssi-window 8 --repeat 2 \
   --output build/srp-rssi-python/blocks-control
 ```
@@ -264,11 +267,11 @@ versus 18 seconds for a native process.
 ## Finite peer queues without injected delays
 
 ```sh
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-native \
+python scripts/diagnostics/srp_rssi/run.py --build-root build/srp-rssi-native \
   --segment 1024 --rssi-window 8 --peer-requests 1 --peer-responses 1 \
   --windows 24 64 256 600 --sizes 4096 --repeat 2 \
   --output build/srp-rssi-native/native-bounded
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-python \
+python scripts/diagnostics/srp_rssi/run.py --build-root build/srp-rssi-python \
   --workload blocks --segment 1024 --rssi-window 8 \
   --peer-requests 1 --peer-responses 1 \
   --windows 24 64 256 600 --sizes 4096 --repeat 2 \
@@ -316,7 +319,7 @@ therefore retain the blocked interval rather than reporting only completed
 fast calls. A plot's dashed lock-wait line means still waiting at capture end:
 
 ```sh
-python tests/perf/srp_rssi/plot.py \
+python scripts/diagnostics/srp_rssi/plot.py \
   build/srp-rssi-native/native-bounded/current-4096-256-none-0.csv \
   --until-ms 20 --output build/srp-rssi-native/native-onset.png
 ```

@@ -44,7 +44,7 @@ namespace rps = rogue::protocols::srp;
 namespace {
 
 uint8_t readValue(uint64_t address) {
-    return static_cast<uint8_t>(address * 7 + 0x51);
+    return static_cast<uint8_t>((address ^ (address >> 8) ^ (address >> 16) ^ (address >> 32)) * 7 + 0x51);
 }
 
 struct Request {
@@ -59,10 +59,15 @@ struct SrpV0Wire {
     static constexpr size_t writeTail = 4;
 
     static Request decode(const std::vector<uint8_t>& bytes) {
+        REQUIRE(bytes.size() >= 12);
         uint32_t header[3];
         std::memcpy(header, bytes.data(), sizeof(header));
         const bool write = header[1] & 0x40000000;
+        if (!write) REQUIRE(header[2] < 512);  // SRPv0 supports at most 2048 bytes.
         const auto size = write ? bytes.size() - writeHeader - writeTail : (header[2] + 1) * 4;
+        REQUIRE(size > 0);
+        REQUIRE(size <= 2048);
+        REQUIRE(size % 4 == 0);
         return {static_cast<uint64_t>(header[1] & 0x3FFFFFFF) << 2, static_cast<uint32_t>(size), write};
     }
 };
@@ -74,9 +79,13 @@ struct SrpV3Wire {
 
     static Request decode(const std::vector<uint8_t>& bytes) {
         uint32_t header[5];
+        REQUIRE(bytes.size() >= sizeof(header));
         std::memcpy(header, bytes.data(), sizeof(header));
+        REQUIRE(header[4] < 4096);  // Check before adding one or allocating a response.
+        REQUIRE((header[4] + 1) % 4 == 0);
+        const auto opcode = header[0] & 0x300;
         return {(static_cast<uint64_t>(header[3]) << 32) | header[2], header[4] + 1,
-                (header[0] & 0x300) == 0x100};
+                opcode == 0x100 || opcode == 0x200};
     }
 };
 
@@ -87,6 +96,7 @@ ris::FramePtr responseFor(const ris::FramePtr& request) {
     auto lock = request->lock();
     auto bytes = rogue_test::readFrame(request, request->getPayload());
     const auto info = Wire::decode(bytes);
+    if (info.write) REQUIRE_EQ(bytes.size(), Wire::writeHeader + info.size + Wire::writeTail);
     // Both versions echo the write header on responses and append a status word.
     std::vector<uint8_t> response(Wire::writeHeader + info.size + 4, 0);
     std::copy_n(bytes.begin(), Wire::writeHeader, response.begin());
@@ -133,6 +143,18 @@ class ControlledPeer : public ris::Slave {
     std::vector<ris::FramePtr> requests_;
 };
 
+// Declare after the futures so unwinding releases the sender before joining it.
+class ReleasePeer {
+  public:
+    explicit ReleasePeer(const std::shared_ptr<ControlledPeer>& peer) : peer_(peer) {}
+    ~ReleasePeer() { peer_->release(); }
+    ReleasePeer(const ReleasePeer&) = delete;
+    ReleasePeer& operator=(const ReleasePeer&) = delete;
+
+  private:
+    std::shared_ptr<ControlledPeer> peer_;
+};
+
 template <class Wire>
 class InlinePeer : public ris::Slave {
   public:
@@ -141,6 +163,10 @@ class InlinePeer : public ris::Slave {
     void acceptFrame(ris::FramePtr frame) override {
         auto bytes = rogue_test::readFrame(frame, frame->getPayload());
         const auto info = Wire::decode(bytes);
+        if (info.write) {
+            REQUIRE_EQ(bytes.size(), Wire::writeHeader + info.size + Wire::writeTail);
+            written.insert(written.end(), bytes.begin() + Wire::writeHeader, bytes.end() - Wire::writeTail);
+        }
         sizes.push_back(info.size);
         addresses.push_back(info.address);
         // SRPv0 posted writes have no distinct wire opcode; the fixture knows
@@ -150,6 +176,7 @@ class InlinePeer : public ris::Slave {
 
     std::vector<uint32_t> sizes;
     std::vector<uint64_t> addresses;
+    std::vector<uint8_t> written;
 
   private:
     std::weak_ptr<typename Wire::Srp> srp_;
@@ -175,7 +202,10 @@ TEST_CASE_TEMPLATE("SRP completes an earlier response while a later send is bloc
     second->setTimeout(10000000);
     std::vector<uint8_t> a(256, 0xA5), b(256, 0x5A);
     const auto firstId = first->reqTransaction(0, a.size(), a.data(), type);
-    auto sender = std::async(std::launch::async, [&] {
+    std::future<uint32_t> sender;
+    std::future<void> receiver;
+    ReleasePeer release(peer);
+    sender = std::async(std::launch::async, [&] {
         return second->reqTransaction(4096, b.size(), b.data(), type);
     });
     const bool entered = peer->waitForRequests(2);
@@ -185,7 +215,7 @@ TEST_CASE_TEMPLATE("SRP completes an earlier response while a later send is bloc
         FAIL("Second request did not reach the controlled transport");
         return;
     }
-    auto receiver = std::async(std::launch::async, [&] { srp->acceptFrame(responseFor<Wire>(peer->request(0))); });
+    receiver = std::async(std::launch::async, [&] { srp->acceptFrame(responseFor<Wire>(peer->request(0))); });
     const bool progressed = receiver.wait_for(std::chrono::seconds(3)) == std::future_status::ready;
     // Always release the gate before assertions/joins, including on old code.
     peer->release();
@@ -210,7 +240,10 @@ TEST_CASE_TEMPLATE("SRP posted data survives completion while its send is blocke
     auto master = rim::Master::create();
     master->setSlave(srp);
     std::vector<uint8_t> data(256, 0xA5);
-    auto sender = std::async(std::launch::async, [&] {
+    std::future<uint32_t> sender;
+    std::future<void> completion;
+    ReleasePeer release(peer);
+    sender = std::async(std::launch::async, [&] {
         return master->reqTransaction(0, data.size(), data.data(), rim::Post);
     });
     const bool entered = peer->waitForRequests(1);
@@ -220,7 +253,7 @@ TEST_CASE_TEMPLATE("SRP posted data survives completion while its send is blocke
         FAIL("Posted write did not reach the controlled transport");
         return;
     }
-    auto completion = std::async(std::launch::async, [&] { master->waitTransaction(0); });
+    completion = std::async(std::launch::async, [&] { master->waitTransaction(0); });
     const bool progressed = completion.wait_for(std::chrono::seconds(3)) == std::future_status::ready;
     if (progressed) std::fill(data.begin(), data.end(), 0);
     auto frame = peer->request(0);
@@ -253,13 +286,16 @@ TEST_CASE_TEMPLATE("SRP supports inline completion including split Hub children"
     // and remove itself from the parent's pending map before forwarding returns.
     const auto childSize = srp->max();
     std::vector<uint8_t> data(childSize * 2 + 256, 0xA5);
+    for (size_t i = 0; i < data.size(); ++i) data[i] = readValue(i) ^ 0xA5;
+    const auto written = data;
     const auto id = master->reqTransaction(0, data.size(), data.data(), type);
     master->waitTransaction(id);
     CHECK(master->getError().empty());
+    if (type == rim::Write || type == rim::Post) CHECK(peer->written == written);
     CHECK(peer->sizes == std::vector<uint32_t>{childSize, childSize, 256});
     CHECK(peer->addresses == std::vector<uint64_t>{0x1000, 0x1000 + childSize, 0x1000 + 2 * childSize});
     for (size_t i = 0; i < data.size(); ++i)
-        CHECK_EQ(data[i], type == rim::Read || type == rim::Verify ? readValue(0x1000 + i) : 0xA5);
+        CHECK_EQ(data[i], type == rim::Read || type == rim::Verify ? readValue(0x1000 + i) : written[i]);
 }
 
 TEST_CASE_TEMPLATE("SRP ignores late response data after timeout and accepts the next read", Wire, SrpV0Wire, SrpV3Wire) {

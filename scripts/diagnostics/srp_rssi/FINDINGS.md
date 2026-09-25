@@ -84,10 +84,10 @@ Activate the existing Miniforge build environment. Build the original baseline
 and the committed fix with identical probes, without switching branches:
 
 ```sh
-python tests/perf/srp_rssi/build.py --variants baseline current \
+python scripts/diagnostics/srp_rssi/build.py --variants baseline current \
   --baseline-ref 4dbda87d7fe60f4ced851770e3d37b51b05be619 \
   --output build/srp-rssi-compare-native
-python tests/perf/srp_rssi/build.py --variants baseline current --python \
+python scripts/diagnostics/srp_rssi/build.py --variants baseline current --python \
   --baseline-ref 4dbda87d7fe60f4ced851770e3d37b51b05be619 \
   --output build/srp-rssi-compare-python
 ```
@@ -95,11 +95,11 @@ python tests/perf/srp_rssi/build.py --variants baseline current --python \
 Run campaigns serially, after builds finish:
 
 ```sh
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-compare-native \
+python scripts/diagnostics/srp_rssi/run.py --build-root build/srp-rssi-compare-native \
   --variants baseline current --windows 600 --sizes 4096 --repeat 2 \
   --segment 1024 --rssi-window 8 --peer-requests 1 --peer-responses 1 \
   --output build/srp-rssi-compare-native/paired
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-compare-python \
+python scripts/diagnostics/srp_rssi/run.py --build-root build/srp-rssi-compare-python \
   --variants baseline current --workload blocks --windows 600 --sizes 4096 \
   --repeat 2 --segment 1024 --rssi-window 8 \
   --peer-requests 1 --peer-responses 1 \
