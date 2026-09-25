@@ -124,6 +124,7 @@ class RogueConnection(PyDMConnection):
         self._enum   = None
         self._notDev = False
         self._address = channel.address
+        self._client = None
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
@@ -145,7 +146,8 @@ class RogueConnection(PyDMConnection):
                 self._int = True
 
         self.add_listener(channel)
-        self._client.addLinkMonitor(self.linkState)
+        if self._client is not None:
+            self._client.addLinkMonitor(self.linkState)
 
     def linkState(self, state: bool) -> None:
         """Emit PyDM connection state updates from link-monitor callbacks."""
@@ -295,7 +297,7 @@ class RogueConnection(PyDMConnection):
             self._emitCurrentValue()
 
     def remove_listener(self, channel: PyDMChannel, destroying: bool) -> None:
-        """Detach listener resources associated with this connection.
+        """Detach a channel, closing this connection after its last listener.
 
         Parameters
         ----------
@@ -304,32 +306,18 @@ class RogueConnection(PyDMConnection):
         destroying : bool
             Whether removal is part of channel/widget destruction.
         """
-        self._client.remLinkMonitor(self.linkState)
-        self._client.stop()
-        #if channel.value_signal is not None:
-        #    #try:
-        #    #    channel.value_signal[str].disconnect(self.put_value)
-        #    #except KeyError:
-        #    #    pass
-        #    try:
-        #        channel.value_signal[int].disconnect(self.put_value)
-        #    except KeyError:
-        #        pass
-        #    try:
-        #        channel.value_signal[float].disconnect(self.put_value)
-        #    except KeyError:
-        #        pass
-        #    try:
-        #        channel.value_signal[np.ndarray].disconnect(self.put_value)
-        #    except KeyError:
-        #        pass
-
-        #super(RogueConnection, self).remove_listener(channel)
-        pass
+        super(RogueConnection, self).remove_listener(channel, destroying=destroying)
 
     def close(self) -> None:
-        """Close connection resources (handled by listener teardown)."""
-        pass
+        """Detach this connection's callbacks while keeping the shared client alive."""
+        if self._node is not None and self._notDev:
+            self._node.delListener(self._updateVariable)
+        self._node = None
+
+        if self._client is not None:
+            self._client.remLinkMonitor(self.linkState)
+            # VirtualClient is cached per server and shared with other widgets.
+            self._client = None
 
 
 class RoguePlugin(PyDMPlugin):
