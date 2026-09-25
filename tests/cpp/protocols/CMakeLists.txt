@@ -1,4 +1,5 @@
 add_subdirectory(packetizer)
+add_subdirectory(srp)
 
 if (NOT NO_PYTHON AND CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT NO_ROCEV2)
    add_subdirectory(rocev2)
