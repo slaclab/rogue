@@ -168,6 +168,10 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
                 header[1],
                 header[2]);
 
+    // Serialization and response registration (or posted completion) are done.
+    // Downstream backpressure must not hold the transaction lock: receiving an
+    // earlier response can need this lock while refreshing pending timers.
+    lock.reset();
     sendFrame(frame);
 }
 
