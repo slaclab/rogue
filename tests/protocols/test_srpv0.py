@@ -33,9 +33,9 @@ class FrameCapture(rogue.interfaces.stream.Slave):
 class SrpV0Responder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Master):
     """Loopback that mimics SRP v0 hardware for reads and writes.
 
-    A Fifo must be placed between this responder's output and SrpV0's
-    input to avoid reentrancy deadlocks (doTransaction holds a lock
-    that acceptFrame also needs).
+    A Fifo between this responder's output and SrpV0's input preserves an
+    asynchronous receive boundary like a physical transport. Inline completion
+    is covered separately by the native SRP backpressure tests.
     """
 
     def __init__(self):
@@ -93,9 +93,7 @@ class SrpV0TestRoot(pr.Root):
         self.srp = rogue.protocols.srp.SrpV0()
         self.responder = SrpV0Responder()
 
-        # Use a Fifo to break the reentrancy between doTransaction
-        # and acceptFrame; the Fifo's internal thread delivers the
-        # response asynchronously.
+        # Deliver responses asynchronously, as a physical transport would.
         self._respFifo = rogue.interfaces.stream.Fifo(100, 0, False)
 
         self.srp >> self.responder

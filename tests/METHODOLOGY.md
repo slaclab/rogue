@@ -124,6 +124,8 @@ Label intent:
 - `no-python`: runnable in the small static no-Python build.
 - `requires-python`: requires a Python-enabled Rogue build.
 - `smoke`: public API smoke coverage.
+- `integration`: native multi-component transport coverage; can also carry
+  `no-python` when all components support the small build.
 
 Run all Python-enabled native tests from a Python-enabled build:
 
