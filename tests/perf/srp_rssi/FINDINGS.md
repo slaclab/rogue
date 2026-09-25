@@ -69,11 +69,14 @@ transmit wait is still 3.075 ms, but none of the 600 transmit wait scopes holds
 a transaction lock. The longest timer-refresh wait is 0.0205 ms, and RSSI
 dequeue progress continues through 71.158 ms. Normal BUSY assertions remain.
 
-The deterministic native regression checks fail with the original lock scope
-and pass with the fix. They cover read/write/verify response progress, posted
-data ownership, early split-child completion, and timeout/late-response handling.
-Ten relevant native executables pass in each Python-enabled and no-Python build,
-and the three SRPv3 Python suites pass all 14 tests.
+The deterministic native regression checks cover both SRPv0 and SRPv3. Their
+progress checks fail with each version's original lock scope and pass with the
+fix; each version uses its own wire framing and maximum child size. They cover
+read/write/verify response progress, posted data ownership, early split-child
+completion, and timeout/late-response handling. After adding SRPv0 coverage,
+the complete native labels pass (15 executables with Python, 13 without), as do
+all 22 focused SRPv0/SRPv3 Python tests. The full-stack performance measurements
+above remain specific to SRPv3.
 
 ## Reproduce after committing the fix
 
@@ -106,7 +109,7 @@ python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-compare-python \
 Unfixed watchdog cases make the runner return nonzero; inspect each case's
 result rather than treating that campaign as passing. For the fixed full sweep,
 select `--variants current --repeat 1` and omit `--windows` and `--sizes`.
-The [README](README.md) documents April revision isolation, peer constraints,
+The [README](README.md) documents explicit revision selection, peer constraints,
 fault controls, reduced probes, buffered trace events, and plotting commands.
 Generated traces and machine-specific provenance belong under ignored `build/`.
 
@@ -115,7 +118,8 @@ Generated traces and machine-specific provenance belong under ignored `build/`.
 The host stall can trigger or amplify separate FPGA failures, but the causal
 link to the full bench failure still needs confirmation. The software peer does
 not establish the deployed FPGA's queue layout. The PyRogue fixture uses real
-blocks and transactions with a synthetic tree, not every Warm-TDM getter.
+blocks and transactions with a synthetic tree, not every application-specific
+getter.
 macOS in-process or localhost UDP timing does not establish Linux bench timing;
 GHDL remains useful for firmware correctness, not this real-time comparison.
 

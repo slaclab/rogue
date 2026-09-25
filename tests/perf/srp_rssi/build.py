@@ -35,7 +35,7 @@ def run(*args, **kwargs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--variants', nargs='+', default=['before', 'after', 'queue-reverted', 'rssi-reverted'])
+    parser.add_argument('--variants', nargs='+', choices=['current', 'baseline', 'working'], default=['current'])
     parser.add_argument('--baseline-ref', help='Git revision to export as the baseline variant')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/srp-rssi')
     parser.add_argument('--threshold', type=int, default=2)
@@ -47,13 +47,7 @@ def main():
     if 'baseline' in args.variants and not args.baseline_ref:
         parser.error('The baseline variant requires --baseline-ref')
     for variant in args.variants:
-        ref = 'b1a669c965^' if variant == 'before' else 'b1a669c965'
-        if variant in ('current', 'working'):
-            ref = 'HEAD'
-        if variant == 'baseline':
-            ref = args.baseline_ref
-        if variant not in ('before', 'after', 'queue-reverted', 'rssi-reverted', 'current', 'working', 'baseline'):
-            parser.error(f'Unknown variant {variant}')
+        ref = args.baseline_ref if variant == 'baseline' else 'HEAD'
         dest = args.output.resolve() / variant
         source = dest / 'source'
         if source.exists():
@@ -78,12 +72,6 @@ def main():
                     shutil.copy2(current, target)
                 elif target.exists():
                     target.unlink()
-        if variant in ('queue-reverted', 'rssi-reverted'):
-            path = 'include/rogue/Queue.h' if variant == 'queue-reverted' else 'include/rogue/protocols/rssi/Controller.h'
-            (source / path).write_bytes(run('git', 'show', f'b1a669c965^:{path}'))
-            if variant == 'rssi-reverted':
-                path = source / 'src/rogue/protocols/rssi/Controller.cpp'
-                path.write_text(path.read_text().replace('retranCount_.load()', 'retranCount_'))
         instrument(source, timer_locks=not args.no_timer_probes)
         path = source / 'src/rogue/protocols/rssi/Controller.cpp'
         threshold = 'appQueue_.setThold({});'.format(args.threshold)

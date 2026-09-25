@@ -31,8 +31,6 @@ python tests/perf/srp_rssi/run.py --windows 600 --sizes 4 4096 \
   --modes app srp tx submit ack --repeat 2 --output build/srp-rssi/delays
 python tests/perf/srp_rssi/run.py --windows 600 --sizes 4 4096 \
   --workers 4 --modes none submit tx --repeat 2 --output build/srp-rssi/concurrent
-python tests/perf/srp_rssi/run.py --variants before after queue-reverted rssi-reverted \
-  --windows 64 600 --sizes 4 4096 --repeat 2 --output build/srp-rssi/isolation
 ```
 
 `build.py` exports committed sources without switching branches, modifying the
@@ -44,20 +42,32 @@ anchors fail explicitly if a source layout is unsupported. Rebuilding replaces
 only that variant's generated `source/` directory. Build logs and provenance are
 under `build/srp-rssi/<variant>/`.
 
-Variants:
+Both scripts default to `current`. Supported variants:
 
-- `before`: `b1a669c965^` (`acd6389dfe2ac2a8d13cc7330097207852d79d1b`).
-- `after`: `b1a669c965a1d5448cf515fd4ef74e723f99a0f8`.
-- `queue-reverted`: after, with the parent's `Queue.h` (non-atomic busy flag).
-- `rssi-reverted`: after, with the parent's RSSI Controller header and the two
-  counter `.load()` calls adapted to plain integers. Updated log formats remain.
-- `current`: the current committed `HEAD`, if supported by the probe anchors.
+- `current`: the committed `HEAD`, if supported by the probe anchors.
 - `baseline`: the revision supplied with `--baseline-ref`, for comparisons that
   remain reproducible after committing a fix.
 - `working`: `HEAD` plus tracked changes under `src/` and `include/` from the
   working tree. The export saves `working.patch` and its SHA-256 in provenance.
   New untracked production files are not included. Use a separate build root
   to compare a candidate fix with `current` without staging or committing it.
+
+For a historical comparison, select an explicit Git revision. For example, to
+compare the unfixed reference with the current commit:
+
+```sh
+python tests/perf/srp_rssi/build.py --variants baseline current \
+  --baseline-ref 4dbda87d7fe60f4ced851770e3d37b51b05be619 \
+  --output build/srp-rssi-compare
+python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-compare \
+  --variants baseline current --windows 600 --sizes 4096 --repeat 2 \
+  --segment 1024 --rssi-window 8 --peer-requests 1 --peer-responses 1 \
+  --output build/srp-rssi-compare/paired
+```
+
+Other historical revisions can be exported with `--variants baseline
+--baseline-ref <revision>` into separate output roots. The build metadata records
+the resolved commit. The harness does not carry commit-specific source reversions.
 
 Defaults are 600 reads per case, response data sizes 4, 256, 4096 bytes, windows
 1, 2, 8, 24, 64, 256, 600, CRC enabled, 1400-byte RSSI segments, and unchanged RSSI
@@ -171,7 +181,7 @@ without reset; do not interpret the residence estimate across a reset. Native
 CSV retains the evidence needed to inspect those cases directly.
 
 ```sh
-python tests/perf/srp_rssi/plot.py build/srp-rssi/delays/after-4-600-srp-0.csv \
+python tests/perf/srp_rssi/plot.py build/srp-rssi/delays/current-4-600-srp-0.csv \
   --output build/srp-rssi/timeline.svg
 ```
 
@@ -201,37 +211,37 @@ python tests/perf/srp_rssi/run.py --windows 600 --sizes 4 4096 \
 ```
 
 An optional threshold sensitivity build uses a different output root:
-`build.py --variants after --threshold 8 --output build/srp-rssi-threshold8`.
-Run it with `run.py --build-root build/srp-rssi-threshold8 --variants after ...`.
+`build.py --threshold 8 --output build/srp-rssi-threshold8`.
+Run it with `run.py --build-root build/srp-rssi-threshold8 ...`.
 A threshold improvement alone is not a causal diagnosis.
 
-## Warm-TDM transport and actual PyRogue blocks
+## Transport parameters and actual PyRogue blocks
 
-The follow-up shares `Stack.h` between the native executable and a private
+The diagnostic shares `Stack.h` between the native executable and a private
 `rogue._BurstStack` binding compiled only into exported diagnostic trees. Native
 builds stay `NO_PYTHON=1`; Python builds use that revision's real Rogue extension
 and PyRogue sources. Keep these in separate output directories:
 
 ```sh
-python tests/perf/srp_rssi/build.py --variants before after \
-  --output build/srp-rssi-warm-native
-python tests/perf/srp_rssi/build.py --variants before after --python \
-  --output build/srp-rssi-warm
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-warm-native \
+python tests/perf/srp_rssi/build.py \
+  --output build/srp-rssi-native
+python tests/perf/srp_rssi/build.py --python \
+  --output build/srp-rssi-python
+python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-native \
   --segment 1024 --rssi-window 8 --repeat 2 \
-  --output build/srp-rssi-warm-native/native-control
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-warm \
+  --output build/srp-rssi-native/native-control
+python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-python \
   --workload blocks --segment 1024 --rssi-window 8 --repeat 2 \
-  --output build/srp-rssi-warm/blocks-control
+  --output build/srp-rssi-python/blocks-control
 ```
 
 `--workload blocks` creates a real Root/Device/RemoteVariable tree and calls the
 historical `pr.readAndCheckBlocks()` helper on deduplicated dependency blocks
-inside `root.updateGroup()`. This follows Warm-TDM's grouped dependency-block
+inside `root.updateGroup()`. This exercises a grouped dependency-block
 read/check pattern. `--workload device` instead uses each device's `readBlocks()`
 and `checkBlocks()` methods. Both traverse real C++ Block/Hub/Transaction paths.
-The register map is a synthetic set of distinct pages, not the entire deployed
-Warm-TDM tree. Each case still has 600 reads unless `--count` is changed.
+The register map is a synthetic set of distinct pages, not a complete deployed
+device tree. Each case still has 600 reads unless `--count` is changed.
 
 The reader has read-only scalar or array blocks. A separate initialization tree
 writes known data over the same transport and stops before the reader starts;
@@ -254,21 +264,23 @@ versus 18 seconds for a native process.
 ## Finite peer queues without injected delays
 
 ```sh
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-warm-native \
+python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-native \
   --segment 1024 --rssi-window 8 --peer-requests 1 --peer-responses 1 \
   --windows 24 64 256 600 --sizes 4096 --repeat 2 \
-  --output build/srp-rssi-warm-native/native-bounded
-python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-warm \
+  --output build/srp-rssi-native/native-bounded
+python tests/perf/srp_rssi/run.py --build-root build/srp-rssi-python \
   --workload blocks --segment 1024 --rssi-window 8 \
   --peer-requests 1 --peer-responses 1 \
   --windows 24 64 256 600 --sizes 4096 --repeat 2 \
-  --output build/srp-rssi-warm/blocks-bounded
+  --output build/srp-rssi-python/blocks-bounded
 ```
 
 These commands use mode `none`; watchdog exit 124 is a captured persistent
 stall, and `run.py` deliberately returns nonzero for it. It continues the rest
 of its matrix and retains results. Do not treat a watchdog as a passing
-correctness test. These commands compare the unfixed April revisions.
+correctness test. These commands exercise the current committed code. To
+reproduce an unfixed stall, export the desired revision as `baseline` and run
+with `--variants baseline` against that build root.
 
 `--peer-requests N` limits pending frames in SrpV3Emulation's request queue; one
 additional request can be processing. Acceptance waits on its condition
@@ -305,6 +317,6 @@ fast calls. A plot's dashed lock-wait line means still waiting at capture end:
 
 ```sh
 python tests/perf/srp_rssi/plot.py \
-  build/srp-rssi-warm-native/native-bounded/after-4096-256-none-0.csv \
-  --until-ms 20 --output build/srp-rssi-warm/native-onset.png
+  build/srp-rssi-native/native-bounded/current-4096-256-none-0.csv \
+  --until-ms 20 --output build/srp-rssi-native/native-onset.png
 ```

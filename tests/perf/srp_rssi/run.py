@@ -222,7 +222,7 @@ def summarize(path):
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--build-root', type=Path, default=ROOT / 'build/srp-rssi')
-    p.add_argument('--variants', nargs='+', default=['before', 'after'])
+    p.add_argument('--variants', nargs='+', choices=['current', 'baseline', 'working'], default=['current'])
     p.add_argument('--windows', nargs='+', type=int, default=[1, 2, 8, 24, 64, 256, 600])
     p.add_argument('--sizes', nargs='+', type=int, default=[4, 256, 4096])
     p.add_argument('--modes', nargs='+', choices=['none', 'app', 'srp', 'tx', 'submit', 'ack'], default=['none'])

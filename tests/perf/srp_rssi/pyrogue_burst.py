@@ -90,8 +90,8 @@ def main():
                     dev.readBlocks()
                     dev.checkBlocks()
                 else:
-                    # Warm-TDM GroupLinkVariable deduplicates dependency blocks
-                    # and batches reads then checks. The April helper's name is
+                    # Deduplicate dependency blocks and batch reads then checks.
+                    # The historical helper's name is
                     # readAndCheckBlocks (newer versions use readAndWaitBlocks).
                     blocks = list(dict.fromkeys(v._block for v in dev.variables.values()
                                                 if isinstance(v, pr.RemoteVariable)))
