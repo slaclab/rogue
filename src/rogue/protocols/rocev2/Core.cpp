@@ -25,6 +25,7 @@
 #include <string>
 
 #include "rogue/GeneralError.h"
+#include "rogue/GilRelease.h"
 
 namespace rpr = rogue::protocols::rocev2;
 
@@ -46,6 +47,11 @@ rpr::Core::Core(const std::string& deviceName,
       maxPayload_(maxPayload) {
 
     log_ = rogue::Logging::create("rocev2.Core");
+
+    // Device discovery, open, and protection-domain allocation may block in
+    // the provider or kernel.  This guard must live in Core: base construction
+    // finishes before the derived Server constructor body can release the GIL.
+    rogue::GilRelease noGil;
 
     // -----------------------------------------------------------------------
     // 1. Find and open the requested ibverbs device
@@ -106,6 +112,11 @@ rpr::Core::Core(const std::string& deviceName,
 // CQ / QP / MR are owned by the derived Server class and are torn down in
 // Server::stop() before the inherited Core destructor runs.
 rpr::Core::~Core() {
+    // Server::stop() has already returned (and reacquired the GIL) by the time
+    // this base destructor runs, so release it again for the final device
+    // teardown.
+    rogue::GilRelease noGil;
+
     if (pd_)  ibv_dealloc_pd(pd_);
     if (ctx_) ibv_close_device(ctx_);
 }

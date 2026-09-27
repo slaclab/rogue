@@ -279,7 +279,7 @@ is to ask it:
 .. code-block:: python
 
    print(my_obj.logName())
-   print(pyrogue.logName(my_obj))
+   print(pr.logName(my_obj))
 
 For a broader reference of common logger names and patterns, see
 :doc:`/logging/logger_names`.

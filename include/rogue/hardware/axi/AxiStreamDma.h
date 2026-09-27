@@ -23,6 +23,7 @@
 #include <atomic>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 
@@ -84,6 +85,9 @@ typedef std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared> AxiStreamDmaSh
  * - A background RX thread is started in the constructor and runs until `stop()`
  *   or destruction.
  * - TX operations execute synchronously in caller context of `acceptFrame()`.
+ * - Callers must quiesce public driver operations before calling `stop()`.
+ *   Deferred zero-copy buffer returns may overlap `stop()` and are serialized
+ *   against descriptor closure internally.
  *
  * Zero-copy model:
  * - Enabled by default per device path.
@@ -103,6 +107,9 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     // Process-local descriptor for TX/RX operations and dest mask programming.
     int32_t fd_;
+
+    // Serializes fd_ close against deferred zero-copy buffer returns.
+    std::mutex fdMtx_;
 
     // Destination selector used when transmitting frames.
     uint32_t dest_;
@@ -204,7 +211,19 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     /** @brief Destroys the interface and stops background activity. */
     ~AxiStreamDma();
 
-    /** @brief Stops RX thread and closes DMA file descriptors. */
+    /**
+     * @brief Stops RX thread and closes the per-instance DMA file descriptor.
+     *
+     * @details
+     * The shared zero-copy DMA mapping remains valid until destruction so
+     * downstream Rogue buffers retained after `stop()` do not reference
+     * unmapped memory.
+     *
+     * Before calling `stop()`, callers must ensure that stream operations and
+     * driver controls/accessors have completed and that no new ones can begin.
+     * Deferred returns from previously issued zero-copy buffers may overlap
+     * `stop()`; descriptor closure is synchronized with those callbacks.
+     */
     void stop();
 
     /**
