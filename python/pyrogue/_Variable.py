@@ -1242,7 +1242,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
     bulkOpEn
         Enable bulk operations.
     verify
-        Enable verify on write.
+        Explicitly enable or disable verify on write. If omitted, inherit the
+        nearest Device or Root ``defaultVerify`` setting.
     retryCount
         Retry count for transactions.
     guiGroup
@@ -1283,7 +1284,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  updateNotify: bool = True,
                  overlapEn: bool = False,
                  bulkOpEn: bool = True,
-                 verify: bool = True,
+                 verify: bool | None = None,
                  retryCount: int = 0,
                  guiGroup: str | None = None,
                  **kwargs: Any) -> None:
@@ -1293,6 +1294,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             disp = base.defaultdisp
 
         self._block = None
+        self._verifyOverride = verify
 
         # Convert the address parameters into lists
         addrParams = [offset, bitOffset, bitSize] # Make a copy
@@ -1372,12 +1374,17 @@ class RemoteVariable(BaseVariable,rim.Variable):
             bitOffset,
             bitSize,
             overlapEn,
-            verify,
+            True if verify is None else verify,
             self._bulkOpEn,
             self._updateNotify,
             self._base,
             listData,
             retryCount)
+
+    def _applyVerifyDefault(self, defaultVerify: bool) -> None:
+        """Resolve an inherited verify setting before block construction."""
+        verify = defaultVerify if self._verifyOverride is None else self._verifyOverride
+        self._setVerifyEn(verify)
 
 
     ##############################
