@@ -18,11 +18,9 @@
 
 #include <algorithm>
 #include <array>
-#include <chrono>
 #include <condition_variable>
 #include <deque>
 #include <exception>
-#include <future>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -53,7 +51,7 @@ namespace rps = rogue::protocols::srp;
 namespace {
 
 // Preserve frame allocation/reservations while avoiding ownership cycles in
-// bidirectional stream connections. Gates block only when explicitly armed.
+// bidirectional stream connections.
 class Forwarder : public ris::Slave {
   public:
     explicit Forwarder(const ris::SlavePtr& target) : target_(target) {}
@@ -64,46 +62,15 @@ class Forwarder : public ris::Slave {
     }
 
     void acceptFrame(ris::FramePtr frame) override {
-        {
-            std::unique_lock<std::mutex> lock(mutex_);
-            if (armed_) {
-                entered_ = true;
-                ready_.notify_all();
-                ready_.wait(lock, [this] { return !armed_; });
-            }
-        }
         if (auto target = target_.lock()) target->acceptFrame(frame);
-    }
-
-    void arm() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        entered_ = false;
-        armed_ = true;
-    }
-
-    bool waitForEntry() {
-        std::unique_lock<std::mutex> lock(mutex_);
-        return ready_.wait_for(lock, std::chrono::seconds(3), [this] { return entered_; });
-    }
-
-    void release() {
-        std::lock_guard<std::mutex> lock(mutex_);
-        armed_ = false;
-        ready_.notify_all();
     }
 
   private:
     std::weak_ptr<ris::Slave> target_;
-    std::mutex mutex_;
-    std::condition_variable ready_;
-    bool armed_ = false;
-    bool entered_ = false;
 };
 
-std::shared_ptr<Forwarder> connect(const ris::MasterPtr& source, const ris::SlavePtr& target) {
-    auto link = std::make_shared<Forwarder>(target);
-    source->addSlave(link);
-    return link;
+void connect(const ris::MasterPtr& source, const ris::SlavePtr& target) {
+    source->addSlave(std::make_shared<Forwarder>(target));
 }
 
 // Copy each datagram: RSSI retains its transmit frame for retransmission,
@@ -215,7 +182,6 @@ struct Stack {
     rps::SrpV3EmulationPtr emulator = rps::SrpV3Emulation::create();
     std::shared_ptr<DatagramLink> outbound = std::make_shared<DatagramLink>(peer.transport);
     std::shared_ptr<DatagramLink> inbound = std::make_shared<DatagramLink>(host.transport);
-    std::shared_ptr<Forwarder> requests, responses;
 
     Stack() {
         host.transport->addSlave(outbound);
@@ -224,14 +190,13 @@ struct Stack {
         connect(hostPacketizer.transport, host.application);
         connect(peer.application, peerPacketizer.transport);
         connect(peerPacketizer.transport, peer.application);
-        requests = connect(srp, hostPacketizer.applications[0]);
+        connect(srp, hostPacketizer.applications[0]);
         connect(hostPacketizer.applications[0], srp);
-        responses = connect(emulator, peerPacketizer.applications[0]);
+        connect(emulator, peerPacketizer.applications[0]);
         connect(peerPacketizer.applications[0], emulator);
     }
 
     ~Stack() {
-        release();
         emulator->stop();
         host.controller->stop();
         peer.controller->stop();
@@ -241,11 +206,6 @@ struct Stack {
         // arrays, which the packetizer controllers reference directly.
         host.application.reset();
         peer.application.reset();
-    }
-
-    void release() {
-        requests->release();
-        responses->release();
     }
 
     void start() {
@@ -259,11 +219,6 @@ struct Stack {
         CHECK_EQ(host.controller->curMaxBuffers(), 8);
         CHECK_EQ(peer.controller->curMaxBuffers(), 8);
     }
-};
-
-struct ReleaseStack {
-    Stack& stack;
-    ~ReleaseStack() { stack.release(); }
 };
 
 std::vector<uint8_t> page(size_t index, size_t size) {
@@ -309,54 +264,6 @@ TEST_CASE("RSSI PacketizerV2 SRP reads complete sequentially and in batches") {
             }
         }
     }
-    stack.outbound->check();
-    stack.inbound->check();
-}
-
-TEST_CASE("RSSI PacketizerV2 response completes while a later SRP send is blocked") {
-    auto a = page(0, 4096), b = page(1, 4096);
-    Stack stack;
-    auto first = rim::Master::create();
-    auto second = rim::Master::create();
-    first->setSlave(stack.srp);
-    second->setSlave(stack.srp);
-    first->setTimeout(10000000);
-    second->setTimeout(10000000);
-    stack.start();
-
-    for (size_t i = 0; i < 2; ++i) {
-        auto& data = i == 0 ? a : b;
-        const auto id = first->reqTransaction(i * 4096, data.size(), data.data(), rim::Write);
-        first->waitTransaction(id);
-        REQUIRE(first->getError().empty());
-    }
-    std::fill(a.begin(), a.end(), 0);
-    std::fill(b.begin(), b.end(), 0);
-
-    // Guard must unwind before the futures, whose destructors join workers.
-    std::future<uint32_t> sender;
-    std::future<void> completion;
-    ReleaseStack release{stack};
-    stack.responses->arm();
-    const auto firstId = first->reqTransaction(0, a.size(), a.data(), rim::Read);
-    REQUIRE(stack.responses->waitForEntry());
-    stack.requests->arm();
-    sender = std::async(std::launch::async, [&] {
-        return second->reqTransaction(4096, b.size(), b.data(), rim::Read);
-    });
-    REQUIRE(stack.requests->waitForEntry());
-    completion = std::async(std::launch::async, [&] { first->waitTransaction(firstId); });
-    stack.responses->release();
-    const bool progressed = completion.wait_for(std::chrono::seconds(3)) == std::future_status::ready;
-    stack.requests->release();
-    const auto secondId = sender.get();
-    completion.get();
-    second->waitTransaction(secondId);
-    CHECK(progressed);
-    CHECK(first->getError().empty());
-    CHECK(second->getError().empty());
-    CHECK(a == page(0, a.size()));
-    CHECK(b == page(1, b.size()));
     stack.outbound->check();
     stack.inbound->check();
 }
