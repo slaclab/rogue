@@ -16,6 +16,11 @@ The main widgets exported by ``pyrogue.pydm.widgets`` are:
 - ``RunControl``: Widget for a ``pyrogue.RunControl`` Device.
 - ``DataWriter``: Widget for a ``pyrogue.DataWriter`` Device.
 - ``SystemLog``: Widget that displays the Rogue system log.
+- ``TerminalPanel``: Interactive local shell with a detach button. Takes no
+  channel. See :doc:`terminal_tab`.
+- ``LinuxTerminal``: The terminal on its own, without the detach button.
+- ``IPythonPanel``: Interactive IPython session with a connected client and a
+  detach button. See :doc:`ipython_tab`.
 - ``Process``: Widget for a ``pyrogue.Process`` Device.
 - ``DebugTree``: Tree browser for Devices, Variables, and Commands.
 - ``PyRogueLabel``: Label widget with Rogue-oriented unit display handling.
@@ -47,6 +52,14 @@ specific Device or Variable path. In general:
 - ``SystemWindow`` and ``DebugTree`` are Root-oriented.
 - ``Process``, ``RunControl``, and ``DataWriter`` are Device-oriented.
 - ``PyRogueLabel`` and ``PyRogueLineEdit`` are typically Variable-oriented.
+- ``LinuxTerminal`` binds to nothing. It takes no channel and is deliberately
+  not registered in Qt Designer, because Designer instantiates registered
+  widgets eagerly and that would spawn a shell inside the design tool. Add it
+  from Python instead.
+- ``IPythonPanel`` is Root-oriented, but only to decide which server its client
+  connects to; it does not display the node. It is kept out of Qt Designer for
+  the same reason as the terminal, since being instantiated would start an
+  IPython session inside the design tool.
 
 When in doubt, inspect the widget's constructor and ``connection_changed``
 implementation in ``python/pyrogue/pydm/widgets``. Most path requirements are

@@ -8,6 +8,9 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import subprocess
+import sys
+
 import pyrogue as pr
 import pyrogue.interfaces as pr_interfaces
 import pytest
@@ -16,6 +19,10 @@ import pytest
 pytestmark = pytest.mark.integration
 
 ZMQ_UPDATE_TIMEOUT = 2.0
+
+# Generous, because the child has to import pyrogue and connect before it can
+# reach the exit this is timing. Anything short of a hang finishes well inside it.
+CLIENT_EXIT_TIMEOUT = 60.0
 
 
 class ZmqIntegrationDevice(pr.Device):
@@ -122,3 +129,33 @@ def test_virtual_client_respects_noserve_update_filter(wait_until, free_zmq_port
         finally:
             client.stop()
             pr_interfaces.VirtualClient.ClientCache.clear()
+
+
+def test_client_process_exits_without_an_explicit_stop(free_zmq_port):
+    # The monitor thread has to be a daemon for a process that holds a connected
+    # client to be able to exit at all. As a normal thread it is joined during
+    # interpreter shutdown, and that join never returns: the loop only ends when
+    # stop() clears its flag, and atexit callbacks run after the join, too late to
+    # clear it. Anything that connects and then falls off the end hangs, including
+    # the one-line client the server banner suggests and an interactive session
+    # the user exits.
+    code = (
+        "import pyrogue.interfaces as pri\n"
+        f"pri.VirtualClient(addr='127.0.0.1', port={free_zmq_port})\n"
+    )
+
+    with ZmqIntegrationRoot(port=free_zmq_port):
+        child = subprocess.Popen([sys.executable, '-c', code],
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.STDOUT,
+                                 text=True)
+        try:
+            out, _ = child.communicate(timeout=CLIENT_EXIT_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            child.kill()
+            out, _ = child.communicate()
+            pytest.fail(f"a process holding a connected client did not exit: {out[-400:]!r}")
+
+    # A non-zero status means the client never connected, which would make the
+    # exit above prove nothing.
+    assert child.returncode == 0, out
