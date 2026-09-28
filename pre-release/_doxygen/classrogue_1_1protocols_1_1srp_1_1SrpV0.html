@@ -352,6 +352,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Threading/locking model:</p><ul>
 <li>In-flight map access is protected by the <code>memory::Slave</code> mutex.</li>
 <li>Per-transaction payload/state access is protected by <code>TransactionLock</code>.</li>
+<li>Submission releases the transaction lock after serialization and, for non-posted requests, response registration, before downstream <code><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#ac4270a45820c4c03dd7f2b472df4efd8" title="Sends a frame to all attached slaves.">sendFrame()</a></code>. Transmission can still block, but it does not hold this mutex and prevent response processing from acquiring it.</li>
 <li><code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV0.html#a7b2b255b438189bf98a11c8a687f24ac" title="Processes a memory transaction and emits SRP v0 request frame(s).">doTransaction()</a></code> and <code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV0.html#aaa7ee8776cf36d98a63a5c0575c7c6b6" title="Accepts an incoming SRP v0 response frame.">acceptFrame()</a></code> can be called from different runtime contexts provided by the connected stream transport stack.</li>
 </ul>
 <p>Missing, late, or invalid responses:</p><ul>
@@ -363,7 +364,7 @@ Additional Inherited Members</h2></td></tr>
 <p>The class is typically connected in a bidirectional stream path where outgoing requests are emitted through the <code>stream::Master</code> side and incoming frames are received through <code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV0.html#aaa7ee8776cf36d98a63a5c0575c7c6b6" title="Accepts an incoming SRP v0 response frame.">acceptFrame()</a></code>.</p>
 <p>Protocol reference: <a href="https://confluence.slac.stanford.edu/x/aRmVD">https://confluence.slac.stanford.edu/x/aRmVD</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV0_8h_source.html#l00084">84</a> of file <a class="el" href="SrpV0_8h_source.html">SrpV0.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV0_8h_source.html#l00088">88</a> of file <a class="el" href="SrpV0_8h_source.html">SrpV0.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad3e2771c206aabe1795c6f48ca17a5d7" name="ad3e2771c206aabe1795c6f48ca17a5d7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad3e2771c206aabe1795c6f48ca17a5d7">&#9670;&#160;</a></span>SrpV0()</h2>
@@ -447,7 +448,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV0_8cpp_source.html#l00175">175</a> of file <a class="el" href="SrpV0_8cpp_source.html">SrpV0.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV0_8cpp_source.html#l00179">179</a> of file <a class="el" href="SrpV0_8cpp_source.html">SrpV0.cpp</a>.</p>
 
 </div>
 </div>

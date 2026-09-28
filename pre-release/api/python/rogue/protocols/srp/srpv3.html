@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SrpV3 &mdash; Rogue v6.15.0-40-gb623fc4a7 documentation</title>
+  <title>SrpV3 &mdash; Rogue v6.15.0-48-gdc0ea11e3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=5645df5b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=b18653b1"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -173,6 +173,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> extracts the response ID and resolves it with <code class="docutils literal notranslate"><span class="pre">getTransaction(id)</span></code>, so responses are matched by ID and may arrive out of order without violating correctness. Threading/locking model:</p></li>
 <li><p>In-flight map access is protected by the <code class="docutils literal notranslate"><span class="pre">memory::Slave</span></code> mutex.</p></li>
 <li><p>Per-transaction payload/state access is protected by <code class="docutils literal notranslate"><span class="pre">TransactionLock</span></code>.</p></li>
+<li><p>Submission releases the transaction lock after serialization and, for non-posted requests, response registration, before downstream <code class="docutils literal notranslate"><span class="pre">sendFrame()</span></code>. Transmission can still block, but it does not hold this mutex and prevent response processing from acquiring it.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">doTransaction()</span></code> and <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> can be called from different runtime contexts provided by the connected stream transport stack. Missing, late, or invalid responses:</p></li>
 <li><p>Software wait timeout is enforced by the initiating <code class="docutils literal notranslate"><span class="pre">memory::Master</span></code> transaction timeout (<code class="docutils literal notranslate"><span class="pre">Master::setTimeout()</span></code> in microseconds).</p></li>
 <li><p>If no valid response arrives before timeout, the waiting side completes with a timeout error.</p></li>

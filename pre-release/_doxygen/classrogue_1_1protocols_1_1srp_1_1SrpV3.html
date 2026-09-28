@@ -355,6 +355,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Threading/locking model:</p><ul>
 <li>In-flight map access is protected by the <code>memory::Slave</code> mutex.</li>
 <li>Per-transaction payload/state access is protected by <code>TransactionLock</code>.</li>
+<li>Submission releases the transaction lock after serialization and, for non-posted requests, response registration, before downstream <code><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#ac4270a45820c4c03dd7f2b472df4efd8" title="Sends a frame to all attached slaves.">sendFrame()</a></code>. Transmission can still block, but it does not hold this mutex and prevent response processing from acquiring it.</li>
 <li><code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV3.html#aecf106e568406bc23f6bfefa8c510c31" title="Processes a memory transaction and emits SRP v3 request frame(s).">doTransaction()</a></code> and <code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV3.html#a41ac8df61aba4b8fe77955b316f0bce3" title="Accepts an incoming SRP v3 response frame.">acceptFrame()</a></code> can be called from different runtime contexts provided by the connected stream transport stack.</li>
 </ul>
 <p>Missing, late, or invalid responses:</p><ul>
@@ -366,7 +367,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Compared with earlier protocol versions, v3 has a different header format and supports a configurable protocol timeout field through <code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV3.html#a2c175ebb91847df9ff8a7c362f80a063" title="Sets SRP hardware timeout field used in outgoing requests.">setHardwareTimeout()</a></code>. This hardware timeout field is encoded into outgoing SRPv3 requests and is separate from Rogue software-side wait timeout behavior.</p>
 <p>Protocol reference: <a href="https://confluence.slac.stanford.edu/x/cRmVD">https://confluence.slac.stanford.edu/x/cRmVD</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV3_8h_source.html#l00085">85</a> of file <a class="el" href="SrpV3_8h_source.html">SrpV3.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV3_8h_source.html#l00089">89</a> of file <a class="el" href="SrpV3_8h_source.html">SrpV3.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abf9eebed594c0d093909d4b25143fa20" name="abf9eebed594c0d093909d4b25143fa20"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abf9eebed594c0d093909d4b25143fa20">&#9670;&#160;</a></span>SrpV3()</h2>
@@ -450,7 +451,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV3_8cpp_source.html#l00200">200</a> of file <a class="el" href="SrpV3_8cpp_source.html">SrpV3.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV3_8cpp_source.html#l00204">204</a> of file <a class="el" href="SrpV3_8cpp_source.html">SrpV3.cpp</a>.</p>
 
 </div>
 </div>
