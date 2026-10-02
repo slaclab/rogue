@@ -49,6 +49,13 @@ Threading And Locking
   runtime contexts.
 - In-flight transaction matching is protected by the base memory-slave mutex.
 - Per-transaction payload/state access is protected via ``TransactionLock``.
+- Submission releases the transaction lock after serializing the request and
+  registering non-posted requests for response matching, before calling
+  downstream ``sendFrame()``.
+  The frame owns the serialized data at that point. Transmission can still
+  block, but response processing does not have to wait for that send to finish
+  before acquiring the transaction mutex. Other transport dependencies can
+  still affect progress.
 
 Logging
 =======

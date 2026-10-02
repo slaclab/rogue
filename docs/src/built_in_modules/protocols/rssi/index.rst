@@ -109,7 +109,7 @@ The most common PyRogue-facing form is still ``pyrogue.protocols.UdpRssiPack``:
        def __init__(self):
            super().__init__(name='MyRoot')
 
-           self.add(pyrogue.protocols.UdpRssiPack(
+           self.add(pr.protocols.UdpRssiPack(
                name='Net',
                server=False,
                host='10.0.0.5',
