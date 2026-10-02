@@ -119,7 +119,15 @@ def countRecords(path, limit=None):
 
 
 def roundTripCheck(payload=b'ABCD' * 256):
-    """Prove StreamZip/StreamUnZip is lossless, without involving a file."""
+    """Prove StreamZip/StreamUnZip is lossless, without involving a file.
+
+    Note there is no wait here. A Rogue stream connection is a direct call
+    chain, not a queue: ``_sendFrame`` runs each downstream ``_acceptFrame``
+    on the calling thread, so by the time it returns the payload has already
+    been compressed, decompressed, and captured. Stages that *do* hand frames
+    to a thread -- ``Fifo``, ``TcpClient``, the batcher -- are the ones that
+    need you to wait for a completion signal.
+    """
 
     class Source(rogue.interfaces.stream.Master):
         def sendBytes(self, data):
@@ -144,7 +152,6 @@ def roundTripCheck(payload=b'ABCD' * 256):
     source >> rogue.utilities.StreamZip() >> rogue.utilities.StreamUnZip() >> capture
 
     source.sendBytes(payload)
-    time.sleep(0.5)
     return capture.data == payload
 
 
