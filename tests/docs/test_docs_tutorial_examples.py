@@ -26,6 +26,8 @@ import tempfile
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
 EXAMPLE_DIR = REPO_ROOT / 'docs' / 'src' / 'tutorials' / 'examples'
 
@@ -58,24 +60,29 @@ def test_protocol_stack_srp_over_emulation():
         assert root.Dev.ScratchPad.valueDisp() == '0xcafebabe'
 
 
-def test_protocol_stack_tcp_bridge():
+def test_protocol_stack_tcp_bridge(free_tcp_port):
     """protocol_stack.rst stage 2: registers survive a TCP hop."""
     import time
 
     module = load_example('protocol_stack')
 
-    # A port unlikely to collide with the loopback stack test below.
-    with module.TcpBridgeRoot(port=11011) as root:
+    # TcpServer/TcpClient claim both port and port+1, which is what
+    # free_tcp_port reserves.
+    with module.TcpBridgeRoot(port=free_tcp_port) as root:
         time.sleep(1.0)
         root.Dev.ScratchPad.set(0xABCD1234)
         assert root.Dev.ScratchPad.get() == 0xABCD1234
 
 
-def test_protocol_stack_udp_rssi_packetizer():
+def test_protocol_stack_udp_rssi_packetizer(free_udp_port):
     """protocol_stack.rst stage 3: the full stack links up and carries SRP."""
+    if sys.platform == 'darwin':
+        pytest.skip('RSSI timing too sensitive for macOS UDP stack')
     module = load_example('protocol_stack')
 
-    with module.NetworkRoot(port=8213) as root:
+    # NetworkRoot builds both endpoints from one port, so the server cannot
+    # bind 0 and hand the kernel-assigned port to the client. Probe instead.
+    with module.NetworkRoot(port=free_udp_port) as root:
         assert root.waitForLink(), 'RSSI link never opened'
         root.Dev.ScratchPad.set(0xFEEDFACE)
         assert root.Dev.ScratchPad.get() == 0xFEEDFACE

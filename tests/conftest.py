@@ -85,6 +85,27 @@ def _find_free_port_block(host="127.0.0.1", count=3, start=20000, stop=60000):
     raise RuntimeError(f"Unable to find {count} consecutive free ports on {host}")
 
 
+def _find_free_udp_port(count=1, start=20000, stop=60000):
+    # rogue.protocols.udp.Server binds INADDR_ANY, so probe the wildcard
+    # address rather than loopback: a port held by another interface still
+    # makes the Server constructor fail with EADDRINUSE.
+    for base in range(start, stop - count):
+        sockets = []
+        try:
+            for port in range(base, base + count):
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.bind(("", port))
+                sockets.append(sock)
+            return base
+        except OSError:
+            pass
+        finally:
+            for sock in sockets:
+                sock.close()
+
+    raise RuntimeError(f"Unable to find {count} consecutive free UDP ports")
+
+
 def _worker_port_search_range(worker_id, *, start=20000, stop=60000, span=256):
     # xdist workers probe ports in parallel. Give each worker a disjoint slice
     # so they do not race on the same consecutive port block.
@@ -128,6 +149,17 @@ def free_tcp_port(worker_id):
     # TcpServer/TcpClient use two consecutive ports (base and base+1).
     start, stop = _worker_port_search_range(worker_id)
     return _find_free_port_block(count=2, start=start, stop=stop)
+
+
+@pytest.fixture
+def free_udp_port(worker_id):
+    # rogue.protocols.udp.Server takes a single port and throws on a busy
+    # bind, so UDP tests need a probed port rather than a published one.
+    # Prefer passing 0 and reading Server.getPort() where the test owns the
+    # Server directly; this fixture is for the cases that cannot, such as a
+    # documented Root that builds both endpoints from one port argument.
+    start, stop = _worker_port_search_range(worker_id)
+    return _find_free_udp_port(start=start, stop=stop)
 
 
 @pytest.fixture
