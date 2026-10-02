@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Capture Data To Disk And Replay It &mdash; Rogue v6.15.0-48-gdc0ea11e3 documentation</title>
+  <title>Capture Data To Disk And Replay It &mdash; Rogue v6.15.0-53-g8ca20442b documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b18653b1"></script>
+      <script src="../_static/documentation_options.js?v=efd39fbb"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -300,7 +300,15 @@ by large factors.</p>
 <p>Compression is lossless regardless of ratio. Proving that does not need a file at
 all — put the two stages back to back and compare bytes:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">roundTripCheck</span><span class="p">(</span><span class="n">payload</span><span class="o">=</span><span class="sa">b</span><span class="s1">'ABCD'</span> <span class="o">*</span> <span class="mi">256</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Prove StreamZip/StreamUnZip is lossless, without involving a file."""</span>
+<span class="w">    </span><span class="sd">"""Prove StreamZip/StreamUnZip is lossless, without involving a file.</span>
+
+<span class="sd">    Note there is no wait here. A Rogue stream connection is a direct call</span>
+<span class="sd">    chain, not a queue: ``_sendFrame`` runs each downstream ``_acceptFrame``</span>
+<span class="sd">    on the calling thread, so by the time it returns the payload has already</span>
+<span class="sd">    been compressed, decompressed, and captured. Stages that *do* hand frames</span>
+<span class="sd">    to a thread -- ``Fifo``, ``TcpClient``, the batcher -- are the ones that</span>
+<span class="sd">    need you to wait for a completion signal.</span>
+<span class="sd">    """</span>
 
     <span class="k">class</span><span class="w"> </span><span class="nc">Source</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">sendBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -325,7 +333,6 @@ all — put the two stages back to back and compare bytes:</p>
     <span class="n">source</span> <span class="o">&gt;&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">StreamZip</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">StreamUnZip</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">capture</span>
 
     <span class="n">source</span><span class="o">.</span><span class="n">sendBytes</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">capture</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">payload</span>
 </pre></div>
 </div>
