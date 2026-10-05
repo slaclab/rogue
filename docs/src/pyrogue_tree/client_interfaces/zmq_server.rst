@@ -31,15 +31,15 @@ Create the server in ``Root.__init__`` and register it as an interface:
 
 .. code-block:: python
 
-   import pyrogue
+   import pyrogue as pr
 
-   class MyRoot(pyrogue.Root):
+   class MyRoot(pr.Root):
        def __init__(self):
            super().__init__(name='Root', description='Example')
 
            # Expose this root over TCP/ZeroMQ.
            # port=0 enables automatic base-port selection.
-           self.zmqServer = pyrogue.interfaces.ZmqServer(
+           self.zmqServer = pr.interfaces.ZmqServer(
                root=self,
                addr='127.0.0.1',
                port=0,
@@ -103,12 +103,12 @@ Example:
 .. code-block:: python
 
    import logging
-   import pyrogue
+   import pyrogue as pr
    import pyrogue.interfaces
 
-   pyrogue.setUnifiedLogging(True)
-   pyrogue.setLogLevel('pyrogue.ZmqServer', 'DEBUG')
-   server = pyrogue.interfaces.ZmqServer(root=root, addr='127.0.0.1', port=9099)
+   pr.setUnifiedLogging(True)
+   pr.setLogLevel('pyrogue.ZmqServer', 'DEBUG')
+   server = pr.interfaces.ZmqServer(root=root, addr='127.0.0.1', port=9099)
 
 That enables the C++ transport logger. Separately, ``ZmqServer._start()``
 prints the selected ports and example client commands to stdout. Those startup

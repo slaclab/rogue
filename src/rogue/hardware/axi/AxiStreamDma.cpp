@@ -294,6 +294,11 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
 //! Close the device
 rha::AxiStreamDma::~AxiStreamDma() {
     this->stop();
+
+    if (desc_) {
+        closeShared(desc_);
+        desc_.reset();
+    }
 }
 
 void rha::AxiStreamDma::stop() {
@@ -314,19 +319,15 @@ void rha::AxiStreamDma::stop() {
     }
     thread_.reset();
 
-    // Release the shared descriptor exactly once even if stop() is called
-    // again (or runThread() self-exited and the user called stop() before
-    // ~AxiStreamDma()): clearing desc_ after closeShared() prevents a
-    // double-decrement of openCount.
-    if (desc_) {
-        closeShared(desc_);
-        desc_.reset();
-    }
-
-    // Close the per-instance fd exactly once.
-    if (fd_ >= 0) {
-        ::close(fd_);
-        fd_ = -1;
+    // Close the per-instance fd exactly once.  The shared DMA mapping remains
+    // open until ~AxiStreamDma() because zero-copy Rogue buffers can outlive a
+    // user-initiated stop() and still point into desc_->rawBuff.
+    {
+        std::lock_guard<std::mutex> lock(fdMtx_);
+        if (fd_ >= 0) {
+            ::close(fd_);
+            fd_ = -1;
+        }
     }
 }
 
@@ -358,10 +359,10 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
     ris::FramePtr frame;
     uint32_t buffSize;
 
-    // Reject use after stop()/teardown.  stop() resets the shared-descriptor
-    // shared_ptr to nullptr and closes the per-instance fd, so a post-stop
-    // call would otherwise segfault on the buffer-size read below instead
-    // of throwing a clean GeneralError.
+    // Reject use after stop() before dereferencing desc_ or entering the
+    // allocation path.  stop() deliberately retains desc_ to preserve the
+    // shared DMA mapping, but closes fd_; report a clean lifecycle error
+    // instead of attempting a driver operation with the closed descriptor.
     if (!desc_ || fd_ < 0)
         throw rogue::GeneralError("AxiStreamDma::acceptReq",
                                   "instance has been stopped or did not finish construction");
@@ -389,7 +390,10 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
             // Keep trying since poll call can fire
             // but getIndex fails because we did not win the buffer lock
             do {
-                // Re-check fd validity: a concurrent stop() can toggle fd_ to -1.
+                // Check again immediately before poll() and the driver call.  This
+                // provides a clean failure when the descriptor is already closed; it
+                // does not synchronize this operation with stop(), whose caller must
+                // first quiesce public driver operations.
                 // poll() imposes no FD_SETSIZE ceiling, so large fd values are fine.
                 if (fd_ < 0)
                     throw rogue::GeneralError::create(
@@ -442,10 +446,9 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
     uint32_t cont;
     bool emptyFrame;
 
-    // Reject use after stop()/teardown.  stop() releases the shared descriptor
-    // and closes fd_, so the inner-loop fd_ guard would still catch this, but
-    // that fires only after frame->lock() and buffer iteration have already
-    // run.  Fail-fast at entry for a cleaner error path, mirroring acceptReq().
+    // Reject use after stop() before locking or modifying the frame.  Although
+    // the shared DMA mapping remains alive until destruction, the per-instance
+    // driver descriptor is closed by stop().
     if (!desc_ || fd_ < 0)
         throw rogue::GeneralError("AxiStreamDma::acceptFrame",
                                   "instance has been stopped or did not finish construction");
@@ -512,7 +515,10 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
             // Keep trying since poll call can fire
             // but write fails because we did not win the (*it)er lock
             do {
-                // Re-check fd validity: a concurrent stop() can toggle fd_ to -1.
+                // Check again immediately before poll() and the driver call.  This
+                // provides a clean failure when the descriptor is already closed; it
+                // does not synchronize this operation with stop(), whose caller must
+                // first quiesce public driver operations.
                 // poll() imposes no FD_SETSIZE ceiling, so large fd values are fine.
                 if (fd_ < 0)
                     throw rogue::GeneralError::create(
@@ -557,16 +563,16 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
 //! Return a buffer
 void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
     rogue::GilRelease noGil;
-    uint32_t ret[100];
-    uint32_t count;
-    uint32_t x;
 
     // Buffer is zero copy as indicated by bit 31
     if ((meta & 0x80000000) != 0) {
-        // Device is open and buffer is not stale
-        // Bit 30 indicates buffer has already been returned to hardware
-        if ((fd_ >= 0) && ((meta & 0x40000000) == 0)) {
-            if (dmaRetIndex(fd_, meta & 0x3FFFFFFF) < 0)
+        // Return a non-stale zero-copy buffer only while the per-instance
+        // descriptor remains open.  Bit 30 indicates that the buffer has
+        // already been returned to hardware.  Synchronize the fd_ check and
+        // dmaRetIndex() with stop() closing the descriptor.
+        if ((meta & 0x40000000) == 0) {
+            std::lock_guard<std::mutex> lock(fdMtx_);
+            if (fd_ >= 0 && dmaRetIndex(fd_, meta & 0x3FFFFFFF) < 0)
                 throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
         }
         decCounter(size);

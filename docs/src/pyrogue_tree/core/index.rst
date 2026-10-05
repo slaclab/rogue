@@ -52,7 +52,7 @@ Minimal Tree Example
            self.add(DemoDevice(name='App'))
 
            # Optional: expose the running tree to remote clients.
-           self.addInterface(pyrogue.interfaces.ZmqServer(
+           self.addInterface(pr.interfaces.ZmqServer(
                root=self,
                addr='127.0.0.1',
                port=0,
