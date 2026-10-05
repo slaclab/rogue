@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LinkVariable &mdash; Rogue v6.15.0-53-g8ca20442b documentation</title>
+  <title>LinkVariable &mdash; Rogue v6.15.0-58-gce69936f2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=efd39fbb"></script>
+      <script src="../../../_static/documentation_options.js?v=19ef523e"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -823,7 +823,11 @@ Listeners will be informed of the update.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.LinkVariable.parseDisp">
 <span class="sig-name descname"><span class="pre">parseDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sValue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.LinkVariable.parseDisp" title="Link to this definition"></a></dt>
-<dd><p>Parse a string representation of a value into a Python object.</p>
+<dd><p>Parse display text, converting scalar literals to the native type.</p>
+<p>Non-string inputs pass through unchanged. Enum labels, strings, and
+NumPy arrays use their display-specific parsing. Lists, dictionaries,
+variables without a known native type, and variables with
+<code class="docutils literal notranslate"><span class="pre">typeCheck=False</span></code> retain the parsed literal value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sValue</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Display-formatted value to parse.</p>
