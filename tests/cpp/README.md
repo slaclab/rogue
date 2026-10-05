@@ -5,7 +5,7 @@ The native C++ tests live under `tests/cpp/` and are organized by behavior:
 - `core/`: deterministic native helper and utility coverage
 - `memory/`: memory bit helpers plus transaction/block and variable behavior
 - `stream/`: frame, pool, iterator, FIFO, filter, and rate-drop behavior
-- `protocols/`: protocol helpers, packetizer coverage, and XVC smoke coverage
+- `protocols/`: protocol helpers, packetizer and SRP coverage, and XVC smoke coverage
 - `smoke/`: higher-level API smoke coverage that requires Python support
 - `support/`: shared test main and helper utilities
 - `vendor/`: vendored upstream single-header test framework and provenance notes
@@ -16,11 +16,13 @@ see `../METHODOLOGY.md`.
 Current scope:
 
 - Fast deterministic native coverage is centered on low-level core, memory,
-  stream, and packetizer behavior that does not require sockets or external
+  stream, packetizer, and SRP behavior that does not require sockets or external
   services.
 - The Python-enabled subset contains public API and XVC smoke tests.
-- Socket-backed, transport-backed, and perf-style native tests remain deferred
-  to later labeled expansions.
+- An asynchronous in-process RSSI/PacketizerV2/SRP regression covers transport
+  thread boundaries without sockets or performance thresholds.
+- Socket-backed and perf-style native tests remain deferred to later labeled
+  expansions.
 
 Labels:
 
@@ -29,6 +31,7 @@ Labels:
 - `no-python`: tests that also run in `-DNO_PYTHON=1` builds
 - `requires-python`: tests that depend on Python-enabled Rogue builds
 - `smoke`: public API smoke coverage
+- `integration`: native multi-component transport coverage
 
 Common commands:
 
@@ -67,6 +70,8 @@ Current deterministic test files:
 - `memory/test_variable.cpp`
 - `protocols/packetizer/test_crc.cpp`
 - `protocols/packetizer/test_partial_construction.cpp`
+- `protocols/srp/test_srp_backpressure.cpp`: SRPv0/SRPv3 progress during blocked
+  sends, posted-data ownership, early split completion, and late responses
 - `stream/test_frame_pool.cpp`
 - `stream/test_iterator.cpp`
 - `stream/test_fifo_filter_rate_drop.cpp`
@@ -75,3 +80,17 @@ Current Python-enabled smoke test files:
 
 - `smoke/test_api_smoke.cpp`
 - `protocols/xilinx/test_xvc_smoke.cpp`
+
+Current native integration test files (also supported without Python):
+
+- `protocols/srp/test_srp_rssi.cpp`: sequential and batched reads through
+  asynchronous RSSI/PacketizerV2/SRPv3, using 1024-byte segments and an
+  eight-segment window. Checks data integrity across segmentation and transport
+  threads; blocked-send progress is covered by `test_srp_backpressure.cpp`.
+  Deadlines bound failures; throughput is not asserted.
+
+Run this integration regression with:
+
+```sh
+ctest --test-dir build --output-on-failure -R '^rogue-cpp-srp-rssi$'
+```
