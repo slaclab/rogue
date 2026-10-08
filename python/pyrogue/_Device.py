@@ -187,6 +187,9 @@ class Device(pr.Node,rim.Hub):
         Initial enable state.
     defaults : dict, optional
         Default variable values keyed by name.
+    defaultVerify : bool, optional (default = None)
+        Default write-verification setting for RemoteVariables in this Device
+        subtree. If omitted, inherit the nearest ancestor setting.
     enableDeps : iterable of BaseVariable, optional
         Variables that gate this Device's effective enable state. All
         dependency values must be truthy before the Device's memory Blocks are
@@ -211,6 +214,7 @@ class Device(pr.Node,rim.Hub):
         expand: bool = False,
         enabled: bool = True,
         defaults: dict | None = None,
+        defaultVerify: bool | None = None,
         enableDeps: Iterable[pr.BaseVariable] | None = None,
         hubMin: int = 0,
         hubMax: int = 0,
@@ -228,7 +232,8 @@ class Device(pr.Node,rim.Hub):
         self._custBlocks = []
         self._memBase    = memBase
         self._memLock    = threading.RLock()
-        self._defaults   = defaults if defaults is not None else {}
+        self._defaults      = defaults if defaults is not None else {}
+        self._defaultVerify = defaultVerify
 
         self._ifAndProto = []
 
@@ -1057,6 +1062,16 @@ class Device(pr.Node,rim.Hub):
                 )
             node = node._parent
 
+    def _resolveDefaultVerify(self) -> bool:
+        """Return the nearest configured write-verification default."""
+        if self._defaultVerify is not None:
+            return self._defaultVerify
+
+        if self._parent is not None and self._parent is not self:
+            return self._parent._resolveDefaultVerify()
+
+        return True
+
     def _buildBlocks(self) -> None:
         """Build and attach memory blocks for local/remote variables."""
         remVars = []
@@ -1073,6 +1088,7 @@ class Device(pr.Node,rim.Hub):
 
             # Align to min access, create list of remote variables
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
+                n._applyVerifyDefault(self._resolveDefaultVerify())
                 self._log.info(
                     "Before shift variable %s offset=%s bitSize=%s bytes=%s",
                     n.name,
