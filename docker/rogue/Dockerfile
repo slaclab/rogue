@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 
 # PIP Packages
 RUN pip3 install PyYAML parse click ipython pyzmq packaging matplotlib numpy p4p jsonpickle sqlalchemy pyserial
-RUN pip3 install pydm>=1.18.0
+RUN pip3 install 'pydm>=1.18.0' 'pyte>=0.8'
 
 # Install Rogue
 ARG branch=main

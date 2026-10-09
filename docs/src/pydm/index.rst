@@ -75,6 +75,8 @@ What To Explore Next
 - :doc:`timeplot_gui` for time-series plotting workflows
 - :doc:`channel_urls` for the Rogue-specific PyDM channel syntax
 - :doc:`rogue_widgets` for the widget set used in custom screens
+- :doc:`terminal_tab` for the optional embedded shell beside the system log
+- :doc:`ipython_tab` for the optional IPython console with a connected client
 
 Related Topics
 ==============
@@ -90,3 +92,5 @@ Related Topics
    timeplot_gui
    channel_urls
    rogue_widgets
+   terminal_tab
+   ipython_tab

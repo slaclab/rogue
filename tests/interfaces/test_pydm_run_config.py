@@ -9,18 +9,60 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import contextlib
 import importlib.util
 import sys
 import types
 from pathlib import Path
 
 
-def _load_pydm_module(call_log):
+def _load_pydm_module(call_log, app_log=None):
+    """Load the module under stubs and return it with the stubs removed again.
+
+    Suitable for entry points that resolve everything they need at import time.
+    Use :func:`_stubbedPydmModule` for ``runPyDM``, which imports lazily inside
+    the function body and so needs the stubs to still be present when called.
+    """
+    with _stubbedPydmModule(call_log, app_log=app_log) as module:
+        return module
+
+
+@contextlib.contextmanager
+def _stubbedPydmModule(call_log, app_log=None):
     module_path = Path(__file__).resolve().parents[2] / "python/pyrogue/pydm/__init__.py"
 
+    class FakeMainWindow:
+        home_widget = None
+
+        def set_display_widget(self, widget):
+            pass
+
+    class FakeApp:
+        """Records the display arguments runPyDM assembles."""
+
+        def __init__(self, **kwargs):
+            if app_log is not None:
+                app_log.append(kwargs)
+            self.main_window = FakeMainWindow()
+
+        @staticmethod
+        def instance():
+            return None
+
+        def exec(self):
+            return 0
+
     fake_pydm = types.ModuleType("pydm")
-    fake_pydm.PyDMApplication = type("FakeApp", (), {"instance": staticmethod(lambda: None)})
+    fake_pydm.PyDMApplication = FakeApp
     fake_pydm.Display = type("FakeDisplay", (), {})
+
+    # runPyDM checks for a pre-existing QApplication before building its own.
+    fake_qtpy = types.ModuleType("qtpy")
+    fake_qtpy.__path__ = []
+    fake_qtpy_widgets = types.ModuleType("qtpy.QtWidgets")
+    fake_qtpy_widgets.QApplication = type(
+        "FakeQApplication", (), {"instance": staticmethod(lambda: None)})
+    fake_qtpy.QtWidgets = fake_qtpy_widgets
 
     fake_pydm_data_plugins = types.ModuleType("pydm.data_plugins")
     fake_pydm_data_plugins.plugin_modules = {}
@@ -61,6 +103,8 @@ def _load_pydm_module(call_log):
         "pydm.widgets": fake_pydm_widgets,
         "pydm.widgets.rules": fake_pydm_widgets_rules,
         "pydm.utilities": fake_pydm_utilities,
+        "qtpy": fake_qtpy,
+        "qtpy.QtWidgets": fake_qtpy_widgets,
         "pyrogue": fake_pyrogue,
         "pyrogue.interfaces": fake_pyrogue_interfaces,
         "pyrogue.pydm": fake_pyrogue_pydm,
@@ -74,7 +118,7 @@ def _load_pydm_module(call_log):
         module = importlib.util.module_from_spec(spec)
         assert spec.loader is not None
         spec.loader.exec_module(module)
-        return module
+        yield module
     finally:
         for name, original in saved_modules.items():
             if original is None:
@@ -107,3 +151,46 @@ def test_configure_virtual_clients_applies_timeouts_to_each_server():
             "requestStallTimeout": None,
         },
     ]
+
+
+def _runPyDMArgs(monkeypatch, **kwargs):
+    """Run runPyDM against stubs and return the display argument list."""
+    app_log = []
+
+    with _stubbedPydmModule([], app_log=app_log) as module:
+        # runPyDM installs process-wide handlers; keep them out of the session.
+        monkeypatch.setattr(module.signal, "signal", lambda *a: None)
+        monkeypatch.setenv("ROGUE_SERVERS", "")
+        module.runPyDM(serverList="localhost:9099", **kwargs)
+
+    assert len(app_log) == 1
+    return app_log[0]["command_line_args"]
+
+
+def test_run_pydm_defaults_enable_terminal_to_false(monkeypatch):
+    assert "enableTerminal=False" in _runPyDMArgs(monkeypatch)
+
+
+def test_run_pydm_forwards_enable_terminal(monkeypatch):
+    # Pins the exact string DefaultTop._parseBoolArg has to consume. This is the
+    # only part of the option plumbing that spans two files.
+    assert "enableTerminal=True" in _runPyDMArgs(monkeypatch, enableTerminal=True)
+
+
+def test_run_pydm_defaults_enable_ipython_to_false(monkeypatch):
+    assert "enableIPython=False" in _runPyDMArgs(monkeypatch)
+
+
+def test_run_pydm_forwards_enable_ipython(monkeypatch):
+    assert "enableIPython=True" in _runPyDMArgs(monkeypatch, enableIPython=True)
+
+
+def test_run_pydm_forwards_the_two_tab_options_independently(monkeypatch):
+    # Either option on its own must not drag the other along.
+    args = _runPyDMArgs(monkeypatch, enableIPython=True)
+    assert "enableIPython=True" in args
+    assert "enableTerminal=False" in args
+
+    args = _runPyDMArgs(monkeypatch, enableTerminal=True)
+    assert "enableTerminal=True" in args
+    assert "enableIPython=False" in args
