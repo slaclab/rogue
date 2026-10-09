@@ -272,7 +272,7 @@ Additional Inherited Members</h2></td></tr>
 <p><code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV3Emulation.html" title="Software SRPv3 server that emulates a hardware SRP endpoint.">SrpV3Emulation</a></code> acts as the remote endpoint of the SRPv3 protocol, receiving SRPv3 request frames and producing SRPv3 response frames. It maintains an internal memory space, enabling full software-only testing of the SRPv3 protocol path without FPGA or ASIC hardware.</p>
 <p>Typical CI/test usage connects <code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV3.html" title="SRP v3 bridge between Rogue memory transactions and stream frames.">SrpV3</a></code> (the client/master) to <code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV3Emulation.html" title="Software SRPv3 server that emulates a hardware SRP endpoint.">SrpV3Emulation</a></code> via a bidirectional stream path:</p>
 <div class="fragment"><div class="line"><a class="code hl_class" href="classrogue_1_1protocols_1_1srp_1_1SrpV3.html">SrpV3</a> (client) == <a class="code hl_function" href="classrogue_1_1protocols_1_1srp_1_1SrpV3Emulation.html#a1636c8ee261d6e0720224bd11f214759">SrpV3Emulation</a> (server)</div>
-<div class="ttc" id="aclassrogue_1_1protocols_1_1srp_1_1SrpV3Emulation_html_a1636c8ee261d6e0720224bd11f214759"><div class="ttname"><a href="classrogue_1_1protocols_1_1srp_1_1SrpV3Emulation.html#a1636c8ee261d6e0720224bd11f214759">rogue::protocols::srp::SrpV3Emulation::SrpV3Emulation</a></div><div class="ttdeci">SrpV3Emulation()</div><div class="ttdoc">Constructs an SRP v3 server instance.</div><div class="ttdef"><b>Definition</b> <a href="SrpV3Emulation_8cpp_source.html#l00064">SrpV3Emulation.cpp:64</a></div></div>
+<div class="ttc" id="aclassrogue_1_1protocols_1_1srp_1_1SrpV3Emulation_html_a1636c8ee261d6e0720224bd11f214759"><div class="ttname"><a href="classrogue_1_1protocols_1_1srp_1_1SrpV3Emulation.html#a1636c8ee261d6e0720224bd11f214759">rogue::protocols::srp::SrpV3Emulation::SrpV3Emulation</a></div><div class="ttdeci">SrpV3Emulation()</div><div class="ttdoc">Constructs an SRP v3 server instance.</div><div class="ttdef"><b>Definition</b> <a href="SrpV3Emulation_8cpp_source.html#l00065">SrpV3Emulation.cpp:65</a></div></div>
 <div class="ttc" id="aclassrogue_1_1protocols_1_1srp_1_1SrpV3_html"><div class="ttname"><a href="classrogue_1_1protocols_1_1srp_1_1SrpV3.html">rogue::protocols::srp::SrpV3</a></div><div class="ttdoc">SRP v3 bridge between Rogue memory transactions and stream frames.</div><div class="ttdef"><b>Definition</b> <a href="SrpV3_8h_source.html#l00089">SrpV3.h:91</a></div></div>
 </div><!-- fragment --><p>When a request frame arrives via <code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV3Emulation.html#af03f62b705d8615d43cf25f9f507d66d" title="Queues an incoming SRP v3 request frame for processing.">acceptFrame()</a></code>, the server queues the frame for processing on an internal worker thread. The worker:</p><ol type="1">
 <li>Decodes the SRPv3 header (version, opcode, transaction ID, address, size).</li>
@@ -311,7 +311,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Constructor.</p>
 <p>This constructor is a low-level C++ allocation path. Prefer <code><a class="el" href="classrogue_1_1protocols_1_1srp_1_1SrpV3Emulation.html#a7652b661b8c2d5b311d2590d95a496bb" title="Creates an SRP v3 server instance.">create()</a></code> when shared ownership or Python exposure is required. Starts an internal worker thread for processing queued request frames. </p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00064">64</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00065">65</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -333,7 +333,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Destroys the SRP v3 server instance and frees allocated memory. </p>
 <p>Destructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00072">72</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00073">73</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -374,7 +374,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00198">198</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00214">214</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -410,7 +410,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Description : </p><h2>SRP protocol emulation, <a class="el" href="classrogue_1_1Version.html" title="Rogue version query and comparison helpers.">Version</a> 3 </h2>
 <p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms </p><h2>contained in the LICENSE.txt file. </h2>
 
-<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00047">47</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00048">48</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -440,7 +440,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Registers Python bindings for this class. </p>
 <p>Setup class in python. </p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00053">53</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00054">54</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -473,7 +473,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">rogue::interfaces::stream::Master</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00083">83</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SrpV3Emulation_8cpp_source.html#l00084">84</a> of file <a class="el" href="SrpV3Emulation_8cpp_source.html">SrpV3Emulation.cpp</a>.</p>
 
 </div>
 </div>
