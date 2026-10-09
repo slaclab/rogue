@@ -37,7 +37,9 @@ int rogue_test_initialize_python_numpy() {
 #endif
 
 int main(int argc, char** argv) {
-#ifndef NO_PYTHON
+    // no-python tests still link the NumPy API symbol defined above, but must
+    // not run with this thread holding the GIL that library workers acquire.
+#if !defined(NO_PYTHON) && !defined(ROGUE_CPP_TEST_NO_PYTHON_INIT)
     if (!Py_IsInitialized()) Py_Initialize();
 #endif
 

@@ -23,6 +23,7 @@
 #include <atomic>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Logging.h"
@@ -417,6 +418,10 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     void start();
 
   private:
+    // Release retransmit headers, taking the GIL when Python is running.
+    // Must be called with txMtx_ released.
+    void releaseHeaders(std::vector<std::shared_ptr<rogue::protocols::rssi::Header> >& heads);
+
     // Method to transit a frame with proper updates
     void transportTx(std::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool txReset);
 

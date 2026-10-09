@@ -29,6 +29,7 @@
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/ScopedGil.h"
 #include "rogue/interfaces/memory/Constants.h"
 #include "rogue/interfaces/memory/Transaction.h"
 #include "rogue/interfaces/memory/TransactionLock.h"
@@ -448,6 +449,23 @@ void rim::TcpClient::runThread() {
                               result);
         }
         for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+
+        // Release here under the GIL instead of at the next getTransaction()
+        // overwrite or thread exit. A Python Slave or Hub that forwards a
+        // transaction back into C++ via super()._doTransaction() re-enters through
+        // the from-python shared_ptr converter, which attaches a Boost.Python
+        // deleter that calls Py_DECREF without the GIL. bp::no_init does not
+        // prevent this: it only suppresses __init__, not the converter.
+#ifndef NO_PYTHON
+        if (tran && Py_IsInitialized()) {
+            rogue::ScopedGil gil;
+            tran.reset();
+        } else {
+            tran.reset();
+        }
+#else
+        tran.reset();
+#endif
     }
 }
 
