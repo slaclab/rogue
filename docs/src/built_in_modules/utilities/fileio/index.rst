@@ -58,11 +58,11 @@ configuration APIs:
 
 .. code-block:: python
 
-   import pyrogue
+   import pyrogue as pr
    import rogue
 
    rogue.Logging.setFilter('pyrogue.fileio.StreamWriter', rogue.Logging.Debug)
-   pyrogue.setLogLevel('pyrogue.FileReader', 'DEBUG')
+   pr.setLogLevel('pyrogue.FileReader', 'DEBUG')
 
 
 Subtopics

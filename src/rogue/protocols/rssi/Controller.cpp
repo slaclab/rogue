@@ -26,11 +26,13 @@
 #include <map>
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Helpers.h"
 #include "rogue/Logging.h"
+#include "rogue/ScopedGil.h"
 #include "rogue/interfaces/stream/Buffer.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameLock.h"
@@ -220,12 +222,19 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
     // Ack set
     if (head->ack && (head->acknowledge != lastAckRx_)) {
-        std::unique_lock<std::mutex> lock(txMtx_);
+        // Moved out under txMtx_, released after the lock drops. See releaseHeaders().
+        std::vector<rpr::HeaderPtr> acked;
 
-        do {
-            txList_[++lastAckRx_].reset();
-            if (txListCount_ != 0) txListCount_--;
-        } while (lastAckRx_ != head->acknowledge);
+        {
+            std::unique_lock<std::mutex> lock(txMtx_);
+
+            do {
+                acked.push_back(std::move(txList_[++lastAckRx_]));
+                if (txListCount_ != 0) txListCount_--;
+            } while (lastAckRx_ != head->acknowledge);
+        }
+
+        releaseHeaders(acked);
     }
 
     // Check for busy state transition
@@ -587,8 +596,26 @@ void rpr::Controller::resetCounters() {
     remBusyCnt_  = 0;
 }
 
+// Release retransmit headers, taking the GIL when Python is running.
+//
+// Each Header owns the frame applicationRx() wrapped uncopied, so a Python-owned
+// frame carries a Boost.Python deleter that calls Py_DECREF without the GIL,
+// which is fatal on a transport thread. Call with txMtx_ released so the GIL is
+// never acquired while holding it.
+void rpr::Controller::releaseHeaders(std::vector<rpr::HeaderPtr>& heads) {
+#ifndef NO_PYTHON
+    if (Py_IsInitialized()) {
+        rogue::ScopedGil gil;
+        heads.clear();
+        return;
+    }
+#endif
+    heads.clear();
+}
+
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txReset) {
+    std::vector<rpr::HeaderPtr> acked;
     std::unique_lock<std::mutex> lock(txMtx_);
 
     head->sequence = locSequence_;
@@ -600,9 +627,11 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
         locSequence_++;
     }
 
-    // Reset tx list
+    // Reset tx list. Headers are released after txMtx_ drops, via releaseHeaders().
     if (txReset) {
-        for (uint32_t x = 0; x < 256; x++) txList_[x].reset();
+        for (uint32_t x = 0; x < 256; x++) {
+            if (txList_[x]) acked.push_back(std::move(txList_[x]));
+        }
         txListCount_ = 0;
     }
 
@@ -639,6 +668,9 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
 
     flock->unlock();
     lock.unlock();
+
+    // Release any headers the txReset above moved out, now that txMtx_ is dropped.
+    releaseHeaders(acked);
 
     // Send frame
     tran_->sendFrame(head->getFrame());
@@ -962,10 +994,24 @@ struct timeval& rpr::Controller::stateError() {
     log_->warning("Entering closed state after reset. Server=%d", server_);
     state_ = StClosed;
 
-    // Reset queues
+    // Reset queues. These hold Headers wrapping uncopied frames, so drain them
+    // under the GIL. See releaseHeaders().
+#ifndef NO_PYTHON
+    if (Py_IsInitialized()) {
+        rogue::ScopedGil gil;
+        appQueue_.reset();
+        oooQueue_.clear();
+        stQueue_.reset();
+    } else {
+        appQueue_.reset();
+        oooQueue_.clear();
+        stQueue_.reset();
+    }
+#else
     appQueue_.reset();
     oooQueue_.clear();
     stQueue_.reset();
+#endif
 
     gettimeofday(&stTime_, NULL);
     return (tryPeriodD1_);
