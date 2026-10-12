@@ -10,6 +10,7 @@
 
 import time
 
+import numpy as np
 import pyrogue as pr
 import pytest
 
@@ -56,6 +57,23 @@ class VariableCommandDevice(pr.Device):
             name="FormatterVar",
             value=255,
             disp="0x{:x}",
+        ))
+
+        self.add(pr.LocalVariable(
+            name="GroupedVar",
+            value=0,
+            disp="{:,d}",
+        ))
+
+        self.add(pr.LocalVariable(
+            name="NumpyGroupedVar",
+            value=np.int64(0),
+            disp="{:,d}",
+        ))
+
+        self.add(pr.LocalVariable(
+            name="TextVar",
+            value="",
         ))
 
         self.add(pr.LocalVariable(
@@ -149,6 +167,29 @@ def test_variable_parse_errors_and_invalid_enum_display():
 
         root.Dev.EnumVar.set(3)
         assert root.Dev.EnumVar.getDisp(read=False) == "INVALID: 3"
+
+
+def test_integer_yaml_input_accepts_hex_and_grouped_decimal():
+    with CommandRoot() as root:
+        root.Dev.setYaml(
+            yml=(
+                "GroupedVar: '1,234,567'\n"
+                "NumpyGroupedVar: -1,234,567\n"
+                "FormatterVar: 0x12d687\n"
+                "TextVar: 1,234,567\n"
+            ),
+            writeEach=False,
+            modes=["RW"],
+        )
+
+        assert root.Dev.GroupedVar.value() == 1234567
+        assert root.Dev.NumpyGroupedVar.value() == np.int64(-1234567)
+        assert isinstance(root.Dev.NumpyGroupedVar.value(), np.int64)
+        assert root.Dev.FormatterVar.value() == 0x12D687
+        assert root.Dev.TextVar.value() == "1,234,567"
+
+        with pytest.raises(pr.VariableError, match="invalid grouped decimal integer"):
+            root.Dev.GroupedVar.setDisp("12,34")
 
 
 def test_link_variable_tracks_dependency_and_variable_dict_filters():
