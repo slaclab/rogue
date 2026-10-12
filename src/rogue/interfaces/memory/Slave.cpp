@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -77,33 +78,55 @@ void rim::Slave::addTransaction(rim::TransactionPtr tran) {
 //! Get transaction with index, called by sub classes
 rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
     rim::TransactionPtr ret;
+    rim::TransactionPtr expired;
     TransactionMap::iterator it;
     TransactionMap::iterator exp;
 
-    rogue::GilRelease noGil;
-    std::lock_guard<std::mutex> lock(slaveMtx_);
+    {
+        rogue::GilRelease noGil;
+        std::lock_guard<std::mutex> lock(slaveMtx_);
 
-    if ((it = tranMap_.find(index)) != tranMap_.end()) {
-        ret = it->second;
+        if ((it = tranMap_.find(index)) != tranMap_.end()) {
+            ret = it->second;
 
-        // Remove from list
-        tranMap_.erase(it);
+            // Remove from list
+            tranMap_.erase(it);
 
-        // Update any timers for transactions started after received transaction
-        exp = tranMap_.end();
-        for (it = tranMap_.begin(); it != tranMap_.end(); ++it) {
-            if (it->second->expired())
-                exp = it;
-            else
-                it->second->refreshTimer(ret);
-        }
+            // Update any timers for transactions started after received transaction
+            exp = tranMap_.end();
+            for (it = tranMap_.begin(); it != tranMap_.end(); ++it) {
+                if (it->second->expired())
+                    exp = it;
+                else
+                    it->second->refreshTimer(ret);
+            }
 
-        // Clean up if we found an expired transaction, overtime this will clean up
-        // the list, even if it deletes one expired transaction per call
-        if (exp != tranMap_.end()) {
-            tranMap_.erase(exp);
+            // Clean up if we found an expired transaction, overtime this will clean up
+            // the list, even if it deletes one expired transaction per call.
+            //
+            // Moved out rather than erased in place: destroying it inside the
+            // GilRelease above would drop a Python-owned transaction with the GIL
+            // released. See the release below.
+            if (exp != tranMap_.end()) {
+                expired = std::move(exp->second);
+                tranMap_.erase(exp);
+            }
         }
     }
+
+    // A Python Slave or Hub that forwards a transaction back into C++ via
+    // super()._doTransaction() re-enters through the from-python shared_ptr
+    // converter, which attaches a Boost.Python deleter that calls Py_DECREF without
+    // the GIL. bp::no_init does not prevent this: it only suppresses __init__, not
+    // the converter. Released outside slaveMtx_ so the GIL is never acquired while
+    // holding it.
+#ifndef NO_PYTHON
+    if (expired && Py_IsInitialized()) {
+        rogue::ScopedGil gil;
+        expired.reset();
+    }
+#endif
+
     return ret;
 }
 

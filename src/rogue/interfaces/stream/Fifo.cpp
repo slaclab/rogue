@@ -25,6 +25,7 @@
 
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/ScopedGil.h"
 #include "rogue/interfaces/stream/Buffer.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameIterator.h"
@@ -153,6 +154,25 @@ void ris::Fifo::runThread() {
     log_->logThreadId();
 
     while (threadEn_) {
-        if ((frame = queue_.pop()) != NULL) sendFrame(frame);
+        if ((frame = queue_.pop()) != NULL) {
+            sendFrame(frame);
+
+            // Release here instead of at the next pop() overwrite or thread exit.
+            // With noCopy_ the queued frame is the caller's, so a Python-owned
+            // FramePtr carries a Boost.Python deleter that calls Py_DECREF without
+            // the GIL, which is fatal on this thread. Copy mode holds a reqFrame()
+            // frame with no Python state, so it needs no GIL, and skipping the
+            // acquire there avoids blocking a GIL-holding C++ caller.
+#ifndef NO_PYTHON
+            if (noCopy_ && Py_IsInitialized()) {
+                rogue::ScopedGil gil;
+                frame.reset();
+            } else {
+                frame.reset();
+            }
+#else
+            frame.reset();
+#endif
+        }
     }
 }
