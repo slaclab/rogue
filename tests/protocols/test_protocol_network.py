@@ -19,6 +19,7 @@ class FakeUdp:
         self.jumbo = jumbo
         self.rx_buffer_count = None
         self.connections = []
+        self.stopped = 0
 
     def __eq__(self, other):
         self.connections.append(other)
@@ -29,6 +30,9 @@ class FakeUdp:
 
     def setRxBufferCount(self, value):
         self.rx_buffer_count = value
+
+    def _stop(self):
+        self.stopped += 1
 
 
 class FakeRssi:
@@ -228,6 +232,9 @@ def test_udp_rssi_pack_start_and_stop_paths(monkeypatch):
 
         dev._stop()
         assert fake_rssi.stopped == 1
+        # The UDP receive thread must stop with the pack, not at garbage
+        # collection, or it keeps forwarding frames after Root.stop().
+        assert fake_udp.stopped == 1
         assert dev.rssiOpen.get() is True
 
 
