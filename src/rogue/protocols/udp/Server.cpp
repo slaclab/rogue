@@ -34,6 +34,7 @@
 #include "rogue/interfaces/stream/Buffer.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Pool.h"
 #include "rogue/protocols/udp/Core.h"
 
 namespace rpu = rogue::protocols::udp;
@@ -99,6 +100,14 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     // Fixed size buffer pool
     setFixedSize(maxPayload());
     setPoolSize(10000);  // Initial value, 10K frames
+
+    // Received datagrams come from this pool rather than reqLocalFrame():
+    // the constructor starts the receive thread before a shared_ptr owns
+    // the endpoint, and the pool on this object needs shared_from_this()
+    // to allocate.
+    rxPool_ = std::make_shared<ris::Pool>();
+    rxPool_->setFixedSize(maxPayload());
+    rxPool_->setPoolSize(10000);
 
     udpLog_->debug("UDP server ready. localPort=%" PRIu16 ", maxPayload=%" PRIu32, port_, maxPayload());
 
@@ -224,7 +233,7 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
     udpLog_->logThreadId();
 
     // Preallocate frame
-    frame = reqLocalFrame(maxPayload(), false);
+    frame = rxPool_->acceptReq(maxPayload(), false);
 
     while (threadEn_) {
         // Attempt receive
@@ -247,7 +256,7 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
             }
 
             // Get new frame
-            frame = reqLocalFrame(maxPayload(), false);
+            frame = rxPool_->acceptReq(maxPayload(), false);
 
             // Lock before updating address
             if (memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0) {

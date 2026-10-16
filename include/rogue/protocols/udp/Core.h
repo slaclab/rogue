@@ -30,6 +30,7 @@
 #include <thread>
 
 #include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Pool.h"
 
 namespace rogue {
 namespace protocols {
@@ -79,6 +80,11 @@ class Core {
 
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+
+    // Allocates received datagrams. Owned before the receive thread starts,
+    // so a datagram arriving before a shared_ptr owns this endpoint does not
+    // need shared_from_this().
+    std::shared_ptr<rogue::interfaces::stream::Pool> rxPool_;
 
     // Synchronizes shared socket/address updates in derived classes.
     std::mutex udpMtx_;
