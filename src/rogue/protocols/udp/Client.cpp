@@ -140,13 +140,14 @@ rpu::Client::~Client() {
 void rpu::Client::stop() {
     if (threadEn_) {
         threadEn_ = false;
-        // close() before join() unblocks the worker's recvfrom(). Defer fd_ = -1
-        // until after join so a final FD_SET(fd_) does not see -1.
+        // The worker never blocks for more than one select() timeout, so it
+        // can be joined before the socket is closed; closing first would let
+        // a reused descriptor number reach the worker's final syscalls.
         rogue::GilRelease noGil;
-        ::close(fd_);
         thread_->join();
         delete thread_;
         thread_ = nullptr;
+        ::close(fd_);
         fd_ = -1;
         udpLog_->debug("Stopping UDP client for remote %s:%" PRIu16, address_.c_str(), port_);
     }
@@ -236,7 +237,7 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
         // Attempt receive
         buff  = *(frame->beginBuffer());
         avail = buff->getAvailable();
-        res   = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, NULL, 0);
+        res   = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC | MSG_DONTWAIT, NULL, 0);
 
         if (res > 0) {
             // Message was too big
@@ -255,15 +256,14 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
             // Get new frame
             frame = rxPool_->acceptReq(maxPayload(), false);
         } else {
-            // Setup fds for select call
+            // No datagram pending. Wait for one with a bounded timeout so the
+            // loop re-checks threadEn_ and stop() can join without traffic.
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 
-            // Setup select timeout
             tout.tv_sec  = 0;
-            tout.tv_usec = 100;
+            tout.tv_usec = 100000;
 
-            // Select returns with available buffer
             select(fd_ + 1, &fds, NULL, NULL, &tout);
         }
     }

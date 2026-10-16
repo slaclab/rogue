@@ -124,3 +124,19 @@ TEST_CASE("udp::Server accepts datagrams that arrive before a shared_ptr owns it
     CHECK(slave->getByteCount() == 4 * slave->getFrameCount());
 }
 
+// The receive worker used to block in recvfrom() with nothing to wake it, so
+// stop() only returned once the peer happened to send a datagram.
+TEST_CASE("udp::Client and udp::Server stop without peer traffic") {
+    auto server = rpu::Server::create(0, false);
+    auto client = rpu::Client::create("127.0.0.1", server->getPort(), false);
+
+    // Let both workers settle into their idle wait before stopping them.
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+    const auto start = std::chrono::steady_clock::now();
+    client->stop();
+    server->stop();
+    const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - start);
+
+    CHECK_LT(elapsed.count(), 2000);
+}
