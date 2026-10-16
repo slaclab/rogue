@@ -36,4 +36,17 @@ if (NOT NO_PYTHON)
 
    set_tests_properties(rogue-cpp-stream-fifo-nocopy-python-frame-release
                         PROPERTIES TIMEOUT 30)
+
+   # Finalizes the embedded interpreter, and an unpatched library faults on
+   # the delivery that follows, so it cannot share a binary.
+   rogue_add_cpp_test(rogue-cpp-stream-fifo-python-slave-after-finalize
+      SOURCES
+         test_fifo_python_slave_after_finalize.cpp
+      LABELS
+         cpp-core
+         requires-python
+   )
+
+   set_tests_properties(rogue-cpp-stream-fifo-python-slave-after-finalize
+                        PROPERTIES TIMEOUT 30)
 endif()
