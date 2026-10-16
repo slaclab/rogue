@@ -20,6 +20,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <functional>
 #include <memory>
 #include <string>
 #include <thread>
@@ -37,43 +38,35 @@ namespace ris = rogue::interfaces::stream;
 
 namespace {
 
-struct ServerWithPort {
-    ris::TcpServerPtr server;
-    uint16_t port;
-};
-
-ServerWithPort createServerOnAvailablePort() {
+// Calls make() on successive TCP port pairs until a server binds; port receives the base port used.
+template <typename Server>
+Server bindOnAvailablePort(const std::function<Server(uint16_t)>& make, uint16_t* port) {
     const uint16_t start = static_cast<uint16_t>(20000 + ((getpid() % 200) * 128));
 
     for (uint32_t offset = 0; offset < 128; offset += 2) {
-        const uint16_t port = static_cast<uint16_t>(start + offset);
+        *port = static_cast<uint16_t>(start + offset);
         try {
-            return {ris::TcpServer::create("127.0.0.1", port), port};
+            return make(*port);
         } catch (const rogue::GeneralError&) {
             continue;
         }
     }
 
     FAIL("Could not create stream::TcpServer on an available TCP port pair");
-    return {nullptr, 0};
+    return Server();
 }
 
-}  // namespace
+struct Delivery {
+    bool beforeOwned;
+    bool afterOwned;
+};
 
-TEST_CASE("TcpClient accepts frames that arrive before a shared_ptr owns it") {
-    auto serverWithPort = createServerOnAvailablePort();
-    auto server         = serverWithPort.server;
-    auto master         = ris::Master::create();
-    auto pool           = rogue_test::makePool();
-    auto slave          = ris::Slave::create();
-    master->addSlave(server);
-
-    // std::make_shared and Boost.Python both construct the bridge before the
-    // owning shared_ptr exists, while the receive thread is already running.
-    // A plain new keeps that window open for the whole test instead of a few
-    // microseconds.
-    ris::TcpClient* raw = new ris::TcpClient("127.0.0.1", serverWithPort.port);
-    raw->addSlave(slave);
+// Pushes frames through master while the receiving bridge is unowned, then
+// runs own() to attach the shared_ptr and checks delivery continues.
+Delivery feedAcrossOwnership(const ris::MasterPtr& master,
+                             const ris::SlavePtr& slave,
+                             const std::function<void()>& own) {
+    auto pool = rogue_test::makePool();
 
     std::atomic<bool> feed{true};
     std::thread feeder([&]() {
@@ -83,18 +76,64 @@ TEST_CASE("TcpClient accepts frames that arrive before a shared_ptr owns it") {
         }
     });
 
-    const bool beforeOwned = rogue_test::waitUntil([&]() { return slave->getFrameCount() > 0; }, 2000);
+    Delivery ret;
+    ret.beforeOwned = rogue_test::waitUntil([&]() { return slave->getFrameCount() > 0; }, 2000);
 
-    ris::TcpClientPtr client(raw);
+    own();
     const uint64_t ownedAt = slave->getFrameCount();
-    const bool afterOwned  = rogue_test::waitUntil([&]() { return slave->getFrameCount() > ownedAt; }, 2000);
+    ret.afterOwned         = rogue_test::waitUntil([&]() { return slave->getFrameCount() > ownedAt; }, 2000);
 
     feed.store(false);
     feeder.join();
+    return ret;
+}
+
+}  // namespace
+
+// std::make_shared and Boost.Python both construct the bridge before the
+// owning shared_ptr exists, while the receive thread is already running.
+// Each case uses a plain new on the receiving side to keep that window open
+// for the whole test instead of a few microseconds.
+
+TEST_CASE("TcpClient accepts frames that arrive before a shared_ptr owns it") {
+    uint16_t port = 0;
+    auto server   = bindOnAvailablePort<ris::TcpServerPtr>(
+        [](uint16_t p) { return ris::TcpServer::create("127.0.0.1", p); }, &port);
+    auto master = ris::Master::create();
+    auto slave  = ris::Slave::create();
+    master->addSlave(server);
+
+    ris::TcpClient* raw = new ris::TcpClient("127.0.0.1", port);
+    raw->addSlave(slave);
+
+    ris::TcpClientPtr client;
+    const Delivery delivery = feedAcrossOwnership(master, slave, [&]() { client.reset(raw); });
+
     client->stop();
     server->stop();
 
-    CHECK(beforeOwned);
-    CHECK(afterOwned);
+    CHECK(delivery.beforeOwned);
+    CHECK(delivery.afterOwned);
+    CHECK(slave->getByteCount() == 4 * slave->getFrameCount());
+}
+
+TEST_CASE("TcpServer accepts frames that arrive before a shared_ptr owns it") {
+    uint16_t port       = 0;
+    ris::TcpServer* raw = bindOnAvailablePort<ris::TcpServer*>(
+        [](uint16_t p) { return new ris::TcpServer("127.0.0.1", p); }, &port);
+    auto client = ris::TcpClient::create("127.0.0.1", port);
+    auto master = ris::Master::create();
+    auto slave  = ris::Slave::create();
+    master->addSlave(client);
+    raw->addSlave(slave);
+
+    ris::TcpServerPtr server;
+    const Delivery delivery = feedAcrossOwnership(master, slave, [&]() { server.reset(raw); });
+
+    client->stop();
+    server->stop();
+
+    CHECK(delivery.beforeOwned);
+    CHECK(delivery.afterOwned);
     CHECK(slave->getByteCount() == 4 * slave->getFrameCount());
 }
