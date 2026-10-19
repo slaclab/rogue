@@ -34,6 +34,7 @@
 #include "rogue/interfaces/stream/Buffer.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Pool.h"
 #include "rogue/protocols/udp/Core.h"
 
 namespace rpu = rogue::protocols::udp;
@@ -100,6 +101,14 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     setFixedSize(maxPayload());
     setPoolSize(10000);  // Initial value, 10K frames
 
+    // Received datagrams come from this pool rather than reqLocalFrame():
+    // the constructor starts the receive thread before a shared_ptr owns
+    // the endpoint, and the pool on this object needs shared_from_this()
+    // to allocate.
+    rxPool_ = std::make_shared<ris::Pool>();
+    rxPool_->setFixedSize(maxPayload());
+    rxPool_->setPoolSize(10000);
+
     udpLog_->debug("UDP server ready. localPort=%" PRIu16 ", maxPayload=%" PRIu32, port_, maxPayload());
 
     threadEn_ = true;
@@ -126,13 +135,14 @@ rpu::Server::~Server() {
 void rpu::Server::stop() {
     if (threadEn_) {
         threadEn_ = false;
-        // close() before join() unblocks the worker's recvfrom(). Defer fd_ = -1
-        // until after join so a final FD_SET(fd_) does not see -1.
+        // The worker never blocks for more than one select() timeout, so it
+        // can be joined before the socket is closed; closing first would let
+        // a reused descriptor number reach the worker's final syscalls.
         rogue::GilRelease noGil;
-        ::close(fd_);
         thread_->join();
         delete thread_;
         thread_ = nullptr;
+        ::close(fd_);
         fd_ = -1;
         udpLog_->debug("Stopping UDP server on local port %" PRIu16, port_);
     }
@@ -224,14 +234,14 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
     udpLog_->logThreadId();
 
     // Preallocate frame
-    frame = reqLocalFrame(maxPayload(), false);
+    frame = rxPool_->acceptReq(maxPayload(), false);
 
     while (threadEn_) {
         // Attempt receive
         buff   = *(frame->beginBuffer());
         avail  = buff->getAvailable();
         tmpLen = sizeof(struct sockaddr_in);
-        res    = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, (struct sockaddr*)&tmpAddr, &tmpLen);
+        res    = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC | MSG_DONTWAIT, (struct sockaddr*)&tmpAddr, &tmpLen);
 
         if (res > 0) {
             // Message was too big
@@ -247,7 +257,7 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
             }
 
             // Get new frame
-            frame = reqLocalFrame(maxPayload(), false);
+            frame = rxPool_->acceptReq(maxPayload(), false);
 
             // Lock before updating address
             if (memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0) {
@@ -264,15 +274,14 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
                 remAddr_ = tmpAddr;
             }
         } else {
-            // Setup fds for select call
+            // No datagram pending. Wait for one with a bounded timeout so the
+            // loop re-checks threadEn_ and stop() can join without traffic.
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 
-            // Setup select timeout
             tout.tv_sec  = 0;
-            tout.tv_usec = 100;
+            tout.tv_usec = 100000;
 
-            // Select returns with available buffer
             select(fd_ + 1, &fds, NULL, NULL, &tout);
         }
     }
