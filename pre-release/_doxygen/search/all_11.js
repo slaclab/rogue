@@ -68,5 +68,6 @@ var searchData=
   ['rst_65',['rst',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ac501745bf79f41d4152744d07fcf1389',1,'rogue::protocols::rssi::Header']]],
   ['rsttime_66',['rstTime',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#a6fbb31a6fa34b5cdefd156a64561604a',1,'rogue::protocols::rssi::Header']]],
   ['run_67',['run',['../classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a790ec5f185e675b58c95355c6e1af078',1,'rogue::protocols::xilinx::XvcConnection::run()'],['../classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html#aae7e3feaae5727ff982dd58e03129ef5',1,'rogue::protocols::xilinx::XvcServer::run()']]],
-  ['runthread_68',['runthread',['../classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#a7e32699ee1897f215918bc2338d7eee5',1,'rogue::interfaces::stream::TcpCore::runThread()'],['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html#a54df760820c74b04a777095a67ba2eb2',1,'rogue::protocols::xilinx::Xvc::runThread()']]]
+  ['runthread_68',['runthread',['../classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#a7e32699ee1897f215918bc2338d7eee5',1,'rogue::interfaces::stream::TcpCore::runThread()'],['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html#a54df760820c74b04a777095a67ba2eb2',1,'rogue::protocols::xilinx::Xvc::runThread()']]],
+  ['rxpool_5f_69',['rxPool_',['../classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#adad051a7cceaf8717aac9ab808356bb2',1,'rogue::interfaces::stream::TcpCore']]]
 ];

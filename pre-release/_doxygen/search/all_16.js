@@ -5,7 +5,7 @@ var searchData=
   ['waitready_2',['waitReady',['../classrogue_1_1interfaces_1_1memory_1_1TcpClient.html#a67ede27755b094717b8d9ebd6fcf609a',1,'rogue::interfaces::memory::TcpClient']]],
   ['waittransaction_3',['waitTransaction',['../classrogue_1_1interfaces_1_1memory_1_1Master.html#aad065c2019c8c9d5e0f7c53b1ea05591',1,'rogue::interfaces::memory::Master']]],
   ['wakefd_5f_4',['wakeFd_',['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html#ab5d92181bcb28181d4a7c29c94569582',1,'rogue::protocols::xilinx::Xvc']]],
-  ['warning_5',['warning',['../classrogue_1_1Logging.html#aadd1a774af585341899630409c6b8161',1,'rogue::Logging::warning(const char *fmt,...)'],['../classrogue_1_1Logging.html#adba5171ba919a7e011cdb080431f4df2',1,'rogue::Logging::Warning']]],
+  ['warning_5',['warning',['../classrogue_1_1Logging.html#adba5171ba919a7e011cdb080431f4df2',1,'rogue::Logging::Warning'],['../classrogue_1_1Logging.html#aadd1a774af585341899630409c6b8161',1,'rogue::Logging::warning(const char *fmt,...)']]],
   ['warntime_5f_6',['warnTime_',['../classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a0deee61005984f9db783283fbf143ad5',1,'rogue::interfaces::memory::Transaction']]],
   ['what_7',['what',['../classrogue_1_1GeneralError.html#a721f1249312c1e2c4f536f90cd63b95a',1,'rogue::GeneralError']]],
   ['wordsize_8',['wordSize',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ac15c793723a608fc1b84e205acfdc844',1,'rogue::protocols::xilinx::JtagDriver']]],

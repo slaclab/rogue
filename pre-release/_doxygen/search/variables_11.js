@@ -9,5 +9,6 @@ var searchData=
   ['ret_6',['ret',['../structDmaReadData.html#a96e4e54d353a6617a184abb041910e22',1,'DmaReadData']]],
   ['retransmissiontimeout_7',['retransmissionTimeout',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#a923ec44551baf92ade1872f3de58ecd1',1,'rogue::protocols::rssi::Header']]],
   ['retrycount_5f_8',['retrycount_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#afdfd440e7744aa5eee6593e503015a5a',1,'rogue::interfaces::memory::Block::retryCount_'],['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a1b8e69e9a0d0c98da1b0018fefbe04db',1,'rogue::interfaces::memory::Variable::retryCount_']]],
-  ['rst_9',['rst',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ac501745bf79f41d4152744d07fcf1389',1,'rogue::protocols::rssi::Header']]]
+  ['rst_9',['rst',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ac501745bf79f41d4152744d07fcf1389',1,'rogue::protocols::rssi::Header']]],
+  ['rxpool_5f_10',['rxPool_',['../classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#adad051a7cceaf8717aac9ab808356bb2',1,'rogue::interfaces::stream::TcpCore']]]
 ];
