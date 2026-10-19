@@ -116,6 +116,16 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
     /** @brief Destroys the FIFO and stops internal worker thread. */
     ~Fifo();
 
+    /**
+     * @brief Stops the internal worker thread.
+     *
+     * @details
+     * Frames still queued, and frames accepted afterwards, are dropped rather
+     * than forwarded. Safe to call more than once; the destructor calls it.
+     * Exposed as `_stop()` in Python.
+     */
+    void stop();
+
     /** @brief Returns current FIFO queue depth. */
     std::size_t size();
 

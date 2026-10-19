@@ -64,6 +64,8 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
 
     this->bridgeLog_ = rogue::Logging::create(logstr);
 
+    this->rxPool_ = std::make_shared<ris::Pool>();
+
     // Format address
     this->pullAddr_ = "tcp://";
     this->pullAddr_.append(addr);
@@ -430,8 +432,10 @@ void ris::TcpCore::runThread() {
             data = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[3])));
             size = zmq_msg_size(&(msg[3]));
 
-            // Generate frame
-            frame = reqLocalFrame(size, false);
+            // Generate frame. Not reqLocalFrame(): the constructor starts this
+            // thread before a shared_ptr owns the bridge, and the pool on this
+            // object needs shared_from_this() to allocate.
+            frame = rxPool_->acceptReq(size, false);
             frame->setPayload(size);
 
             // Copy data

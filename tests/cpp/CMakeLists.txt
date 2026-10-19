@@ -6,15 +6,25 @@ add_library(rogue-cpp-test-support STATIC
    support/test_main.cpp
 )
 
-target_include_directories(rogue-cpp-test-support
-   PUBLIC
-      ${CMAKE_CURRENT_LIST_DIR}
-      ${CMAKE_CURRENT_LIST_DIR}/vendor
+# no-python tests must not run under an initialized interpreter: the main
+# thread would hold the GIL, and library workers that take it would block.
+add_library(rogue-cpp-test-support-nopy STATIC
+   support/test_main.cpp
 )
 
-if (NOT APPLE)
-   target_link_libraries(rogue-cpp-test-support PUBLIC rt)
-endif()
+target_compile_definitions(rogue-cpp-test-support-nopy PRIVATE ROGUE_CPP_TEST_NO_PYTHON_INIT)
+
+foreach(support rogue-cpp-test-support rogue-cpp-test-support-nopy)
+   target_include_directories(${support}
+      PUBLIC
+         ${CMAKE_CURRENT_LIST_DIR}
+         ${CMAKE_CURRENT_LIST_DIR}/vendor
+   )
+
+   if (NOT APPLE)
+      target_link_libraries(${support} PUBLIC rt)
+   endif()
+endforeach()
 
 function(rogue_add_cpp_test target)
    set(options)
@@ -34,13 +44,15 @@ function(rogue_add_cpp_test target)
       SKIP_BUILD_RPATH FALSE
    )
 
+   set(rogue_cpp_test_support rogue-cpp-test-support)
    if ("no-python" IN_LIST RCT_LABELS)
       target_compile_definitions(${target} PRIVATE NO_PYTHON)
+      set(rogue_cpp_test_support rogue-cpp-test-support-nopy)
    endif()
 
    target_link_libraries(${target}
       PRIVATE
-         rogue-cpp-test-support
+         ${rogue_cpp_test_support}
          rogue-core-shared
          ${rogue_cpp_test_extra_libs}
    )
@@ -53,6 +65,7 @@ function(rogue_add_cpp_test target)
 endfunction()
 
 add_subdirectory(core)
+add_subdirectory(hardware)
 add_subdirectory(memory)
 add_subdirectory(stream)
 add_subdirectory(protocols)

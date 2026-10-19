@@ -104,3 +104,8 @@ class Fifo(pyrogue.Device):
     def countReset(self) -> None:
         """Clear all FIFO counters."""
         self._fifo.clearCnt()
+
+    def _stop(self) -> None:
+        """Stop the FIFO worker thread, then stop child devices."""
+        self._fifo._stop()
+        super()._stop()

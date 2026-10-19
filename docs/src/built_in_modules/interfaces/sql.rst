@@ -40,15 +40,15 @@ Configuration Example
 
 .. code-block:: python
 
-   import pyrogue
+   import pyrogue as pr
 
-   class MyRoot(pyrogue.Root):
+   class MyRoot(pr.Root):
        def __init__(self):
            super().__init__(name='MyRoot')
 
            # Attach SQL logger as a root interface.
            self.addInterface(
-               pyrogue.interfaces.SqlLogger(
+               pr.interfaces.SqlLogger(
                    root=self,
                    # SQLAlchemy URL: sqlite:///..., postgresql://..., etc.
                    url='sqlite:///rogue_run.db',

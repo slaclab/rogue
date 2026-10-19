@@ -57,7 +57,7 @@ When ``MemMap`` is used in a PyRogue application, it is usually created in the
            self.addInterface(self.memMap)
 
            # Attach an existing example device to the mapped register space.
-           self.add(pyrogue.examples.AxiVersion(
+           self.add(pr.examples.AxiVersion(
                memBase=self.memMap,
                name='AxiVersion',
                offset=0x00000000,

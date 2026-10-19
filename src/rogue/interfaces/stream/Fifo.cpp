@@ -25,6 +25,7 @@
 
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/ScopedGil.h"
 #include "rogue/interfaces/stream/Buffer.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameIterator.h"
@@ -53,7 +54,8 @@ void ris::Fifo::setup_python() {
         bp::init<uint32_t, uint32_t, bool>())
         .def("size", &Fifo::size)
         .def("dropCnt", &Fifo::dropCnt)
-        .def("clearCnt", &Fifo::clearCnt);
+        .def("clearCnt", &Fifo::clearCnt)
+        .def("_stop", &Fifo::stop);
 #endif
 }
 
@@ -78,9 +80,13 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy)
 
 //! Deconstructor
 ris::Fifo::~Fifo() {
-    // No-op if the ctor threw before allocating thread_.
-    if (thread_ != nullptr) {
-        threadEn_ = false;
+    stop();
+}
+
+//! Stop the worker thread
+void ris::Fifo::stop() {
+    // No-op on a repeat call, or if the ctor threw before allocating thread_.
+    if (threadEn_.exchange(false) && thread_ != nullptr) {
         rogue::GilRelease noGil;
         queue_.stop();
         thread_->join();
@@ -153,6 +159,25 @@ void ris::Fifo::runThread() {
     log_->logThreadId();
 
     while (threadEn_) {
-        if ((frame = queue_.pop()) != NULL) sendFrame(frame);
+        if ((frame = queue_.pop()) != NULL) {
+            sendFrame(frame);
+
+            // Release here instead of at the next pop() overwrite or thread exit.
+            // With noCopy_ the queued frame is the caller's, so a Python-owned
+            // FramePtr carries a Boost.Python deleter that calls Py_DECREF without
+            // the GIL, which is fatal on this thread. Copy mode holds a reqFrame()
+            // frame with no Python state, so it needs no GIL, and skipping the
+            // acquire there avoids blocking a GIL-holding C++ caller.
+#ifndef NO_PYTHON
+            if (noCopy_ && Py_IsInitialized()) {
+                rogue::ScopedGil gil;
+                frame.reset();
+            } else {
+                frame.reset();
+            }
+#else
+            frame.reset();
+#endif
+        }
     }
 }

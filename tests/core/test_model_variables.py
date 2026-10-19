@@ -10,6 +10,7 @@
 
 import math
 
+import numpy as np
 import pytest
 import pyrogue as pr
 import rogue.interfaces.memory
@@ -242,6 +243,75 @@ def test_local_variables_exercise_public_variable_api():
         assert root.Dev.LocalString.typeStr == "str"
         assert root.Dev.LocalFloat.get() == 2.5
         assert root.Dev.LocalFloat.typeStr == "float"
+
+
+@pytest.mark.parametrize("initial, display, expected", [
+    (1.25, "10", 10.0),
+    (1.25, "True", 1.0),
+    (1.25, "False", 0.0),
+    (1.25, "1.25e-3", 0.00125),
+    (0, "10.0", 10),
+    (0, "0xff", 255),
+    (np.float32(1.25), "10", np.float32(10)),
+])
+def test_display_literals_convert_to_native_type(initial, display, expected):
+    root = pr.Root(name="root", pollEn=False)
+    variable = pr.LocalVariable(name="Value", value=initial)
+    root.add(variable)
+
+    with root:
+        variable.setDisp(display)
+        assert variable.get() == expected
+        assert type(variable.get()) is type(initial)
+
+
+@pytest.mark.parametrize("value", [10, True, np.float32(2.5), np.bool_(True)])
+def test_float_parse_disp_preserves_non_string_inputs(value):
+    variable = pr.LocalVariable(name="Value", value=1.25)
+    assert variable.parseDisp(value) is value
+
+
+@pytest.mark.parametrize("display", ["not a literal", "'not a float'"])
+def test_float_parse_disp_reports_invalid_input(display):
+    variable = pr.LocalVariable(name="Value", value=1.25)
+    with pytest.raises(pr.VariableError, match="Invalid value"):
+        variable.parseDisp(display)
+
+
+@pytest.mark.parametrize("initial", [[10, 20], {0: 10, 1: 20}])
+def test_container_display_input_supports_indexed_writes(initial):
+    root = pr.Root(name="root", pollEn=False)
+    variable = pr.LocalVariable(name="Value", value=initial)
+    root.add(variable)
+
+    with root:
+        variable.setDisp("99", index=1)
+        assert variable.get(index=0) == 10
+        assert variable.get(index=1) == 99
+        assert type(variable.get(index=1)) is int
+
+
+@pytest.mark.parametrize("initial", [0, 0.0])
+def test_display_input_allows_type_changes_when_type_check_disabled(initial):
+    root = pr.Root(name="root", pollEn=False)
+    variable = pr.LocalVariable(name="Value", value=initial, typeCheck=False)
+    root.add(variable)
+
+    with root:
+        variable.setDisp("'text'")
+        assert variable.get() == "text"
+
+
+def test_write_only_link_display_input_without_native_type():
+    values = []
+    variable = pr.LinkVariable(name="Value", linkedSet=lambda value: values.append(value))
+    assert variable.parseDisp("7") == 7
+
+    root = pr.Root(name="root", pollEn=False)
+    root.add(variable)
+    with root:
+        variable.setDisp("7")
+        assert values == [7]
 
 
 def test_remote_variables_round_trip_model_backed_values():
