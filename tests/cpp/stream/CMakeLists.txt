@@ -22,6 +22,18 @@ rogue_add_cpp_test(rogue-cpp-stream-flow-primitives
       no-python
 )
 
+# Isolated in its own binary because an unpatched library aborts the process.
+rogue_add_cpp_test(rogue-cpp-stream-tcp-core-rx-before-ownership
+   SOURCES
+      test_tcp_core_rx_before_ownership.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+set_tests_properties(rogue-cpp-stream-tcp-core-rx-before-ownership PROPERTIES
+   TIMEOUT 10
+)
+
 # Needs the Python runtime: the regression only reproduces when the queued frame
 # carries a Boost.Python deleter, which a C++-allocated frame never does.
 # Isolated in its own binary because an unpatched library aborts the interpreter.
