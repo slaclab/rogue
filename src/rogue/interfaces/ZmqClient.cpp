@@ -458,6 +458,15 @@ void rogue::interfaces::ZmqClient::runThread() {
         // Get the message
         if (zmq_recvmsg(this->zmqSub_, &msg, 0) > 0) {
 #ifndef NO_PYTHON
+            // A Python application can exit with this thread still subscribed.
+            // Py_IsInitialized() goes false when finalization starts, well
+            // before the interpreter state that PyGILState_Ensure() needs is
+            // torn down, so drop updates from then on instead of taking the GIL.
+            if (!Py_IsInitialized()) {
+                zmq_msg_close(&msg);
+                continue;
+            }
+
             try {
                 rogue::ScopedGil gil;
                 PyObject* val = Py_BuildValue("y#", zmq_msg_data(&msg), zmq_msg_size(&msg));
