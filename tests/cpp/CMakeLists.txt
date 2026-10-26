@@ -71,5 +71,6 @@ add_subdirectory(stream)
 add_subdirectory(protocols)
 
 if (NOT NO_PYTHON)
+   add_subdirectory(interfaces)
    add_subdirectory(smoke)
 endif()
