@@ -346,7 +346,12 @@ def dataToYaml(data: Any) -> str:
             enc = 'tag:yaml.org,2002:str'
         elif isinstance(data.value, numbers.Integral):
             value = int(data.value)
+            # Avoid parsing ordinary decimal values on every streamed update.
+            if data.valueDisp == str(value):
+                return dumper.represent_int(value)
+
             try:
+                # SafeLoader and yamlToData's Loader agree on integer scalars.
                 parsed = yaml.safe_load(data.valueDisp)
             except (TypeError, ValueError, yaml.YAMLError):
                 parsed = None

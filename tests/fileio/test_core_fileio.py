@@ -148,6 +148,14 @@ def test_file_reader_decodes_float_with_grouped_display_format(tmp_path):
 def test_integer_yaml_preserves_only_round_trippable_display_formats(tmp_path):
     root = pr.Root(name="root", pollEn=False, initRead=False)
     values = pr.Device(name="Values")
+    plain_values = {
+        "Plain": 1234567,
+        "Negative": -1234567,
+        "Zero": 0,
+        "NumpyPlain": np.int64(1234567),
+    }
+    for name, value in plain_values.items():
+        values.add(pr.LocalVariable(name=name, value=value))
     values.add(pr.LocalVariable(name="Hex", value=0x12D687, disp="0x{:x}"))
     values.add(pr.LocalVariable(name="Grouped", value=1234567, disp="{:,d}"))
     values.add(pr.LocalVariable(name="ZeroPadded", value=123, disp="{:08d}"))
@@ -161,6 +169,8 @@ def test_integer_yaml_preserves_only_round_trippable_display_formats(tmp_path):
     with root:
         config_payload = root.getYaml(readFirst=False).encode("utf-8")
 
+    for name, value in plain_values.items():
+        assert f"{name}: {value}\n".encode("utf-8") in config_payload
     assert b"Hex: 0x12d687" in config_payload
     assert b"1,234,567" not in config_payload
     assert b"ZeroPadded: 00000123" not in config_payload
@@ -171,6 +181,10 @@ def test_integer_yaml_preserves_only_round_trippable_display_formats(tmp_path):
 
     reader = pyrogue.utilities.fileio.FileReader(files=str(data_path), configChan=7)
     assert list(reader.records()) == []
+    for name, value in plain_values.items():
+        decoded = reader.configValue(f"root.Values.{name}")
+        assert type(decoded) is int
+        assert decoded == value
     assert reader.configValue("root.Values.Hex") == 0x12D687
     assert reader.configValue("root.Values.Grouped") == 1234567
     assert reader.configValue("root.Values.ZeroPadded") == 123

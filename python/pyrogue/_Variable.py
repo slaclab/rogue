@@ -869,7 +869,8 @@ class BaseVariable(pr.Node):
         NumPy arrays use their display-specific parsing. Lists, dictionaries,
         variables without a known native type, and variables with
         ``typeCheck=False`` retain the parsed literal value. Integer variables
-        also accept grouped decimal text such as ``'1,234,567'``.
+        also accept grouped decimal text such as ``'1,234,567'``. Grouped float
+        input such as ``'256,939.708'`` is not supported; use ``'256939.708'``.
 
 
         Parameters
