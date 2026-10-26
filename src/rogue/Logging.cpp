@@ -207,7 +207,11 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
     }
 
 #ifndef NO_PYTHON
-    if (forwardPython()) {
+    // Worker threads keep logging while a Python application shuts down.
+    // Py_IsInitialized() goes false when finalization starts, well before
+    // the interpreter state that PyGILState_Ensure() needs is torn down, so
+    // skip the Python forward from then on.
+    if (forwardPython() && Py_IsInitialized()) {
         rogue::ScopedGil gil;
         try {
             bp::object logging = bp::import("logging");
