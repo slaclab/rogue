@@ -28,6 +28,7 @@
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Pool.h"
 #include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
@@ -71,6 +72,11 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
 
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
+
+    // Allocates received frames. Owned before the receive thread starts, so a
+    // frame arriving before a shared_ptr owns this bridge does not need
+    // shared_from_this().
+    std::shared_ptr<rogue::interfaces::stream::Pool> rxPool_;
 
     std::unique_ptr<std::thread> thread_;
     std::atomic<bool> threadEn_{false};
