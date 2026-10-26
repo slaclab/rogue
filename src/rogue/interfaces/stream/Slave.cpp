@@ -108,7 +108,11 @@ void ris::Slave::acceptFrame(ris::FramePtr frame) {
 
 //! Accept frame
 void ris::SlaveWrap::acceptFrame(ris::FramePtr frame) {
-    {
+    // A C++ worker (Fifo, TcpCore, ...) can still deliver a frame while the
+    // interpreter shuts down. Py_IsInitialized() goes false when finalization
+    // starts, well before the interpreter state that PyGILState_Ensure() needs
+    // is torn down, so skip the Python override from then on.
+    if (Py_IsInitialized()) {
         rogue::ScopedGil gil;
 
         if (boost::python::override pb = this->get_override("_acceptFrame")) {
