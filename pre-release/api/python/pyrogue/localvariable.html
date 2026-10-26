@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LocalVariable &mdash; Rogue v6.15.0-73-gf65743fd1 documentation</title>
+  <title>LocalVariable &mdash; Rogue v6.15.0-79-gc18d684a0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=ada1b8f2"></script>
+      <script src="../../../_static/documentation_options.js?v=c28bcdbb"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -904,7 +904,9 @@ Listeners will be informed of the update.</p>
 <p>Non-string inputs pass through unchanged. Enum labels, strings, and
 NumPy arrays use their display-specific parsing. Lists, dictionaries,
 variables without a known native type, and variables with
-<code class="docutils literal notranslate"><span class="pre">typeCheck=False</span></code> retain the parsed literal value.</p>
+<code class="docutils literal notranslate"><span class="pre">typeCheck=False</span></code> retain the parsed literal value. Integer variables
+also accept grouped decimal text such as <code class="docutils literal notranslate"><span class="pre">'1,234,567'</span></code>. Grouped float
+input such as <code class="docutils literal notranslate"><span class="pre">'256,939.708'</span></code> is not supported; use <code class="docutils literal notranslate"><span class="pre">'256939.708'</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sValue</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Display-formatted value to parse.</p>

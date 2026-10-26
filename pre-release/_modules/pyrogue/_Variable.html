@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Variable &mdash; Rogue v6.15.0-73-gf65743fd1 documentation</title>
+  <title>pyrogue._Variable &mdash; Rogue v6.15.0-79-gc18d684a0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=ada1b8f2"></script>
+      <script src="../../_static/documentation_options.js?v=c28bcdbb"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -126,6 +126,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shlex</span>
@@ -1027,7 +1028,9 @@
 <span class="sd">        Non-string inputs pass through unchanged. Enum labels, strings, and</span>
 <span class="sd">        NumPy arrays use their display-specific parsing. Lists, dictionaries,</span>
 <span class="sd">        variables without a known native type, and variables with</span>
-<span class="sd">        ``typeCheck=False`` retain the parsed literal value.</span>
+<span class="sd">        ``typeCheck=False`` retain the parsed literal value. Integer variables</span>
+<span class="sd">        also accept grouped decimal text such as ``'1,234,567'``. Grouped float</span>
+<span class="sd">        input such as ``'256,939.708'`` is not supported; use ``'256939.708'``.</span>
 
 
 <span class="sd">        Parameters</span>
@@ -1054,6 +1057,15 @@
             <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typeCheck</span> <span class="ow">or</span> <span class="n">nativeType</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="c1"># Containers may receive a scalar for an indexed write.</span>
                 <span class="k">return</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">sValue</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span><span class="n">nativeType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span> <span class="ow">and</span>
+                  <span class="nb">isinstance</span><span class="p">(</span><span class="n">nativeType</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span>
+                  <span class="nb">issubclass</span><span class="p">(</span><span class="n">nativeType</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">)</span> <span class="ow">and</span>
+                  <span class="s1">','</span> <span class="ow">in</span> <span class="n">sValue</span><span class="p">):</span>
+                <span class="c1"># Grouped decimal text would otherwise parse as a tuple.</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">sValue</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">'[+-]?\d{1,3}(?:,\d</span><span class="si">{3}</span><span class="s1">)+'</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'invalid grouped decimal integer'</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">nativeType</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span> <span class="s1">''</span><span class="p">),</span> <span class="mi">10</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">nativeType</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">sValue</span><span class="p">))</span>
 
