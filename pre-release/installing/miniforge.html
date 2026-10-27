@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installing Rogue With Miniforge &mdash; Rogue v6.15.0-89-gbaf49c725 documentation</title>
+  <title>Installing Rogue With Miniforge &mdash; Rogue v6.15.0-93-gb939ecf79 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=13a3334b"></script>
+      <script src="../_static/documentation_options.js?v=d12199f3"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -166,19 +166,20 @@ $ conda config --set solver libmamba
 <h2>Creating A Rogue Environment<a class="headerlink" href="#creating-a-rogue-environment" title="Link to this heading"></a></h2>
 <p>The next step is to create a Miniforge environment that includes the Rogue
 package.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_tag -c tidair-tag -c conda-forge rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_tag -c conda-forge slac-rogue
 </pre></div>
 </div>
-<p>The order of the channels is important. <code class="docutils literal notranslate"><span class="pre">tidair-tag</span></code> is the channel from
-which the Rogue package is downloaded.</p>
+<p>Rogue is published on conda-forge under the package name <code class="docutils literal notranslate"><span class="pre">slac-rogue</span></code>.</p>
 <p>If you already have a Miniforge environment and want to install Rogue into it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c tidair-tag -c conda-forge rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c conda-forge slac-rogue
 </pre></div>
 </div>
 <p>Alternatively you can install a specific released version of Rogue:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v6.5.0 -c conda-forge -c tidair-tag rogue=v6.5.0
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v6.16.0 -c conda-forge slac-rogue=6.16.0
 </pre></div>
 </div>
+<p>Releases older than v6.15.0 are not on conda-forge. See
+<a class="reference internal" href="#installing-miniforge-legacy"><span class="std std-ref">Legacy tidair-tag Channel</span></a>.</p>
 </section>
 <section id="using-rogue-in-miniforge">
 <h2>Using Rogue In Miniforge<a class="headerlink" href="#using-rogue-in-miniforge" title="Link to this heading"></a></h2>
@@ -189,7 +190,7 @@ and deactivate the environment with the usual Conda commands:</p>
 </pre></div>
 </div>
 <p>Replace <code class="docutils literal notranslate"><span class="pre">rogue_tag</span></code> with the environment name you chose, such as
-<code class="docutils literal notranslate"><span class="pre">rogue_v6.5.0</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">rogue_v6.16.0</span></code>.</p>
 <p>To deactivate:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda deactivate
 </pre></div>
@@ -199,7 +200,7 @@ and deactivate the environment with the usual Conda commands:</p>
 <h2>Installing Rogue In Existing Environment<a class="headerlink" href="#installing-rogue-in-existing-environment" title="Link to this heading"></a></h2>
 <p>The following command installs Rogue into an existing Miniforge environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate my_existing_env
-$ conda install -c tidair-tag -c conda-forge rogue
+$ conda install -c conda-forge slac-rogue
 </pre></div>
 </div>
 </section>
@@ -207,7 +208,7 @@ $ conda install -c tidair-tag -c conda-forge rogue
 <h2>Updating Rogue In Miniforge<a class="headerlink" href="#updating-rogue-in-miniforge" title="Link to this heading"></a></h2>
 <p>If you want to update Rogue, run the following command after activating the
 environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda update rogue -c tidair-tag
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda update -c conda-forge slac-rogue
 </pre></div>
 </div>
 </section>
@@ -217,6 +218,18 @@ environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_tag
 </pre></div>
 </div>
+</section>
+<section id="legacy-tidair-tag-channel">
+<span id="installing-miniforge-legacy"></span><h2>Legacy tidair-tag Channel<a class="headerlink" href="#legacy-tidair-tag-channel" title="Link to this heading"></a></h2>
+<p>Releases older than v6.15.0 were published only to the <code class="docutils literal notranslate"><span class="pre">tidair-tag</span></code> Anaconda
+channel. There the package is named <code class="docutils literal notranslate"><span class="pre">rogue</span></code> and versions carry a <code class="docutils literal notranslate"><span class="pre">v</span></code>
+prefix. To install one of these older releases:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v6.5.0 -c conda-forge -c tidair-tag rogue=v6.5.0
+</pre></div>
+</div>
+<p>Environments created from <code class="docutils literal notranslate"><span class="pre">tidair-tag</span></code> contain the <code class="docutils literal notranslate"><span class="pre">rogue</span></code> package rather
+than <code class="docutils literal notranslate"><span class="pre">slac-rogue</span></code>, so <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">update</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">slac-rogue</span></code> does not
+upgrade them. Create a new environment to switch to the conda-forge package.</p>
 </section>
 </section>
 
