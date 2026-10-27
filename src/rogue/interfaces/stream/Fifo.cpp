@@ -54,7 +54,8 @@ void ris::Fifo::setup_python() {
         bp::init<uint32_t, uint32_t, bool>())
         .def("size", &Fifo::size)
         .def("dropCnt", &Fifo::dropCnt)
-        .def("clearCnt", &Fifo::clearCnt);
+        .def("clearCnt", &Fifo::clearCnt)
+        .def("_stop", &Fifo::stop);
 #endif
 }
 
@@ -79,9 +80,13 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy)
 
 //! Deconstructor
 ris::Fifo::~Fifo() {
-    // No-op if the ctor threw before allocating thread_.
-    if (thread_ != nullptr) {
-        threadEn_ = false;
+    stop();
+}
+
+//! Stop the worker thread
+void ris::Fifo::stop() {
+    // No-op on a repeat call, or if the ctor threw before allocating thread_.
+    if (threadEn_.exchange(false) && thread_ != nullptr) {
         rogue::GilRelease noGil;
         queue_.stop();
         thread_->join();

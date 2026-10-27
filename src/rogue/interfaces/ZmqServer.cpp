@@ -317,7 +317,9 @@ bp::object rogue::interfaces::ZmqServerWrap::defDoRequest(bp::object data) {
 }
 
 std::string rogue::interfaces::ZmqServerWrap::doString(const std::string& data) {
-    {
+    // The string worker can still serve a request while the interpreter
+    // shuts down; skip the Python override once finalization has started.
+    if (Py_IsInitialized()) {
         rogue::ScopedGil gil;
         if (bp::override f = this->get_override("_doString")) {
             try {
@@ -349,6 +351,17 @@ void rogue::interfaces::ZmqServer::runThread() {
         // Get the message
         if (zmq_recvmsg(this->zmqRep_, &rxMsg, 0) > 0) {
 #ifndef NO_PYTHON
+            // A Python application can exit without stopping the server.
+            // Py_IsInitialized() goes false when finalization starts, well
+            // before the interpreter state that PyGILState_Ensure() needs is
+            // torn down, so answer with the empty reply from then on instead
+            // of taking the GIL.
+            if (!Py_IsInitialized()) {
+                zmq_send(this->zmqRep_, "", 0, 0);
+                zmq_msg_close(&rxMsg);
+                continue;
+            }
+
             // ZMQ_REP requires send-after-recv to keep the FSM healthy; the
             // catch blocks below send an empty reply so a single bad request
             // cannot wedge the socket into EFSM and drop all later requests.

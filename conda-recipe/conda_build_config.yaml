@@ -24,6 +24,13 @@ python_abi:
   - 3.13 *_cp313
   - 3.14 *_cp314
 
+# Build against numpy 2.x headers. meta.yaml leaves numpy unbounded in host so the
+# conda-forge global pinning (numpy: 2) applies there, but without this key
+# conda-build falls back to its built-in default (numpy 1.26), which builds
+# py3.10-3.12 against numpy 1.x and fails to solve for py3.13/3.14.
+numpy:
+  - 2
+
 # Pair python and python_abi so we get 5 variants, not the 25-way cross product
 zip_keys:
   - - python
