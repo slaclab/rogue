@@ -426,9 +426,14 @@ class UdpRssiPack(pr.Device):
         threading.Thread(target=_wait_open, daemon=True).start()
 
     def _stop(self) -> None:
-        """Stop the UDP/RSSI connection and clean up resources."""
+        """Stop the UDP/RSSI connection and clean up resources.
+
+        Stops the RSSI controller first, then the UDP receive thread, so no
+        frame is forwarded into the tree after ``Root.stop()`` returns.
+        """
         self._rxBufferThreadStop = True
         self._rssi._stop()
+        self._udp._stop()
         self._rxBufferConfigured = False
 
         # This Device may not necessarily be added to a tree
