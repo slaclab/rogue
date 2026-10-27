@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols._Network &mdash; Rogue v6.15.0-97-gc9f15636d documentation</title>
+  <title>pyrogue.protocols._Network &mdash; Rogue v6.15.0-101-gee15a401a documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=0ffa1927"></script>
+      <script src="../../../_static/documentation_options.js?v=a43fd708"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -545,9 +545,14 @@
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_wait_open</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Stop the UDP/RSSI connection and clean up resources."""</span>
+<span class="w">        </span><span class="sd">"""Stop the UDP/RSSI connection and clean up resources.</span>
+
+<span class="sd">        Stops the RSSI controller first, then the UDP receive thread, so no</span>
+<span class="sd">        frame is forwarded into the tree after ``Root.stop()`` returns.</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferThreadStop</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_udp</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># This Device may not necessarily be added to a tree</span>
