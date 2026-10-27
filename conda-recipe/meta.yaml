@@ -50,7 +50,7 @@ requirements:
     - pyserial
     - pydm >=1.18
     - qtpy >=2.0
-    - pyqt 5.*  # Qt binding for qtpy/pydm, which no longer pulls one in
+    - pyside6  # Qt binding for qtpy/pydm, which no longer pulls one in
     - pyqtgraph >=0.13
     - matplotlib
     - rdma-core  # [linux]
