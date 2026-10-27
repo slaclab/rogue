@@ -351,6 +351,11 @@ jobs:
 
 # ----------------------------------------------------------------------------
 
+  # Legacy tidair-tag Anaconda build/upload. Starting with v6.16.0, Rogue is
+  # published on conda-forge as slac-rogue (conda-forge/slac-rogue-feedstock).
+  # This job is kept only until downstream tidair-tag packages (surf,
+  # axi_pcie_core, etc.) depend on slac-rogue instead of rogue, and will be
+  # removed in a future release.
   conda_build_lib:
     needs: [full_build_test, small_build_test, external_build_test]
     uses: slaclab/ruckus/.github/workflows/conda_build_lib.yml@main
