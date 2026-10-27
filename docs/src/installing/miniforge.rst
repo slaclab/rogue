@@ -61,18 +61,25 @@ package.
 
 .. code::
 
-   $ conda create -n rogue_tag -c tidair-tag -c conda-forge rogue
+   $ conda create -n rogue_tag -c conda-forge slac-rogue
 
-The order of the channels is important. ``tidair-tag`` is the channel from
-which the Rogue package is downloaded.
+Rogue is published on conda-forge under the package name ``slac-rogue``.
 
 If you already have a Miniforge environment and want to install Rogue into it:
 
 .. code::
 
-   $ conda install -c tidair-tag -c conda-forge rogue
+   $ conda install -c conda-forge slac-rogue
 
 Alternatively you can install a specific released version of Rogue:
+
+.. code::
+
+   $ conda create -n rogue_v6.16.0 -c conda-forge slac-rogue=6.16.0
+
+Releases older than v6.15.0 are only available from the legacy ``tidair-tag``
+channel, where the package is named ``rogue`` and versions carry a ``v``
+prefix:
 
 .. code::
 
@@ -91,7 +98,7 @@ To activate:
    $ conda activate rogue_tag
 
 Replace ``rogue_tag`` with the environment name you chose, such as
-``rogue_v6.5.0``.
+``rogue_v6.16.0``.
 
 
 To deactivate:
@@ -108,7 +115,7 @@ The following command installs Rogue into an existing Miniforge environment:
 .. code::
 
    $ conda activate my_existing_env
-   $ conda install -c tidair-tag -c conda-forge rogue
+   $ conda install -c conda-forge slac-rogue
 
 
 Updating Rogue In Miniforge
@@ -119,7 +126,11 @@ environment:
 
 .. code::
 
-   $ conda update rogue -c tidair-tag
+   $ conda update -c conda-forge slac-rogue
+
+Environments created from the legacy ``tidair-tag`` channel contain the
+``rogue`` package rather than ``slac-rogue``. Create a new environment to
+switch them to the conda-forge package.
 
 Deleting Miniforge Environment
 ==============================
