@@ -52,6 +52,7 @@ requirements:
     - qtpy >=2.0
     - pyside6  # Qt binding for qtpy/pydm, which no longer pulls one in
     - pyqtgraph >=0.13
+    - pyte >=0.8
     - matplotlib
     - rdma-core  # [linux]
 
