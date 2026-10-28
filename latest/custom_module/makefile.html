@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building The Custom Module &mdash; Rogue v6.15.0 documentation</title>
+  <title>Building The Custom Module &mdash; Rogue v6.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
 
@@ -16,7 +17,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b1d0be57"></script>
+      <script src="../_static/documentation_options.js?v=23af60bc"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,10 +64,19 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../stream_interface/connecting.html">Connecting Streams</a></li>
@@ -88,10 +98,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -142,7 +150,7 @@ subdirectory. That directory needs to be included in <code class="docutils liter
 
 <span class="c"># Add support for building in conda environment</span>
 <span class="nb">if</span><span class="w"> </span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ENV{CONDA_PREFIX}</span><span class="p">)</span>
-<span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_PREFIX_PATH</span><span class="w"> </span><span class="s2">&quot;$ENV{CONDA_PREFIX}&quot;</span><span class="p">)</span>
+<span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_PREFIX_PATH</span><span class="w"> </span><span class="s2">"$ENV{CONDA_PREFIX}"</span><span class="p">)</span>
 <span class="w">   </span><span class="nb">link_directories</span><span class="p">(</span><span class="o">$ENV{</span><span class="nv">CONDA_PREFIX</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
 <span class="nb">endif</span><span class="p">()</span>
 
@@ -155,7 +163,7 @@ subdirectory. That directory needs to be included in <code class="docutils liter
 
 <span class="c"># C/C++</span>
 <span class="nb">enable_language</span><span class="p">(</span><span class="s">CXX</span><span class="p">)</span>
-<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_FLAGS</span><span class="w"> </span><span class="s2">&quot;${CMAKE_CXX_FLAGS} -Wno-deprecated&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_FLAGS</span><span class="w"> </span><span class="s2">"${CMAKE_CXX_FLAGS} -Wno-deprecated"</span><span class="p">)</span>
 <span class="nb">add_definitions</span><span class="p">(</span><span class="s">-D__STDC_FORMAT_MACROS</span><span class="p">)</span>
 
 <span class="c"># Rogue is built as C++14; match it so the ABI is compatible. Do not also</span>
@@ -188,7 +196,7 @@ subdirectory. That directory needs to be included in <code class="docutils liter
 
 <span class="c"># Set output to TOP/lib, remove lib prefix</span>
 <span class="nb">set_target_properties</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">LIBRARY_OUTPUT_DIRECTORY</span><span class="w"> </span><span class="o">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="o">}</span><span class="s">/python</span><span class="p">)</span>
-<span class="nb">set_target_properties</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">PREFIX</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">set_target_properties</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">PREFIX</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span>
 
 <span class="c"># Link to rogue core</span>
 <span class="nb">TARGET_LINK_LIBRARIES</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">LINK_PUBLIC</span><span class="w"> </span><span class="o">${</span><span class="nv">ROGUE_LIBRARIES</span><span class="o">}</span><span class="p">)</span>

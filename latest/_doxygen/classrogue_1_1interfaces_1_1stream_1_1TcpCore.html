@@ -295,6 +295,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a0c49ff8a67720a14a7c53b61c7c7c678"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c4468013134ae6f15f6b6e1e8b7e1d0" id="r_a3c4468013134ae6f15f6b6e1e8b7e1d0"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classrogue_1_1Logging.html">rogue::Logging</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#a3c4468013134ae6f15f6b6e1e8b7e1d0">bridgeLog_</a></td></tr>
 <tr class="separator:a3c4468013134ae6f15f6b6e1e8b7e1d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adad051a7cceaf8717aac9ab808356bb2" id="r_adad051a7cceaf8717aac9ab808356bb2"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Pool.html">rogue::interfaces::stream::Pool</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#adad051a7cceaf8717aac9ab808356bb2">rxPool_</a></td></tr>
+<tr class="separator:adad051a7cceaf8717aac9ab808356bb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff8257e19aea14320db7142bb82ff448" id="r_aff8257e19aea14320db7142bb82ff448"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; std::thread &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#aff8257e19aea14320db7142bb82ff448">thread_</a></td></tr>
 <tr class="separator:aff8257e19aea14320db7142bb82ff448"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afccf67264726b26de22ad3aacbfae7e9" id="r_afccf67264726b26de22ad3aacbfae7e9"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#afccf67264726b26de22ad3aacbfae7e9">threadEn_</a> {false}</td></tr>
@@ -307,7 +309,7 @@ Protected Attributes</h2></td></tr>
 <p>This class implements the core functionality of the <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpClient.html" title="Stream TCP bridge client.">TcpClient</a> and <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpServer.html" title="Stream TCP bridge server.">TcpServer</a> classes which implement a Rogue stream bridge over a TCP network. This core can operate in either client or server mode. The <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpClient.html" title="Stream TCP bridge client.">TcpClient</a> and <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpServer.html" title="Stream TCP bridge server.">TcpServer</a> classes are thin wrappers that define which mode flag to pass to this base class.</p>
 <p>The <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpServer.html" title="Stream TCP bridge server.">TcpServer</a> and <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpClient.html" title="Stream TCP bridge client.">TcpClient</a> interfaces are blocking and will stall frame transmissions when the remote side is either not present or is back-pressuring. When the remote server is not present a local buffer is not utilized, where it is utilized when a connection has been established. </p>
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00052">52</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00053">53</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abe21c7eacedf0104cf9d2fd508534ad1" name="abe21c7eacedf0104cf9d2fd508534ad1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abe21c7eacedf0104cf9d2fd508534ad1">&#9670;&#160;</a></span>TcpCore()</h2>
@@ -377,7 +379,7 @@ Protected Attributes</h2></td></tr>
 <p>Destroys the bridge core and releases resources. </p>
 <p>Destructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00183">183</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00185">185</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
 
 </div>
 </div>
@@ -417,7 +419,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00274">274</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00276">276</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
 
 </div>
 </div>
@@ -438,7 +440,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Closes active bridge connections. Deprecated; use <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#ac072dda120b0e860fbb456591b6bf8ce" title="Stops the interface and worker thread.">stop()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00188">188</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00190">190</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
 
 </div>
 </div>
@@ -526,7 +528,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00218">218</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00220">220</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
 
 </div>
 </div>
@@ -555,7 +557,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Run thread. </p>
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00375">375</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00377">377</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
 
 </div>
 </div>
@@ -584,7 +586,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Registers this type with Python bindings. </p>
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00454">454</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00458">458</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
 
 </div>
 </div>
@@ -615,7 +617,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">rogue::interfaces::stream::Master</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00192">192</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8cpp_source.html#l00194">194</a> of file <a class="el" href="TcpCore_8cpp_source.html">TcpCore.cpp</a>.</p>
 
 </div>
 </div>
@@ -640,7 +642,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00073">73</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00074">74</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -664,7 +666,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00079">79</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00085">85</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -688,7 +690,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00055">55</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00056">56</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -712,7 +714,31 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00058">58</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00059">59</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+
+</div>
+</div>
+<a id="adad051a7cceaf8717aac9ab808356bb2" name="adad051a7cceaf8717aac9ab808356bb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adad051a7cceaf8717aac9ab808356bb2">&#9670;&#160;</a></span>rxPool_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Pool.html">rogue::interfaces::stream::Pool</a>&gt; rogue::interfaces::stream::TcpCore::rxPool_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00079">79</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -736,7 +762,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00064">64</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00065">65</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -760,7 +786,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00075">75</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00081">81</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -784,7 +810,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00076">76</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00082">82</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -808,7 +834,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00060">60</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00061">61</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -832,7 +858,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00061">61</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00062">62</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>
@@ -856,7 +882,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00062">62</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="TcpCore_8h_source.html#l00063">63</a> of file <a class="el" href="TcpCore_8h_source.html">TcpCore.h</a>.</p>
 
 </div>
 </div>

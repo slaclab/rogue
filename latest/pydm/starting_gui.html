@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.15.0 documentation</title>
+  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
 
@@ -16,7 +17,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b1d0be57"></script>
+      <script src="../_static/documentation_options.js?v=23af60bc"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,10 +64,19 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
@@ -77,12 +87,12 @@
 <li class="toctree-l2"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rogue_widgets.html">Rogue Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terminal_tab.html">The Embedded Terminal Tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipython_tab.html">The IPython Console Tab</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -128,6 +138,10 @@ one or more Rogue servers.</p>
 widgets, and the system log.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Tree</span></code> for the full tree browser.</p></li>
 </ul>
+<p><code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Tree</span></code> is the tab shown on startup. With <code class="docutils literal notranslate"><span class="pre">enableTerminal=True</span></code> a third
+<code class="docutils literal notranslate"><span class="pre">Terminal</span></code> tab is appended, and with <code class="docutils literal notranslate"><span class="pre">enableIPython=True</span></code> an <code class="docutils literal notranslate"><span class="pre">IPython</span></code> tab
+is appended after it. Both are appended, so neither changes the position of the
+other tabs. See <a class="reference internal" href="terminal_tab.html"><span class="doc">The Embedded Terminal Tab</span></a> and <a class="reference internal" href="ipython_tab.html"><span class="doc">The IPython Console Tab</span></a>.</p>
 <p>That structure is useful context when deciding whether the stock GUI is enough
 or whether a custom screen would better match the operator workflow.</p>
 </section>
@@ -179,8 +193,8 @@ return <code class="docutils literal notranslate"><span class="pre">None</span><
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">macros</span><span class="o">=</span><span class="n">macros</span><span class="p">)</span>
 
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">SystemWindow</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">&#39;rogue://0/root&#39;</span><span class="p">))</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">DebugTree</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">&#39;rogue://0/root&#39;</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">SystemWindow</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">'rogue://0/root'</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">DebugTree</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">'rogue://0/root'</span><span class="p">))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">ui_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -188,29 +202,30 @@ return <code class="docutils literal notranslate"><span class="pre">None</span><
 </div>
 <p>Rogue now supports passing that top-level class directly to
 <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
-    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
+<span class="n">pr</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span>
     <span class="n">display</span><span class="o">=</span><span class="n">MyTop</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'My System'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>If the display needs custom constructor behavior, pass a small factory
 instead:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
-    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
-    <span class="n">display_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MyTop</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;ops&#39;</span><span class="p">),</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pr</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span>
+    <span class="n">display_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MyTop</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">'ops'</span><span class="p">),</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'My System'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>The older file-based pattern still works:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
-    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
-    <span class="n">ui</span><span class="o">=</span><span class="s1">&#39;path/to/my_top.py&#39;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pr</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span>
+    <span class="n">ui</span><span class="o">=</span><span class="s1">'path/to/my_top.py'</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'My System'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -221,11 +236,12 @@ the direct <code class="docutils literal notranslate"><span class="pre">display=
 <section id="starting-from-python">
 <h2>Starting From Python<a class="headerlink" href="#starting-from-python" title="Link to this heading"></a></h2>
 <p>The Python entry point is <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
-    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Remote System&#39;</span><span class="p">,</span>
+<span class="n">pr</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">'Remote System'</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -236,9 +252,9 @@ to <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#p
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
 <span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
-    <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">pr</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
         <span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
-        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">'My System'</span><span class="p">,</span>
         <span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
         <span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
         <span class="n">linkTimeout</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
@@ -261,11 +277,12 @@ internally and that instance must be the sole
 subclass) before calling <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> is unsupported and will be rejected:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
-<span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>         <span class="c1"># don&#39;t do this</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>         <span class="c1"># don't do this</span>
 <span class="o">...</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>             <span class="c1"># raises RuntimeError</span>
+<span class="n">pr</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>                 <span class="c1"># raises RuntimeError</span>
 </pre></div>
 </div>
 <p>The reason is that PyDM’s window-management hooks (<code class="docutils literal notranslate"><span class="pre">XSync</span></code> counter updates
@@ -275,7 +292,7 @@ windows are bound to it instead, never reply to the compositor’s ping/sync
 messages, and get flagged as “not responding” (notably under
 GNOME-on-Wayland with XWayland).</p>
 <p><code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> detects this case at entry, prints a step-by-step diagnostic to
-<code class="docutils literal notranslate"><span class="pre">stderr</span></code>, and raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. Companion widgets that need a
+<code class="docutils literal notranslate"><span class="pre">stderr</span></code>, and raises <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#RuntimeError" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. Companion widgets that need a
 live <code class="docutils literal notranslate"><span class="pre">QApplication</span></code> should be built inside a <code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code>
 subclass (see the <cite>Custom Python Top-Level Displays</cite> section above) or via
 the <code class="docutils literal notranslate"><span class="pre">display</span></code> / <code class="docutils literal notranslate"><span class="pre">display_factory</span></code> arguments, not before <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> is
@@ -299,7 +316,20 @@ used by the GUI. This is the primary knob for tolerating long busy periods.</p><
 <code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> instances. This is disabled by default and usually only
 makes sense when the application has a strict upper bound for valid request
 duration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enableTerminal</span></code>: Add an interactive shell as a top-level <code class="docutils literal notranslate"><span class="pre">Terminal</span></code> tab.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>. Also available as <code class="docutils literal notranslate"><span class="pre">--terminal</span></code> on the command line.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enableIPython</span></code>: Add an IPython session with a connected client as a
+top-level <code class="docutils literal notranslate"><span class="pre">IPython</span></code> tab. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>. Independent of
+<code class="docutils literal notranslate"><span class="pre">enableTerminal</span></code>. Also available as <code class="docutils literal notranslate"><span class="pre">--ipython</span></code> on the command line.</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">enableTerminal</span></code> and <code class="docutils literal notranslate"><span class="pre">enableIPython</span></code> both expose arbitrary code execution
+on the machine displaying the GUI, as the user who launched it, not on the
+Rogue server. PyDM read-only mode does not restrict either of them. Read
+<a class="reference internal" href="terminal_tab.html"><span class="doc">The Embedded Terminal Tab</span></a> or <a class="reference internal" href="ipython_tab.html"><span class="doc">The IPython Console Tab</span></a> before enabling them on an operator
+console.</p>
+</div>
 <p>The command-line launcher defaults to <code class="docutils literal notranslate"><span class="pre">localhost:9099</span></code>. The Python helper’s
 function signature currently defaults to <code class="docutils literal notranslate"><span class="pre">localhost:9090</span></code>, so in practice it
 is better to pass <code class="docutils literal notranslate"><span class="pre">serverList</span></code> explicitly rather than rely on the helper
@@ -307,7 +337,7 @@ default.</p>
 <p>For simulation or co-simulation applications, the common pattern is to leave
 <code class="docutils literal notranslate"><span class="pre">requestStallTimeout</span></code> disabled and increase <code class="docutils literal notranslate"><span class="pre">linkTimeout</span></code> to match the
 expected busy period:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pr</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
     <span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
     <span class="n">linkTimeout</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
     <span class="n">requestStallTimeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>

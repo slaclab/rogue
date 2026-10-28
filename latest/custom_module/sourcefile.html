@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Module Source &mdash; Rogue v6.15.0 documentation</title>
+  <title>Custom Module Source &mdash; Rogue v6.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
 
@@ -16,7 +17,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b1d0be57"></script>
+      <script src="../_static/documentation_options.js?v=23af60bc"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,10 +64,19 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../stream_interface/connecting.html">Connecting Streams</a></li>
@@ -88,10 +98,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -203,7 +211,7 @@ own bindings, so no explicit thread initialization is needed.</p></li>
 <span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">setup_python</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span>
 <span class="w">                    </span><span class="n">bp</span><span class="o">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="o">&gt;</span><span class="p">,</span>
-<span class="w">                    </span><span class="n">boost</span><span class="o">::</span><span class="n">noncopyable</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;BitInverter&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">bp</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">());</span>
+<span class="w">                    </span><span class="n">boost</span><span class="o">::</span><span class="n">noncopyable</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"BitInverter"</span><span class="p">,</span><span class="w"> </span><span class="n">bp</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">());</span>
 <span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">SlavePtr</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">MasterPtr</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">      </span><span class="p">}</span>

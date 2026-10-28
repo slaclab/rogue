@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installing Rogue With Miniforge &mdash; Rogue v6.15.0 documentation</title>
+  <title>Installing Rogue With Miniforge &mdash; Rogue v6.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
 
@@ -16,7 +17,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b1d0be57"></script>
+      <script src="../_static/documentation_options.js?v=23af60bc"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,9 +64,13 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Installing Rogue With Miniforge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="miniforge_build.html">Building Rogue Inside Miniforge</a></li>
@@ -77,16 +82,19 @@
 <li class="toctree-l2"><a class="reference internal" href="yocto.html">Setting Up Rogue In Yocto</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -158,19 +166,20 @@ $ conda config --set solver libmamba
 <h2>Creating A Rogue Environment<a class="headerlink" href="#creating-a-rogue-environment" title="Link to this heading"></a></h2>
 <p>The next step is to create a Miniforge environment that includes the Rogue
 package.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_tag -c tidair-tag -c conda-forge rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_tag -c conda-forge slac-rogue
 </pre></div>
 </div>
-<p>The order of the channels is important. <code class="docutils literal notranslate"><span class="pre">tidair-tag</span></code> is the channel from
-which the Rogue package is downloaded.</p>
+<p>Rogue is published on conda-forge under the package name <code class="docutils literal notranslate"><span class="pre">slac-rogue</span></code>.</p>
 <p>If you already have a Miniforge environment and want to install Rogue into it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c tidair-tag -c conda-forge rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c conda-forge slac-rogue
 </pre></div>
 </div>
 <p>Alternatively you can install a specific released version of Rogue:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v6.5.0 -c conda-forge -c tidair-tag rogue=v6.5.0
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v6.16.0 -c conda-forge slac-rogue=6.16.0
 </pre></div>
 </div>
+<p>Releases older than v6.15.0 are not on conda-forge. See
+<a class="reference internal" href="#installing-miniforge-legacy"><span class="std std-ref">Legacy tidair-tag Channel</span></a>.</p>
 </section>
 <section id="using-rogue-in-miniforge">
 <h2>Using Rogue In Miniforge<a class="headerlink" href="#using-rogue-in-miniforge" title="Link to this heading"></a></h2>
@@ -181,7 +190,7 @@ and deactivate the environment with the usual Conda commands:</p>
 </pre></div>
 </div>
 <p>Replace <code class="docutils literal notranslate"><span class="pre">rogue_tag</span></code> with the environment name you chose, such as
-<code class="docutils literal notranslate"><span class="pre">rogue_v6.5.0</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">rogue_v6.16.0</span></code>.</p>
 <p>To deactivate:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda deactivate
 </pre></div>
@@ -191,7 +200,7 @@ and deactivate the environment with the usual Conda commands:</p>
 <h2>Installing Rogue In Existing Environment<a class="headerlink" href="#installing-rogue-in-existing-environment" title="Link to this heading"></a></h2>
 <p>The following command installs Rogue into an existing Miniforge environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate my_existing_env
-$ conda install -c tidair-tag -c conda-forge rogue
+$ conda install -c conda-forge slac-rogue
 </pre></div>
 </div>
 </section>
@@ -199,7 +208,7 @@ $ conda install -c tidair-tag -c conda-forge rogue
 <h2>Updating Rogue In Miniforge<a class="headerlink" href="#updating-rogue-in-miniforge" title="Link to this heading"></a></h2>
 <p>If you want to update Rogue, run the following command after activating the
 environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda update rogue -c tidair-tag
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda update -c conda-forge slac-rogue
 </pre></div>
 </div>
 </section>
@@ -209,6 +218,18 @@ environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_tag
 </pre></div>
 </div>
+</section>
+<section id="legacy-tidair-tag-channel">
+<span id="installing-miniforge-legacy"></span><h2>Legacy tidair-tag Channel<a class="headerlink" href="#legacy-tidair-tag-channel" title="Link to this heading"></a></h2>
+<p>Releases older than v6.15.0 were published only to the <code class="docutils literal notranslate"><span class="pre">tidair-tag</span></code> Anaconda
+channel. There the package is named <code class="docutils literal notranslate"><span class="pre">rogue</span></code> and versions carry a <code class="docutils literal notranslate"><span class="pre">v</span></code>
+prefix. To install one of these older releases:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v6.5.0 -c conda-forge -c tidair-tag rogue=v6.5.0
+</pre></div>
+</div>
+<p>Environments created from <code class="docutils literal notranslate"><span class="pre">tidair-tag</span></code> contain the <code class="docutils literal notranslate"><span class="pre">rogue</span></code> package rather
+than <code class="docutils literal notranslate"><span class="pre">slac-rogue</span></code>, so <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">update</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">slac-rogue</span></code> does not
+upgrade them. Create a new environment to switch to the conda-forge package.</p>
 </section>
 </section>
 

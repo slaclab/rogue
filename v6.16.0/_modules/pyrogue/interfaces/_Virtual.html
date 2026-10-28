@@ -1,0 +1,961 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.16.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=51977998"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue.interfaces._Virtual</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyrogue.interfaces._Virtual</h1><div class="highlight"><pre>
+<span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Company    : SLAC National Accelerator Laboratory</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1">#  Description:</span>
+<span class="c1">#       PyRogue base module - Virtual Classes</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">VirtualProperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Descriptor for virtual properties that fetch values from a remote client.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    node : VirtualNode</span>
+<span class="sd">        Virtual node instance owning this property.</span>
+<span class="sd">    attr : str</span>
+<span class="sd">        Attribute name to fetch from the remote.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="s2">"VirtualNode"</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attr</span> <span class="o">=</span> <span class="n">attr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="o">=</span> <span class="n">node</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">objtype</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Fetch attribute value from the remote client."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attr</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""No-op setter; virtual properties are read-only."""</span>
+        <span class="k">pass</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">VirtualMethod</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Descriptor for virtual methods that invoke remote calls.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    node : VirtualNode</span>
+<span class="sd">        Virtual node instance owning this method.</span>
+<span class="sd">    attr : str</span>
+<span class="sd">        Attribute name to invoke on the remote.</span>
+<span class="sd">    info : dict[str, Any]</span>
+<span class="sd">        Method metadata including ``args`` and ``kwargs``.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="s2">"VirtualNode"</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attr</span>   <span class="o">=</span> <span class="n">attr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span>   <span class="o">=</span> <span class="n">node</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span>   <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">'args'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">'kwargs'</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Invoke the remote attribute with the given arguments."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attr</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">VirtualFactory</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Create a virtual class instance from serialized node data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : dict</span>
+<span class="sd">        Serialized node data including 'funcs', 'props', 'bases', 'class', etc.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Any</span>
+<span class="sd">        Instantiated virtual node with dynamic methods and properties.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Add dynamic methods</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'funcs'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">VirtualMethod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">))</span>
+
+        <span class="c1"># Add dynamic properties</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'props'</span><span class="p">]:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">VirtualProperty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">k</span><span class="p">))</span>
+
+        <span class="c1"># Add __call__ if command or Process</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'bases'</span><span class="p">]</span> <span class="ow">or</span> <span class="nb">str</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Process</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'bases'</span><span class="p">]:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span><span class="s1">'__call__'</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">)</span>
+
+        <span class="c1"># Add getNode and addVarListener if root</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'bases'</span><span class="p">]:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span><span class="s1">'getNode'</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_getNode</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span><span class="s1">'addVarListener'</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_addVarListener</span><span class="p">)</span>
+
+        <span class="c1"># Add addListener if Variable</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">)</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'bases'</span><span class="p">]:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span><span class="s1">'addListener'</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_addListener</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span><span class="s1">'delListener'</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_delListener</span><span class="p">)</span>
+
+        <span class="n">VirtualNode</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">newclass</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s1">'Virtual'</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="s1">'class'</span><span class="p">],</span> <span class="p">(</span><span class="n">VirtualNode</span><span class="p">,),</span> <span class="p">{</span><span class="s2">"__init__"</span><span class="p">:</span> <span class="fm">__init__</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">newclass</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">VirtualNode</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Virtual proxy node populated from remote tree metadata.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    attrs : dict[str, Any]</span>
+<span class="sd">        Serialized node attributes including ``name``, ``description``,</span>
+<span class="sd">        ``path``, ``class``, ``bases``, and ``nodes``.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attrs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span>
+                         <span class="n">description</span><span class="o">=</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'description'</span><span class="p">],</span>
+                         <span class="n">expand</span><span class="o">=</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'expand'</span><span class="p">],</span>
+                         <span class="n">groups</span><span class="o">=</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'groups'</span><span class="p">],</span>
+                         <span class="n">guiGroup</span><span class="o">=</span><span class="n">attrs</span><span class="p">[</span><span class="s1">'guiGroup'</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>  <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">'path'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_class</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">'class'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">'nodes'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bases</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">'bases'</span><span class="p">]</span>
+
+        <span class="c1"># Tracking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>    <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>      <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span>    <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loadLock</span>  <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span>    <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Setup logging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">addToGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Not supported; raises NodeError."""</span>
+        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s1">'addToGroup not supported in VirtualNode'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">removeFromGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Not supported; raises NodeError."""</span>
+        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s1">'removeFromGroup not supported in VirtualNode'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="s2">"VirtualNode"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Not supported; raises NodeError."""</span>
+        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s1">'add not supported in VirtualNode'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">callRecursive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">nodeTypes</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Not supported; raises NodeError."""</span>
+        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s1">'callRecursive not supported in VirtualNode'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Lazy-load children on first access, then resolve as a child attribute."""</span>
+        <span class="c1"># Double-checked locking: outer check skips the lock once loaded.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loadLock</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_loadNodes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Child nodes keyed by name."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loadLock</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_loadNodes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">load</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"VirtualNode | None"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return child node by name, optionally loading children first.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Child node name.</span>
+<span class="sd">        load : bool, optional (default = True)</span>
+<span class="sd">            If True, load child nodes before lookup.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any</span>
+<span class="sd">            Child node or None if not found.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">)</span> <span class="ow">and</span> <span class="n">load</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loadLock</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_loadNodes</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Invoke remote __call__ on this node."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="s1">'__call__'</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_addListener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a variable update listener."""</span>
+        <span class="k">if</span> <span class="n">listener</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delListener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove a variable update listener."""</span>
+        <span class="k">if</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_addVarListener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Forward addVarListener to the client."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_addVarListener</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_loadNodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Populate child nodes from remote metadata."""</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="s1">'nodes'</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="bp">self</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">_root</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_addArrayNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loaded</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">load</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"VirtualNode | None"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Resolve a dotted path to a node.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Dotted path (e.g. 'root.Child.GrandChild').</span>
+<span class="sd">        load : bool, optional (default = True)</span>
+<span class="sd">            If True, load child nodes as needed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Any</span>
+<span class="sd">            Node at path or None if not found.</span>
+<span class="sd">        """</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="k">if</span> <span class="s1">'.'</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">lst</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">'root'</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s1">'node'</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">load</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">path</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="n">path</span> <span class="o">!=</span> <span class="s1">'root'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="s2">"VirtualNode"</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Check if this node's type string matches the given type."""</span>
+        <span class="n">cs</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bases</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rootAttached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="s2">"VirtualNode"</span><span class="p">,</span> <span class="n">root</span><span class="p">:</span> <span class="s2">"VirtualNode"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Not supported; raises NodeError."""</span>
+        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s1">'_rootAttached not supported in VirtualNode'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Not supported; raises NodeError."""</span>
+        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s1">'_getDict not supported in VirtualNode'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Not supported; raises NodeError."""</span>
+        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s1">'_setDict not supported in VirtualNode'</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">printYaml</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">readFirst</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'RW'</span><span class="p">,</span> <span class="s1">'RO'</span><span class="p">,</span> <span class="s1">'WO'</span><span class="p">],</span>
+        <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Hidden'</span><span class="p">],</span>
+        <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Print remote YAML with selected access modes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        readFirst : bool, optional (default = False)</span>
+<span class="sd">            If ``True``, perform a read before generating YAML output.</span>
+<span class="sd">        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW','RO','WO'])</span>
+<span class="sd">            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.</span>
+<span class="sd">        incGroups : str or list[str], optional</span>
+<span class="sd">            Group name or group names to include.</span>
+<span class="sd">        excGroups : str or list[str], optional</span>
+<span class="sd">            Group name or group names to exclude.</span>
+<span class="sd">        recurse : bool, optional (default = False)</span>
+<span class="sd">            If ``True``, include child nodes recursively.</span>
+<span class="sd">        """</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getYaml</span><span class="p">(</span><span class="n">readFirst</span><span class="o">=</span><span class="n">readFirst</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">,</span> <span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_doUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Notify listeners of a value update."""</span>
+        <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
+            <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="VirtualClient">
+<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VirtualClient</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    A full featured client interface for Rogue. This can be used in</span>
+<span class="sd">    scripts or other clients which require remote access to the running</span>
+<span class="sd">    Rogue instance.</span>
+
+<span class="sd">    This class ues a custom factory ensuring that only one instance of this</span>
+<span class="sd">    class is created in a python script for a given remote connection.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    addr : str</span>
+<span class="sd">        host address</span>
+
+<span class="sd">    port : int</span>
+<span class="sd">        host port</span>
+
+<span class="sd">    linkTimeout : float, optional</span>
+<span class="sd">        Idle timeout in seconds before the client marks the link down when no</span>
+<span class="sd">        publish updates or successful replies have been observed. This is the</span>
+<span class="sd">        primary operational timeout knob for both hardware and simulation</span>
+<span class="sd">        applications.</span>
+
+<span class="sd">    requestStallTimeout : float | None, optional</span>
+<span class="sd">        Optional policy timeout for how long a single in-flight request may</span>
+<span class="sd">        remain outstanding before the client declares the connection stalled.</span>
+<span class="sd">        This is disabled by default and is typically only useful when a</span>
+<span class="sd">        deployment has a well-defined upper bound for legitimate request time.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    linked: bool</span>
+<span class="sd">        link state</span>
+
+<span class="sd">    root: obj</span>
+<span class="sd">        root class reference</span>
+
+<span class="sd">    """</span>
+    <span class="n">ClientCache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_defaultLinkTimeout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the default idle link timeout in seconds."""</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"ROGUE_VIRTUAL_LINK_TIMEOUT"</span><span class="p">,</span> <span class="s2">"10.0"</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_defaultRequestStallTimeout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the default request-stall timeout in seconds, if configured."""</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"ROGUE_VIRTUAL_REQUEST_STALL_TIMEOUT"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">stall</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">stall</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">stall</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_defaultConnectTimeout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the startup handshake timeout in seconds."""</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"ROGUE_VIRTUAL_CONNECT_TIMEOUT"</span><span class="p">,</span> <span class="s2">"5.0"</span><span class="p">)))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="s2">"VirtualClient"</span><span class="p">],</span>
+        <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">,</span>
+        <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9099</span><span class="p">,</span>
+        <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"VirtualClient"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return cached client instances keyed by ``(addr, port)``.</span>
+
+<span class="sd">        Timeout arguments configure the cached instance for that server. If a</span>
+<span class="sd">        client already exists for the same ``(addr, port)``, new timeout values</span>
+<span class="sd">        are applied to the shared instance.</span>
+<span class="sd">        """</span>
+        <span class="n">newHash</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">((</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">newHash</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="n">newHash</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">VirtualClient</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"localhost"</span><span class="p">,</span>
+        <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9099</span><span class="p">,</span>
+        <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create or reconfigure a cached virtual client instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        addr : str, optional</span>
+<span class="sd">            Server host name or address.</span>
+<span class="sd">        port : int, optional</span>
+<span class="sd">            Base ZMQ server port.</span>
+<span class="sd">        linkTimeout : float | None, optional</span>
+<span class="sd">            Idle timeout in seconds before the link is considered down. If not</span>
+<span class="sd">            provided, the default is 10 seconds or the value from</span>
+<span class="sd">            ``ROGUE_VIRTUAL_LINK_TIMEOUT``.</span>
+<span class="sd">        requestStallTimeout : float | None, optional</span>
+<span class="sd">            Optional maximum age of an in-flight request before the client</span>
+<span class="sd">            treats it as stalled. ``None`` or non-positive values disable this</span>
+<span class="sd">            policy. In practice this is usually left disabled unless a system</span>
+<span class="sd">            has a known upper bound for valid request duration.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ConnectionError</span>
+<span class="sd">            If the bootstrap ``__ROOT__`` handshake fails within the window</span>
+<span class="sd">            defined by ``ROGUE_VIRTUAL_CONNECT_TIMEOUT`` (default 5 s).</span>
+<span class="sd">            Causes include the server process not running, an address/port</span>
+<span class="sd">            mismatch, or ports blocked by firewall. The handshake failure</span>
+<span class="sd">            is preserved via standard exception chaining: the immediate</span>
+<span class="sd">            ``__cause__`` is the wrapping ``Exception`` raised by</span>
+<span class="sd">            ``_remoteAttr``, and its own ``__cause__`` is the underlying</span>
+<span class="sd">            transport error (typically a ``rogue.GeneralError`` from</span>
+<span class="sd">            ``ZmqClient::send``). Sockets and the ZMQ context are torn</span>
+<span class="sd">            down before the raise, so no partially-initialised instance</span>
+<span class="sd">            is left in the singleton cache.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_vcInitialized"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">linkTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">requestStallTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setTimeoutConfig</span><span class="p">(</span><span class="n">linkTimeout</span><span class="o">=</span><span class="n">linkTimeout</span><span class="p">,</span> <span class="n">requestStallTimeout</span><span class="o">=</span><span class="n">requestStallTimeout</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">((</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># ZmqClient.__init__ spawns the SUB thread, so every attribute its</span>
+        <span class="c1"># callbacks (_doUpdate / _requestDone / _checkLinkState) can touch must</span>
+        <span class="c1"># exist before the base ctor runs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>  <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>  <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defaultLinkTimeout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defaultRequestStallTimeout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTimeoutConfig</span><span class="p">(</span><span class="n">linkTimeout</span><span class="o">=</span><span class="n">linkTimeout</span><span class="p">,</span> <span class="n">requestStallTimeout</span><span class="o">=</span><span class="n">requestStallTimeout</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_removeFromCache</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">raise</span>
+
+        <span class="c1"># Setup logging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">"VirtualClient"</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Get root name as a connection test (fail on first 1 s timeout)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_waitForRoot</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="c1"># Tear down sockets/context before raising so the caller cannot</span>
+            <span class="c1"># inadvertently use a half-initialised instance. Pre-fix this</span>
+            <span class="c1"># path printed the banner and returned normally, leaving the</span>
+            <span class="c1"># caller with a dead VirtualClient whose first _remoteAttr</span>
+            <span class="c1"># crashed in ZmqClient::send (issue #1234).</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cleanupFailedInit</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"Failed to connect to </span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="s2">"Possible causes: ZeroMQ Server not included in the root "</span>
+                <span class="s2">"class; Root process not running; client/server address "</span>
+                <span class="s2">"mismatch; client/server port mismatch; server ports "</span>
+                <span class="s2">"blocked by firewall."</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Connected to </span><span class="si">{}</span><span class="s2"> at </span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">))</span>
+        <span class="c1"># Operational: warn every 1 s, retry forever (failTime=0)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">_root</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">)</span>
+
+        <span class="c1"># Link tracking</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>  <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+
+        <span class="c1"># Create monitoring thread</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_monWorker</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_removeFromCache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Remove this client from the shared cache when it is no longer valid."""</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_cacheKey"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span> <span class="ow">and</span> <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cleanupFailedInit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Release transport resources after a failed bootstrap handshake."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_removeFromCache</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_waitForRoot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"VirtualNode"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Retry the initial ``__ROOT__`` handshake for a bounded startup window."""</span>
+        <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defaultConnectTimeout</span><span class="p">()</span>
+        <span class="n">last_error</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="s1">'__ROOT__'</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">last_error</span> <span class="o">=</span> <span class="n">exc</span>
+
+        <span class="k">if</span> <span class="n">last_error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">last_error</span>
+
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Timed out waiting for initial root handshake"</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VirtualClient.addLinkMonitor">
+<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.addLinkMonitor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addLinkMonitor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Add a link monitor callback function. This function will be called</span>
+<span class="sd">        any time the link state changes. A single boolean argument will be passed to</span>
+<span class="sd">        the callback function containing the current link state.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        function : callable</span>
+<span class="sd">            Callback function with the form ``function(linkState: bool)``.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VirtualClient.remLinkMonitor">
+<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.remLinkMonitor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remLinkMonitor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">bool</span><span class="p">],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Remove a previously added link monitor function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        function : callable</span>
+<span class="sd">            Previously registered callback function.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Whether the client is currently linked to the server."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linkTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Idle timeout in seconds before the link is considered down."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">requestStallTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Optional maximum in-flight request age before it is treated as stalled."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span>
+
+<div class="viewcode-block" id="VirtualClient.setTimeoutConfig">
+<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.setTimeoutConfig">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setTimeoutConfig</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Update link and request-stall timeout settings.</span>
+
+<span class="sd">        ``linkTimeout`` is the normal tuning knob for clients that need to</span>
+<span class="sd">        tolerate longer busy periods. ``requestStallTimeout`` is an optional</span>
+<span class="sd">        policy threshold and is most useful only when a deployment has a clear,</span>
+<span class="sd">        finite upper bound for legitimate request duration.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">linkTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">linkTimeout</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">requestStallTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">stall</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">requestStallTimeout</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">stall</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">stall</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_monWorker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Monitor link heartbeat and emit link-state callbacks."""</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_checkLinkState</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_requestStart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Record that a request/reply transaction is in flight."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_requestDone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Record request completion and treat successful replies as activity."""</span>
+        <span class="c1"># Defer monitor callbacks until after _reqLock is released: a re-entrant</span>
+        <span class="c1"># callback would deadlock, and a slow one would stall other requests.</span>
+        <span class="n">notify</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">notify</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># _waitForRoot triggers the first _requestDone(True) before __init__</span>
+        <span class="c1"># assigns self._root; suppress the notify in that window.</span>
+        <span class="k">if</span> <span class="n">notify</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"I have finally heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. All is good!"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
+                <span class="n">mon</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_checkLinkState</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Update link state from recent activity while tolerating busy requests."""</span>
+        <span class="c1"># Snapshot all link state under one lock acquisition so the decision</span>
+        <span class="c1"># below is coherent; emit logs and monitor callbacks after releasing.</span>
+        <span class="n">log_message</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">notify_link</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span>
+            <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>
+            <span class="n">reqPending</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">reqAge</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">reqPending</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="n">new_link</span> <span class="o">=</span> <span class="n">link</span>
+
+            <span class="k">if</span> <span class="n">link</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">reqPending</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span> <span class="ow">is</span> <span class="kc">None</span>
+                            <span class="ow">or</span> <span class="n">reqAge</span> <span class="ow">is</span> <span class="kc">None</span>
+                            <span class="ow">or</span> <span class="n">reqAge</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span><span class="p">):</span>
+                        <span class="k">return</span>
+
+                    <span class="n">new_link</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">log_message</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"Request has been pending for </span><span class="si">{</span><span class="n">reqAge</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> seconds without updates. "</span>
+                        <span class="sa">f</span><span class="s2">"Declaring link to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> stalled."</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_link</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">log_message</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"I have not heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> seconds. "</span>
+                        <span class="s2">"It may be busy, continuing to wait..."</span>
+                    <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">link</span><span class="p">)</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="p">:</span>
+                <span class="n">new_link</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">log_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"I have finally heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. All is good!"</span>
+
+            <span class="k">if</span> <span class="n">new_link</span> <span class="o">!=</span> <span class="n">link</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="n">new_link</span>
+                <span class="n">notify_link</span> <span class="o">=</span> <span class="n">new_link</span>
+
+        <span class="k">if</span> <span class="n">log_message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">log_message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">notify_link</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
+                <span class="n">mon</span><span class="p">(</span><span class="n">notify_link</span><span class="p">)</span>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Invoke a remote attribute on the server."""</span>
+        <span class="c1"># Liveness guard: fail fast on a dead instance (stop() was called or</span>
+        <span class="c1"># a prior init failed). Without this guard the call slips through to</span>
+        <span class="c1"># ZmqClient::send on a torn-down socket and surfaces as the</span>
+        <span class="c1"># "zmq_sendmsg failed" crash reported in issue #1234.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_vcInitialized"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">"VirtualClient is not connected: __init__ failed or stop() "</span>
+                <span class="s2">"was called. Construct a new VirtualClient before issuing "</span>
+                <span class="s2">"remote attribute calls."</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_requestStart</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_send</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s1">'path'</span><span class="p">:</span><span class="n">path</span><span class="p">,</span> <span class="s1">'attr'</span><span class="p">:</span><span class="n">attr</span><span class="p">,</span> <span class="s1">'args'</span><span class="p">:</span><span class="n">args</span><span class="p">,</span> <span class="s1">'kwargs'</span><span class="p">:</span><span class="n">kwargs</span> <span class="p">})))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_requestDone</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_requestDone</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># Chain explicitly so the underlying transport error (e.g. the</span>
+            <span class="c1"># rogue.GeneralError from ZmqClient::send) is reachable via the</span>
+            <span class="c1"># standard __cause__ chain from any wrapping exception higher up</span>
+            <span class="c1"># the stack (notably the ConnectionError raised by __init__).</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ZMQ Interface Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="ne">Exception</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ret</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_addVarListener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Register a variable update listener."""</span>
+        <span class="k">if</span> <span class="n">func</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_doUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Process variable update data from the server."""</span>
+        <span class="c1"># Publishes count as link activity; mutate _ltime under _reqLock.</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">_doUpdate</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+            <span class="c1"># Call listener functions,</span>
+            <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span><span class="p">:</span>
+                <span class="n">func</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VirtualClient.stop">
+<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.stop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Stop the monitor thread and release the underlying ZMQ resources.</span>
+
+<span class="sd">        After ``stop()`` returns the C++ sockets and ZMQ context are released</span>
+<span class="sd">        and this instance is removed from ``ClientCache``; a subsequent</span>
+<span class="sd">        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully</span>
+<span class="sd">        connected instance instead of returning the torn-down one.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">thr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span>
+
+        <span class="c1"># is_alive() guards against join() on a Thread that was never started.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">thr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thr</span><span class="p">,</span> <span class="s1">'is_alive'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">thr</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thr</span><span class="p">,</span> <span class="s1">'join'</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">thr</span><span class="p">):</span>
+            <span class="n">thr</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">thr</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Monitor thread did not stop within timeout"</span><span class="p">)</span>
+
+        <span class="c1"># ClientCache pins this instance, so the C++ stop() must run explicitly</span>
+        <span class="c1"># to release SUB/REQ sockets and the ZMQ context. _stop() is idempotent.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Drop the cache entry so a follow-on VirtualClient(addr, port) gets</span>
+        <span class="c1"># a fresh instance instead of this torn-down one.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_removeFromCache</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"VirtualNode"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the connected virtual root node."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Hash based on host and port."""</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">"VirtualClient"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Compare by host and port."""</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">"VirtualClient"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Compare by host and port."""</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"VirtualClient"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return self for context-manager use."""</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">traceback</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Stop monitoring when leaving context-manager scope."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

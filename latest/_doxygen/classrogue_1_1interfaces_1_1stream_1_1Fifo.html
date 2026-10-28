@@ -111,6 +111,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:add3d0712e1e3358ab13715a47eb1e80c" id="r_add3d0712e1e3358ab13715a47eb1e80c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Fifo.html#add3d0712e1e3358ab13715a47eb1e80c">~Fifo</a> ()</td></tr>
 <tr class="memdesc:add3d0712e1e3358ab13715a47eb1e80c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the FIFO and stops internal worker thread.  <br /></td></tr>
 <tr class="separator:add3d0712e1e3358ab13715a47eb1e80c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a079d08234f3a70777b1bb74eeda30c" id="r_a0a079d08234f3a70777b1bb74eeda30c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Fifo.html#a0a079d08234f3a70777b1bb74eeda30c">stop</a> ()</td></tr>
+<tr class="memdesc:a0a079d08234f3a70777b1bb74eeda30c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops the internal worker thread.  <br /></td></tr>
+<tr class="separator:a0a079d08234f3a70777b1bb74eeda30c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4365e37d6f395e39fb2697c6a863cd18" id="r_a4365e37d6f395e39fb2697c6a863cd18"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Fifo.html#a4365e37d6f395e39fb2697c6a863cd18">size</a> ()</td></tr>
 <tr class="memdesc:a4365e37d6f395e39fb2697c6a863cd18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns current FIFO queue depth.  <br /></td></tr>
 <tr class="separator:a4365e37d6f395e39fb2697c6a863cd18"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -145,9 +148,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a80fb7808644726ddca72e8e196477229"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a80fb7808644726ddca72e8e196477229">ensureSingleBuffer</a> (std::shared_ptr&lt; <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html">rogue::interfaces::stream::Frame</a> &gt; &amp;frame, bool reqEn)</td></tr>
 <tr class="memdesc:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensures a frame is represented by a single buffer.  <br /></td></tr>
 <tr class="separator:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a212b04404a6767dddd1e58ba8298cf9e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">stop</a> ()</td></tr>
-<tr class="memdesc:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops frame generation and shuts down associated threads.  <br /></td></tr>
-<tr class="separator:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a913f40b8d390d1b2f26fa0aecfea34eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a913f40b8d390d1b2f26fa0aecfea34eb">equalsPy</a> (boost::python::object p)</td></tr>
 <tr class="memdesc:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Supports <code>==</code> operator usage from Python.  <br /></td></tr>
 <tr class="separator:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,9 +175,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_a74588fad9c45c5ac06c75e534db4da42"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#a74588fad9c45c5ac06c75e534db4da42">~Slave</a> ()</td></tr>
 <tr class="memdesc:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the stream slave.  <br /></td></tr>
 <tr class="separator:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_ac859b66aedfa71ee9ae24a3778599dd3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ac859b66aedfa71ee9ae24a3778599dd3">stop</a> ()</td></tr>
-<tr class="memdesc:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuts down threads associated with this object.  <br /></td></tr>
-<tr class="separator:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_a0db1eae3e974be56cfe5cd35653d752d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#a0db1eae3e974be56cfe5cd35653d752d">setDebug</a> (uint32_t debug, std::string name)</td></tr>
 <tr class="memdesc:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets debug message verbosity and logger name.  <br /></td></tr>
 <tr class="separator:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -342,7 +339,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00061">61</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00063">63</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
 
 </div>
 </div>
@@ -364,7 +361,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Destroys the FIFO and stops internal worker thread. </p>
 <p>Deconstructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00080">80</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00082">82</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
 
 </div>
 </div>
@@ -404,7 +401,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00108">108</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00114">114</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
 
 </div>
 </div>
@@ -426,7 +423,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Clears FIFO counters (including dropped-frame count). </p>
 <p>Clear counters. </p>
 
-<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00103">103</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00109">109</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
 
 </div>
 </div>
@@ -489,7 +486,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Description : </p><h2>AXI Stream FIFO </h2>
 <p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms </p><h2>contained in the LICENSE.txt file. </h2>
 
-<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00043">43</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00044">44</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
 
 </div>
 </div>
@@ -511,7 +508,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Returns the total dropped-frame counter. </p>
 <p>Return the number of dropped frames. </p>
 
-<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00098">98</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00104">104</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
 
 </div>
 </div>
@@ -541,7 +538,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Registers this type with Python bindings. </p>
 <p>Setup class in python. </p>
 
-<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00049">49</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00050">50</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
 
 </div>
 </div>
@@ -563,7 +560,40 @@ Additional Inherited Members</h2></td></tr>
 <p>Returns current FIFO queue depth. </p>
 <p>Return the number of elements in the <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Fifo.html" title="Stream frame FIFO.">Fifo</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00093">93</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00099">99</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a0a079d08234f3a70777b1bb74eeda30c" name="a0a079d08234f3a70777b1bb74eeda30c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a079d08234f3a70777b1bb74eeda30c">&#9670;&#160;</a></span>stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rogue::interfaces::stream::Fifo::stop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Stops the internal worker thread. </p>
+<p>Stop the worker thread.</p>
+<p>Frames still queued, and frames accepted afterwards, are dropped rather than forwarded. Safe to call more than once; the destructor calls it. Exposed as <code>_stop()</code> in Python. </p>
+
+<p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">rogue::interfaces::stream::Master</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="Fifo_8cpp_source.html#l00087">87</a> of file <a class="el" href="Fifo_8cpp_source.html">Fifo.cpp</a>.</p>
 
 </div>
 </div>

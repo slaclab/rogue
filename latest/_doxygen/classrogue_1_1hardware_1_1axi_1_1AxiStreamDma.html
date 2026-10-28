@@ -112,7 +112,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a68aad150acfa77323c751755016935a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the interface and stops background activity.  <br /></td></tr>
 <tr class="separator:a68aad150acfa77323c751755016935a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91de9045eecd13ce9a50ca77d37eb89d" id="r_a91de9045eecd13ce9a50ca77d37eb89d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a91de9045eecd13ce9a50ca77d37eb89d">stop</a> ()</td></tr>
-<tr class="memdesc:a91de9045eecd13ce9a50ca77d37eb89d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops RX thread and closes DMA file descriptors.  <br /></td></tr>
+<tr class="memdesc:a91de9045eecd13ce9a50ca77d37eb89d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops RX thread and closes the per-instance DMA file descriptor.  <br /></td></tr>
 <tr class="separator:a91de9045eecd13ce9a50ca77d37eb89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93a4844ca269864d2ef7fd618d9f8d7c" id="r_a93a4844ca269864d2ef7fd618d9f8d7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a93a4844ca269864d2ef7fd618d9f8d7c">setTimeout</a> (uint32_t timeout)</td></tr>
 <tr class="memdesc:a93a4844ca269864d2ef7fd618d9f8d7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets TX/alloc wait timeout.  <br /></td></tr>
@@ -332,8 +332,9 @@ Additional Inherited Members</h2></td></tr>
 <li>Optional zero-copy buffer mapping when supported by the driver/path.</li>
 </ul>
 <p>Threading model:</p><ul>
-<li>A background RX thread is started in the constructor and runs until <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a91de9045eecd13ce9a50ca77d37eb89d" title="Stops RX thread and closes DMA file descriptors.">stop()</a></code> or destruction.</li>
+<li>A background RX thread is started in the constructor and runs until <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a91de9045eecd13ce9a50ca77d37eb89d" title="Stops RX thread and closes the per-instance DMA file descriptor.">stop()</a></code> or destruction.</li>
 <li>TX operations execute synchronously in caller context of <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a55a9680c5372818a46b5603a95a803b0" title="Accepts a frame for DMA transmit.">acceptFrame()</a></code>.</li>
+<li>Callers must quiesce public driver operations before calling <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a91de9045eecd13ce9a50ca77d37eb89d" title="Stops RX thread and closes the per-instance DMA file descriptor.">stop()</a></code>. Deferred zero-copy buffer returns may overlap <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a91de9045eecd13ce9a50ca77d37eb89d" title="Stops RX thread and closes the per-instance DMA file descriptor.">stop()</a></code> and are serialized against descriptor closure internally.</li>
 </ul>
 <p>Zero-copy model:</p><ul>
 <li>Enabled by default per device path.</li>
@@ -341,7 +342,7 @@ Additional Inherited Members</h2></td></tr>
 <li>When disabled or unavailable, frame buffers are allocated from local pool and copied on TX/RX boundaries. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8h_source.html#l00094">94</a> of file <a class="el" href="AxiStreamDma_8h_source.html">AxiStreamDma.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8h_source.html#l00098">98</a> of file <a class="el" href="AxiStreamDma_8h_source.html">AxiStreamDma.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a94a1a93fb0f066f030e53c7d02c24259" name="a94a1a93fb0f066f030e53c7d02c24259"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a94a1a93fb0f066f030e53c7d02c24259">&#9670;&#160;</a></span>AxiStreamDma()</h2>
@@ -458,7 +459,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00432">432</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00436">436</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -511,7 +512,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Pool.html#ab2731033cbedad75750e0ebe67921fe0">rogue::interfaces::stream::Pool</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00349">349</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00350">350</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -591,7 +592,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Strobe ack line.</p>
 <p>Hardware behavior is implementation-specific to the target DMA core. Exposed to Python as <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a136a233d1e378f89e585a67fbc033f5c" title="Sends an ACK strobe through driver-specific DMA control path.">dmaAck()</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00344">344</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00345">345</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -614,7 +615,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the DMA Driver's API <a class="el" href="classrogue_1_1Version.html" title="Rogue version query and comparison helpers.">Version</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>Driver API version number. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00698">698</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00704">704</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -637,7 +638,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the size of buffers (RX/TX)</p>
 <dl class="section return"><dt>Returns</dt><dd>RX/TX DMA buffer size in bytes. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00703">703</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00709">709</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -660,7 +661,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the DMA Driver's Git <a class="el" href="classrogue_1_1Version.html" title="Rogue version query and comparison helpers.">Version</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>Git version string, empty on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00693">693</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00699">699</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -683,7 +684,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the number of RX buffers.</p>
 <dl class="section return"><dt>Returns</dt><dd>Number of RX buffers. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00708">708</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00714">714</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -706,7 +707,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get RX buffer in HW count.</p>
 <dl class="section return"><dt>Returns</dt><dd>RX in-hardware count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00718">718</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00724">724</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -729,7 +730,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get RX buffer in Pre-HW <a class="el" href="classrogue_1_1Queue.html" title="Thread-safe bounded queue with optional busy threshold.">Queue</a> count.</p>
 <dl class="section return"><dt>Returns</dt><dd>RX pre-hardware queue count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00723">723</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00729">729</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -752,7 +753,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get RX buffer in SW <a class="el" href="classrogue_1_1Queue.html" title="Thread-safe bounded queue with optional busy threshold.">Queue</a> count.</p>
 <dl class="section return"><dt>Returns</dt><dd>RX software queue count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00728">728</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00734">734</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -775,7 +776,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get RX buffer in User count.</p>
 <dl class="section return"><dt>Returns</dt><dd>RX in-user count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00713">713</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00719">719</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -798,7 +799,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get RX buffer missing count.</p>
 <dl class="section return"><dt>Returns</dt><dd>RX missing buffer count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00733">733</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00739">739</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -821,7 +822,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get the number of TX buffers.</p>
 <dl class="section return"><dt>Returns</dt><dd>Number of TX buffers. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00738">738</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00744">744</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -844,7 +845,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get TX buffer in HW count.</p>
 <dl class="section return"><dt>Returns</dt><dd>TX in-hardware count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00748">748</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00754">754</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -867,7 +868,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get TX buffer in Pre-HW <a class="el" href="classrogue_1_1Queue.html" title="Thread-safe bounded queue with optional busy threshold.">Queue</a> count.</p>
 <dl class="section return"><dt>Returns</dt><dd>TX pre-hardware queue count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00753">753</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00759">759</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -890,7 +891,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get TX buffer in SW <a class="el" href="classrogue_1_1Queue.html" title="Thread-safe bounded queue with optional busy threshold.">Queue</a> count.</p>
 <dl class="section return"><dt>Returns</dt><dd>TX software queue count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00758">758</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00764">764</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -913,7 +914,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get TX buffer in User count.</p>
 <dl class="section return"><dt>Returns</dt><dd>TX in-user count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00743">743</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00749">749</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -936,7 +937,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Get TX buffer missing count.</p>
 <dl class="section return"><dt>Returns</dt><dd>TX missing buffer count. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00763">763</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00769">769</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -993,7 +994,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Pool.html#a4fe1e33ca13196a4194319071ddc6416">rogue::interfaces::stream::Pool</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00554">554</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00560">560</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -1023,7 +1024,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00339">339</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00340">340</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -1053,7 +1054,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00330">330</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00331">331</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -1082,7 +1083,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Registers Python bindings for this class. </p>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00767">767</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00773">773</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>
@@ -1109,11 +1110,13 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Stops RX thread and closes DMA file descriptors. </p>
+<p>Stops RX thread and closes the per-instance DMA file descriptor. </p>
+<p>The shared zero-copy DMA mapping remains valid until destruction so downstream Rogue buffers retained after <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a91de9045eecd13ce9a50ca77d37eb89d" title="Stops RX thread and closes the per-instance DMA file descriptor.">stop()</a></code> do not reference unmapped memory.</p>
+<p>Before calling <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a91de9045eecd13ce9a50ca77d37eb89d" title="Stops RX thread and closes the per-instance DMA file descriptor.">stop()</a></code>, callers must ensure that stream operations and driver controls/accessors have completed and that no new ones can begin. Deferred returns from previously issued zero-copy buffers may overlap <code><a class="el" href="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma.html#a91de9045eecd13ce9a50ca77d37eb89d" title="Stops RX thread and closes the per-instance DMA file descriptor.">stop()</a></code>; descriptor closure is synchronized with those callbacks. </p>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">rogue::interfaces::stream::Master</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00295">295</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="AxiStreamDma_8cpp_source.html#l00300">300</a> of file <a class="el" href="AxiStreamDma_8cpp_source.html">AxiStreamDma.cpp</a>.</p>
 
 </div>
 </div>

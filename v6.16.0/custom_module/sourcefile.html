@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Module Source &mdash; Rogue v6.16.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=51977998"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Building The Custom Module" href="makefile.html" />
+    <link rel="prev" title="Creating Custom Modules" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/connecting.html">Connecting Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/frame_model.html">Frame Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/sending.html">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/built_in_modules.html">Built-in Stream Modules</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Custom Module Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rogueconfig.html">The RogueConfig.cmake Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../stream_interface/index.html">Stream Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Creating Custom Modules</a></li>
+      <li class="breadcrumb-item active">Custom Module Source</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/custom_module/sourcefile.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="custom-module-source">
+<span id="custom-sourcefile"></span><h1>Custom Module Source<a class="headerlink" href="#custom-module-source" title="Link to this heading"></a></h1>
+<p>The example below implements a custom stream “base type” that inverts every
+payload byte (a bitwise NOT, <code class="docutils literal notranslate"><span class="pre">byte</span> <span class="pre">^</span> <span class="pre">0xFF</span></code>) of each frame it receives and
+forwards the result downstream. It subclasses both
+<code class="docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master</span></code> and <code class="docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave</span></code>,
+exactly like Rogue’s own <code class="docutils literal notranslate"><span class="pre">Filter</span></code>, so it can sit in the middle of a stream
+pipeline: <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">&gt;&gt;</span> <span class="pre">inverter</span> <span class="pre">&gt;&gt;</span> <span class="pre">sink</span></code>.</p>
+<p>This is the same source compiled by Rogue’s own continuous integration as a
+downstream <code class="docutils literal notranslate"><span class="pre">find_package(Rogue)</span></code> smoke test (<code class="docutils literal notranslate"><span class="pre">tests/downstream/</span></code>), so the
+example here is guaranteed to compile and behave as shown.</p>
+<p>Wrapping the class in a PyRogue <code class="docutils literal notranslate"><span class="pre">Device</span></code> is covered in <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a>.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../stream_interface/sending.html#interfaces-stream-sending"><span class="std std-ref">Sending Frames</span></a></p></li>
+<li><p><a class="reference internal" href="../stream_interface/receiving.html#interfaces-stream-receiving"><span class="std std-ref">Receiving Frames</span></a></p></li>
+</ul>
+<p>Build this module with the <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> described in this section.</p>
+<p>The source uses a few key patterns worth noting:</p>
+<ul class="simple">
+<li><p>A static <code class="docutils literal notranslate"><span class="pre">create()</span></code> factory returns the object wrapped in a
+<code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> – the ownership model Rogue uses throughout its graph.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> is the single ingress hook. It acquires the frame lock,
+walks the payload with a <code class="docutils literal notranslate"><span class="pre">FrameIterator</span></code> (which transparently spans the
+frame’s underlying buffers), mutates the bytes in place, releases the lock,
+and calls <code class="docutils literal notranslate"><span class="pre">sendFrame()</span></code> (inherited from <code class="docutils literal notranslate"><span class="pre">Master</span></code>) to forward to every
+connected slave.</p></li>
+<li><p>The Python bindings are guarded with <code class="docutils literal notranslate"><span class="pre">#ifndef</span> <span class="pre">NO_PYTHON</span></code> so the identical
+source also compiles into a Python-free C++ build.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BOOST_PYTHON_MODULE</span></code> just registers the bindings and lets Boost.Python
+propagate any error as a normal import failure; Rogue manages the GIL in its
+own bindings, so no explicit thread initialization is needed.</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Source for BitInverter.cpp</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdint.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;memory&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Frame.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/FrameIterator.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/FrameLock.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Master.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Slave.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
+
+<span class="cp">#ifndef NO_PYTHON</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;boost/python.hpp&gt;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">bp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">boost</span><span class="o">::</span><span class="nn">python</span><span class="p">;</span>
+<span class="cp">#endif</span>
+
+<span class="c1">// Custom stream element: inverts every payload byte and forwards the frame.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BitInverter</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="k">public</span><span class="o">:</span>
+
+<span class="w">      </span><span class="c1">// Shared-pointer factory (preferred construction path)</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="n">BitInverter</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="p">(),</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">      </span><span class="o">~</span><span class="n">BitInverter</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">      </span><span class="c1">// Receive a frame, invert each payload byte in place, forward downstream</span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">acceptFrame</span><span class="p">(</span><span class="n">ris</span><span class="o">::</span><span class="n">FramePtr</span><span class="w"> </span><span class="n">frame</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">         </span><span class="c1">// Hold the frame lock for the duration of the byte access</span>
+<span class="w">         </span><span class="n">ris</span><span class="o">::</span><span class="n">FrameLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+
+<span class="w">         </span><span class="c1">// XOR every payload byte with 0xFF (bitwise inversion)</span>
+<span class="w">         </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">it</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="n">it</span><span class="w"> </span><span class="o">^=</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">;</span>
+
+<span class="w">         </span><span class="c1">// Release the lock before handing the frame to downstream slaves</span>
+<span class="w">         </span><span class="n">lock</span><span class="o">-&gt;</span><span class="n">unlock</span><span class="p">();</span>
+
+<span class="w">         </span><span class="n">sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="cp">#ifndef NO_PYTHON</span>
+<span class="w">      </span><span class="c1">// Expose to Python as the BitInverter type</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">setup_python</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">bp</span><span class="o">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">boost</span><span class="o">::</span><span class="n">noncopyable</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"BitInverter"</span><span class="p">,</span><span class="w"> </span><span class="n">bp</span><span class="o">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">());</span>
+<span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">SlavePtr</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">         </span><span class="n">bp</span><span class="o">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">BitInverter</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">MasterPtr</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="cp">#endif</span>
+<span class="p">};</span>
+
+<span class="cp">#ifndef NO_PYTHON</span>
+<span class="c1">// Setup this module in python: import BitInverter (import rogue first)</span>
+<span class="n">BOOST_PYTHON_MODULE</span><span class="p">(</span><span class="n">BitInverter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="n">BitInverter</span><span class="o">::</span><span class="n">setup_python</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="cp">#endif</span>
+</pre></div>
+</div>
+<p>Once built and on <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code>, the module is driven from Python by connecting
+it between a source and a sink, sending a frame, and checking the bytes come out
+inverted:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">BitInverter</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FrameSource</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sendData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CaptureSink</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_acceptFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">getBa</span><span class="p">()))</span>
+
+<span class="n">source</span>   <span class="o">=</span> <span class="n">FrameSource</span><span class="p">()</span>
+<span class="n">inverter</span> <span class="o">=</span> <span class="n">BitInverter</span><span class="o">.</span><span class="n">BitInverter</span><span class="p">()</span>
+<span class="n">sink</span>     <span class="o">=</span> <span class="n">CaptureSink</span><span class="p">()</span>
+
+<span class="c1"># source -&gt; inverter -&gt; sink</span>
+<span class="n">source</span> <span class="o">&gt;&gt;</span> <span class="n">inverter</span> <span class="o">&gt;&gt;</span> <span class="n">sink</span>
+
+<span class="n">payload</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0xFF</span><span class="p">,</span> <span class="mh">0xAA</span><span class="p">,</span> <span class="mh">0x55</span><span class="p">]</span>
+<span class="n">source</span><span class="o">.</span><span class="n">sendData</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">sink</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">b</span> <span class="o">^</span> <span class="mh">0xFF</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Building the shared library: <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a></p></li>
+<li><p>Variables exported by <code class="docutils literal notranslate"><span class="pre">RogueConfig.cmake</span></code>: <a class="reference internal" href="rogueconfig.html#custom-rogueconfig"><span class="std std-ref">The RogueConfig.cmake Package</span></a></p></li>
+<li><p>Wrapping the C++ class as a PyRogue Device: <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Creating Custom Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="makefile.html" class="btn btn-neutral float-right" title="Building The Custom Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

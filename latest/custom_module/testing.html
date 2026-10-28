@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Testing The Custom Module &mdash; Rogue v6.15.0 documentation</title>
+  <title>Testing The Custom Module &mdash; Rogue v6.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
 
@@ -16,7 +17,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b1d0be57"></script>
+      <script src="../_static/documentation_options.js?v=23af60bc"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,10 +64,19 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../stream_interface/connecting.html">Connecting Streams</a></li>
@@ -88,10 +98,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -134,11 +142,11 @@ built the same way as the <a class="reference internal" href="sourcefile.html#cu
 <span class="k">class</span><span class="w"> </span><span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"MyRoot"</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testMaster&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testSlave&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"testMaster"</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"testSlave"</span><span class="p">))</span>
 
         <span class="c1"># Connect master to slave</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span>
@@ -156,8 +164,8 @@ built the same way as the <a class="reference internal" href="sourcefile.html#cu
     <span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">MyFrameGen</span><span class="p">()</span>
 
     <span class="c1"># Display status</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sent </span><span class="si">{}</span><span class="s2"> bytes in </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Got  </span><span class="si">{}</span><span class="s2"> bytes in </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Sent </span><span class="si">{}</span><span class="s2"> bytes in </span><span class="si">{}</span><span class="s2"> frames"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Got  </span><span class="si">{}</span><span class="s2"> bytes in </span><span class="si">{}</span><span class="s2"> frames"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
 </pre></div>
 </div>
 <p>The output of this Python script should look similar to the following, with a
@@ -183,11 +191,11 @@ through EPICS so external clients can drive them.</p>
 <span class="k">class</span><span class="w"> </span><span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"MyRoot"</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testMaster&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testSlave&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"testMaster"</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"testSlave"</span><span class="p">))</span>
 
         <span class="c1"># Connect master to slave</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span>
@@ -196,18 +204,18 @@ through EPICS so external clients can drive them.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="c1"># Add Epics</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epicsV4</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">&#39;myTest&#39;</span><span class="p">,</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epicsV4</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">'myTest'</span><span class="p">,</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addProtocol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
    <span class="n">r</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Running"</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Exiting"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Start the script above and generate frames using EPICS commands. You can also
@@ -296,11 +304,11 @@ workflow is described elsewhere.</p>
 <span class="k">class</span><span class="w"> </span><span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"MyRoot"</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testMaster&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testSlave&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"testMaster"</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"testSlave"</span><span class="p">))</span>
 
         <span class="c1"># Connect master to slave</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span>
@@ -309,12 +317,12 @@ workflow is described elsewhere.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="c1"># Add Epics</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epicsV4</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">&#39;myTest&#39;</span><span class="p">,</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epicsV4</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">'myTest'</span><span class="p">,</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addProtocol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
-    <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">r</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;MyGui&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Running"</span><span class="p">)</span>
+    <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">r</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">'MyGui'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can then start the server:</p>

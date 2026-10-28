@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Hub Patterns &mdash; Rogue v6.15.0 documentation</title>
+  <title>Memory Hub Patterns &mdash; Rogue v6.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
       <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
 
@@ -16,7 +17,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b1d0be57"></script>
+      <script src="../_static/documentation_options.js?v=23af60bc"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,10 +64,19 @@
     <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
     <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
   </div>
-      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Memory Interface</a><ul class="current">
@@ -81,10 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 </ul>
 
 </div>
@@ -147,10 +155,10 @@ hardware block that exposes:</p>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">Hub</span></code> translates one upstream read or write request into those staged
 register operations.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">MyTranslationDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTranslationDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Local register space is 12 bytes. Upstream transactions are fixed</span>
         <span class="c1"># at 4 bytes for this example.</span>
@@ -161,7 +169,7 @@ register operations.</p>
         <span class="c1"># overlapping transactions.</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memLock</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">tran</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
-                <span class="n">addr</span> <span class="o">=</span> <span class="n">tran</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">addr</span> <span class="o">=</span> <span class="n">tran</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'little'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
@@ -169,7 +177,7 @@ register operations.</p>
                 <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x100</span><span class="p">,</span>
                                            <span class="n">addr</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
                     <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
                     <span class="k">return</span>
 
@@ -181,7 +189,7 @@ register operations.</p>
                     <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x104</span><span class="p">,</span>
                                                <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
                         <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
@@ -192,7 +200,7 @@ register operations.</p>
                     <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x108</span><span class="p">,</span>
                                                <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">""</span><span class="p">:</span>
                         <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">tran</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -208,24 +216,24 @@ tree and already carries locking and address-map structure with it.</p>
 <p>Once the translation logic is packaged as a <code class="docutils literal notranslate"><span class="pre">Device</span></code>, it can be inserted into
 an ordinary PyRogue tree like any other node. That is usually the most useful
 way to deploy a hub-style translation layer in practice.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 
-<span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"MyRoot"</span><span class="p">)</span>
 
         <span class="c1"># Add an FPGA-facing device at 0x1000 that contains the staged</span>
         <span class="c1"># paged-memory interface used by the translation device.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeFpgaDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Fpga&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeFpgaDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Fpga"</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">))</span>
 
         <span class="c1"># Add the translation device at relative offset 0x10 within Fpga.</span>
         <span class="c1"># Its downstream base address becomes 0x1010, while it exposes its</span>
         <span class="c1"># own translated upstream address space to child devices.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Fpga</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyTranslationDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;TranBase&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fpga</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyTranslationDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"TranBase"</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">))</span>
 
         <span class="c1"># Add a child device that exists in the translated address space</span>
         <span class="c1"># managed by TranBase.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">TranBase</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;DevA&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x200</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TranBase</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"DevA"</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x200</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>In this arrangement, <code class="docutils literal notranslate"><span class="pre">TranBase</span></code> acts as an address-space boundary inside the
@@ -242,8 +250,8 @@ downstream accesses. That level of detail is useful, so the example below
 brings that style back in a cleaned-up form.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;array&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/Hub.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/Constants.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/memory/Hub.h"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"rogue/interfaces/memory/Constants.h"</span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">rim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">memory</span><span class="p">;</span>
 
@@ -273,12 +281,12 @@ brings that style back in a cleaned-up form.</p>
 <span class="w">      </span><span class="n">addrBytes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">((</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">24</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">);</span>
 
 <span class="w">      </span><span class="c1">// Clear any previous downstream error state.</span>
-<span class="w">      </span><span class="n">setError</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="n">setError</span><span class="p">(</span><span class="s">""</span><span class="p">);</span>
 
 <span class="w">      </span><span class="c1">// Program the downstream address register at offset 0x100.</span>
 <span class="w">      </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">getAddress</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0x100</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">addrBytes</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 <span class="w">      </span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">);</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">getError</span><span class="p">());</span>
 <span class="w">         </span><span class="k">return</span><span class="p">;</span>
 <span class="w">      </span><span class="p">}</span>
@@ -292,7 +300,7 @@ brings that style back in a cleaned-up form.</p>
 <span class="w">                              </span><span class="n">rim</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 <span class="w">         </span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">);</span>
 
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">getError</span><span class="p">());</span>
 <span class="w">         </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
@@ -308,7 +316,7 @@ brings that style back in a cleaned-up form.</p>
 <span class="w">                              </span><span class="n">rim</span><span class="o">::</span><span class="n">Read</span><span class="p">);</span>
 <span class="w">         </span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">);</span>
 
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">""</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">getError</span><span class="p">());</span>
 <span class="w">         </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
