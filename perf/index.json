@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T00:27:03Z",
+  "generated_at": "2026-10-28T00:44:31Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,26 +299,26 @@
       }
     },
     {
-      "ref_name": "v6.16.0",
-      "ref_slug": "v6.16.0",
-      "latest_url": "/rogue/perf/branches/v6.16.0/latest.json",
+      "ref_name": "remove-tidair-conda-upload",
+      "ref_slug": "remove-tidair-conda-upload",
+      "latest_url": "/rogue/perf/branches/remove-tidair-conda-upload/latest.json",
       "history": [
         {
-          "ref_name": "v6.16.0",
-          "sha": "acc86889f1e78aab8bb60d85d07cdbf508e1c25e",
-          "short_sha": "acc8688",
-          "published_at": "2026-10-28T00:27:03Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40606644350",
-          "summary_url": "/rogue/perf/branches/v6.16.0/history/acc86889f1e78aab8bb60d85d07cdbf508e1c25e.json"
+          "ref_name": "remove-tidair-conda-upload",
+          "sha": "456d453e672ae6bc57c6464102cc5fd093a4de86",
+          "short_sha": "456d453",
+          "published_at": "2026-10-28T00:44:31Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40609802318",
+          "summary_url": "/rogue/perf/branches/remove-tidair-conda-upload/history/456d453e672ae6bc57c6464102cc5fd093a4de86.json"
         }
       ],
       "latest": {
-        "ref_name": "v6.16.0",
-        "sha": "acc86889f1e78aab8bb60d85d07cdbf508e1c25e",
-        "short_sha": "acc8688",
-        "published_at": "2026-10-28T00:27:03Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40606644350",
-        "summary_url": "/rogue/perf/branches/v6.16.0/latest.json"
+        "ref_name": "remove-tidair-conda-upload",
+        "sha": "456d453e672ae6bc57c6464102cc5fd093a4de86",
+        "short_sha": "456d453",
+        "published_at": "2026-10-28T00:44:31Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40609802318",
+        "summary_url": "/rogue/perf/branches/remove-tidair-conda-upload/latest.json"
       }
     }
   ]
