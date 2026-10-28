@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-06T22:25:22Z",
+  "generated_at": "2026-10-28T00:15:30Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "c4833f76adaca915b790322c8e5df85b89f3760f",
-      "short_sha": "c4833f7",
-      "published_at": "2026-06-30T20:12:23Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/28472516661",
+      "sha": "acc86889f1e78aab8bb60d85d07cdbf508e1c25e",
+      "short_sha": "acc8688",
+      "published_at": "2026-10-28T00:15:30Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40606688995",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -120,6 +120,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "acc86889f1e78aab8bb60d85d07cdbf508e1c25e",
+          "short_sha": "acc8688",
+          "published_at": "2026-10-28T00:15:30Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40606688995",
+          "summary_url": "/rogue/perf/branches/pre-release/history/acc86889f1e78aab8bb60d85d07cdbf508e1c25e.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "c4833f76adaca915b790322c8e5df85b89f3760f",
@@ -271,203 +279,15 @@
           "published_at": "2026-05-28T19:41:14Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/26597604573",
           "summary_url": "/rogue/perf/branches/pre-release/history/8bebe44691dc0cc2e781e184f1d0b2aa730ce3f7.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "23ad6e730eac329b4551a88731ddb0041edce436",
-          "short_sha": "23ad6e7",
-          "published_at": "2026-05-28T07:23:39Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/26054392686",
-          "summary_url": "/rogue/perf/branches/pre-release/history/23ad6e730eac329b4551a88731ddb0041edce436.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "c4833f76adaca915b790322c8e5df85b89f3760f",
-        "short_sha": "c4833f7",
-        "published_at": "2026-06-30T20:12:23Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/28472516661",
+        "sha": "acc86889f1e78aab8bb60d85d07cdbf508e1c25e",
+        "short_sha": "acc8688",
+        "published_at": "2026-10-28T00:15:30Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40606688995",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "axi-stream-dma-stop-lifetime",
-      "ref_slug": "axi-stream-dma-stop-lifetime",
-      "latest_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/latest.json",
-      "history": [
-        {
-          "ref_name": "axi-stream-dma-stop-lifetime",
-          "sha": "e30812114e7e6c338d8ab204d2ec2f61aa1527e8",
-          "short_sha": "e308121",
-          "published_at": "2026-07-06T22:25:22Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28827172611",
-          "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/history/e30812114e7e6c338d8ab204d2ec2f61aa1527e8.json"
-        },
-        {
-          "ref_name": "axi-stream-dma-stop-lifetime",
-          "sha": "df4cf3caf125d804de4edca598a5df909fd21513",
-          "short_sha": "df4cf3c",
-          "published_at": "2026-07-06T22:19:22Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28826741151",
-          "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/history/df4cf3caf125d804de4edca598a5df909fd21513.json"
-        },
-        {
-          "ref_name": "axi-stream-dma-stop-lifetime",
-          "sha": "2341441da95027e02e8cf130c42807da2f98b368",
-          "short_sha": "2341441",
-          "published_at": "2026-07-06T20:59:34Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28822512542",
-          "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/history/2341441da95027e02e8cf130c42807da2f98b368.json"
-        },
-        {
-          "ref_name": "axi-stream-dma-stop-lifetime",
-          "sha": "31536443686b28ec32560c4a679c9f0f45196868",
-          "short_sha": "3153644",
-          "published_at": "2026-07-06T20:44:29Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28821665739",
-          "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/history/31536443686b28ec32560c4a679c9f0f45196868.json"
-        },
-        {
-          "ref_name": "axi-stream-dma-stop-lifetime",
-          "sha": "e03e9d386a4c78f4536e09a94c943c0e1d1a927b",
-          "short_sha": "e03e9d3",
-          "published_at": "2026-07-06T20:01:41Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28819183355",
-          "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/history/e03e9d386a4c78f4536e09a94c943c0e1d1a927b.json"
-        },
-        {
-          "ref_name": "axi-stream-dma-stop-lifetime",
-          "sha": "a8c38d0f40b5a6f2625b00c5a65482efcb5fbd8f",
-          "short_sha": "a8c38d0",
-          "published_at": "2026-07-06T19:04:47Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28815932737",
-          "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/history/a8c38d0f40b5a6f2625b00c5a65482efcb5fbd8f.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "axi-stream-dma-stop-lifetime",
-        "sha": "e30812114e7e6c338d8ab204d2ec2f61aa1527e8",
-        "short_sha": "e308121",
-        "published_at": "2026-07-06T22:25:22Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/28827172611",
-        "summary_url": "/rogue/perf/branches/axi-stream-dma-stop-lifetime/latest.json"
-      }
-    },
-    {
-      "ref_name": "root-operation-lock",
-      "ref_slug": "root-operation-lock",
-      "latest_url": "/rogue/perf/branches/root-operation-lock/latest.json",
-      "history": [
-        {
-          "ref_name": "root-operation-lock",
-          "sha": "45ce00d8fc066e211d21f8b1c388691589845299",
-          "short_sha": "45ce00d",
-          "published_at": "2026-07-06T18:07:00Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28812387302",
-          "summary_url": "/rogue/perf/branches/root-operation-lock/history/45ce00d8fc066e211d21f8b1c388691589845299.json"
-        },
-        {
-          "ref_name": "root-operation-lock",
-          "sha": "328b594a95db3d74e8af49ec0ea93f829e44b3ab",
-          "short_sha": "328b594",
-          "published_at": "2026-06-05T17:35:03Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/27029947705",
-          "summary_url": "/rogue/perf/branches/root-operation-lock/history/328b594a95db3d74e8af49ec0ea93f829e44b3ab.json"
-        },
-        {
-          "ref_name": "root-operation-lock",
-          "sha": "13c64536e2671e5a2f145909992daff2ca45913d",
-          "short_sha": "13c6453",
-          "published_at": "2026-06-02T17:58:16Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/26837948208",
-          "summary_url": "/rogue/perf/branches/root-operation-lock/history/13c64536e2671e5a2f145909992daff2ca45913d.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "root-operation-lock",
-        "sha": "45ce00d8fc066e211d21f8b1c388691589845299",
-        "short_sha": "45ce00d",
-        "published_at": "2026-07-06T18:07:00Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/28812387302",
-        "summary_url": "/rogue/perf/branches/root-operation-lock/latest.json"
-      }
-    },
-    {
-      "ref_name": "Server-stop",
-      "ref_slug": "Server-stop",
-      "latest_url": "/rogue/perf/branches/Server-stop/latest.json",
-      "history": [
-        {
-          "ref_name": "Server-stop",
-          "sha": "4fa264486466f1e24ad86ff53a4c2d2e1f567dbc",
-          "short_sha": "4fa2644",
-          "published_at": "2026-07-03T00:56:30Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28631044388",
-          "summary_url": "/rogue/perf/branches/Server-stop/history/4fa264486466f1e24ad86ff53a4c2d2e1f567dbc.json"
-        },
-        {
-          "ref_name": "Server-stop",
-          "sha": "cb093cda523ed00dac5f08a199ae25caa450f0d0",
-          "short_sha": "cb093cd",
-          "published_at": "2026-07-03T00:40:11Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28630506165",
-          "summary_url": "/rogue/perf/branches/Server-stop/history/cb093cda523ed00dac5f08a199ae25caa450f0d0.json"
-        },
-        {
-          "ref_name": "Server-stop",
-          "sha": "4a5390013041492dab32a05a53035b94ff0cdf92",
-          "short_sha": "4a53900",
-          "published_at": "2026-07-03T00:21:52Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28629854942",
-          "summary_url": "/rogue/perf/branches/Server-stop/history/4a5390013041492dab32a05a53035b94ff0cdf92.json"
-        },
-        {
-          "ref_name": "Server-stop",
-          "sha": "1ffa469545616b205aef4aa0833a46868c1f2348",
-          "short_sha": "1ffa469",
-          "published_at": "2026-07-02T23:57:45Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28628943209",
-          "summary_url": "/rogue/perf/branches/Server-stop/history/1ffa469545616b205aef4aa0833a46868c1f2348.json"
-        },
-        {
-          "ref_name": "Server-stop",
-          "sha": "aa4eaf6708d57f0688202fe2afd5165be8f1bc7d",
-          "short_sha": "aa4eaf6",
-          "published_at": "2026-07-02T23:17:56Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28627438759",
-          "summary_url": "/rogue/perf/branches/Server-stop/history/aa4eaf6708d57f0688202fe2afd5165be8f1bc7d.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "Server-stop",
-        "sha": "4fa264486466f1e24ad86ff53a4c2d2e1f567dbc",
-        "short_sha": "4fa2644",
-        "published_at": "2026-07-03T00:56:30Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/28631044388",
-        "summary_url": "/rogue/perf/branches/Server-stop/latest.json"
-      }
-    },
-    {
-      "ref_name": "cmake_fix2",
-      "ref_slug": "cmake_fix2",
-      "latest_url": "/rogue/perf/branches/cmake_fix2/latest.json",
-      "history": [
-        {
-          "ref_name": "cmake_fix2",
-          "sha": "bb93ccd80734b9dc7a7c59b42896e92016de071b",
-          "short_sha": "bb93ccd",
-          "published_at": "2026-06-19T18:08:34Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/27841258976",
-          "summary_url": "/rogue/perf/branches/cmake_fix2/history/bb93ccd80734b9dc7a7c59b42896e92016de071b.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "cmake_fix2",
-        "sha": "bb93ccd80734b9dc7a7c59b42896e92016de071b",
-        "short_sha": "bb93ccd",
-        "published_at": "2026-06-19T18:08:34Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/27841258976",
-        "summary_url": "/rogue/perf/branches/cmake_fix2/latest.json"
       }
     }
   ]
