@@ -11,7 +11,6 @@
 # ----------------------------------------------------------------------------
 # The following environment variables are required for this process:
 # secrets.GH_TOKEN
-# secrets.CONDA_UPLOAD_TOKEN_TAG
 
 name: Rogue Integration
 on: [push]
@@ -348,21 +347,6 @@ jobs:
       version: '1.0.0'
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-# ----------------------------------------------------------------------------
-
-  # Legacy tidair-tag Anaconda build/upload. Starting with v6.16.0, Rogue is
-  # published on conda-forge as slac-rogue (conda-forge/slac-rogue-feedstock).
-  # This job is kept only until downstream tidair-tag packages (surf,
-  # axi_pcie_core, etc.) depend on slac-rogue instead of rogue, and will be
-  # removed in a future release.
-  conda_build_lib:
-    needs: [full_build_test, small_build_test, external_build_test]
-    uses: slaclab/ruckus/.github/workflows/conda_build_lib.yml@main
-    with:
-      version: '1.0.0'
-    secrets:
-      CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
 
 # ----------------------------------------------------------------------------
 
