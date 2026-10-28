@@ -10,6 +10,7 @@
 
 import struct
 
+import numpy as np
 import pyrogue as pr
 import pyrogue.utilities.fileio
 import pytest
@@ -108,6 +109,86 @@ def test_file_reader_reads_records_and_config(tmp_path):
     assert reader.totCount == 1
     assert reader.configDict == {"root": {"Child": {"Value": 9}}}
     assert reader.configValue("root.Child.Value") == 9
+
+
+def test_file_reader_decodes_float_with_grouped_display_format(tmp_path):
+    root = pr.Root(name="root", pollEn=False, initRead=False)
+    writer = pr.Device(name="DataWriter")
+    writer.add(pr.LocalVariable(
+        name="Bandwidth",
+        mode="RO",
+        value=256939.708,
+        disp="{:,.3f}",
+    ))
+    writer.add(pr.LocalVariable(
+        name="NumpyBandwidth",
+        mode="RO",
+        value=np.float64(256939.708),
+        disp="{:,.3f}",
+    ))
+    root.add(writer)
+
+    with root:
+        assert writer.Bandwidth.getDisp(read=False) == "256,939.708"
+        assert writer.NumpyBandwidth.getDisp(read=False) == "256,939.708"
+        config_payload = root.getYaml(readFirst=False).encode("utf-8")
+
+    assert b"256,939.708" not in config_payload
+    assert b"!!python/object" not in config_payload
+
+    data_path = tmp_path / "grouped-float-config.dat"
+    _write_record(data_path, 7, config_payload)
+
+    reader = pyrogue.utilities.fileio.FileReader(files=str(data_path), configChan=7)
+    assert list(reader.records()) == []
+    assert reader.configValue("root.DataWriter.Bandwidth") == 256939.708
+    assert reader.configValue("root.DataWriter.NumpyBandwidth") == 256939.708
+
+
+def test_integer_yaml_preserves_only_round_trippable_display_formats(tmp_path):
+    root = pr.Root(name="root", pollEn=False, initRead=False)
+    values = pr.Device(name="Values")
+    plain_values = {
+        "Plain": 1234567,
+        "Negative": -1234567,
+        "Zero": 0,
+        "NumpyPlain": np.int64(1234567),
+    }
+    for name, value in plain_values.items():
+        values.add(pr.LocalVariable(name=name, value=value))
+    values.add(pr.LocalVariable(name="Hex", value=0x12D687, disp="0x{:x}"))
+    values.add(pr.LocalVariable(name="Grouped", value=1234567, disp="{:,d}"))
+    values.add(pr.LocalVariable(name="ZeroPadded", value=123, disp="{:08d}"))
+    values.add(pr.LocalVariable(
+        name="NumpyGrouped",
+        value=np.int64(1234567),
+        disp="{:,d}",
+    ))
+    root.add(values)
+
+    with root:
+        config_payload = root.getYaml(readFirst=False).encode("utf-8")
+
+    for name, value in plain_values.items():
+        assert f"{name}: {value}\n".encode("utf-8") in config_payload
+    assert b"Hex: 0x12d687" in config_payload
+    assert b"1,234,567" not in config_payload
+    assert b"ZeroPadded: 00000123" not in config_payload
+    assert b"!!python/object" not in config_payload
+
+    data_path = tmp_path / "integer-formats.dat"
+    _write_record(data_path, 7, config_payload)
+
+    reader = pyrogue.utilities.fileio.FileReader(files=str(data_path), configChan=7)
+    assert list(reader.records()) == []
+    for name, value in plain_values.items():
+        decoded = reader.configValue(f"root.Values.{name}")
+        assert type(decoded) is int
+        assert decoded == value
+    assert reader.configValue("root.Values.Hex") == 0x12D687
+    assert reader.configValue("root.Values.Grouped") == 1234567
+    assert reader.configValue("root.Values.ZeroPadded") == 123
+    assert reader.configValue("root.Values.NumpyGrouped") == 1234567
 
 
 def test_file_reader_missing_path_raises(tmp_path):

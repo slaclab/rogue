@@ -316,7 +316,7 @@ this implementation. If a Device should always use this stricter behavior, set
 
 .. code-block:: python
 
-   class MyDevice(pyrogue.Device):
+   class MyDevice(pr.Device):
        def __init__(self, **kwargs):
            super().__init__(**kwargs)
            self.forceWaitEach = True
@@ -363,13 +363,13 @@ update strobe is written:
 
 .. code-block:: python
 
-   class MyDevice(pyrogue.Device):
+   class MyDevice(pr.Device):
        def __init__(self, **kwargs):
            super().__init__(**kwargs)
-           self.add(pyrogue.RemoteCommand(
+           self.add(pr.RemoteCommand(
                name='DeviceUpdate',
                offset=0x3FC,
-               function=pyrogue.BaseCommand.touchZero,
+               function=pr.BaseCommand.touchZero,
            ))
 
        def writeBlocks(self, force=False, recurse=True, variable=None, waitEach=False, index=-1, **kwargs):
@@ -397,17 +397,17 @@ progress:
 
 .. code-block:: python
 
-   class MyReader(pyrogue.Device):
+   class MyReader(pr.Device):
        def __init__(self, **kwargs):
            super().__init__(**kwargs)
-           self.add(pyrogue.RemoteCommand(
+           self.add(pr.RemoteCommand(
                name='FreezeDebug',
                description='Freeze debug snapshot registers during readout',
                offset=0xA0,
                bitSize=1,
                bitOffset=0,
-               base=pyrogue.UInt,
-               function=pyrogue.RemoteCommand.touch,
+               base=pr.UInt,
+               function=pr.RemoteCommand.touch,
            ))
 
        def readBlocks(self, *, recurse=True, variable=None, waitEach=False, index=-1, **kwargs):
@@ -443,7 +443,7 @@ that intermediate hardware procedure:
 
 .. code-block:: python
 
-   class MyCarrier(pyrogue.Device):
+   class MyCarrier(pr.Device):
        def writeBlocks(self, force=False, recurse=True, variable=None, waitEach=False, index=-1, **kwargs):
            super().writeBlocks(
                force=force,

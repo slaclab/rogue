@@ -34,6 +34,8 @@ import gc
 
 import pytest
 
+import pyrogue as pr
+import pyrogue.interfaces.stream
 import rogue.interfaces.stream
 
 pytestmark = pytest.mark.integration
@@ -133,3 +135,39 @@ def test_fifo_repeated_destroy_via_python_drop():
         fifo = rogue.interfaces.stream.Fifo(0, 0, False)
         del fifo
     gc.collect()
+
+
+class _CountingSink(rogue.interfaces.stream.Slave):
+    def __init__(self):
+        super().__init__()
+        self.calls = 0
+
+    def _acceptFrame(self, frame):
+        self.calls += 1
+
+
+def test_root_stop_stops_fifo_in_tree(wait_until):
+    """``Root.stop()`` must stop the worker of a ``pyrogue`` ``Fifo`` in the tree.
+
+    A running worker keeps forwarding frames into Python slaves after the Root
+    has stopped, and from there into interpreter shutdown.
+    """
+    src  = rogue.interfaces.stream.Master()
+    sink = _CountingSink()
+    fifo = pyrogue.interfaces.stream.Fifo(name='Fifo')
+
+    root = pr.Root(name='root', pollEn=False)
+    root.add(fifo)
+    src >> fifo >> sink
+
+    def push():
+        frame = src._reqFrame(4, True)
+        frame.write(bytearray(4), 0)
+        src._sendFrame(frame)
+
+    with root:
+        push()
+        assert wait_until(lambda: sink.calls == 1)
+
+    push()
+    assert not wait_until(lambda: sink.calls > 1, timeout=0.2)

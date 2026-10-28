@@ -136,6 +136,28 @@ TEST_CASE("Stream FIFO trims copied frames and drops when the queue is full") {
     CHECK_EQ(rogue_test::readFrame(sink->frameAt(1), 3), std::vector<uint8_t>({6, 7, 8}));
 }
 
+TEST_CASE("Stream FIFO stop joins the worker and stops forwarding frames") {
+    auto pool = rogue_test::makePool();
+    auto fifo = ris::Fifo::create(0, 0, false);
+    auto sink = std::make_shared<RecordingSink>();
+    std::shared_ptr<ris::Slave> sinkBase = sink;
+
+    fifo->addSlave(sinkBase);
+
+    fifo->acceptFrame(rogue_test::makeFrame(pool, {1, 2, 3}));
+    REQUIRE_MESSAGE(rogue_test::waitUntil([&]() { return sink->frameCount() == 1U; }, 2000),
+                    "Timed out waiting for FIFO worker thread to forward the first frame");
+
+    fifo->stop();
+
+    fifo->acceptFrame(rogue_test::makeFrame(pool, {4, 5, 6}));
+    CHECK_FALSE(rogue_test::waitUntil([&]() { return sink->frameCount() > 1U; }, 100));
+    CHECK_EQ(fifo->size(), 0U);
+
+    // A second stop() and the destructor that follows must not join again.
+    fifo->stop();
+}
+
 TEST_CASE("Stream filter forwards only the configured channel and can drop errored frames") {
     auto pool   = rogue_test::makePool(8, 0);
     auto filter = ris::Filter::create(true, 3);

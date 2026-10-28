@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import ast
+import numbers
 import operator
 import re
 import shlex
@@ -862,7 +863,14 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def parseDisp(self, sValue: str) -> object:
-        """Parse a string representation of a value into a Python object.
+        """Parse display text, converting scalar literals to the native type.
+
+        Non-string inputs pass through unchanged. Enum labels, strings, and
+        NumPy arrays use their display-specific parsing. Lists, dictionaries,
+        variables without a known native type, and variables with
+        ``typeCheck=False`` retain the parsed literal value. Integer variables
+        also accept grouped decimal text such as ``'1,234,567'``. Grouped float
+        input such as ``'256,939.708'`` is not supported; use ``'256939.708'``.
 
 
         Parameters
@@ -878,14 +886,28 @@ class BaseVariable(pr.Node):
         try:
             if not isinstance(sValue,str):
                 return sValue
-            elif self.nativeType is np.ndarray:
+
+            nativeType = self.nativeType
+            if nativeType is np.ndarray:
                 return np.array(ast.literal_eval(sValue),self._ndType)
             elif self.disp == 'enum':
                 return self.revEnum[sValue]
-            elif self.nativeType is str:
+            elif nativeType is str:
                 return sValue
-            else:
+            elif not self._typeCheck or nativeType in (None, type(None), list, dict):
+                # Containers may receive a scalar for an indexed write.
                 return ast.literal_eval(sValue)
+            elif (nativeType is not bool and
+                  isinstance(nativeType, type) and
+                  issubclass(nativeType, numbers.Integral) and
+                  ',' in sValue):
+                # Grouped decimal text would otherwise parse as a tuple.
+                value = sValue.strip()
+                if re.fullmatch(r'[+-]?\d{1,3}(?:,\d{3})+', value) is None:
+                    raise ValueError('invalid grouped decimal integer')
+                return nativeType(int(value.replace(',', ''), 10))
+            else:
+                return nativeType(ast.literal_eval(sValue))
 
         except Exception as e:
             msg = "Invalid value {} for variable {} with type {}: {}".format(sValue,self.name,self.nativeType,e)

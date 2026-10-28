@@ -25,6 +25,7 @@
 #include <cmath>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "rogue/GilRelease.h"
 #include "rogue/ScopedGil.h"
@@ -114,6 +115,8 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
     // Split into smaller transactions if necessary
     if (tran->size() > maxAccess) {
         uint32_t numberOfTransactions = std::ceil(1.0 * tran->size() / maxAccess);
+        std::vector<rim::TransactionPtr> subTransactions;
+        subTransactions.reserve(numberOfTransactions);
 
         log_->debug("Splitting transaction %" PRIu32 " into %" PRIu32 " subtransactions",
                     tran->id_,
@@ -129,6 +132,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
             }
             subTran->address_ = tran->address_ + (i * maxAccess);
             subTran->type_    = tran->type();
+            subTransactions.push_back(subTran);
 
             log_->debug("Created subTransaction %" PRIu32 ", parent=%" PRIu32 ", iter=%" PRIx32 ", size=%" PRIu32
                         ", address=%" PRIx64,
@@ -142,9 +146,10 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
         // Declare all subTransactions have been created
         tran->doneSubTransactions();
 
-        // Forward the subTransactions
-        for (rim::TransactionMap::iterator it = tran->subTranMap_.begin(); it != tran->subTranMap_.end(); it++) {
-            getSlave()->doTransaction(it->second);
+        // Completion can erase children from subTranMap_ during a downstream
+        // call. Keep stable ownership and iteration independent of that map.
+        for (const auto& subTran : subTransactions) {
+            getSlave()->doTransaction(subTran);
         }
     } else {
         // Forward transaction

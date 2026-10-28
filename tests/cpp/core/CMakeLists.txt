@@ -21,3 +21,16 @@ rogue_add_cpp_test(rogue-cpp-ctor-catch-thread-cleanup
       cpp-core
       no-python
 )
+
+# Needs the Python runtime and finalizes it, so it cannot share a binary.
+if (NOT NO_PYTHON)
+   rogue_add_cpp_test(rogue-cpp-logging-python-after-finalize
+      SOURCES
+         test_logging_python_after_finalize.cpp
+      LABELS
+         cpp-core
+         requires-python
+   )
+
+   set_tests_properties(rogue-cpp-logging-python-after-finalize PROPERTIES TIMEOUT 30)
+endif()

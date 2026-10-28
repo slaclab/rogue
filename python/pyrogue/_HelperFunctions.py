@@ -14,6 +14,7 @@
 #-----------------------------------------------------------------------------
 from __future__ import annotations
 
+import numbers
 import sys
 import os
 import signal
@@ -336,22 +337,37 @@ def dataToYaml(data: Any) -> str:
         pass
 
     def _var_representer(dumper: yaml.Dumper, data: pr.VariableValue) -> Any:
-        """Represent ``VariableValue`` using display formatting and YAML typing."""
-        if isinstance(data.value, bool):
+        """Represent numeric values safely and other values by display text."""
+        if data.valueDisp is None:
+            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
+        elif isinstance(data.value, bool):
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
             enc = 'tag:yaml.org,2002:str'
-        elif isinstance(data.value, int):
-            enc = 'tag:yaml.org,2002:int'
+        elif isinstance(data.value, numbers.Integral):
+            value = int(data.value)
+            # Avoid parsing ordinary decimal values on every streamed update.
+            if data.valueDisp == str(value):
+                return dumper.represent_int(value)
+
+            try:
+                # SafeLoader and yamlToData's Loader agree on integer scalars.
+                parsed = yaml.safe_load(data.valueDisp)
+            except (TypeError, ValueError, yaml.YAMLError):
+                parsed = None
+
+            # Preserve readable display formats such as hexadecimal only when
+            # a standard YAML loader reads the text back as the same integer.
+            if type(parsed) is int and parsed == value:
+                return dumper.represent_scalar('tag:yaml.org,2002:int', data.valueDisp)
+            else:
+                return dumper.represent_int(value)
         elif isinstance(data.value, float):
-            enc = 'tag:yaml.org,2002:float'
+            return dumper.represent_float(float(data.value))
         else:
             enc = 'tag:yaml.org,2002:str'
 
-        if data.valueDisp is None:
-            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
-        else:
-            return dumper.represent_scalar(enc, data.valueDisp)
+        return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper: yaml.Dumper, data: odict) -> Any:
         """Represent ``OrderedDict`` values while preserving key order."""

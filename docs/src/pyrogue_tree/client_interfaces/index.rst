@@ -74,7 +74,7 @@ Minimal Setup Pattern
        def __init__(self, **kwargs):
            super().__init__(name='MyRoot', **kwargs)
 
-           self.zmqServer = pyrogue.interfaces.ZmqServer(
+           self.zmqServer = pr.interfaces.ZmqServer(
                root=self,
                addr='127.0.0.1',
                port=0,

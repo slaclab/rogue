@@ -52,6 +52,13 @@ depth. When ``maxDepth!=0``, incoming ``Frame`` objects are dropped once the
 queue reaches that depth. Use ``dropCnt()`` to inspect the number of dropped
 ``Frame`` objects and ``clearCnt()`` to reset the counter.
 
+Each ``Fifo`` forwards queued frames from its own worker thread. During
+controlled shutdown paths, C++ code should call ``stop()``; in Python, Rogue
+exposes ``_stop()`` for managed lifecycle teardown. After either call, queued
+and newly accepted ``Frame`` objects are dropped rather than forwarded. A
+``pyrogue.interfaces.stream.Fifo`` device in a ``Root`` tree is stopped by
+``Root.stop()``.
+
 Python In-Line Example
 ======================
 

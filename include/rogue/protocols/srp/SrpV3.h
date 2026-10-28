@@ -59,6 +59,10 @@ namespace srp {
  * Threading/locking model:
  * - In-flight map access is protected by the `memory::Slave` mutex.
  * - Per-transaction payload/state access is protected by `TransactionLock`.
+ * - Submission releases the transaction lock after serialization and, for
+ *   non-posted requests, response registration, before downstream `sendFrame()`.
+ *   Transmission can still block, but it does not hold this mutex and prevent
+ *   response processing from acquiring it.
  * - `doTransaction()` and `acceptFrame()` can be called from different runtime
  *   contexts provided by the connected stream transport stack.
  *

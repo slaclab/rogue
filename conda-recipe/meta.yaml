@@ -32,7 +32,7 @@ requirements:
     - python
     - pip
     - setuptools
-    - numpy >=2.0
+    - numpy
     - rdma-core  # [linux]
   run:
     - python >=3.10,<3.15
@@ -50,7 +50,9 @@ requirements:
     - pyserial
     - pydm >=1.18
     - qtpy >=2.0
+    - pyside6  # Qt binding for qtpy/pydm, which no longer pulls one in
     - pyqtgraph >=0.13
+    - pyte >=0.8
     - matplotlib
     - rdma-core  # [linux]
 
@@ -61,8 +63,7 @@ test:
     - pyrogue.protocols
     - pyrogue.examples
     - rogue
-  requires:
-    - pip
+    - pydm
   commands:
     - python -c "import pyrogue; assert pyrogue.__version__ == '{{ py_version }}'"
     - pip check
