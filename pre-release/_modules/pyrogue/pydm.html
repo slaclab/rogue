@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm &mdash; Rogue v6.15.0-101-gee15a401a documentation</title>
+  <title>pyrogue.pydm &mdash; Rogue v6.15.0-109-gf76971c0d documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=a43fd708"></script>
+      <script src="../../_static/documentation_options.js?v=84a5cc46"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -232,6 +232,8 @@
     <span class="n">maxListSize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span>
     <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">enableTerminal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">enableIPython</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Launch the default Rogue PyDM application.</span>
 
@@ -265,6 +267,18 @@
 <span class="sd">        server stalled. ``None`` disables stalled-request detection, which is</span>
 <span class="sd">        usually the right default unless the application has a strict upper</span>
 <span class="sd">        bound for valid request duration.</span>
+<span class="sd">    enableTerminal : bool, optional</span>
+<span class="sd">        Add a local shell terminal tab beside the system log in the ``System``</span>
+<span class="sd">        tab. Defaults to ``False``. When enabled the GUI exposes an interactive</span>
+<span class="sd">        shell running as the user who launched the GUI, on the machine</span>
+<span class="sd">        displaying the GUI, not on the Rogue server.</span>
+<span class="sd">    enableIPython : bool, optional</span>
+<span class="sd">        Add an ``IPython`` tab holding an interactive session with a connected</span>
+<span class="sd">        :class:`pyrogue.interfaces.VirtualClient` bound as ``client`` and the</span>
+<span class="sd">        tree root as ``root``. Defaults to ``False``. Independent of</span>
+<span class="sd">        ``enableTerminal``. When enabled the GUI exposes arbitrary Python</span>
+<span class="sd">        execution as the user who launched the GUI, on the machine displaying</span>
+<span class="sd">        the GUI, not on the Rogue server.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -350,6 +364,8 @@
     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"title='</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"maxListExpand=</span><span class="si">{</span><span class="n">maxListExpand</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"maxListSize=</span><span class="si">{</span><span class="n">maxListSize</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"enableTerminal=</span><span class="si">{</span><span class="n">enableTerminal</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"enableIPython=</span><span class="si">{</span><span class="n">enableIPython</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">pydm</span><span class="o">.</span><span class="n">data_plugins</span><span class="o">.</span><span class="n">initialize_plugins_if_needed</span><span class="p">()</span>
 

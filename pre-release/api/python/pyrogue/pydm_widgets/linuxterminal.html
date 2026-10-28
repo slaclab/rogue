@@ -1,0 +1,529 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinuxTerminal &mdash; Rogue v6.15.0-109-gf76971c0d documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=84a5cc46"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=51977998"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="IPythonPanel" href="ipythonpanel.html" />
+    <link rel="prev" title="SystemLog" href="systemlog.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Python API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">pyrogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../node.html">Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../root.html">Root</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pollqueue.html">PollQueue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../localblock.html">LocalBlock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../process.html">Process</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../loadconfig.html">LoadConfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../saveconfig.html">SaveConfig</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../runcontrol.html">RunControl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datareceiver.html">DataReceiver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datawriter.html">DataWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../basecommand.html">BaseCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../remotecommand.html">RemoteCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../basevariable.html">BaseVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../remotevariable.html">RemoteVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../localvariable.html">LocalVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linkvariable.html">LinkVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../uint.html">UInt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../int.html">Int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bool.html">Bool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../string.html">String</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float.html">Float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float16.html">Float16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float8.html">Float8</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bfloat16.html">BFloat16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tensorfloat32.html">TensorFloat32</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float6.html">Float6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float4.html">Float4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../double.html">Double</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fixed.html">Fixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ufixed.html">UFixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../wordcount.html">wordCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bytecount.html">byteCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reversebits.html">reverseBits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../twoscomplement.html">twosComplement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pydm_runpydm.html">runPyDM</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">pyrogue.pydm.widgets</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="systemwindow.html">SystemWindow</a></li>
+<li class="toctree-l5"><a class="reference internal" href="rootcontrol.html">RootControl</a></li>
+<li class="toctree-l5"><a class="reference internal" href="runcontrol.html">RunControl</a></li>
+<li class="toctree-l5"><a class="reference internal" href="datawriter.html">DataWriter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="systemlog.html">SystemLog</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">LinuxTerminal</a></li>
+<li class="toctree-l5"><a class="reference internal" href="ipythonpanel.html">IPythonPanel</a></li>
+<li class="toctree-l5"><a class="reference internal" href="process.html">Process</a></li>
+<li class="toctree-l5"><a class="reference internal" href="debugtree.html">DebugTree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pyroguelabel.html">PyRogueLabel</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pyroguelineedit.html">PyRogueLineEdit</a></li>
+<li class="toctree-l5"><a class="reference internal" href="plotter.html">Plotter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="timeplotter.html">TimePlotter</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../interfaces/index.html">pyrogue.interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../protocols/index.html">pyrogue.protocols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/index.html">pyrogue.utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../rogue/index.html">rogue</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">pyrogue</a></li>
+          <li class="breadcrumb-item"><a href="index.html">pyrogue.pydm.widgets</a></li>
+      <li class="breadcrumb-item active">LinuxTerminal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/python/pyrogue/pydm_widgets/linuxterminal.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="linuxterminal">
+<span id="api-python-pyrogue-pydm-widgets-linuxterminal"></span><h1>LinuxTerminal<a class="headerlink" href="#linuxterminal" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../pydm/terminal_tab.html"><span class="doc">The Embedded Terminal Tab</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../pydm/rogue_widgets.html"><span class="doc">Rogue Widgets</span></a></p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.TerminalPanel">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.pydm.widgets.</span></span><span class="sig-name descname"><span class="pre">TerminalPanel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Terminal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windowTitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Rogue</span> <span class="pre">Terminal'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'terminal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#TerminalPanel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.TerminalPanel" title="Link to this definition"></a></dt>
+<dd><p>A <a class="reference internal" href="#pyrogue.pydm.widgets.LinuxTerminal" title="pyrogue.pydm.widgets.LinuxTerminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinuxTerminal</span></code></a> with a button to detach it into its own window.</p>
+<p>Detaching is useful because a tab is only as tall as the window it lives in.
+A separate window can be sized and placed independently, or moved to another
+monitor, which makes a long build log or a full screen program readable.</p>
+<p>Reparenting does not disturb the shell. The child process is held by a file
+descriptor and a socket notifier, neither of which is tied to a window, so
+detaching and reattaching keep the same shell, its working directory, and
+its scrollback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span>, default: <span class="highlight sphinx_autodoc_typehints-value"><code class="docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></span>) – Parent Qt widget.</p></li>
+<li><p><strong>argv</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>] | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span>, default: <span class="highlight sphinx_autodoc_typehints-value"><code class="docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></span>) – Program to run, passed through to <a class="reference internal" href="#pyrogue.pydm.widgets.LinuxTerminal" title="pyrogue.pydm.widgets.LinuxTerminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinuxTerminal</span></code></a>. Defaults to
+the user’s login shell.</p></li>
+<li><p><strong>label</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>, default: <span class="highlight sphinx_autodoc_typehints-value"><code class="docutils literal notranslate"><span class="s1"><span class="pre">'Terminal'</span></span></code></span>) – Tab label to restore when reattaching.</p></li>
+<li><p><strong>windowTitle</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>, default: <span class="highlight sphinx_autodoc_typehints-value"><code class="docutils literal notranslate"><span class="s1"><span class="pre">'Rogue</span> <span class="pre">Terminal'</span></span></code></span>) – Title of the detached window.</p></li>
+<li><p><strong>noun</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>, default: <span class="highlight sphinx_autodoc_typehints-value"><code class="docutils literal notranslate"><span class="s1"><span class="pre">'terminal'</span></span></code></span>) – What the detach button tooltips call the contents.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.TerminalPanel.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#TerminalPanel.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.TerminalPanel.closeEvent" title="Link to this definition"></a></dt>
+<dd><p>Reattach instead of closing when detached.</p>
+<p>Closing the detached window would otherwise leave the terminal with no
+way back into the GUI, so the close is treated as a request to reattach.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.TerminalPanel.detach">
+<span class="sig-name descname"><span class="pre">detach</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#TerminalPanel.detach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.TerminalPanel.detach" title="Link to this definition"></a></dt>
+<dd><p>Move the terminal out of its tab and into its own window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.TerminalPanel.isDetached">
+<span class="sig-name descname"><span class="pre">isDetached</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#TerminalPanel.isDetached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.TerminalPanel.isDetached" title="Link to this definition"></a></dt>
+<dd><p>Return whether the terminal is currently its own window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.TerminalPanel.reattach">
+<span class="sig-name descname"><span class="pre">reattach</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#TerminalPanel.reattach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.TerminalPanel.reattach" title="Link to this definition"></a></dt>
+<dd><p>Put the terminal back where it came from.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.TerminalPanel.shutdown">
+<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#TerminalPanel.shutdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.TerminalPanel.shutdown" title="Link to this definition"></a></dt>
+<dd><p>Terminate the shell. Safe to call more than once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.TerminalPanel.toggleDetached">
+<span class="sig-name descname"><span class="pre">toggleDetached</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#TerminalPanel.toggleDetached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.TerminalPanel.toggleDetached" title="Link to this definition"></a></dt>
+<dd><p>Detach into a window, or put it back in its tab.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.pydm.widgets.</span></span><span class="sig-name descname"><span class="pre">LinuxTerminal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal" title="Link to this definition"></a></dt>
+<dd><p>Interactive local shell rendered into a read-only text view.</p>
+<p>A shell is spawned on a pseudo-terminal, its output is fed to a <code class="docutils literal notranslate"><span class="pre">pyte</span></code>
+screen emulator, and that screen is painted into this widget.</p>
+<p>The shell is a child of the GUI process, so it runs on the machine
+displaying the GUI as the user who launched it, <strong>not</strong> on the Rogue server.
+Anyone who can reach the GUI window gets an interactive shell with that
+user’s privileges, which is why the feature is opt-in.</p>
+<p>The shell starts on first display rather than on construction, so enabling
+the feature costs nothing until the tab is actually opened.</p>
+<p>The view is dark themed and keeps a bounded scrollback above the live
+screen, so output can be scrolled back through. Scrolling up pins the view
+in place; new output only follows the bottom when the view is already there.</p>
+<p>Rendering is monochrome. <code class="docutils literal notranslate"><span class="pre">pyte</span></code> does not implement the alternate screen
+buffer, so full screen programs such as <code class="docutils literal notranslate"><span class="pre">vim</span></code> and <code class="docutils literal notranslate"><span class="pre">htop</span></code> work but leave
+their last frame behind on exit instead of restoring the previous screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span>, default: <span class="highlight sphinx_autodoc_typehints-value"><code class="docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></span>) – Parent Qt widget.</p></li>
+<li><p><strong>argv</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>] | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span>, default: <span class="highlight sphinx_autodoc_typehints-value"><code class="docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></span>) – Program to run on the pseudo-terminal. Defaults to the user’s login
+shell. Restarting reuses this, so a program that exits is replaced by
+the same program rather than by a shell.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.closeEvent" title="Link to this definition"></a></dt>
+<dd><p>Tear down the shell when this widget is closed as a window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.focusNextPrevChild">
+<span class="sig-name descname"><span class="pre">focusNextPrevChild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">forward</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.focusNextPrevChild"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.focusNextPrevChild" title="Link to this definition"></a></dt>
+<dd><p>Keep Tab for the shell rather than moving focus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>forward</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><em>bool</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.inputMethodEvent">
+<span class="sig-name descname"><span class="pre">inputMethodEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.inputMethodEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.inputMethodEvent" title="Link to this definition"></a></dt>
+<dd><p>Swallow input method events; composition is not supported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.keyPressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.keyPressEvent" title="Link to this definition"></a></dt>
+<dd><p>Forward key presses to the shell instead of editing the view.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.resizeEvent">
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.resizeEvent" title="Link to this definition"></a></dt>
+<dd><p>Debounce a geometry change before reflowing the shell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.restart">
+<span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.restart" title="Link to this definition"></a></dt>
+<dd><p>Discard the current session and start a fresh shell.</p>
+<p>Returns the terminal to the state it had when the GUI was opened: an
+empty screen, no scrollback, and a new prompt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.sendInput">
+<span class="sig-name descname"><span class="pre">sendInput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.sendInput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.sendInput" title="Link to this definition"></a></dt>
+<dd><p>Send user input to the shell.</p>
+<p>Separate from <a class="reference internal" href="#pyrogue.pydm.widgets.LinuxTerminal.writeBytes" title="pyrogue.pydm.widgets.LinuxTerminal.writeBytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeBytes()</span></code></a> because the emulator also writes to the
+pty on its own to answer terminal queries. Only real input shows that the
+session reached a usable state, which is what distinguishes a user
+exiting a shell from a shell that never started.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span>) – Bytes produced by a key press or a paste.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.showEvent">
+<span class="sig-name descname"><span class="pre">showEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.showEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.showEvent" title="Link to this definition"></a></dt>
+<dd><p>Spawn the shell on first display and take the keyboard.</p>
+<p>Clicking a tab in a <code class="docutils literal notranslate"><span class="pre">QTabWidget</span></code> leaves the keyboard focus on the tab
+bar, so without this the terminal would appear ready but swallow nothing
+until it was clicked a second time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.shutdown">
+<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.shutdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.shutdown" title="Link to this definition"></a></dt>
+<dd><p>Stop all I/O and terminate the shell. Safe to call more than once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.LinuxTerminal.writeBytes">
+<span class="sig-name descname"><span class="pre">writeBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#LinuxTerminal.writeBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.LinuxTerminal.writeBytes" title="Link to this definition"></a></dt>
+<dd><p>Queue bytes for the child process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span>) – Bytes to send to the shell.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.terminal.keyToBytes">
+<span class="sig-prename descclassname"><span class="pre">pyrogue.pydm.widgets.terminal.</span></span><span class="sig-name descname"><span class="pre">keyToBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modifiers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#keyToBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.terminal.keyToBytes" title="Link to this definition"></a></dt>
+<dd><p>Translate a Qt key press into the byte sequence a terminal expects.</p>
+<p>Kept free of <code class="docutils literal notranslate"><span class="pre">QKeyEvent</span></code> so it can be unit tested without constructing a
+<code class="docutils literal notranslate"><span class="pre">QApplication</span></code>. The sequences follow the <code class="docutils literal notranslate"><span class="pre">xterm</span></code> conventions, matching
+the <code class="docutils literal notranslate"><span class="pre">TERM</span></code> value exported to the child shell. Changing one requires
+changing the other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Qt key code, for example <code class="docutils literal notranslate"><span class="pre">Qt.Key_Up</span></code>.</p></li>
+<li><p><strong>modifiers</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Qt keyboard modifier flags.</p></li>
+<li><p><strong>text</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Text the key event produced, used for ordinary printable input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Bytes to write to the pty, or <code class="docutils literal notranslate"><span class="pre">b''</span></code> when the key produces no input.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a></span></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Ctrl-C has to reach the shell as <code class="docutils literal notranslate"><span class="pre">ETX</span></code> so it can interrupt the foreground
+job, so copy and paste are bound to Ctrl+Shift+C and Ctrl+Shift+V. Those
+two chords return <code class="docutils literal notranslate"><span class="pre">b''</span></code> here and are handled as clipboard actions by the
+widget.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.terminal.resolveColor">
+<span class="sig-prename descclassname"><span class="pre">pyrogue.pydm.widgets.terminal.</span></span><span class="sig-name descname"><span class="pre">resolveColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bright</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/terminal.html#resolveColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.terminal.resolveColor" title="Link to this definition"></a></dt>
+<dd><p>Map a <code class="docutils literal notranslate"><span class="pre">pyte</span></code> color to a <code class="docutils literal notranslate"><span class="pre">QColor</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Colour as pyte reports it: <code class="docutils literal notranslate"><span class="pre">'default'</span></code>, one of the eight base names,
+a <code class="docutils literal notranslate"><span class="pre">bright</span></code>-prefixed name, or six hex digits for 256 colour and 24 bit.</p></li>
+<li><p><strong>bright</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>, default: <span class="highlight sphinx_autodoc_typehints-value"><code class="docutils literal notranslate"><span class="kc"><span class="pre">False</span></span></code></span>) – Select the bright shade of a base name. Bold text is rendered in the
+bright shade, which is the convention every colorizing tool assumes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code> when the value is the default or is not recognised, so the
+caller can fall back to the theme colour. pyte’s own tables contain at
+least one misspelled name, so unrecognised input has to be tolerated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QColor</span></code> | <span class="highlight sphinx_autodoc_typehints-value"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><code class="xref py py-obj docutils literal notranslate"><span class="kc"><span class="pre">None</span></span></code></a></span></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="systemlog.html" class="btn btn-neutral float-left" title="SystemLog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ipythonpanel.html" class="btn btn-neutral float-right" title="IPythonPanel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

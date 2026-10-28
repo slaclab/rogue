@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Embedded Terminal Tab &mdash; Rogue v6.15.0-109-gf76971c0d documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=84a5cc46"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=51977998"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The IPython Console Tab" href="ipython_tab.html" />
+    <link rel="prev" title="Rogue Widgets" href="rogue_widgets.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview/structure.html">Structure of Rogue</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Getting Started:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using The PyDM GUI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="starting_gui.html">Starting The Rogue PyDM GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rogue_widgets.html">Rogue Widgets</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The Embedded Terminal Tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ipython_tab.html">The IPython Console Tab</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Using The PyDM GUI</a></li>
+      <li class="breadcrumb-item active">The Embedded Terminal Tab</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pydm/terminal_tab.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="the-embedded-terminal-tab">
+<span id="terminal-tab"></span><h1>The Embedded Terminal Tab<a class="headerlink" href="#the-embedded-terminal-tab" title="Link to this heading"></a></h1>
+<p>The stock debug GUI can show an interactive shell in its own top-level tab. When
+enabled, a <code class="docutils literal notranslate"><span class="pre">Terminal</span></code> tab appears alongside <code class="docutils literal notranslate"><span class="pre">System</span></code> and <code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Tree</span></code>. It
+is added last, so the existing tab positions do not change, and <code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Tree</span></code>
+remains the tab shown on startup.</p>
+<p>Giving the terminal a top-level tab means it gets the full height of the window,
+which keeps it readable even in a small window.</p>
+<p>This is useful during bring-up and debugging, when checking <code class="docutils literal notranslate"><span class="pre">dmesg</span></code>, tailing a
+file, inspecting <code class="docutils literal notranslate"><span class="pre">/proc</span></code>, or restarting a service would otherwise mean leaving
+the GUI to find a separate terminal.</p>
+<p>The feature is off by default. Nothing changes for an existing GUI unless it is
+explicitly turned on.</p>
+<section id="where-the-shell-runs">
+<h2>Where The Shell Runs<a class="headerlink" href="#where-the-shell-runs" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The shell runs <strong>on the machine displaying the GUI, as the user who launched
+the GUI</strong>. It is not a shell on the Rogue server.</p>
+</div>
+<p>This matters because the GUI is frequently a remote client: <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> connects
+to <code class="docutils literal notranslate"><span class="pre">serverList</span></code> over ZMQ, so the GUI and the <code class="docutils literal notranslate"><span class="pre">Root</span></code> often live on different
+machines. Running a destructive command in the terminal believing you are on the
+DAQ host is the realistic accident this warning is here to prevent. Run
+<code class="docutils literal notranslate"><span class="pre">hostname</span></code> in the terminal if there is any doubt.</p>
+</section>
+<section id="enabling-it">
+<h2>Enabling It<a class="headerlink" href="#enabling-it" title="Link to this heading"></a></h2>
+<p>From the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>gui<span class="w"> </span>--server<span class="w"> </span>localhost:9099<span class="w"> </span>--terminal
+</pre></div>
+</div>
+<p>From a launcher script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
+
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">serverList</span><span class="o">=</span><span class="s1">'localhost:9099'</span><span class="p">,</span> <span class="n">enableTerminal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The terminal can also be placed in a custom screen. Neither widget takes a
+channel or any arguments. Use <code class="docutils literal notranslate"><span class="pre">TerminalPanel</span></code> to get the detach button, or
+<code class="docutils literal notranslate"><span class="pre">LinuxTerminal</span></code> for just the terminal with no surrounding controls:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.pydm.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinuxTerminal</span><span class="p">,</span> <span class="n">TerminalPanel</span>
+
+<span class="n">panel</span> <span class="o">=</span> <span class="n">TerminalPanel</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>     <span class="c1"># terminal plus the detach button</span>
+<span class="n">term</span> <span class="o">=</span> <span class="n">LinuxTerminal</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>      <span class="c1"># terminal on its own</span>
+</pre></div>
+</div>
+<p>The detach button only acts when the panel is a page of a <code class="docutils literal notranslate"><span class="pre">QTabWidget</span></code>, since
+that is where it returns to. Elsewhere it does nothing rather than stranding the
+terminal in a window it cannot come back from.</p>
+</section>
+<section id="when-the-shell-starts">
+<h2>When The Shell Starts<a class="headerlink" href="#when-the-shell-starts" title="Link to this heading"></a></h2>
+<p>Exiting the shell, with <code class="docutils literal notranslate"><span class="pre">exit</span></code> or Ctrl-D, immediately starts a fresh session in
+a clean state, as if the GUI had just been opened. Ctrl-D is easy to press by
+accident, and there is no reason for it to leave a dead terminal that can only be
+recovered by restarting the GUI.</p>
+<p>If a shell exits without the user having typed anything then it never started at
+all, for example because <code class="docutils literal notranslate"><span class="pre">$SHELL</span></code> is not runnable. After a few of those in a
+row the terminal stops retrying and says so, rather than spawning processes in a
+loop.</p>
+<p>The shell starts the first time the tab is actually displayed, not when the GUI
+is built. Two consequences follow:</p>
+<ul class="simple">
+<li><p>Enabling the feature costs nothing until someone opens the tab. No shell
+process exists before that.</p></li>
+<li><p>The terminal needs no Rogue channel, so unlike the other tabs it still works
+while the Rogue link is down, which is exactly when a shell tends to be most
+useful.</p></li>
+</ul>
+</section>
+<section id="security-considerations">
+<h2>Security Considerations<a class="headerlink" href="#security-considerations" title="Link to this heading"></a></h2>
+<p>Anyone who can reach the GUI window gets an interactive shell with the
+privileges of the account running the GUI. Before enabling it, consider:</p>
+<ul class="simple">
+<li><p><strong>PyDM read-only mode does not constrain it.</strong> <code class="docutils literal notranslate"><span class="pre">PYDM_READ_ONLY</span></code> gates
+channel writes. A read-only PyDM session with the terminal enabled is still
+fully writable through the shell.</p></li>
+<li><p><strong>Privileges are inherited.</strong> If the GUI is launched with elevated rights for
+hardware access, the shell gets them too. Do not enable the terminal when the
+GUI runs as <code class="docutils literal notranslate"><span class="pre">root</span></code> or under a shared, kiosk, or service account.</p></li>
+<li><p><strong>A shared display is a shared shell.</strong> On a display reachable through X11
+forwarding or an unauthenticated VNC session, anyone who can see the window
+can use the shell.</p></li>
+<li><p><strong>There is no audit trail.</strong> Shell history goes to the launching user’s normal
+history file, and the Rogue <code class="docutils literal notranslate"><span class="pre">SystemLog</span></code> records nothing about terminal
+activity. Sites needing accountability must use host-level auditing.</p></li>
+</ul>
+<p>Because enabling the terminal requires editing the launching command or script,
+it is always a deliberate act by someone who can already run arbitrary code in
+that process. The option does not widen anyone’s privileges; it changes who can
+conveniently reach a shell.</p>
+</section>
+<section id="detaching-into-its-own-window">
+<h2>Detaching Into Its Own Window<a class="headerlink" href="#detaching-into-its-own-window" title="Link to this heading"></a></h2>
+<p>A tab is only as tall as the window it lives in. The <code class="docutils literal notranslate"><span class="pre">Detach</span></code> button above the
+terminal moves it into a separate window, which can be sized and positioned
+independently or moved to another monitor. That makes a long build log or a full
+screen program readable without resizing the whole GUI. The button becomes
+<code class="docutils literal notranslate"><span class="pre">Reattach</span></code> to put it back in its original tab position.</p>
+<p>Detaching does not disturb the shell. The child process is held by a file
+descriptor, not by a window, so the same shell keeps running with its working
+directory, command history, and scrollback intact.</p>
+<p>Two details worth knowing:</p>
+<ul class="simple">
+<li><p>Closing the detached window reattaches the terminal rather than destroying it,
+so there is no way to lose a running shell by closing the wrong window.</p></li>
+<li><p>The detached window stays owned by the GUI, so closing the GUI closes it too
+and the process exits normally.</p></li>
+</ul>
+</section>
+<section id="appearance-and-scrollback">
+<h2>Appearance And Scrollback<a class="headerlink" href="#appearance-and-scrollback" title="Link to this heading"></a></h2>
+<p>The view is dark themed and uses the platform’s fixed-pitch font. It keeps
+2000 lines of scrollback above the live screen, with a scrollbar on the right.</p>
+<p>The emulated screen is a fixed grid that exactly fills the view, so it behaves
+like any other terminal. Once enough output has accumulated the prompt sits on
+the bottom row and output scrolls up past it. Immediately after starting, or
+after <code class="docutils literal notranslate"><span class="pre">clear</span></code>, the prompt is at the top with blank space beneath it, because
+the screen genuinely is empty at that point.</p>
+<p><code class="docutils literal notranslate"><span class="pre">clear</span></code> blanks the view as expected. Earlier output is not destroyed, it moves
+into the scrollback and can still be reached by scrolling up.</p>
+</section>
+<section id="color">
+<h2>Color<a class="headerlink" href="#color" title="Link to this heading"></a></h2>
+<p>Colored output is rendered, so <code class="docutils literal notranslate"><span class="pre">ls</span></code>, <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">--color</span></code>, <code class="docutils literal notranslate"><span class="pre">git</span></code>, and compiler
+diagnostics look the way they do in any other terminal. The full range is
+supported: the sixteen named colors, 256 color, and 24 bit true color, along with
+bold, italic, underline, strikethrough, and reverse video. Colors are kept when a
+line scrolls into the scrollback.</p>
+<p>Bold combined with a color is rendered in the bright shade of that color, which
+is the convention colorizing tools assume. Blink is deliberately ignored.</p>
+<p>The palette comes from the standard xterm colors, so it matches what other
+terminals show for the same escape sequences.</p>
+<p>Scrolling behaves the way a terminal should: while you are scrolled up the view
+stays where you left it, so a burst of output will not yank you back. Once the
+view is at the bottom again it resumes following new output. Select with the
+mouse and copy with <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+C</span></code>.</p>
+<p>The scrollback bound is what keeps a terminal left open for days from growing
+without limit. Oldest lines are dropped once it is reached.</p>
+</section>
+<section id="current-limitations">
+<h2>Current Limitations<a class="headerlink" href="#current-limitations" title="Link to this heading"></a></h2>
+<p>The terminal emulates a VT-style screen with <a class="reference external" href="https://pypi.org/project/pyte/">pyte</a> and renders it into a plain Qt text view.
+Interactive shells, job control, scrollback, and full-screen programs work. The
+following are not implemented:</p>
+<ul class="simple">
+<li><p><strong>No alternate screen buffer.</strong> Programs such as <code class="docutils literal notranslate"><span class="pre">vim</span></code> and <code class="docutils literal notranslate"><span class="pre">htop</span></code> run and
+respond normally, but on exit they leave their last frame on screen instead of
+restoring what was there before. Press Enter to get a fresh prompt.</p></li>
+<li><p><strong>No mouse reporting.</strong> Mouse-driven full-screen programs are keyboard-only.
+The mouse selects text in the widget instead.</p></li>
+<li><p><strong>No input method support.</strong> Dead keys and compose sequences are ignored.</p></li>
+<li><p><strong>Linux and macOS only.</strong> The implementation uses pseudo-terminals, which have
+no Windows equivalent.</p></li>
+</ul>
+</section>
+<section id="key-bindings">
+<h2>Key Bindings<a class="headerlink" href="#key-bindings" title="Link to this heading"></a></h2>
+<p>Keys are forwarded to the shell, so <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code>, <code class="docutils literal notranslate"><span class="pre">Ctrl-Z</span></code>, <code class="docutils literal notranslate"><span class="pre">Ctrl-D</span></code>, and tab
+completion behave as they would in any terminal. Because <code class="docutils literal notranslate"><span class="pre">Ctrl-C</span></code> must reach
+the shell as an interrupt, the clipboard uses shifted chords:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Binding</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+C</span></code></p></td>
+<td><p>Copy the selection</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+V</span></code></p></td>
+<td><p>Paste into the shell</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code></p></td>
+<td><p>Interrupt the foreground job, as usual</p></td>
+</tr>
+</tbody>
+</table>
+<p>Multi-line pastes are wrapped in bracketed-paste markers when the shell has that
+mode enabled, so a pasted block is presented as a single line for review rather
+than executing each line as it arrives.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="starting_gui.html"><span class="doc">Starting The Rogue PyDM GUI</span></a> for the other runtime options of the stock GUI</p></li>
+<li><p><a class="reference internal" href="rogue_widgets.html"><span class="doc">Rogue Widgets</span></a> for the rest of the Rogue widget set</p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/python/pyrogue/pydm_widgets/linuxterminal.html"><span class="doc">LinuxTerminal</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html"><span class="doc">runPyDM</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rogue_widgets.html" class="btn btn-neutral float-left" title="Rogue Widgets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ipython_tab.html" class="btn btn-neutral float-right" title="The IPython Console Tab" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
