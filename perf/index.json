@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T23:27:07Z",
+  "generated_at": "2026-10-29T23:33:35Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-10-29T18:13:21Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40927325028",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-epicsV4-enum-index-start",
+      "ref_slug": "fix-epicsV4-enum-index-start",
+      "latest_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-epicsV4-enum-index-start",
+          "sha": "8a709da5ca442d4f17d1abb4eca7c99bf797936f",
+          "short_sha": "8a709da",
+          "published_at": "2026-10-29T23:33:35Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40972990223",
+          "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/history/8a709da5ca442d4f17d1abb4eca7c99bf797936f.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-epicsV4-enum-index-start",
+        "sha": "8a709da5ca442d4f17d1abb4eca7c99bf797936f",
+        "short_sha": "8a709da",
+        "published_at": "2026-10-29T23:33:35Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40972990223",
+        "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/latest.json"
       }
     },
     {
