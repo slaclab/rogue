@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-1307-virtual-client-ltime",
+  "ref_slug": "fix-1307-virtual-client-ltime",
+  "latest_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-1307-virtual-client-ltime",
+      "sha": "e762a9e098e997632dd719d4208fbba4e6da3e01",
+      "short_sha": "e762a9e",
+      "published_at": "2026-10-29T19:59:08Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40943749917",
+      "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/history/e762a9e098e997632dd719d4208fbba4e6da3e01.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-1307-virtual-client-ltime",
+    "sha": "e762a9e098e997632dd719d4208fbba4e6da3e01",
+    "short_sha": "e762a9e",
+    "published_at": "2026-10-29T19:59:08Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40943749917",
+    "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/latest.json"
+  }
+}
