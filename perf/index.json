@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T22:59:09Z",
+  "generated_at": "2026-10-29T23:06:34Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-10-29T18:13:21Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40927325028",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-udprssipack-stop-cmd",
+      "ref_slug": "fix-udprssipack-stop-cmd",
+      "latest_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-udprssipack-stop-cmd",
+          "sha": "4523fca31c6ed56041dc262e0cf230dcc8b23ab0",
+          "short_sha": "4523fca",
+          "published_at": "2026-10-29T23:06:34Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40969696757",
+          "summary_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/history/4523fca31c6ed56041dc262e0cf230dcc8b23ab0.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-udprssipack-stop-cmd",
+        "sha": "4523fca31c6ed56041dc262e0cf230dcc8b23ab0",
+        "short_sha": "4523fca",
+        "published_at": "2026-10-29T23:06:34Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40969696757",
+        "summary_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/latest.json"
       }
     },
     {
