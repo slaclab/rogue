@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T21:49:52Z",
+  "generated_at": "2026-10-29T22:07:29Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-10-29T18:13:21Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40927325028",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-variable-block-init-dump",
+      "ref_slug": "fix-variable-block-init-dump",
+      "latest_url": "/rogue/perf/branches/fix-variable-block-init-dump/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-variable-block-init-dump",
+          "sha": "90ed9b6025133998a24464e7a99bfcf4ae8e3609",
+          "short_sha": "90ed9b6",
+          "published_at": "2026-10-29T22:07:29Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40960995965",
+          "summary_url": "/rogue/perf/branches/fix-variable-block-init-dump/history/90ed9b6025133998a24464e7a99bfcf4ae8e3609.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-variable-block-init-dump",
+        "sha": "90ed9b6025133998a24464e7a99bfcf4ae8e3609",
+        "short_sha": "90ed9b6",
+        "published_at": "2026-10-29T22:07:29Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40960995965",
+        "summary_url": "/rogue/perf/branches/fix-variable-block-init-dump/latest.json"
       }
     },
     {
