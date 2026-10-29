@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-28T01:04:11Z",
+  "generated_at": "2026-10-29T17:06:57Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,26 +299,26 @@
       }
     },
     {
-      "ref_name": "remove-tidair-conda-upload",
-      "ref_slug": "remove-tidair-conda-upload",
-      "latest_url": "/rogue/perf/branches/remove-tidair-conda-upload/latest.json",
+      "ref_name": "conda-python3p15-support",
+      "ref_slug": "conda-python3p15-support",
+      "latest_url": "/rogue/perf/branches/conda-python3p15-support/latest.json",
       "history": [
         {
-          "ref_name": "remove-tidair-conda-upload",
-          "sha": "456d453e672ae6bc57c6464102cc5fd093a4de86",
-          "short_sha": "456d453",
-          "published_at": "2026-10-28T00:44:31Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40609802318",
-          "summary_url": "/rogue/perf/branches/remove-tidair-conda-upload/history/456d453e672ae6bc57c6464102cc5fd093a4de86.json"
+          "ref_name": "conda-python3p15-support",
+          "sha": "f054347ab3e411d53d31373313f9f99024414f19",
+          "short_sha": "f054347",
+          "published_at": "2026-10-29T17:06:57Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40916803848",
+          "summary_url": "/rogue/perf/branches/conda-python3p15-support/history/f054347ab3e411d53d31373313f9f99024414f19.json"
         }
       ],
       "latest": {
-        "ref_name": "remove-tidair-conda-upload",
-        "sha": "456d453e672ae6bc57c6464102cc5fd093a4de86",
-        "short_sha": "456d453",
-        "published_at": "2026-10-28T00:44:31Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40609802318",
-        "summary_url": "/rogue/perf/branches/remove-tidair-conda-upload/latest.json"
+        "ref_name": "conda-python3p15-support",
+        "sha": "f054347ab3e411d53d31373313f9f99024414f19",
+        "short_sha": "f054347",
+        "published_at": "2026-10-29T17:06:57Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40916803848",
+        "summary_url": "/rogue/perf/branches/conda-python3p15-support/latest.json"
       }
     }
   ]

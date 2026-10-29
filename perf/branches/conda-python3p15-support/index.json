@@ -1,0 +1,23 @@
+{
+  "ref_name": "conda-python3p15-support",
+  "ref_slug": "conda-python3p15-support",
+  "latest_url": "/rogue/perf/branches/conda-python3p15-support/latest.json",
+  "history": [
+    {
+      "ref_name": "conda-python3p15-support",
+      "sha": "f054347ab3e411d53d31373313f9f99024414f19",
+      "short_sha": "f054347",
+      "published_at": "2026-10-29T17:06:57Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40916803848",
+      "summary_url": "/rogue/perf/branches/conda-python3p15-support/history/f054347ab3e411d53d31373313f9f99024414f19.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "conda-python3p15-support",
+    "sha": "f054347ab3e411d53d31373313f9f99024414f19",
+    "short_sha": "f054347",
+    "published_at": "2026-10-29T17:06:57Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40916803848",
+    "summary_url": "/rogue/perf/branches/conda-python3p15-support/latest.json"
+  }
+}
