@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix/memory-slave-gil-finalize-guard",
+  "ref_slug": "fix_memory-slave-gil-finalize-guard",
+  "latest_url": "/rogue/perf/branches/fix_memory-slave-gil-finalize-guard/latest.json",
+  "history": [
+    {
+      "ref_name": "fix/memory-slave-gil-finalize-guard",
+      "sha": "4cb84bef488fee44c4c961e63cc09fdaf3a2575c",
+      "short_sha": "4cb84be",
+      "published_at": "2026-10-29T22:59:09Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40968913435",
+      "summary_url": "/rogue/perf/branches/fix_memory-slave-gil-finalize-guard/history/4cb84bef488fee44c4c961e63cc09fdaf3a2575c.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix/memory-slave-gil-finalize-guard",
+    "sha": "4cb84bef488fee44c4c961e63cc09fdaf3a2575c",
+    "short_sha": "4cb84be",
+    "published_at": "2026-10-29T22:59:09Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40968913435",
+    "summary_url": "/rogue/perf/branches/fix_memory-slave-gil-finalize-guard/latest.json"
+  }
+}
