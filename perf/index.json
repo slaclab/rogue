@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T22:07:29Z",
+  "generated_at": "2026-10-29T22:46:25Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-10-29T18:13:21Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40927325028",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-variable-float-byte-range",
+      "ref_slug": "fix-variable-float-byte-range",
+      "latest_url": "/rogue/perf/branches/fix-variable-float-byte-range/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-variable-float-byte-range",
+          "sha": "f70d67ed5049d06192dfc2410b68672bd8be0326",
+          "short_sha": "f70d67e",
+          "published_at": "2026-10-29T22:46:25Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40967291993",
+          "summary_url": "/rogue/perf/branches/fix-variable-float-byte-range/history/f70d67ed5049d06192dfc2410b68672bd8be0326.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-variable-float-byte-range",
+        "sha": "f70d67ed5049d06192dfc2410b68672bd8be0326",
+        "short_sha": "f70d67e",
+        "published_at": "2026-10-29T22:46:25Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40967291993",
+        "summary_url": "/rogue/perf/branches/fix-variable-float-byte-range/latest.json"
       }
     },
     {
