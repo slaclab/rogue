@@ -35,7 +35,7 @@ requirements:
     - numpy
     - rdma-core  # [linux]
   run:
-    - python >=3.10,<3.15
+    - python >=3.10,<3.16
     - numpy
     - libboost-python
     - bzip2

@@ -6,6 +6,7 @@
 # conda render conda-recipe --variants "{python: 3.12, python_abi: '3.12 *_cp312'}"
 # conda render conda-recipe --variants "{python: 3.13, python_abi: '3.13 *_cp313'}"
 # conda render conda-recipe --variants "{python: 3.14, python_abi: '3.14 *_cp314'}"
+# conda render conda-recipe --variants "{python: 3.15, python_abi: '3.15 *_cp315'}"
 ###############################################################################################
 
 # Define the python variants to be built
@@ -15,6 +16,7 @@ python:
   - 3.12
   - 3.13
   - 3.14
+  - 3.15
 
 # Lock to CPython ABI, not PyPy
 python_abi:
@@ -23,6 +25,7 @@ python_abi:
   - 3.12 *_cp312
   - 3.13 *_cp313
   - 3.14 *_cp314
+  - 3.15 *_cp315
 
 # Build against numpy 2.x headers. meta.yaml leaves numpy unbounded in host so the
 # conda-forge global pinning (numpy: 2) applies there, but without this key
@@ -31,7 +34,7 @@ python_abi:
 numpy:
   - 2
 
-# Pair python and python_abi so we get 5 variants, not the 25-way cross product
+# Pair python and python_abi so we get 6 variants, not the 36-way cross product
 zip_keys:
   - - python
     - python_abi
