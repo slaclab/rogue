@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-epicsv7-bool-local-put",
+  "ref_slug": "fix-epicsv7-bool-local-put",
+  "latest_url": "/rogue/perf/branches/fix-epicsv7-bool-local-put/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-epicsv7-bool-local-put",
+      "sha": "95452015e5294b88f6cda1720822d70b72d8fa3d",
+      "short_sha": "9545201",
+      "published_at": "2026-10-29T23:14:57Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40970811262",
+      "summary_url": "/rogue/perf/branches/fix-epicsv7-bool-local-put/history/95452015e5294b88f6cda1720822d70b72d8fa3d.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-epicsv7-bool-local-put",
+    "sha": "95452015e5294b88f6cda1720822d70b72d8fa3d",
+    "short_sha": "9545201",
+    "published_at": "2026-10-29T23:14:57Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40970811262",
+    "summary_url": "/rogue/perf/branches/fix-epicsv7-bool-local-put/latest.json"
+  }
+}
