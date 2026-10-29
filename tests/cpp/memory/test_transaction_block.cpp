@@ -19,6 +19,7 @@
 #include <stdint.h>
 
 #include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <memory>
 #include <string>
@@ -91,6 +92,15 @@ rim::VariablePtr makeUIntVariable(const std::string& name,
                                   bool verify = true) {
     auto variable = rim::Variable::create(
         name, "RW", 0, 0, offset, {bitOffset}, {bitSize}, false, verify, false, false, rim::UInt, false, false, 0, 0, 0, 0, 0);
+    variable->updatePath("TestBlock." + name);
+    return variable;
+}
+
+rim::VariablePtr makeFloat8Variable(const std::string& name, uint64_t offset) {
+    // Min and max both 0 disables the Block::setFloat8 range check so the
+    // encoder itself is exercised with out-of-range inputs.
+    auto variable = rim::Variable::create(
+        name, "RW", 0, 0, offset, {0}, {8}, false, true, false, false, rim::Float8, false, false, 0, 0, 0, 0, 0);
     variable->updatePath("TestBlock." + name);
     return variable;
 }
@@ -168,4 +178,29 @@ TEST_CASE("Memory block surfaces verify mismatches as transaction errors") {
     REQUIRE_EQ(slave->records.size(), 2U);
     CHECK_EQ(slave->records[0].type, rim::Write);
     CHECK_EQ(slave->records[1].type, rim::Verify);
+}
+
+TEST_CASE("Memory block float8 encoder clamps near-overflow values instead of producing NaN") {
+    auto slave = std::make_shared<RecordingMemorySlave>(1, 1024);
+    auto block = rim::Block::create(0x380, 4);
+    auto reg   = makeFloat8Variable("Float8Reg", 0);
+
+    block->setSlave(slave);
+    block->addVariables({reg});
+    block->setEnable(true);
+
+    // 500.0 rebiases to E4M3 exponent 15 with mantissa 0b111, which is the
+    // reserved NaN pattern 0x7F. The encoder must clamp to max finite (0x7E).
+    float writeValue = 500.0F;
+    reg->setFloat8(writeValue);
+    CHECK_EQ(slave->memory_[0x380], 0x7EU);
+
+    const float readValue = reg->getFloat8();
+    CHECK_FALSE(std::isnan(readValue));
+    CHECK_EQ(readValue, 448.0F);
+
+    float negValue = -511.9F;
+    reg->setFloat8(negValue);
+    CHECK_EQ(slave->memory_[0x380], 0xFEU);
+    CHECK_EQ(reg->getFloat8(), -448.0F);
 }

@@ -83,6 +83,19 @@ def test_float8_model_no_infinity():
     assert math.isclose(result, -448.0, rel_tol=0.01)
 
 
+@pytest.mark.parametrize("value", [480.0, 500.0, 511.9, -480.0, -511.9])
+def test_float8_model_near_overflow_clamps_instead_of_nan(value):
+    # Inputs in [480, 512) rebias to exponent 15 with a 0b111 mantissa, which is
+    # the E4M3 NaN pattern (0x7F / 0xFF). The encoder must clamp to max finite.
+    model = pr.Float8(8)
+    ba = model.toBytes(value)
+    expected = bytearray([0xFE if value < 0 else 0x7E])
+    assert ba == expected
+    result = model.fromBytes(ba)
+    assert not math.isnan(result)
+    assert result == math.copysign(448.0, value)
+
+
 def test_float8_model_fromstring():
     model = pr.Float8(8)
     assert model.fromString("1.5") == 1.5
