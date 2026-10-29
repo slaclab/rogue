@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-sideband-sim-bad-frame-size",
+  "ref_slug": "fix-sideband-sim-bad-frame-size",
+  "latest_url": "/rogue/perf/branches/fix-sideband-sim-bad-frame-size/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-sideband-sim-bad-frame-size",
+      "sha": "4a0ada91e1685138acd696c4435c0e2578bec7dd",
+      "short_sha": "4a0ada9",
+      "published_at": "2026-10-29T23:18:27Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40971275118",
+      "summary_url": "/rogue/perf/branches/fix-sideband-sim-bad-frame-size/history/4a0ada91e1685138acd696c4435c0e2578bec7dd.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-sideband-sim-bad-frame-size",
+    "sha": "4a0ada91e1685138acd696c4435c0e2578bec7dd",
+    "short_sha": "4a0ada9",
+    "published_at": "2026-10-29T23:18:27Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40971275118",
+    "summary_url": "/rogue/perf/branches/fix-sideband-sim-bad-frame-size/latest.json"
+  }
+}
