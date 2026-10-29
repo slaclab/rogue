@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-udprssipack-super-recursion",
+  "ref_slug": "fix-udprssipack-super-recursion",
+  "latest_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-udprssipack-super-recursion",
+      "sha": "17c7646da774502e8d9725b43ecb61de7bd6ed28",
+      "short_sha": "17c7646",
+      "published_at": "2026-10-29T23:08:11Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40969964369",
+      "summary_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/history/17c7646da774502e8d9725b43ecb61de7bd6ed28.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-udprssipack-super-recursion",
+    "sha": "17c7646da774502e8d9725b43ecb61de7bd6ed28",
+    "short_sha": "17c7646",
+    "published_at": "2026-10-29T23:08:11Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40969964369",
+    "summary_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/latest.json"
+  }
+}
