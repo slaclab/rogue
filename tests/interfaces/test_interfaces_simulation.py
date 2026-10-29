@@ -217,7 +217,16 @@ def test_sideband_sim_stop_releases_sockets_thread_and_context(monkeypatch):
 def test_pgp2b_sim_connects_virtual_channels(monkeypatch):
     stream_links = []
 
-    monkeypatch.setattr(sim_mod.rogue.interfaces.stream, "TcpClient", lambda host, port: (host, port))
+    class FakeTcpClient:
+        def __init__(self, host, port):
+            self.host = host
+            self.port = port
+            self.stopped = False
+
+        def _stop(self):
+            self.stopped = True
+
+    monkeypatch.setattr(sim_mod.rogue.interfaces.stream, "TcpClient", FakeTcpClient)
     monkeypatch.setattr(sim_mod.pyrogue, "streamConnectBiDir", lambda left, right: stream_links.append((left, right)))
 
     class FakeSideBand:
@@ -242,15 +251,18 @@ def test_pgp2b_sim_connects_virtual_channels(monkeypatch):
     pgp_b = sim_mod.Pgp2bSim(2, "hostB", 2000)
 
     sim_mod.connectPgp2bSim(pgp_a, pgp_b)
-    assert stream_links == [
+    assert [((a.host, a.port), (b.host, b.port)) for a, b in stream_links] == [
         (("hostA", 1000), ("hostB", 2000)),
         (("hostA", 1002), ("hostB", 2002)),
     ]
+    assert stream_links == [(pgp_a.vc[0], pgp_b.vc[0]), (pgp_a.vc[1], pgp_b.vc[1])]
     assert pgp_a.sb.recv_cb == pgp_b.sb.send
     assert pgp_b.sb.recv_cb == pgp_a.sb.send
 
     pgp_a._stop()
     assert pgp_a.sb.stopped is True
+    assert all(vc.stopped for vc in pgp_a.vc)
+    assert not any(vc.stopped for vc in pgp_b.vc)
 
 
 def test_mem_emulate_handles_write_read_and_errors():
