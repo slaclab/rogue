@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-bsp-pyerr-clear",
+  "ref_slug": "fix-bsp-pyerr-clear",
+  "latest_url": "/rogue/perf/branches/fix-bsp-pyerr-clear/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-bsp-pyerr-clear",
+      "sha": "023e804eef9360ef0a273c6635faa4572c6788b3",
+      "short_sha": "023e804",
+      "published_at": "2026-10-29T23:07:29Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40969920329",
+      "summary_url": "/rogue/perf/branches/fix-bsp-pyerr-clear/history/023e804eef9360ef0a273c6635faa4572c6788b3.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-bsp-pyerr-clear",
+    "sha": "023e804eef9360ef0a273c6635faa4572c6788b3",
+    "short_sha": "023e804",
+    "published_at": "2026-10-29T23:07:29Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40969920329",
+    "summary_url": "/rogue/perf/branches/fix-bsp-pyerr-clear/latest.json"
+  }
+}
