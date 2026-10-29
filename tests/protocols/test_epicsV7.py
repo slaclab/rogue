@@ -658,6 +658,8 @@ def test_local_root():
 
         # TEST-13: Bool type (softioc longIn/Out; p4p type '?' for PVA long-name alias)
         # softioc uses longOut so ctxt.get returns int; test True/False as int 1/0.
+        # Also check the LocalVariable itself: the record echoes the put even if
+        # the variable rejected it, so a PV-only round-trip cannot see a dropped write.
         pv_name = device_epics_prefix + ':LocalRwBool'
         for test_value in (1, 0):
             ctxt.put(pv_name, test_value)
@@ -666,6 +668,10 @@ def test_local_root():
             if test_result != test_value:
                 raise AssertionError('Bool: pv_name={}: test_value={}; test_result={}'.format(
                     pv_name, test_value, test_result))
+            var_result = root.SimpleDev.LocalRwBool.get()
+            if var_result is not bool(test_value):
+                raise AssertionError('Bool: variable not updated: test_value={}; var_result={!r}'.format(
+                    test_value, var_result))
 
         # TEST-14: Enum type
         pv_name = device_epics_prefix + ':LocalRwEnum'

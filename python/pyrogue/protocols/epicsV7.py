@@ -593,9 +593,10 @@ class EpicsPvHolder(object):
                     new_value = new_value.decode('utf-8', errors='replace')
                 v.setDisp(str(new_value))
                 return
-            # Bool: convert to int
+            # Bool: softioc delivers an int; LocalVariables with typeCheck
+            # expect a bool, so convert before set()
             if typeStr == 'Bool':
-                v.set(int(new_value))
+                v.set(bool(new_value))
                 return
             # All numeric types (VAR-03)
             v.set(new_value)
