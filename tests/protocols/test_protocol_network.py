@@ -230,8 +230,18 @@ def test_udp_rssi_pack_start_and_stop_paths(monkeypatch):
         assert fake_rssi.started == 1
         assert fake_udp.rx_buffer_count == 14
 
-        dev._stop()
+        # The exposed stop/start commands only cycle RSSI. The UDP socket has
+        # no restart API, so closing it here would leave start() on a dead
+        # transport.
+        dev.stop()
         assert fake_rssi.stopped == 1
+        assert fake_udp.stopped == 0
+        dev.start()
+        assert fake_rssi.started == 2
+        assert fake_udp.stopped == 0
+
+        dev._stop()
+        assert fake_rssi.stopped == 2
         # The UDP receive thread must stop with the pack, not at garbage
         # collection, or it keeps forwarding frames after Root.stop().
         assert fake_udp.stopped == 1
