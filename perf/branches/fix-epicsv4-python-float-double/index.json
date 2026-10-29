@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-epicsv4-python-float-double",
+  "ref_slug": "fix-epicsv4-python-float-double",
+  "latest_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-epicsv4-python-float-double",
+      "sha": "9d57023548a404f6d2d3444815e214faa45b58e3",
+      "short_sha": "9d57023",
+      "published_at": "2026-10-29T23:17:32Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40971086993",
+      "summary_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/history/9d57023548a404f6d2d3444815e214faa45b58e3.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-epicsv4-python-float-double",
+    "sha": "9d57023548a404f6d2d3444815e214faa45b58e3",
+    "short_sha": "9d57023",
+    "published_at": "2026-10-29T23:17:32Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40971086993",
+    "summary_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/latest.json"
+  }
+}
