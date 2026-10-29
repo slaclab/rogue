@@ -82,6 +82,18 @@ class SimpleDev(pr.Device):
             mode      = "WO",
         ))
 
+        # Enum variable whose cached register value (7) is not an enum key.
+        # Models a register that reads back an undefined enum code on power-up
+        # or with a firmware/software enum mismatch. EpicsPvHolder must publish
+        # it at index 0 instead of aborting EpicsPvServer._start().
+        self.add(pr.RemoteVariable(
+            name      = "RemoteRwEnum",
+            offset    = 0x008,
+            value     = 7,
+            enum      = {0: 'A', 1: 'B'},
+            mode      = "RW",
+        ))
+
 
 class LocalRoot(pr.Root):
     def __init__(self):
@@ -127,6 +139,7 @@ class LocalRootWithEpics(LocalRoot):
                 'LocalRoot.SimpleDev.LocalRwFloat'    : epics_prefix+':LocalRoot:SimpleDev:LocalRwFloat',
                 'LocalRoot.SimpleDev.RemoteRwInt'     : epics_prefix+':LocalRoot:SimpleDev:RemoteRwInt',
                 'LocalRoot.SimpleDev.RemoteWoInt'     : epics_prefix+':LocalRoot:SimpleDev:RemoteWoInt',
+                'LocalRoot.SimpleDev.RemoteRwEnum'    : epics_prefix+':LocalRoot:SimpleDev:RemoteRwEnum',
                 'LocalRoot.SimpleDev.ResetLocalRwInt' : epics_prefix+':LocalRoot:SimpleDev:ResetLocalRwInt',
                 'LocalRoot.SimpleDev.SetLocalRwInt'   : epics_prefix+':LocalRoot:SimpleDev:SetLocalRwInt',
             }
@@ -306,6 +319,65 @@ def test_local_root():
                 test_result=ctxt.get(pv_name)
                 if test_result != test_value:
                     raise AssertionError('RPC set failed: pv_name={}: expected={}; test_result={}'.format(pv_name, test_value, test_result))
+
+def test_enum_invalid_value_served_at_index_zero():
+    """
+    An enum variable holding a value outside its enum map must not abort
+    EpicsPvServer._start(). The PV is served with index 0 and the remaining
+    PVs still resolve.
+    """
+    with LocalRootWithEpics(use_map=False) as root:
+        device_epics_prefix=epics_prefix+':LocalRoot:SimpleDev'
+
+        # The holder for RemoteRwEnum used to raise ValueError here, leaving
+        # the server unset while _started was already True.
+        assert root.SimpleDev.RemoteRwEnum.valueDisp() == 'INVALID: 7'
+        assert root.epics._started is True
+        assert root.epics._server is not None
+
+        try:
+            client = make_pva_client(root)
+        except RuntimeError as exc:
+            pytest.skip(f'EPICS PVA socket setup unavailable: {exc}')
+
+        with client as ctxt:
+            # p4p unwraps NTEnum to an int subclass holding the index
+            wait_pv_value(ctxt, device_epics_prefix+':RemoteRwEnum', 0, timeout=PV_DISCOVERY_TIMEOUT, transform=int)
+            wait_pv_value(ctxt, device_epics_prefix+':LocalRwInt', 0)
+
+
+def test_start_not_marked_started_when_holder_raises(monkeypatch):
+    """
+    If creating a PV holder raises, _start() must leave _started False so a
+    later _start() call can retry instead of returning at the started guard.
+    """
+    def boom(*args, **kwargs):
+        raise RuntimeError('holder construction failed')
+
+    with LocalRoot() as root:
+        server = pyrogue.protocols.epicsV4.EpicsPvServer(
+            base      = epics_prefix,
+            root      = root,
+            pvMap     = None,
+            incGroups = None,
+            excGroups = None,
+        )
+
+        monkeypatch.setattr(pyrogue.protocols.epicsV4, 'EpicsPvHolder', boom)
+        with pytest.raises(RuntimeError, match='holder construction failed'):
+            server._start()
+        assert server._started is False
+        assert server._server is None
+
+        # With holder construction working again, _start() is not short-circuited
+        monkeypatch.undo()
+        try:
+            server._start()
+            assert server._started is True
+            assert server._server is not None
+        finally:
+            server._stop()
+
 
 if __name__ == "__main__":
     test_local_root()
