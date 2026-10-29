@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T22:46:25Z",
+  "generated_at": "2026-10-29T22:47:24Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-10-29T18:13:21Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40927325028",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-uart-malformed-response-return",
+      "ref_slug": "fix-uart-malformed-response-return",
+      "latest_url": "/rogue/perf/branches/fix-uart-malformed-response-return/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-uart-malformed-response-return",
+          "sha": "80a50122d5e8dbe40b812761f66c77048956493a",
+          "short_sha": "80a5012",
+          "published_at": "2026-10-29T22:47:24Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40967494127",
+          "summary_url": "/rogue/perf/branches/fix-uart-malformed-response-return/history/80a50122d5e8dbe40b812761f66c77048956493a.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-uart-malformed-response-return",
+        "sha": "80a50122d5e8dbe40b812761f66c77048956493a",
+        "short_sha": "80a5012",
+        "published_at": "2026-10-29T22:47:24Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40967494127",
+        "summary_url": "/rogue/perf/branches/fix-uart-malformed-response-return/latest.json"
       }
     },
     {
