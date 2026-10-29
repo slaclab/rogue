@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-pgp2bsim-stop",
+  "ref_slug": "fix-pgp2bsim-stop",
+  "latest_url": "/rogue/perf/branches/fix-pgp2bsim-stop/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-pgp2bsim-stop",
+      "sha": "e0c52d624a1335f8e0cdef4370975e25c207965d",
+      "short_sha": "e0c52d6",
+      "published_at": "2026-10-29T23:24:44Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40971958774",
+      "summary_url": "/rogue/perf/branches/fix-pgp2bsim-stop/history/e0c52d624a1335f8e0cdef4370975e25c207965d.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-pgp2bsim-stop",
+    "sha": "e0c52d624a1335f8e0cdef4370975e25c207965d",
+    "short_sha": "e0c52d6",
+    "published_at": "2026-10-29T23:24:44Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40971958774",
+    "summary_url": "/rogue/perf/branches/fix-pgp2bsim-stop/latest.json"
+  }
+}
