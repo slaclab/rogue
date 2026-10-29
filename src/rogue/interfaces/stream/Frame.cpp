@@ -506,6 +506,9 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
     bool ctg           = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
     if (!ctg) {
         arr = PyArray_GETCONTIGUOUS(arr);
+        if (arr == NULL) {
+            throw(rogue::GeneralError("Frame::putNumpy", "Failed to create contiguous copy of numpy array"));
+        }
     }
 
     // Get the number of bytes in both the source and destination buffers
@@ -515,6 +518,8 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
 
     // Check this does not request data past the EOF
     if (end > size) {
+        // Release the temporary contiguous copy before throwing
+        if (!ctg) Py_XDECREF(arr);
         throw(rogue::GeneralError::create("Frame::putNumpy",
                                           "Attempt to write %" PRIu32 " bytes to frame at offset %" PRIu32
                                           " with size %" PRIu32,
