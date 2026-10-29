@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T23:33:35Z",
+  "generated_at": "2026-10-29T23:34:09Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-10-29T18:13:21Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40927325028",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-putnumpy-leak",
+      "ref_slug": "fix-putnumpy-leak",
+      "latest_url": "/rogue/perf/branches/fix-putnumpy-leak/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-putnumpy-leak",
+          "sha": "f10fe61befb3b703daa9b53596195e40b09abbe1",
+          "short_sha": "f10fe61",
+          "published_at": "2026-10-29T23:34:09Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40973092900",
+          "summary_url": "/rogue/perf/branches/fix-putnumpy-leak/history/f10fe61befb3b703daa9b53596195e40b09abbe1.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-putnumpy-leak",
+        "sha": "f10fe61befb3b703daa9b53596195e40b09abbe1",
+        "short_sha": "f10fe61",
+        "published_at": "2026-10-29T23:34:09Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40973092900",
+        "summary_url": "/rogue/perf/branches/fix-putnumpy-leak/latest.json"
       }
     },
     {
