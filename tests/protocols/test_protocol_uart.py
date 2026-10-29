@@ -222,3 +222,26 @@ def test_uart_worker_marks_task_done_when_verify_transaction_raises():
     assert not transaction.done_called
     assert len(transaction.errors) == 1
     assert "Unhandled UART worker exception: boom" in transaction.errors[0]
+
+
+def test_uart_read_malformed_response_does_not_complete(monkeypatch):
+    fake_serial = FakeSerial("/dev/null", 9600)
+    monkeypatch.setattr(uart_mod.serial, "Serial", lambda *args, **kwargs: fake_serial)
+    monkeypatch.setattr(uart_mod.threading, "Thread", FakeThread)
+
+    uart = uart_mod.UartMemory("/dev/null", 9600)
+
+    # Wrong address with a zero status: previously the error was reported and
+    # then overwritten by transaction.done() at the end of _doRead.
+    fake_serial.queue_text("r 00000000 deadbeef 0\n")
+    read_tx = FakeTransaction(address=0x10, size=4, tx_type=rogue.interfaces.memory.Read)
+    uart._doRead(read_tx)
+    assert "Malformed response part 0" in read_tx.error_msg
+    assert read_tx.done_called is False
+
+    # Too few fields: previously raised IndexError on parts[3].
+    fake_serial.queue_text("r 00000010\n")
+    short_tx = FakeTransaction(address=0x10, size=4, tx_type=rogue.interfaces.memory.Read)
+    uart._doRead(short_tx)
+    assert "Malformed response part 0" in short_tx.error_msg
+    assert short_tx.done_called is False

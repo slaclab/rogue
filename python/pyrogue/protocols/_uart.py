@@ -180,6 +180,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
 
             if (len(parts) != 4 or parts[0].lower() != 'r' or int(parts[1], 16) != addr):
                 transaction.error(f'Malformed response part {i}: {repr(response)} to transaction: {repr(sendString)}')
+                return
             else:
                 dataInt = int(parts[2], 16)
                 rdData = bytearray(dataInt.to_bytes(4, 'little', signed=False))
