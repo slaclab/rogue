@@ -97,7 +97,12 @@ if ( NOT NO_PYTHON )
 
    # Find newest python interpreter first
    set(Python3_FIND_STRATEGY "LOCATION")
-   find_package(Python3 QUIET REQUIRED COMPONENTS Interpreter Development)
+   # Embed (libpython) is optional: conda-forge python no longer ships libpython
+   find_package(Python3 QUIET REQUIRED COMPONENTS Interpreter Development.Module
+                OPTIONAL_COMPONENTS Development.Embed)
+   if (NOT Python3_Development.Embed_FOUND)
+      set(Python3_LIBRARIES "")
+   endif()
 
    # Find Numpy
    execute_process(

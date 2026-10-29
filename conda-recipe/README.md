@@ -64,7 +64,7 @@ python -c "import pyrogue; print(pyrogue.__version__)"
 # Build matrix
 
 `conda_build_config.yaml` declares the Python variants built for the
-`tidair-tag` channel: py310, py311, py312, and py313. Running
+`tidair-tag` channel: py310, py311, py312, py313, py314, and py315. Running
 `conda build conda-recipe` produces one `.conda` per variant.
 
 # GLIBC compatibility floor
