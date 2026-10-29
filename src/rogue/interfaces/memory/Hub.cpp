@@ -179,7 +179,9 @@ rim::HubWrap::HubWrap(uint64_t offset, uint32_t min, uint32_t max) : rim::Hub(of
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::HubWrap::doTransaction(rim::TransactionPtr transaction) {
-    {
+    // A C++ worker can still deliver a transaction while the interpreter
+    // shuts down; PyGILState_Ensure() aborts once finalization has started.
+    if (Py_IsInitialized()) {
         rogue::ScopedGil gil;
 
         if (boost::python::override pb = this->get_override("_doTransaction")) {
