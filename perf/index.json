@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T17:06:57Z",
+  "generated_at": "2026-10-29T17:38:15Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -305,6 +305,14 @@
       "history": [
         {
           "ref_name": "conda-python3p15-support",
+          "sha": "747756f69d25b08b3f3eff25a345bdaaf5195a3a",
+          "short_sha": "747756f",
+          "published_at": "2026-10-29T17:38:15Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40921830119",
+          "summary_url": "/rogue/perf/branches/conda-python3p15-support/history/747756f69d25b08b3f3eff25a345bdaaf5195a3a.json"
+        },
+        {
+          "ref_name": "conda-python3p15-support",
           "sha": "f054347ab3e411d53d31373313f9f99024414f19",
           "short_sha": "f054347",
           "published_at": "2026-10-29T17:06:57Z",
@@ -314,10 +322,10 @@
       ],
       "latest": {
         "ref_name": "conda-python3p15-support",
-        "sha": "f054347ab3e411d53d31373313f9f99024414f19",
-        "short_sha": "f054347",
-        "published_at": "2026-10-29T17:06:57Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40916803848",
+        "sha": "747756f69d25b08b3f3eff25a345bdaaf5195a3a",
+        "short_sha": "747756f",
+        "published_at": "2026-10-29T17:38:15Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40921830119",
         "summary_url": "/rogue/perf/branches/conda-python3p15-support/latest.json"
       }
     }
