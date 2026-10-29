@@ -574,18 +574,20 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
         for (x = 0; x < bitOffset_.size(); x++) bitOffset_[x] += shift * 8;
     }
 
+    // Byte ranges are computed in 64-bit integer arithmetic. The previous float
+    // path lost precision once a bit position exceeded 2^24 (2 MiB into the
+    // block), shifting the high byte of large list variables by one.
+    const uint64_t minBits = static_cast<uint64_t>(minSize) * 8;
+
     // Standard variable
     if (numValues_ == 0) {
         // Compute total bit range of accessed bytes
-        varBytes_ = static_cast<int>(std::ceil(
-                        static_cast<float>(bitOffset_[bitOffset_.size() - 1] + bitSize_[bitSize_.size() - 1]) /
-                        (static_cast<float>(minSize) * 8.0))) *
-                    minSize;
+        const uint64_t highBit =
+            static_cast<uint64_t>(bitOffset_[bitOffset_.size() - 1]) + bitSize_[bitSize_.size() - 1];
+        varBytes_ = static_cast<uint32_t>(((highBit + minBits - 1) / minBits) * minSize);
 
         // Compute the lowest byte, aligned to min access
-        lowTranByte_[0] =
-            static_cast<int>(std::floor(static_cast<float>(bitOffset_[0]) / (static_cast<float>(minSize) * 8.0))) *
-            minSize;
+        lowTranByte_[0] = static_cast<uint32_t>((static_cast<uint64_t>(bitOffset_[0]) / minBits) * minSize);
 
         // Compute the highest byte, aligned to min access
         highTranByte_[0] = varBytes_ - 1;
@@ -594,17 +596,10 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
         // List variable
     } else {
         for (x = 0; x < numValues_; x++) {
-            lowTranByte_[x] =
-                static_cast<uint32_t>(std::floor(
-                    (static_cast<float>(bitOffset_[0]) + static_cast<float>(x) * static_cast<float>(valueStride_)) /
-                    (static_cast<float>(minSize) * 8.0))) *
-                minSize;
-            highTranByte_[x] = static_cast<uint32_t>(
-                                   std::ceil((static_cast<float>(bitOffset_[0]) +
-                                              static_cast<float>(x) * static_cast<float>(valueStride_) + valueBits_) /
-                                             (static_cast<float>(minSize) * 8.0))) *
-                                   minSize -
-                               1;
+            const uint64_t lowBit  = static_cast<uint64_t>(bitOffset_[0]) + static_cast<uint64_t>(x) * valueStride_;
+            const uint64_t highBit = lowBit + valueBits_;
+            lowTranByte_[x]        = static_cast<uint32_t>((lowBit / minBits) * minSize);
+            highTranByte_[x]       = static_cast<uint32_t>(((highBit + minBits - 1) / minBits) * minSize - 1);
         }
 
         // Compute total bit range of accessed bytes
