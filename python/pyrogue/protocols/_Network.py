@@ -63,7 +63,7 @@ class UdpRssiPack(pr.Device):
         server: bool = False,
         **kwargs: Any,
     ) -> None:
-        super(self.__class__, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         # Local copy host/port arg values
         self._host = host
