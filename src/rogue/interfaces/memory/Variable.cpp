@@ -218,6 +218,7 @@ rim::Variable::Variable(std::string name,
         }
     }
     stale_ = false;
+    block_ = NULL;
 
     // Call aligning function to init values
     shiftOffsetDown(0, 1);
@@ -878,6 +879,30 @@ std::string rim::Variable::getDumpValue(bool read) {
 
             case rim::UFixed:
                 ret << block_->getUFixed(this, index);
+                break;
+
+            case rim::Float16:
+                ret << block_->getFloat16(this, index);
+                break;
+
+            case rim::Float8:
+                ret << block_->getFloat8(this, index);
+                break;
+
+            case rim::BFloat16:
+                ret << block_->getBFloat16(this, index);
+                break;
+
+            case rim::TensorFloat32:
+                ret << block_->getTensorFloat32(this, index);
+                break;
+
+            case rim::Float6:
+                ret << block_->getFloat6(this, index);
+                break;
+
+            case rim::Float4:
+                ret << block_->getFloat4(this, index);
                 break;
 
             default:
