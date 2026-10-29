@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-tcpclient-error-format",
+  "ref_slug": "fix-tcpclient-error-format",
+  "latest_url": "/rogue/perf/branches/fix-tcpclient-error-format/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-tcpclient-error-format",
+      "sha": "8df6f6e251650a772d78c8d2af5551a2a9e1e591",
+      "short_sha": "8df6f6e",
+      "published_at": "2026-10-29T23:27:07Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40972201428",
+      "summary_url": "/rogue/perf/branches/fix-tcpclient-error-format/history/8df6f6e251650a772d78c8d2af5551a2a9e1e591.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-tcpclient-error-format",
+    "sha": "8df6f6e251650a772d78c8d2af5551a2a9e1e591",
+    "short_sha": "8df6f6e",
+    "published_at": "2026-10-29T23:27:07Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40972201428",
+    "summary_url": "/rogue/perf/branches/fix-tcpclient-error-format/latest.json"
+  }
+}
