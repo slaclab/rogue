@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-gpib-worker-exception",
+  "ref_slug": "fix-gpib-worker-exception",
+  "latest_url": "/rogue/perf/branches/fix-gpib-worker-exception/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-gpib-worker-exception",
+      "sha": "9e9a73a350b1c9ca936966656088bc744ca05a00",
+      "short_sha": "9e9a73a",
+      "published_at": "2026-10-29T23:16:41Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40971116580",
+      "summary_url": "/rogue/perf/branches/fix-gpib-worker-exception/history/9e9a73a350b1c9ca936966656088bc744ca05a00.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-gpib-worker-exception",
+    "sha": "9e9a73a350b1c9ca936966656088bc744ca05a00",
+    "short_sha": "9e9a73a",
+    "published_at": "2026-10-29T23:16:41Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40971116580",
+    "summary_url": "/rogue/perf/branches/fix-gpib-worker-exception/latest.json"
+  }
+}
