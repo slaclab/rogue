@@ -340,9 +340,12 @@ def dataToYaml(data: Any) -> str:
         """Represent numeric values safely and other values by display text."""
         if data.valueDisp is None:
             return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
-        elif isinstance(data.value, bool):
+        elif isinstance(data.value, bool) and data.valueDisp == str(data.value):
+            # Default bool enum labels ('True'/'False') read back as YAML bools.
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
+            # Custom enum labels (e.g. 'Enabled') must stay strings so that
+            # setDisp can map them back through the reverse enum on reload.
             enc = 'tag:yaml.org,2002:str'
         elif isinstance(data.value, numbers.Integral):
             value = int(data.value)
