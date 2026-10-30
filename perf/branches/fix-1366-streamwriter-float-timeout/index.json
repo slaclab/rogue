@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-1366-streamwriter-float-timeout",
+  "ref_slug": "fix-1366-streamwriter-float-timeout",
+  "latest_url": "/rogue/perf/branches/fix-1366-streamwriter-float-timeout/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-1366-streamwriter-float-timeout",
+      "sha": "eda592436873142edd4ccc14081b43dffdc75613",
+      "short_sha": "eda5924",
+      "published_at": "2026-10-30T03:14:53Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40995466520",
+      "summary_url": "/rogue/perf/branches/fix-1366-streamwriter-float-timeout/history/eda592436873142edd4ccc14081b43dffdc75613.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-1366-streamwriter-float-timeout",
+    "sha": "eda592436873142edd4ccc14081b43dffdc75613",
+    "short_sha": "eda5924",
+    "published_at": "2026-10-30T03:14:53Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40995466520",
+    "summary_url": "/rogue/perf/branches/fix-1366-streamwriter-float-timeout/latest.json"
+  }
+}
