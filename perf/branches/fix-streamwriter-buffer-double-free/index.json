@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-streamwriter-buffer-double-free",
+  "ref_slug": "fix-streamwriter-buffer-double-free",
+  "latest_url": "/rogue/perf/branches/fix-streamwriter-buffer-double-free/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-streamwriter-buffer-double-free",
+      "sha": "aae71c39c1fc0226d9b576bbc807d1f825989aab",
+      "short_sha": "aae71c3",
+      "published_at": "2026-10-30T03:37:44Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40997635188",
+      "summary_url": "/rogue/perf/branches/fix-streamwriter-buffer-double-free/history/aae71c39c1fc0226d9b576bbc807d1f825989aab.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-streamwriter-buffer-double-free",
+    "sha": "aae71c39c1fc0226d9b576bbc807d1f825989aab",
+    "short_sha": "aae71c3",
+    "published_at": "2026-10-30T03:37:44Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40997635188",
+    "summary_url": "/rogue/perf/branches/fix-streamwriter-buffer-double-free/latest.json"
+  }
+}
