@@ -6,6 +6,7 @@ The native C++ tests live under `tests/cpp/` and are organized by behavior:
 - `memory/`: memory bit helpers plus transaction/block and variable behavior
 - `stream/`: frame, pool, iterator, FIFO, filter, and rate-drop behavior
 - `protocols/`: protocol helpers, packetizer and SRP coverage, and XVC smoke coverage
+- `utilities/`: file I/O writer buffer lifetime coverage
 - `smoke/`: higher-level API smoke coverage that requires Python support
 - `support/`: shared test main and helper utilities
 - `vendor/`: vendored upstream single-header test framework and provenance notes
