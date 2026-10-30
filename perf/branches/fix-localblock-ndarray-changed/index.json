@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-localblock-ndarray-changed",
+  "ref_slug": "fix-localblock-ndarray-changed",
+  "latest_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-localblock-ndarray-changed",
+      "sha": "7edc9c55045bd31d59411b0a89bc6f63d4d8970b",
+      "short_sha": "7edc9c5",
+      "published_at": "2026-10-30T02:32:57Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40991462347",
+      "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/history/7edc9c55045bd31d59411b0a89bc6f63d4d8970b.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-localblock-ndarray-changed",
+    "sha": "7edc9c55045bd31d59411b0a89bc6f63d4d8970b",
+    "short_sha": "7edc9c5",
+    "published_at": "2026-10-30T02:32:57Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40991462347",
+    "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/latest.json"
+  }
+}
