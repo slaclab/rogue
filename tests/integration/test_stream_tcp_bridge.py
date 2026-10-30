@@ -124,5 +124,37 @@ def test_stream_tcp_multiple_frames(free_tcp_port):
         client.close()
 
 
+def test_stream_tcp_zero_payload_frame_then_data(free_tcp_port):
+    """A zero-length payload must not break reception of the following frame.
+
+    Regression test for TcpCore::runThread() treating a zero-byte
+    zmq_recvmsg() result as a receive failure, which desynchronized the
+    multipart message parser and dropped both the empty frame and the frame
+    that followed it.
+    """
+    server = rogue.interfaces.stream.TcpServer("127.0.0.1", free_tcp_port)
+    client = rogue.interfaces.stream.TcpClient("127.0.0.1", free_tcp_port)
+
+    inject = rogue.interfaces.stream.Master()
+    capture = FrameCapture()
+
+    server << inject
+    capture << client
+
+    try:
+        time.sleep(1.0)
+
+        payload = struct.pack('<IIII', 0xDEADBEEF, 0xCAFEBABE, 0x12345678, 0x9ABCDEF0)
+        _inject_frame(inject, b'')
+        _inject_frame(inject, payload)
+
+        assert wait_for(lambda: len(capture.frames) == 2, timeout=DRAIN_TIMEOUT)
+        assert capture.frames[0] == b''
+        assert capture.frames[1] == payload
+    finally:
+        server.close()
+        client.close()
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

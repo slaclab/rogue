@@ -397,7 +397,7 @@ void ris::TcpCore::runThread() {
         // Get message
         do {
             // Get the message
-            if (zmq_recvmsg(this->zmqPull_, &(msg[x]), 0) > 0) {
+            if (zmq_recvmsg(this->zmqPull_, &(msg[x]), 0) >= 0) {
                 if (x != 3) x++;
                 msgCnt++;
 
