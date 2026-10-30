@@ -13,3 +13,11 @@ rogue_add_cpp_test(rogue-cpp-protocols-partial-construction
       cpp-core
       no-python
 )
+
+rogue_add_cpp_test(rogue-cpp-protocols-packetizer-v2-last-validation
+   SOURCES
+      test_v2_last_validation.cpp
+   LABELS
+      cpp-core
+      no-python
+)
