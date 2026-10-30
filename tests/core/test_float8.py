@@ -96,6 +96,20 @@ def test_float8_model_near_overflow_clamps_instead_of_nan(value):
     assert result == math.copysign(448.0, value)
 
 
+@pytest.mark.parametrize("value", [448.0, 480.0, 500.0, 511.9, 512.0, -448.0, -480.0, -500.0, -511.9, -512.0])
+def test_float8_model_overflow_boundary_never_encodes_nan(value):
+    # Sweep across the 448 / 480 / 512 boundaries: a finite input must never
+    # produce the NaN byte and must round-trip to a finite value, so the
+    # encoder is monotonic through the clamp region (448 -> 448, 480 -> 448,
+    # 512 -> 448) rather than dipping to NaN in the middle.
+    model = pr.Float8(8)
+    ba = model.toBytes(value)
+    assert ba[0] & 0x7F != 0x7F
+    result = model.fromBytes(ba)
+    assert math.isfinite(result)
+    assert result == math.copysign(448.0, value)
+
+
 def test_float8_model_fromstring():
     model = pr.Float8(8)
     assert model.fromString("1.5") == 1.5
