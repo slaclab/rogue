@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-update-worker-listener-exception",
+  "ref_slug": "fix-update-worker-listener-exception",
+  "latest_url": "/rogue/perf/branches/fix-update-worker-listener-exception/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-update-worker-listener-exception",
+      "sha": "d7d6e0ad25651e8909675f9c0a309349b7784f6f",
+      "short_sha": "d7d6e0a",
+      "published_at": "2026-10-30T03:57:05Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40999440176",
+      "summary_url": "/rogue/perf/branches/fix-update-worker-listener-exception/history/d7d6e0ad25651e8909675f9c0a309349b7784f6f.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-update-worker-listener-exception",
+    "sha": "d7d6e0ad25651e8909675f9c0a309349b7784f6f",
+    "short_sha": "d7d6e0a",
+    "published_at": "2026-10-30T03:57:05Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40999440176",
+    "summary_url": "/rogue/perf/branches/fix-update-worker-listener-exception/latest.json"
+  }
+}
