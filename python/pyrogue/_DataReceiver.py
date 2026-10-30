@@ -30,8 +30,9 @@ class DataReceiver(pr.Device,ris.Slave):
         Type string for the data variable.
     hideData : bool, optional (default = True)
         If True, hide the data variable in the GUI.
-    value : object, optional (default = numpy.zeros(shape=1, dtype=numpy.uint8, order='C'))
-        Initial data value.
+    value : object, optional (default = None)
+        Initial data value. If None, a new ``numpy.zeros(shape=1, dtype=numpy.uint8, order='C')``
+        array is allocated for this instance.
     enableOnStart : bool, optional (default = True)
         If True, enable Rx on start.
     **kwargs : Any
@@ -41,10 +42,15 @@ class DataReceiver(pr.Device,ris.Slave):
     def __init__(self,
                  typeStr: str = 'UInt8[np]',
                  hideData: bool = True,
-                 value: Any = numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
+                 value: Any | None = None,
                  enableOnStart: bool = True,
                  **kwargs: Any) -> None:
         """Initialize the data receiver."""
+
+        # Allocate a fresh default per instance. A mutable default argument
+        # would be a single array shared by every receiver.
+        if value is None:
+            value = numpy.zeros(shape=1, dtype=numpy.uint8, order='C')
 
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
