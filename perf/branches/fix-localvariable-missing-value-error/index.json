@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-localvariable-missing-value-error",
+  "ref_slug": "fix-localvariable-missing-value-error",
+  "latest_url": "/rogue/perf/branches/fix-localvariable-missing-value-error/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-localvariable-missing-value-error",
+      "sha": "9db8b4a23e50ef73b40774424052843b7495be61",
+      "short_sha": "9db8b4a",
+      "published_at": "2026-10-30T02:47:30Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40992979636",
+      "summary_url": "/rogue/perf/branches/fix-localvariable-missing-value-error/history/9db8b4a23e50ef73b40774424052843b7495be61.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-localvariable-missing-value-error",
+    "sha": "9db8b4a23e50ef73b40774424052843b7495be61",
+    "short_sha": "9db8b4a",
+    "published_at": "2026-10-30T02:47:30Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40992979636",
+    "summary_url": "/rogue/perf/branches/fix-localvariable-missing-value-error/latest.json"
+  }
+}
