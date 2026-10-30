@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-tcpcore-zero-payload-frame",
+  "ref_slug": "fix-tcpcore-zero-payload-frame",
+  "latest_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-tcpcore-zero-payload-frame",
+      "sha": "104a43cbd900aa70c6c51148d7e68d7549f3c600",
+      "short_sha": "104a43c",
+      "published_at": "2026-10-30T02:44:52Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40992563990",
+      "summary_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/history/104a43cbd900aa70c6c51148d7e68d7549f3c600.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-tcpcore-zero-payload-frame",
+    "sha": "104a43cbd900aa70c6c51148d7e68d7549f3c600",
+    "short_sha": "104a43c",
+    "published_at": "2026-10-30T02:44:52Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40992563990",
+    "summary_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/latest.json"
+  }
+}
