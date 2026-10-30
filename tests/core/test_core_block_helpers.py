@@ -189,3 +189,39 @@ def test_local_block_array_numpy_and_inplace_helpers():
 
     assert math_block.get(math_var) == 11
     assert math_var.queue_updates == 10
+
+
+def test_local_block_inplace_helpers_skip_notify_when_disabled():
+    math_var = FakeVariable(8)
+    math_block = block_mod.LocalBlock(
+        variable=math_var,
+        localSet=None,
+        localGet=None,
+        minimum=None,
+        maximum=None,
+        value=8,
+    )
+    math_block.setEnable(False)
+
+    math_block._iadd(2)
+    assert math_block.get(math_var) == 10
+    assert math_var.queue_updates == 0
+
+    matrix_var = FakeVariable(np.eye(2), native_type=np.ndarray)
+    matrix_block = block_mod.LocalBlock(
+        variable=matrix_var,
+        localSet=None,
+        localGet=None,
+        minimum=None,
+        maximum=None,
+        value=np.eye(2),
+    )
+    matrix_block.setEnable(False)
+
+    matrix_block._imatmul(np.array([[2, 0], [0, 2]]))
+    assert np.array_equal(matrix_block.get(matrix_var), np.array([[2, 0], [0, 2]]))
+    assert matrix_var.queue_updates == 0
+
+    matrix_block.setEnable(True)
+    matrix_block._imatmul(np.eye(2))
+    assert matrix_var.queue_updates == 1
