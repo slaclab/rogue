@@ -75,3 +75,28 @@ TEST_CASE("Frame iterator supports copy operations between disjoint frames") {
 
     CHECK_EQ(rogue_test::readFrame(dstFrame, 7), std::vector<uint8_t>({1, 3, 5, 7, 9, 11, 13}));
 }
+
+TEST_CASE("Frame iterator on a frame with no buffers equals the end iterator") {
+    auto pool  = rogue_test::makePool(4, 0);
+    auto frame = pool->acceptReq(0, false);
+
+    REQUIRE(frame->isEmpty());
+    CHECK_EQ(frame->getSize(), 0U);
+    CHECK_EQ(frame->getPayload(), 0U);
+
+    CHECK(frame->begin() == frame->end());
+    CHECK(frame->beginWrite() == frame->endWrite());
+    CHECK_EQ(frame->end() - frame->begin(), 0);
+
+    auto reader = frame->begin();
+    CHECK_EQ(reader.remBuffer(), 0U);
+    CHECK(reader.ptr() == nullptr);
+
+    uint8_t sink = 0xA5;
+    rogue::interfaces::stream::fromFrame(reader, 0, &sink);
+    CHECK_EQ(sink, 0xA5U);
+
+    auto writer = frame->beginWrite();
+    rogue::interfaces::stream::toFrame(writer, 0, &sink);
+    CHECK(writer == frame->endWrite());
+}
