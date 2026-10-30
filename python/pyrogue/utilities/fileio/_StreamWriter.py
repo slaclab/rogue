@@ -118,11 +118,11 @@ class StreamWriter(pyrogue.DataWriter):
 
     def _waitFrameCount(self, count: int, timeout: float = 0) -> bool:
         """Wait for total frame count to reach ``count`` within timeout seconds."""
-        return self._writer.waitFrameCount(count, timeout * 1000000)
+        return self._writer.waitFrameCount(count, int(timeout * 1000000))
 
     def _waitFrameChannelCount(self, chan: int, count: int, timeout: float = 0) -> bool:
         """Wait for channel frame count to reach ``count`` within timeout seconds."""
-        return self._writer.getChannel(chan).waitFrameCount(count, timeout * 1000000)
+        return self._writer.getChannel(chan).waitFrameCount(count, int(timeout * 1000000))
 
     def getChannel(self, chan: int) -> rogue.interfaces.stream.Slave:
         """Return writer channel object by index."""
