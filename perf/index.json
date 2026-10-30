@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-30T03:45:24Z",
+  "generated_at": "2026-10-30T03:50:47Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-10-29T18:13:21Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40927325028",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-packetizer-v2-last-validation",
+      "ref_slug": "fix-packetizer-v2-last-validation",
+      "latest_url": "/rogue/perf/branches/fix-packetizer-v2-last-validation/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-packetizer-v2-last-validation",
+          "sha": "1298573a3534ed03db1e95e4b77adf86c3b4717a",
+          "short_sha": "1298573",
+          "published_at": "2026-10-30T03:50:47Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40998906876",
+          "summary_url": "/rogue/perf/branches/fix-packetizer-v2-last-validation/history/1298573a3534ed03db1e95e4b77adf86c3b4717a.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-packetizer-v2-last-validation",
+        "sha": "1298573a3534ed03db1e95e4b77adf86c3b4717a",
+        "short_sha": "1298573",
+        "published_at": "2026-10-30T03:50:47Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/40998906876",
+        "summary_url": "/rogue/perf/branches/fix-packetizer-v2-last-validation/latest.json"
       }
     },
     {
