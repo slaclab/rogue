@@ -266,3 +266,33 @@ def test_local_command_call_blocks_until_completion():
         elapsed = time.perf_counter() - start
 
         assert elapsed >= 0.04
+
+
+@pytest.mark.parametrize(
+    "offset, bitOffset, bitSize",
+    [
+        ([0, 4], [0, 0, 0], [32, 32, 32]),
+        ([0, 4, 8], [0, 0], [32, 32, 32]),
+        ([0, 4, 8], [0, 0, 0], [32, 32]),
+    ],
+)
+def test_remote_variable_rejects_mismatched_address_list_lengths(offset, bitOffset, bitSize):
+    with pytest.raises(pr.VariableError, match="must match"):
+        pr.RemoteVariable(
+            name="R",
+            offset=offset,
+            bitOffset=bitOffset,
+            bitSize=bitSize,
+            base=pr.UInt,
+        )
+
+
+def test_remote_variable_accepts_matched_address_list_lengths():
+    var = pr.RemoteVariable(
+        name="R",
+        offset=[0, 4, 8],
+        bitOffset=[0, 0, 0],
+        bitSize=[32, 32, 32],
+        base=pr.UInt,
+    )
+    assert var.bitSize == [32, 32, 32]
