@@ -421,7 +421,7 @@ class BaseVariable(pr.Node):
     def precision(self) -> int:
         """Return the display precision for float-like values."""
         if self.nativeType is float or self.nativeType is np.ndarray:
-            res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
+            res = re.search(r':([0-9]*)\.([0-9]+)f',self._disp)
             try:
                 return int(res[2])
             except Exception:
