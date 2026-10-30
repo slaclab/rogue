@@ -1842,7 +1842,10 @@ uint8_t floatToFloat8(float value) {
         mantissa >>= shift;
         return sign | ((mantissa >> 20) & 0x07);
     }
-    return sign | (exponent << 3) | ((mantissa >> 20) & 0x07);
+    uint8_t mag = static_cast<uint8_t>((exponent << 3) | ((mantissa >> 20) & 0x07));
+    // 0x7F is NaN in E4M3; values in [480, 512) land there, clamp to max finite
+    if (mag == 0x7F) mag = 0x7E;
+    return sign | mag;
 }
 
 float float8ToFloat(uint8_t f8) {

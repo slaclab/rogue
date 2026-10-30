@@ -927,7 +927,11 @@ class Float8(Model):
             shift = 1 - exp8
             mant32 >>= shift
             return bytearray([sign | ((mant32 >> 20) & 0x07)])
-        return bytearray([sign | (exp8 << 3) | ((mant32 >> 20) & 0x07)])
+        mag = (exp8 << 3) | ((mant32 >> 20) & 0x07)
+        # 0x7F is NaN in E4M3; values in [480, 512) land there, clamp to max finite
+        if mag == 0x7F:
+            mag = 0x7E
+        return bytearray([sign | mag])
 
     def fromBytes(self, ba: bytes) -> float:
         """Decode 1-byte E4M3 encoding to float."""
