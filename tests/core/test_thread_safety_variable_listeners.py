@@ -168,3 +168,42 @@ def test_variable_listener_chain_concurrent_modification():
         assert not t2.is_alive(), "modify_chain thread hung"
 
     assert not errors, f"Errors during test: {errors}"
+
+
+def test_update_worker_survives_raising_listener():
+    """A raising variable listener must not kill the root update worker thread."""
+
+    class TwoVarDev(pr.Device):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.add(pr.LocalVariable(name='BadVar', value=0, mode='RW'))
+            self.add(pr.LocalVariable(name='GoodVar', value=0, mode='RW'))
+
+    class TwoVarRoot(pr.Root):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.add(TwoVarDev(name='Dev'))
+
+    received = []
+    got_good = threading.Event()
+
+    def root_listener(path, val):
+        received.append((path, val.value))
+        if path == 'TwoVarRoot.Dev.GoodVar' and val.value == 1:
+            got_good.set()
+
+    def raising_listener(path, val):
+        raise RuntimeError("listener failure")
+
+    with TwoVarRoot(pollEn=False) as root:
+        root.addVarListener(root_listener)
+        root.Dev.BadVar.addListener(raising_listener)
+
+        # Trigger the raising listener on the update worker thread, then
+        # queue a second update. waitOnUpdate() is avoided here because it
+        # blocks forever if the worker thread has already exited.
+        root.Dev.BadVar.set(1)
+        root.Dev.GoodVar.set(1)
+
+        assert got_good.wait(timeout=5), f"root listener not called for GoodVar: {received}"
+        assert root._updateThread.is_alive(), "update worker thread died"
