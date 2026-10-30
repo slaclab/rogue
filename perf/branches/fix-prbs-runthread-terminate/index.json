@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-prbs-runthread-terminate",
+  "ref_slug": "fix-prbs-runthread-terminate",
+  "latest_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-prbs-runthread-terminate",
+      "sha": "66af11d967ee672b5edd583d7b05c7b320bf8827",
+      "short_sha": "66af11d",
+      "published_at": "2026-10-30T03:54:42Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40999209132",
+      "summary_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/history/66af11d967ee672b5edd583d7b05c7b320bf8827.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-prbs-runthread-terminate",
+    "sha": "66af11d967ee672b5edd583d7b05c7b320bf8827",
+    "short_sha": "66af11d",
+    "published_at": "2026-10-30T03:54:42Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40999209132",
+    "summary_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json"
+  }
+}
