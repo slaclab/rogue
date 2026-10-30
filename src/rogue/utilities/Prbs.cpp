@@ -144,6 +144,7 @@ void ru::Prbs::setWidth(uint32_t width) {
 void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t* taps) {
     uint32_t i;
 
+    rogue::GilRelease noGil;
     std::lock_guard<std::mutex> lockT(pMtx_);
 
     free(taps_);
@@ -321,6 +322,7 @@ void ru::Prbs::genPayload(bool state) {
 //! Reset counters
 // Counters should really be locked!
 void ru::Prbs::resetCount() {
+    rogue::GilRelease noGil;
     pMtx_.lock();
     txErrCount_ = 0;
     txCount_    = 0;
