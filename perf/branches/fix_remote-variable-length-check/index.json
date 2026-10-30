@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix/remote-variable-length-check",
+  "ref_slug": "fix_remote-variable-length-check",
+  "latest_url": "/rogue/perf/branches/fix_remote-variable-length-check/latest.json",
+  "history": [
+    {
+      "ref_name": "fix/remote-variable-length-check",
+      "sha": "7a02d354373168e4d8c697799ce1cb1493503dce",
+      "short_sha": "7a02d35",
+      "published_at": "2026-10-30T02:43:10Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40992441584",
+      "summary_url": "/rogue/perf/branches/fix_remote-variable-length-check/history/7a02d354373168e4d8c697799ce1cb1493503dce.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix/remote-variable-length-check",
+    "sha": "7a02d354373168e4d8c697799ce1cb1493503dce",
+    "short_sha": "7a02d35",
+    "published_at": "2026-10-30T02:43:10Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40992441584",
+    "summary_url": "/rogue/perf/branches/fix_remote-variable-length-check/latest.json"
+  }
+}
