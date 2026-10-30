@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-rssi-reqframe-error-msg",
+  "ref_slug": "fix-rssi-reqframe-error-msg",
+  "latest_url": "/rogue/perf/branches/fix-rssi-reqframe-error-msg/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-rssi-reqframe-error-msg",
+      "sha": "35126192b18273537e74695a4bf313c018f223c8",
+      "short_sha": "3512619",
+      "published_at": "2026-10-30T04:04:36Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40999004180",
+      "summary_url": "/rogue/perf/branches/fix-rssi-reqframe-error-msg/history/35126192b18273537e74695a4bf313c018f223c8.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-rssi-reqframe-error-msg",
+    "sha": "35126192b18273537e74695a4bf313c018f223c8",
+    "short_sha": "3512619",
+    "published_at": "2026-10-30T04:04:36Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40999004180",
+    "summary_url": "/rogue/perf/branches/fix-rssi-reqframe-error-msg/latest.json"
+  }
+}
