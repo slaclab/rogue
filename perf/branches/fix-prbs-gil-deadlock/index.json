@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-prbs-gil-deadlock",
+  "ref_slug": "fix-prbs-gil-deadlock",
+  "latest_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-prbs-gil-deadlock",
+      "sha": "9a28050663277cfd4b700353b68c7581fa0281ac",
+      "short_sha": "9a28050",
+      "published_at": "2026-10-30T03:45:24Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/40998398319",
+      "summary_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/history/9a28050663277cfd4b700353b68c7581fa0281ac.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-prbs-gil-deadlock",
+    "sha": "9a28050663277cfd4b700353b68c7581fa0281ac",
+    "short_sha": "9a28050",
+    "published_at": "2026-10-30T03:45:24Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/40998398319",
+    "summary_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/latest.json"
+  }
+}
