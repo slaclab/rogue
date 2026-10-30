@@ -140,3 +140,27 @@ def test_prbs_background_tx():
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+def test_prbs_set_width_while_enabled_does_not_terminate():
+    # enable() validates txSize_ once; a later setWidth() invalidates it and
+    # genFrame() throws inside runThread(). Without the catch in runThread()
+    # this escapes the thread and std::terminate() kills the interpreter.
+    tx = rogue.utilities.Prbs()
+    rx = rogue.utilities.Prbs()
+    tx >> rx
+
+    tx.setWidth(32)
+    tx.enable(12)
+    assert wait_for(lambda: rx.getRxCount() >= 1, timeout=5.0)
+
+    tx.setWidth(128)  # 12 % 16 != 0 and 12 < minSize_: txSize_ now invalid
+
+    # The TX thread must log and stop on its own; disable() then joins it.
+    tx.disable()
+
+    # Object is still usable with a size valid for the new width.
+    rx.setWidth(128)
+    count = rx.getRxCount()
+    tx.genFrame(128)
+    assert wait_for(lambda: rx.getRxCount() == count + 1, timeout=5.0)
