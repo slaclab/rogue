@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-streamwriter-buffer-double-free",
+      "sha": "4af535b003a68889fe438ba88d52b740ef4ccbdd",
+      "short_sha": "4af535b",
+      "published_at": "2026-11-02T23:14:01Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41542655114",
+      "summary_url": "/rogue/perf/branches/fix-streamwriter-buffer-double-free/history/4af535b003a68889fe438ba88d52b740ef4ccbdd.json"
+    },
+    {
+      "ref_name": "fix-streamwriter-buffer-double-free",
       "sha": "aae71c39c1fc0226d9b576bbc807d1f825989aab",
       "short_sha": "aae71c3",
       "published_at": "2026-10-30T03:37:44Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-streamwriter-buffer-double-free",
-    "sha": "aae71c39c1fc0226d9b576bbc807d1f825989aab",
-    "short_sha": "aae71c3",
-    "published_at": "2026-10-30T03:37:44Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40997635188",
+    "sha": "4af535b003a68889fe438ba88d52b740ef4ccbdd",
+    "short_sha": "4af535b",
+    "published_at": "2026-11-02T23:14:01Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41542655114",
     "summary_url": "/rogue/perf/branches/fix-streamwriter-buffer-double-free/latest.json"
   }
 }
