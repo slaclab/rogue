@@ -169,8 +169,10 @@ class Pgp2bSim():
         self.sb = SideBandSim(host, port+8)
 
     def _stop(self) -> None:
-        """Stop the sideband simulation."""
+        """Stop the sideband simulation and the virtual channel bridges."""
         self.sb._stop()
+        for vc in self.vc:
+            vc._stop()
 
     def __enter__(self) -> "Pgp2bSim":
         """Return self for context-manager use."""
