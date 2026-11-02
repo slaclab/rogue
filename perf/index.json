@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T19:34:52Z",
+  "generated_at": "2026-11-02T19:46:13Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "f711796a54fe42359a7fd7676f7318fe4d402102",
-      "short_sha": "f711796",
-      "published_at": "2026-11-02T19:34:21Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/41509843182",
+      "sha": "474e91a57fc6b6c3c1b7b09a1419a3ecea019001",
+      "short_sha": "474e91a",
+      "published_at": "2026-11-02T19:46:13Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41511777367",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "474e91a57fc6b6c3c1b7b09a1419a3ecea019001",
+          "short_sha": "474e91a",
+          "published_at": "2026-11-02T19:46:13Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41511777367",
+          "summary_url": "/rogue/perf/branches/pre-release/history/474e91a57fc6b6c3c1b7b09a1419a3ecea019001.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "f711796a54fe42359a7fd7676f7318fe4d402102",
@@ -279,54 +287,15 @@
           "published_at": "2026-06-18T18:59:54Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/27780776279",
           "summary_url": "/rogue/perf/branches/pre-release/history/c3157a845b7b8a47a0cd91b2d271dd88e616aa1b.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "602b7fcc4496434889ec8fba8b3dc8ee12d7881e",
-          "short_sha": "602b7fc",
-          "published_at": "2026-06-18T17:13:21Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/27775105145",
-          "summary_url": "/rogue/perf/branches/pre-release/history/602b7fcc4496434889ec8fba8b3dc8ee12d7881e.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "f711796a54fe42359a7fd7676f7318fe4d402102",
-        "short_sha": "f711796",
-        "published_at": "2026-11-02T19:34:21Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41509843182",
+        "sha": "474e91a57fc6b6c3c1b7b09a1419a3ecea019001",
+        "short_sha": "474e91a",
+        "published_at": "2026-11-02T19:46:13Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41511777367",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-localblock-ndarray-changed",
-      "ref_slug": "fix-localblock-ndarray-changed",
-      "latest_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-localblock-ndarray-changed",
-          "sha": "195d67dc048b7504f207893e7d2764fad8bab359",
-          "short_sha": "195d67d",
-          "published_at": "2026-11-02T19:34:52Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41509887069",
-          "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/history/195d67dc048b7504f207893e7d2764fad8bab359.json"
-        },
-        {
-          "ref_name": "fix-localblock-ndarray-changed",
-          "sha": "7edc9c55045bd31d59411b0a89bc6f63d4d8970b",
-          "short_sha": "7edc9c5",
-          "published_at": "2026-10-30T02:32:57Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40991462347",
-          "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/history/7edc9c55045bd31d59411b0a89bc6f63d4d8970b.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-localblock-ndarray-changed",
-        "sha": "195d67dc048b7504f207893e7d2764fad8bab359",
-        "short_sha": "195d67d",
-        "published_at": "2026-11-02T19:34:52Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41509887069",
-        "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/latest.json"
       }
     },
     {
