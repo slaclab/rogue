@@ -240,12 +240,12 @@ class EpicsPvHolder(object):
                 else:
                     self._valType = 'l'
 
-            # Float
-            elif 'float' in typeStr or 'Float32' in typeStr:
+            # Float (only explicit Float32 models)
+            elif 'Float32' in typeStr:
                 self._valType = 'f'
 
-            # Double
-            elif 'Double64' in typeStr or 'Float64' in typeStr:
+            # Double (native Python float is double precision)
+            elif typeStr == 'float' or 'Double64' in typeStr or 'Float64' in typeStr:
                 self._valType = 'd'
 
             # Default to string
