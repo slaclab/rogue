@@ -14,6 +14,7 @@ import io
 import warnings
 
 import numpy as np
+import pytest
 import pyrogue as pr
 import rogue.interfaces.memory
 from conftest import MemoryRoot
@@ -252,3 +253,14 @@ def test_variable_set_dict_mode_skips_and_generates_docs(monkeypatch):
         assert "root.Dev.Counter" in docs
         assert "lowWarning" in docs
         assert "highAlarm" in docs
+
+
+@pytest.mark.parametrize("disp, expected", [
+    ("{:.3f}", 3),
+    ("{:1.3f}", 3),
+    ("{:10.2f}", 2),
+    ("{}", 8),
+])
+def test_variable_precision_parses_optional_width(disp, expected):
+    var = pr.LocalVariable(name="Prec", value=1.0, disp=disp)
+    assert var.precision == expected

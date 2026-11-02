@@ -136,3 +136,28 @@ def test_root_set_yaml_init_after_config(monkeypatch):
 
         assert root.SomeDeviceArray[0].SomeValue.value() == "from_text"
         assert root.initialize_calls == 1
+
+
+class BoolEnumRoot(MemoryRoot):
+    def __init__(self):
+        super().__init__(name="root")
+        self.add(pr.LocalVariable(
+            name="EnableFlag",
+            value=False,
+            enum={False: 'Disabled', True: 'Enabled'},
+        ))
+
+
+def test_bool_enum_variable_yaml_round_trip(monkeypatch):
+    with BoolEnumRoot() as root:
+        monkeypatch.setattr(root, "_write", lambda: True)
+
+        root.EnableFlag.set(True)
+        yml = root.getYaml(readFirst=False, modes=["RW"])
+        assert "!!bool" not in yml
+        assert "Enabled" in yml
+
+        root.EnableFlag.set(False)
+        root.setYaml(yml=yml, writeEach=False, modes=["RW"])
+        assert root.EnableFlag.value() is True
+        assert root.EnableFlag.valueDisp() == 'Enabled'

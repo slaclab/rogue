@@ -472,7 +472,8 @@ class LocalBlock(object):
             elif index >= 0:
                 changed = self._value[index] != value
             elif isinstance(value, np.ndarray):
-                changed = np.array_equal(self._value, value)
+                # changed must be True when the arrays differ, so negate the equality check
+                changed = not np.array_equal(self._value, value)
             else:
 
                 if (self._minimum is not None and value < self._minimum) or \
@@ -562,7 +563,8 @@ class LocalBlock(object):
         """In-place matrix multiply helper for local blocks."""
         with self._lock:
             self.set(self._variable, self.get(self._variable) @ other)
-            self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _itruediv(self, other: Any) -> None:
         """In-place true division helper for local blocks."""
