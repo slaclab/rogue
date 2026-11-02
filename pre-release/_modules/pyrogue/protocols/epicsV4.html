@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols.epicsV4 &mdash; Rogue v6.16.0-83-gedbea9fa8 documentation</title>
+  <title>pyrogue.protocols.epicsV4 &mdash; Rogue v6.16.0-86-g885e3b9bc documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=b3d7a103"></script>
+      <script src="../../../_static/documentation_options.js?v=eac4dec6"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -393,7 +393,11 @@
                     <span class="n">control</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">valueAlarm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="n">enum</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">enum</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-                <span class="n">iv</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'choices'</span><span class="p">:</span> <span class="n">enum</span><span class="p">,</span> <span class="s1">'index'</span><span class="p">:</span> <span class="n">enum</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">)}</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">enum</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">iv</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'choices'</span><span class="p">:</span> <span class="n">enum</span><span class="p">,</span> <span class="s1">'index'</span><span class="p">:</span> <span class="n">idx</span><span class="p">}</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">'s'</span><span class="p">:</span>
                 <span class="n">nt</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">NTScalar</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span><span class="p">,</span>
@@ -532,8 +536,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="kc">True</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_list</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -570,6 +572,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Failed to find </span><span class="si">%s</span><span class="s2"> from P4P mapping in Rogue tree"</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_provider</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="EpicsPvServer.list">
 <a class="viewcode-back" href="../../../api/python/pyrogue/protocols/epicsv4/epicspvserver.html#pyrogue.protocols.epicsV4.EpicsPvServer.list">[docs]</a>
