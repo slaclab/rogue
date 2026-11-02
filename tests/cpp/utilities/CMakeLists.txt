@@ -1,3 +1,11 @@
+rogue_add_cpp_test(rogue-cpp-utilities-stream-writer-buffer
+   SOURCES
+      test_stream_writer_buffer.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+
 # Isolated in its own binary because an unpatched library aborts the process.
 rogue_add_cpp_test(rogue-cpp-utilities-prbs-set-width-while-enabled
    SOURCES
