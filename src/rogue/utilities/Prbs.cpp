@@ -144,6 +144,7 @@ void ru::Prbs::setWidth(uint32_t width) {
 void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t* taps) {
     uint32_t i;
 
+    rogue::GilRelease noGil;
     std::lock_guard<std::mutex> lockT(pMtx_);
 
     free(taps_);
@@ -202,7 +203,17 @@ void ru::Prbs::runThread() {
     txLog_->logThreadId();
 
     while (threadEn_) {
-        genFrame(txSize_);
+        // enable() validated txSize_ against byteWidth_/minSize_ once, but
+        // setWidth() may change them while this thread runs. genFrame()
+        // re-validates and throws; an uncaught throw here calls
+        // std::terminate(), so stop the generator instead.
+        try {
+            genFrame(txSize_);
+        } catch (rogue::GeneralError& e) {
+            txLog_->error("Frame generation failed, stopping: %s", e.what());
+            threadEn_ = false;
+            break;
+        }
         if ( txPeriod_ > 0 ) usleep(txPeriod_);
     }
 }
@@ -321,6 +332,7 @@ void ru::Prbs::genPayload(bool state) {
 //! Reset counters
 // Counters should really be locked!
 void ru::Prbs::resetCount() {
+    rogue::GilRelease noGil;
     pMtx_.lock();
     txErrCount_ = 0;
     txCount_    = 0;
