@@ -435,7 +435,7 @@ void rim::TcpClient::runThread() {
                 std::memcpy(tran->begin(), zmq_msg_data(&(msg[4])), size);
             }
             if (strcmp(result, "OK") != 0)
-                tran->error(result);
+                tran->errorStr(std::string(result));
             else
                 tran->done();
             bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32
