@@ -69,6 +69,7 @@ add_subdirectory(hardware)
 add_subdirectory(memory)
 add_subdirectory(stream)
 add_subdirectory(protocols)
+add_subdirectory(utilities)
 
 if (NOT NO_PYTHON)
    add_subdirectory(interfaces)
