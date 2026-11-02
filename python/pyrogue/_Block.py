@@ -562,7 +562,8 @@ class LocalBlock(object):
         """In-place matrix multiply helper for local blocks."""
         with self._lock:
             self.set(self._variable, self.get(self._variable) @ other)
-            self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _itruediv(self, other: Any) -> None:
         """In-place true division helper for local blocks."""
