@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-tcpcore-zero-payload-frame",
+      "sha": "2b228a1378cee3f2a39933b94d3454cad993e73f",
+      "short_sha": "2b228a1",
+      "published_at": "2026-11-02T20:30:57Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41518166943",
+      "summary_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/history/2b228a1378cee3f2a39933b94d3454cad993e73f.json"
+    },
+    {
+      "ref_name": "fix-tcpcore-zero-payload-frame",
       "sha": "104a43cbd900aa70c6c51148d7e68d7549f3c600",
       "short_sha": "104a43c",
       "published_at": "2026-10-30T02:44:52Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-tcpcore-zero-payload-frame",
-    "sha": "104a43cbd900aa70c6c51148d7e68d7549f3c600",
-    "short_sha": "104a43c",
-    "published_at": "2026-10-30T02:44:52Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40992563990",
+    "sha": "2b228a1378cee3f2a39933b94d3454cad993e73f",
+    "short_sha": "2b228a1",
+    "published_at": "2026-11-02T20:30:57Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41518166943",
     "summary_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/latest.json"
   }
 }
