@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-slavewrap-max-access",
+      "sha": "a91d5037c1526c9c73e457848e2e60f2168691dc",
+      "short_sha": "a91d503",
+      "published_at": "2026-11-02T19:57:03Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41513454210",
+      "summary_url": "/rogue/perf/branches/fix-slavewrap-max-access/history/a91d5037c1526c9c73e457848e2e60f2168691dc.json"
+    },
+    {
+      "ref_name": "fix-slavewrap-max-access",
       "sha": "bf88b67ceaf495e97d32a66943e1e8b1b44c2d4a",
       "short_sha": "bf88b67",
       "published_at": "2026-10-29T23:46:55Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-slavewrap-max-access",
-    "sha": "bf88b67ceaf495e97d32a66943e1e8b1b44c2d4a",
-    "short_sha": "bf88b67",
-    "published_at": "2026-10-29T23:46:55Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40973580081",
+    "sha": "a91d5037c1526c9c73e457848e2e60f2168691dc",
+    "short_sha": "a91d503",
+    "published_at": "2026-11-02T19:57:03Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41513454210",
     "summary_url": "/rogue/perf/branches/fix-slavewrap-max-access/latest.json"
   }
 }
