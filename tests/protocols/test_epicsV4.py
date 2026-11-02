@@ -56,6 +56,12 @@ class SimpleDev(pr.Device):
             value = 0.0,
             mode  = 'RW'))
 
+        # Native Python float must be served as a double ('d'), not float32 ('f')
+        self.add(pr.LocalVariable(
+            name  = 'LocalRwDouble',
+            value = 0.1,
+            mode  = 'RW'))
+
         self.add(pr.LocalCommand(
             name        = 'ResetLocalRwInt',
             function    = lambda dev: dev.LocalRwInt.set(0),
@@ -125,6 +131,7 @@ class LocalRootWithEpics(LocalRoot):
                 'LocalRoot.SimpleDev.LocalRwInt'      : epics_prefix+':LocalRoot:SimpleDev:LocalRwInt',
                 'LocalRoot.SimpleDev.LocalWoInt'      : epics_prefix+':LocalRoot:SimpleDev:LocalWoInt',
                 'LocalRoot.SimpleDev.LocalRwFloat'    : epics_prefix+':LocalRoot:SimpleDev:LocalRwFloat',
+                'LocalRoot.SimpleDev.LocalRwDouble'   : epics_prefix+':LocalRoot:SimpleDev:LocalRwDouble',
                 'LocalRoot.SimpleDev.RemoteRwInt'     : epics_prefix+':LocalRoot:SimpleDev:RemoteRwInt',
                 'LocalRoot.SimpleDev.RemoteWoInt'     : epics_prefix+':LocalRoot:SimpleDev:RemoteWoInt',
                 'LocalRoot.SimpleDev.ResetLocalRwInt' : epics_prefix+':LocalRoot:SimpleDev:ResetLocalRwInt',
@@ -257,6 +264,21 @@ def test_local_root():
                 ctxt.put(pv_name, test_value)
                 wait_pv_value(ctxt, pv_name, test_value, transform=lambda value: round(value,2))
                 test_result=round(ctxt.get(pv_name),2)
+                if test_result != test_value:
+                    raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(s, pv_name, test_value, test_result))
+
+                # Test a native Python float is served as a double with no float32 precision loss.
+                # The initial value 0.1 and the put value must read back with exact equality.
+                pv_name=device_epics_prefix+':LocalRwDouble'
+                test_value=0.1
+                wait_pv_value(ctxt, pv_name, test_value)
+                test_result=ctxt.get(pv_name)
+                if test_result != test_value:
+                    raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(s, pv_name, test_value, test_result))
+                test_value=5.67
+                ctxt.put(pv_name, test_value)
+                wait_pv_value(ctxt, pv_name, test_value)
+                test_result=ctxt.get(pv_name)
                 if test_result != test_value:
                     raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(s, pv_name, test_value, test_result))
 
