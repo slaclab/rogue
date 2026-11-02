@@ -1,4 +1,5 @@
 add_subdirectory(packetizer)
+add_subdirectory(rssi)
 add_subdirectory(srp)
 
 # Linux only: loopback UDP timing on the GitHub macOS runners is too jittery
