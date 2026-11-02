@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-localblock-imatmul-enable-guard",
+      "sha": "c73ca399a65fb9977c3fc950196e9757b3560c16",
+      "short_sha": "c73ca39",
+      "published_at": "2026-11-02T18:53:39Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41503420277",
+      "summary_url": "/rogue/perf/branches/fix-localblock-imatmul-enable-guard/history/c73ca399a65fb9977c3fc950196e9757b3560c16.json"
+    },
+    {
+      "ref_name": "fix-localblock-imatmul-enable-guard",
       "sha": "17af25036510ec69da4fcf55b4a626150d380624",
       "short_sha": "17af250",
       "published_at": "2026-10-30T03:02:33Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-localblock-imatmul-enable-guard",
-    "sha": "17af25036510ec69da4fcf55b4a626150d380624",
-    "short_sha": "17af250",
-    "published_at": "2026-10-30T03:02:33Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40994350230",
+    "sha": "c73ca399a65fb9977c3fc950196e9757b3560c16",
+    "short_sha": "c73ca39",
+    "published_at": "2026-11-02T18:53:39Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41503420277",
     "summary_url": "/rogue/perf/branches/fix-localblock-imatmul-enable-guard/latest.json"
   }
 }
