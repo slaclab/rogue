@@ -207,7 +207,9 @@ rim::SlaveWrap::SlaveWrap(uint32_t min, uint32_t max) : rim::Slave(min, max) {}
 
 //! Return min access size to requesting master
 uint32_t rim::SlaveWrap::doMinAccess() {
-    {
+    // A C++ worker can still deliver a transaction while the interpreter
+    // shuts down; PyGILState_Ensure() aborts once finalization has started.
+    if (Py_IsInitialized()) {
         rogue::ScopedGil gil;
 
         if (boost::python::override pb = this->get_override("_doMinAccess")) {
@@ -228,7 +230,9 @@ uint32_t rim::SlaveWrap::defDoMinAccess() {
 
 //! Return max access size to requesting master
 uint32_t rim::SlaveWrap::doMaxAccess() {
-    {
+    // A C++ worker can still deliver a transaction while the interpreter
+    // shuts down; PyGILState_Ensure() aborts once finalization has started.
+    if (Py_IsInitialized()) {
         rogue::ScopedGil gil;
 
         if (boost::python::override pb = this->get_override("_doMaxAccess")) {
@@ -249,7 +253,9 @@ uint32_t rim::SlaveWrap::defDoMaxAccess() {
 
 //! Return offset
 uint64_t rim::SlaveWrap::doAddress() {
-    {
+    // A C++ worker can still deliver a transaction while the interpreter
+    // shuts down; PyGILState_Ensure() aborts once finalization has started.
+    if (Py_IsInitialized()) {
         rogue::ScopedGil gil;
 
         if (boost::python::override pb = this->get_override("_doAddress")) {
@@ -270,7 +276,9 @@ uint64_t rim::SlaveWrap::defDoAddress() {
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::SlaveWrap::doTransaction(rim::TransactionPtr transaction) {
-    {
+    // A C++ worker can still deliver a transaction while the interpreter
+    // shuts down; PyGILState_Ensure() aborts once finalization has started.
+    if (Py_IsInitialized()) {
         rogue::ScopedGil gil;
 
         if (boost::python::override pb = this->get_override("_doTransaction")) {
