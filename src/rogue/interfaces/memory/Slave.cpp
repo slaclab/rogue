@@ -244,7 +244,7 @@ uint32_t rim::SlaveWrap::doMaxAccess() {
 
 //! Return max access size to requesting master
 uint32_t rim::SlaveWrap::defDoMaxAccess() {
-    return (rim::Slave::doMinAccess());
+    return (rim::Slave::doMaxAccess());
 }
 
 //! Return offset
