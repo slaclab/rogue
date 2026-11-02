@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T20:30:57Z",
+  "generated_at": "2026-11-02T20:40:39Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "ddc99b81877b28c39a2607628a575cfff7c55b72",
-      "short_sha": "ddc99b8",
-      "published_at": "2026-11-02T20:27:28Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/41518102586",
+      "sha": "823c112a995546345d3dd21316cd9a01a04638a7",
+      "short_sha": "823c112",
+      "published_at": "2026-11-02T20:40:39Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41520033204",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "823c112a995546345d3dd21316cd9a01a04638a7",
+          "short_sha": "823c112",
+          "published_at": "2026-11-02T20:40:39Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41520033204",
+          "summary_url": "/rogue/perf/branches/pre-release/history/823c112a995546345d3dd21316cd9a01a04638a7.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "ddc99b81877b28c39a2607628a575cfff7c55b72",
@@ -279,54 +287,15 @@
           "published_at": "2026-10-28T00:15:30Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/40606688995",
           "summary_url": "/rogue/perf/branches/pre-release/history/acc86889f1e78aab8bb60d85d07cdbf508e1c25e.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "c4833f76adaca915b790322c8e5df85b89f3760f",
-          "short_sha": "c4833f7",
-          "published_at": "2026-06-30T20:12:23Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/28472516661",
-          "summary_url": "/rogue/perf/branches/pre-release/history/c4833f76adaca915b790322c8e5df85b89f3760f.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "ddc99b81877b28c39a2607628a575cfff7c55b72",
-        "short_sha": "ddc99b8",
-        "published_at": "2026-11-02T20:27:28Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41518102586",
+        "sha": "823c112a995546345d3dd21316cd9a01a04638a7",
+        "short_sha": "823c112",
+        "published_at": "2026-11-02T20:40:39Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41520033204",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-tcpcore-zero-payload-frame",
-      "ref_slug": "fix-tcpcore-zero-payload-frame",
-      "latest_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-tcpcore-zero-payload-frame",
-          "sha": "2b228a1378cee3f2a39933b94d3454cad993e73f",
-          "short_sha": "2b228a1",
-          "published_at": "2026-11-02T20:30:57Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41518166943",
-          "summary_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/history/2b228a1378cee3f2a39933b94d3454cad993e73f.json"
-        },
-        {
-          "ref_name": "fix-tcpcore-zero-payload-frame",
-          "sha": "104a43cbd900aa70c6c51148d7e68d7549f3c600",
-          "short_sha": "104a43c",
-          "published_at": "2026-10-30T02:44:52Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40992563990",
-          "summary_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/history/104a43cbd900aa70c6c51148d7e68d7549f3c600.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-tcpcore-zero-payload-frame",
-        "sha": "2b228a1378cee3f2a39933b94d3454cad993e73f",
-        "short_sha": "2b228a1",
-        "published_at": "2026-11-02T20:30:57Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41518166943",
-        "summary_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/latest.json"
       }
     },
     {
