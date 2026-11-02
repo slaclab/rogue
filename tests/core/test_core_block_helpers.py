@@ -139,6 +139,23 @@ def test_local_block_set_get_range_and_notifications():
     assert seen == [(5, True)]
 
 
+def test_local_block_ndarray_changed_flag():
+    seen = []
+    variable = FakeVariable(np.zeros(3), native_type=np.ndarray)
+    block = block_mod.LocalBlock(
+        variable=variable,
+        localSet=lambda dev=None, var=None, value=None, changed=None: seen.append(changed),
+        localGet=None,
+        minimum=None,
+        maximum=None,
+        value=np.zeros(3),
+    )
+
+    block.set(variable, np.zeros(3))
+    block.set(variable, np.ones(3))
+    assert seen == [False, True]
+
+
 def test_local_block_array_numpy_and_inplace_helpers():
     array_var = FakeVariable([1, 2, 3], native_type=list)
     array_block = block_mod.LocalBlock(
