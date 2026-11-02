@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T19:34:21Z",
+  "generated_at": "2026-11-02T19:34:52Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-localblock-ndarray-changed",
+      "ref_slug": "fix-localblock-ndarray-changed",
+      "latest_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-localblock-ndarray-changed",
+          "sha": "195d67dc048b7504f207893e7d2764fad8bab359",
+          "short_sha": "195d67d",
+          "published_at": "2026-11-02T19:34:52Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41509887069",
+          "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/history/195d67dc048b7504f207893e7d2764fad8bab359.json"
+        },
+        {
+          "ref_name": "fix-localblock-ndarray-changed",
+          "sha": "7edc9c55045bd31d59411b0a89bc6f63d4d8970b",
+          "short_sha": "7edc9c5",
+          "published_at": "2026-10-30T02:32:57Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40991462347",
+          "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/history/7edc9c55045bd31d59411b0a89bc6f63d4d8970b.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-localblock-ndarray-changed",
+        "sha": "195d67dc048b7504f207893e7d2764fad8bab359",
+        "short_sha": "195d67d",
+        "published_at": "2026-11-02T19:34:52Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41509887069",
+        "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-prbs-runthread-terminate",
       "ref_slug": "fix-prbs-runthread-terminate",
       "latest_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json",
@@ -373,29 +404,6 @@
         "published_at": "2026-10-30T02:44:52Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40992563990",
         "summary_url": "/rogue/perf/branches/fix-tcpcore-zero-payload-frame/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-localblock-ndarray-changed",
-      "ref_slug": "fix-localblock-ndarray-changed",
-      "latest_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-localblock-ndarray-changed",
-          "sha": "7edc9c55045bd31d59411b0a89bc6f63d4d8970b",
-          "short_sha": "7edc9c5",
-          "published_at": "2026-10-30T02:32:57Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40991462347",
-          "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/history/7edc9c55045bd31d59411b0a89bc6f63d4d8970b.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-localblock-ndarray-changed",
-        "sha": "7edc9c55045bd31d59411b0a89bc6f63d4d8970b",
-        "short_sha": "7edc9c5",
-        "published_at": "2026-10-30T02:32:57Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40991462347",
-        "summary_url": "/rogue/perf/branches/fix-localblock-ndarray-changed/latest.json"
       }
     },
     {
