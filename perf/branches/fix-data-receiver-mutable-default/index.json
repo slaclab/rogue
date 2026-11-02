@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-data-receiver-mutable-default",
+      "sha": "3eaac8de55fabb715f0eec98d4999e9531eee506",
+      "short_sha": "3eaac8d",
+      "published_at": "2026-11-02T18:42:59Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41501932135",
+      "summary_url": "/rogue/perf/branches/fix-data-receiver-mutable-default/history/3eaac8de55fabb715f0eec98d4999e9531eee506.json"
+    },
+    {
+      "ref_name": "fix-data-receiver-mutable-default",
       "sha": "a79913ed4aca505792751988863df7ebe3b84c7a",
       "short_sha": "a79913e",
       "published_at": "2026-10-30T03:06:11Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-data-receiver-mutable-default",
-    "sha": "a79913ed4aca505792751988863df7ebe3b84c7a",
-    "short_sha": "a79913e",
-    "published_at": "2026-10-30T03:06:11Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40994738587",
+    "sha": "3eaac8de55fabb715f0eec98d4999e9531eee506",
+    "short_sha": "3eaac8d",
+    "published_at": "2026-11-02T18:42:59Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41501932135",
     "summary_url": "/rogue/perf/branches/fix-data-receiver-mutable-default/latest.json"
   }
 }
