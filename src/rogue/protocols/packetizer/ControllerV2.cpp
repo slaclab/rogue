@@ -127,6 +127,13 @@ void rpp::ControllerV2::transportRx(ris::FramePtr frame) {
     tmpEof   = ((data[size - 7] & 0x1) ? true : false);
     last     = static_cast<uint32_t>(data[size - 6]);
 
+    // Valid byte count in the final 64-bit word must be 1..8
+    if ((last == 0) || (last > 8)) {
+        log_->warning("Dropping frame due to invalid last value: %" PRIu32, last);
+        dropCount_++;
+        return;
+    }
+
     if (enIbCrc_) {
         // Tail word 1
         tmpCrc = static_cast<uint32_t>(data[size - 1]) << 0;
