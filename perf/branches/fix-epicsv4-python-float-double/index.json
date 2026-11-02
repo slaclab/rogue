@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-epicsv4-python-float-double",
+      "sha": "aff5c2c916408ca6cbb8702cfb3b337d96ebfb30",
+      "short_sha": "aff5c2c",
+      "published_at": "2026-11-02T22:48:33Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41539165432",
+      "summary_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/history/aff5c2c916408ca6cbb8702cfb3b337d96ebfb30.json"
+    },
+    {
+      "ref_name": "fix-epicsv4-python-float-double",
       "sha": "9d57023548a404f6d2d3444815e214faa45b58e3",
       "short_sha": "9d57023",
       "published_at": "2026-10-29T23:17:32Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-epicsv4-python-float-double",
-    "sha": "9d57023548a404f6d2d3444815e214faa45b58e3",
-    "short_sha": "9d57023",
-    "published_at": "2026-10-29T23:17:32Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40971086993",
+    "sha": "aff5c2c916408ca6cbb8702cfb3b337d96ebfb30",
+    "short_sha": "aff5c2c",
+    "published_at": "2026-11-02T22:48:33Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41539165432",
     "summary_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/latest.json"
   }
 }
