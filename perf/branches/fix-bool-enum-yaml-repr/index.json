@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-bool-enum-yaml-repr",
+      "sha": "18aea570690193abb95bec8b99035b6e2257a311",
+      "short_sha": "18aea57",
+      "published_at": "2026-11-02T19:47:39Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41511844627",
+      "summary_url": "/rogue/perf/branches/fix-bool-enum-yaml-repr/history/18aea570690193abb95bec8b99035b6e2257a311.json"
+    },
+    {
+      "ref_name": "fix-bool-enum-yaml-repr",
       "sha": "dbb841dd3269b9477492f59ef1460bb22b4e613a",
       "short_sha": "dbb841d",
       "published_at": "2026-10-30T02:19:34Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-bool-enum-yaml-repr",
-    "sha": "dbb841dd3269b9477492f59ef1460bb22b4e613a",
-    "short_sha": "dbb841d",
-    "published_at": "2026-10-30T02:19:34Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40990208418",
+    "sha": "18aea570690193abb95bec8b99035b6e2257a311",
+    "short_sha": "18aea57",
+    "published_at": "2026-11-02T19:47:39Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41511844627",
     "summary_url": "/rogue/perf/branches/fix-bool-enum-yaml-repr/latest.json"
   }
 }
