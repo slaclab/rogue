@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T22:48:33Z",
+  "generated_at": "2026-11-02T23:00:54Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "063dfa55e31add5c18db3398790a75c09e2a7745",
-      "short_sha": "063dfa5",
-      "published_at": "2026-11-02T22:48:10Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/41539102938",
+      "sha": "edbea9fa85b55f6f08cd06f25501da9124b2cd83",
+      "short_sha": "edbea9f",
+      "published_at": "2026-11-02T23:00:54Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41540990753",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "edbea9fa85b55f6f08cd06f25501da9124b2cd83",
+          "short_sha": "edbea9f",
+          "published_at": "2026-11-02T23:00:54Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41540990753",
+          "summary_url": "/rogue/perf/branches/pre-release/history/edbea9fa85b55f6f08cd06f25501da9124b2cd83.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "063dfa55e31add5c18db3398790a75c09e2a7745",
@@ -279,54 +287,15 @@
           "published_at": "2026-11-02T18:52:50Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/41503381476",
           "summary_url": "/rogue/perf/branches/pre-release/history/5a62a5d5102d69cf13d71124d18afa790aa2b832.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "2fdcbac4c9f743294e6cf73fb0a7194cf3fd7e2d",
-          "short_sha": "2fdcbac",
-          "published_at": "2026-11-02T18:41:29Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41501830238",
-          "summary_url": "/rogue/perf/branches/pre-release/history/2fdcbac4c9f743294e6cf73fb0a7194cf3fd7e2d.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "063dfa55e31add5c18db3398790a75c09e2a7745",
-        "short_sha": "063dfa5",
-        "published_at": "2026-11-02T22:48:10Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41539102938",
+        "sha": "edbea9fa85b55f6f08cd06f25501da9124b2cd83",
+        "short_sha": "edbea9f",
+        "published_at": "2026-11-02T23:00:54Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41540990753",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-epicsv4-python-float-double",
-      "ref_slug": "fix-epicsv4-python-float-double",
-      "latest_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-epicsv4-python-float-double",
-          "sha": "aff5c2c916408ca6cbb8702cfb3b337d96ebfb30",
-          "short_sha": "aff5c2c",
-          "published_at": "2026-11-02T22:48:33Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41539165432",
-          "summary_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/history/aff5c2c916408ca6cbb8702cfb3b337d96ebfb30.json"
-        },
-        {
-          "ref_name": "fix-epicsv4-python-float-double",
-          "sha": "9d57023548a404f6d2d3444815e214faa45b58e3",
-          "short_sha": "9d57023",
-          "published_at": "2026-10-29T23:17:32Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40971086993",
-          "summary_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/history/9d57023548a404f6d2d3444815e214faa45b58e3.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-epicsv4-python-float-double",
-        "sha": "aff5c2c916408ca6cbb8702cfb3b337d96ebfb30",
-        "short_sha": "aff5c2c",
-        "published_at": "2026-11-02T22:48:33Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41539165432",
-        "summary_url": "/rogue/perf/branches/fix-epicsv4-python-float-double/latest.json"
       }
     },
     {
