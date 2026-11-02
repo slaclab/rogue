@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T22:16:12Z",
+  "generated_at": "2026-11-02T22:20:01Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-udprssipack-super-recursion",
+      "ref_slug": "fix-udprssipack-super-recursion",
+      "latest_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-udprssipack-super-recursion",
+          "sha": "cfac74b63c6b7a40588ddb1ab0630b0de506bf50",
+          "short_sha": "cfac74b",
+          "published_at": "2026-11-02T22:20:01Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41534557578",
+          "summary_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/history/cfac74b63c6b7a40588ddb1ab0630b0de506bf50.json"
+        },
+        {
+          "ref_name": "fix-udprssipack-super-recursion",
+          "sha": "17c7646da774502e8d9725b43ecb61de7bd6ed28",
+          "short_sha": "17c7646",
+          "published_at": "2026-10-29T23:08:11Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40969964369",
+          "summary_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/history/17c7646da774502e8d9725b43ecb61de7bd6ed28.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-udprssipack-super-recursion",
+        "sha": "cfac74b63c6b7a40588ddb1ab0630b0de506bf50",
+        "short_sha": "cfac74b",
+        "published_at": "2026-11-02T22:20:01Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41534557578",
+        "summary_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-prbs-runthread-terminate",
       "ref_slug": "fix-prbs-runthread-terminate",
       "latest_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json",
@@ -473,29 +504,6 @@
         "published_at": "2026-10-29T23:14:57Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40970811262",
         "summary_url": "/rogue/perf/branches/fix-epicsv7-bool-local-put/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-udprssipack-super-recursion",
-      "ref_slug": "fix-udprssipack-super-recursion",
-      "latest_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-udprssipack-super-recursion",
-          "sha": "17c7646da774502e8d9725b43ecb61de7bd6ed28",
-          "short_sha": "17c7646",
-          "published_at": "2026-10-29T23:08:11Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40969964369",
-          "summary_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/history/17c7646da774502e8d9725b43ecb61de7bd6ed28.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-udprssipack-super-recursion",
-        "sha": "17c7646da774502e8d9725b43ecb61de7bd6ed28",
-        "short_sha": "17c7646",
-        "published_at": "2026-10-29T23:08:11Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40969964369",
-        "summary_url": "/rogue/perf/branches/fix-udprssipack-super-recursion/latest.json"
       }
     },
     {
