@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-pgp2bsim-stop",
+      "sha": "dbf022208e4cdaabcb28d203bf67b700f3f15393",
+      "short_sha": "dbf0222",
+      "published_at": "2026-11-02T20:41:40Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41520087870",
+      "summary_url": "/rogue/perf/branches/fix-pgp2bsim-stop/history/dbf022208e4cdaabcb28d203bf67b700f3f15393.json"
+    },
+    {
+      "ref_name": "fix-pgp2bsim-stop",
       "sha": "e0c52d624a1335f8e0cdef4370975e25c207965d",
       "short_sha": "e0c52d6",
       "published_at": "2026-10-29T23:24:44Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-pgp2bsim-stop",
-    "sha": "e0c52d624a1335f8e0cdef4370975e25c207965d",
-    "short_sha": "e0c52d6",
-    "published_at": "2026-10-29T23:24:44Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40971958774",
+    "sha": "dbf022208e4cdaabcb28d203bf67b700f3f15393",
+    "short_sha": "dbf0222",
+    "published_at": "2026-11-02T20:41:40Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41520087870",
     "summary_url": "/rogue/perf/branches/fix-pgp2bsim-stop/latest.json"
   }
 }
