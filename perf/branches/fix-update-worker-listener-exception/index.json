@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-update-worker-listener-exception",
+      "sha": "6f8e720123c4f54c70aa2c0a1d559410027e9e10",
+      "short_sha": "6f8e720",
+      "published_at": "2026-11-02T17:56:03Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41494601078",
+      "summary_url": "/rogue/perf/branches/fix-update-worker-listener-exception/history/6f8e720123c4f54c70aa2c0a1d559410027e9e10.json"
+    },
+    {
+      "ref_name": "fix-update-worker-listener-exception",
       "sha": "d7d6e0ad25651e8909675f9c0a309349b7784f6f",
       "short_sha": "d7d6e0a",
       "published_at": "2026-10-30T03:57:05Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-update-worker-listener-exception",
-    "sha": "d7d6e0ad25651e8909675f9c0a309349b7784f6f",
-    "short_sha": "d7d6e0a",
-    "published_at": "2026-10-30T03:57:05Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/40999440176",
+    "sha": "6f8e720123c4f54c70aa2c0a1d559410027e9e10",
+    "short_sha": "6f8e720",
+    "published_at": "2026-11-02T17:56:03Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/41494601078",
     "summary_url": "/rogue/perf/branches/fix-update-worker-listener-exception/latest.json"
   }
 }
