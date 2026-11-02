@@ -94,3 +94,14 @@ def test_data_receiver_disables_type_check():
     with root:
         root.Rx.Data.set({"decoded": 1}, write=True)
         assert root.Rx.Data.get() == {"decoded": 1}
+
+
+def test_data_receiver_default_value_not_shared_between_instances():
+    a = pr.DataReceiver(name="A")
+    b = pr.DataReceiver(name="B")
+
+    a.Data.value()[0] = 7
+
+    assert a.Data.value().tolist() == [7]
+    assert b.Data.value().tolist() == [0]
+    assert a.Data.value() is not b.Data.value()

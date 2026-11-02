@@ -1188,7 +1188,11 @@ class Root(pr.Device):
                 for p,v in nvars.items():
 
                     # Process updates
-                    val = v._doUpdate()
+                    try:
+                        val = v._doUpdate()
+                    except Exception as e:
+                        pr.logException(self._log,e)
+                        continue
 
                     # Call root listener functions,
                     with self._varListenLock:
