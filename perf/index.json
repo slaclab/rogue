@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T20:51:20Z",
+  "generated_at": "2026-11-02T21:07:09Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,34 +299,42 @@
       }
     },
     {
-      "ref_name": "fix-gpib-worker-exception",
-      "ref_slug": "fix-gpib-worker-exception",
-      "latest_url": "/rogue/perf/branches/fix-gpib-worker-exception/latest.json",
+      "ref_name": "fix-1307-virtual-client-ltime",
+      "ref_slug": "fix-1307-virtual-client-ltime",
+      "latest_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/latest.json",
       "history": [
         {
-          "ref_name": "fix-gpib-worker-exception",
-          "sha": "06f1a1e90ad2a4f08711a8fc45db4a843a041271",
-          "short_sha": "06f1a1e",
-          "published_at": "2026-11-02T20:51:20Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41521674343",
-          "summary_url": "/rogue/perf/branches/fix-gpib-worker-exception/history/06f1a1e90ad2a4f08711a8fc45db4a843a041271.json"
+          "ref_name": "fix-1307-virtual-client-ltime",
+          "sha": "3538ea6578ffb37ddcd46f124515b434d0d04e61",
+          "short_sha": "3538ea6",
+          "published_at": "2026-11-02T21:07:09Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41524085900",
+          "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/history/3538ea6578ffb37ddcd46f124515b434d0d04e61.json"
         },
         {
-          "ref_name": "fix-gpib-worker-exception",
-          "sha": "9e9a73a350b1c9ca936966656088bc744ca05a00",
-          "short_sha": "9e9a73a",
-          "published_at": "2026-10-29T23:16:41Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40971116580",
-          "summary_url": "/rogue/perf/branches/fix-gpib-worker-exception/history/9e9a73a350b1c9ca936966656088bc744ca05a00.json"
+          "ref_name": "fix-1307-virtual-client-ltime",
+          "sha": "45625d12080247c8f60d85125004901dea788a87",
+          "short_sha": "45625d1",
+          "published_at": "2026-10-29T21:49:52Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40959914598",
+          "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/history/45625d12080247c8f60d85125004901dea788a87.json"
+        },
+        {
+          "ref_name": "fix-1307-virtual-client-ltime",
+          "sha": "e762a9e098e997632dd719d4208fbba4e6da3e01",
+          "short_sha": "e762a9e",
+          "published_at": "2026-10-29T19:59:08Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40943749917",
+          "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/history/e762a9e098e997632dd719d4208fbba4e6da3e01.json"
         }
       ],
       "latest": {
-        "ref_name": "fix-gpib-worker-exception",
-        "sha": "06f1a1e90ad2a4f08711a8fc45db4a843a041271",
-        "short_sha": "06f1a1e",
-        "published_at": "2026-11-02T20:51:20Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41521674343",
-        "summary_url": "/rogue/perf/branches/fix-gpib-worker-exception/latest.json"
+        "ref_name": "fix-1307-virtual-client-ltime",
+        "sha": "3538ea6578ffb37ddcd46f124515b434d0d04e61",
+        "short_sha": "3538ea6",
+        "published_at": "2026-11-02T21:07:09Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41524085900",
+        "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/latest.json"
       }
     },
     {
@@ -665,37 +673,6 @@
         "published_at": "2026-10-29T22:07:29Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40960995965",
         "summary_url": "/rogue/perf/branches/fix-variable-block-init-dump/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-1307-virtual-client-ltime",
-      "ref_slug": "fix-1307-virtual-client-ltime",
-      "latest_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-1307-virtual-client-ltime",
-          "sha": "45625d12080247c8f60d85125004901dea788a87",
-          "short_sha": "45625d1",
-          "published_at": "2026-10-29T21:49:52Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40959914598",
-          "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/history/45625d12080247c8f60d85125004901dea788a87.json"
-        },
-        {
-          "ref_name": "fix-1307-virtual-client-ltime",
-          "sha": "e762a9e098e997632dd719d4208fbba4e6da3e01",
-          "short_sha": "e762a9e",
-          "published_at": "2026-10-29T19:59:08Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40943749917",
-          "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/history/e762a9e098e997632dd719d4208fbba4e6da3e01.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-1307-virtual-client-ltime",
-        "sha": "45625d12080247c8f60d85125004901dea788a87",
-        "short_sha": "45625d1",
-        "published_at": "2026-10-29T21:49:52Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40959914598",
-        "summary_url": "/rogue/perf/branches/fix-1307-virtual-client-ltime/latest.json"
       }
     },
     {
