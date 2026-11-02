@@ -215,7 +215,9 @@ def test_local_variable_properties_and_poll_interval_round_trip():
 
 
 def test_local_variable_constructor_errors():
-    with pytest.raises(Exception):
+    # Must raise VariableError (not RecursionError from touching self.path
+    # before BaseVariable.__init__ runs) and name the offending variable.
+    with pytest.raises(pr.VariableError, match="LocalVariable MissingValue"):
         pr.LocalVariable(name="MissingValue")
 
     with pytest.raises(Exception):

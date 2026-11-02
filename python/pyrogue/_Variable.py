@@ -421,7 +421,7 @@ class BaseVariable(pr.Node):
     def precision(self) -> int:
         """Return the display precision for float-like values."""
         if self.nativeType is float or self.nativeType is np.ndarray:
-            res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
+            res = re.search(r':([0-9]*)\.([0-9]+)f',self._disp)
             try:
                 return int(res[2])
             except Exception:
@@ -1814,7 +1814,7 @@ class LocalVariable(BaseVariable):
         """Initialize a local variable."""
 
         if value is None and localGet is None:
-            raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
+            raise VariableError(f'LocalVariable {name} without localGet() must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description,
                               mode=mode, value=value, disp=disp,
