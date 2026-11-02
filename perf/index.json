@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T18:19:05Z",
+  "generated_at": "2026-11-02T18:20:09Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-prbs-gil-deadlock",
+      "ref_slug": "fix-prbs-gil-deadlock",
+      "latest_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-prbs-gil-deadlock",
+          "sha": "54dd047f70dc799e5c877612ce961b8867210d76",
+          "short_sha": "54dd047",
+          "published_at": "2026-11-02T18:20:09Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41498122117",
+          "summary_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/history/54dd047f70dc799e5c877612ce961b8867210d76.json"
+        },
+        {
+          "ref_name": "fix-prbs-gil-deadlock",
+          "sha": "9a28050663277cfd4b700353b68c7581fa0281ac",
+          "short_sha": "9a28050",
+          "published_at": "2026-10-30T03:45:24Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40998398319",
+          "summary_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/history/9a28050663277cfd4b700353b68c7581fa0281ac.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-prbs-gil-deadlock",
+        "sha": "54dd047f70dc799e5c877612ce961b8867210d76",
+        "short_sha": "54dd047",
+        "published_at": "2026-11-02T18:20:09Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41498122117",
+        "summary_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-prbs-runthread-terminate",
       "ref_slug": "fix-prbs-runthread-terminate",
       "latest_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json",
@@ -327,29 +358,6 @@
         "published_at": "2026-11-02T18:09:17Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/41496252038",
         "summary_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-prbs-gil-deadlock",
-      "ref_slug": "fix-prbs-gil-deadlock",
-      "latest_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-prbs-gil-deadlock",
-          "sha": "9a28050663277cfd4b700353b68c7581fa0281ac",
-          "short_sha": "9a28050",
-          "published_at": "2026-10-30T03:45:24Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40998398319",
-          "summary_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/history/9a28050663277cfd4b700353b68c7581fa0281ac.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-prbs-gil-deadlock",
-        "sha": "9a28050663277cfd4b700353b68c7581fa0281ac",
-        "short_sha": "9a28050",
-        "published_at": "2026-10-30T03:45:24Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40998398319",
-        "summary_url": "/rogue/perf/branches/fix-prbs-gil-deadlock/latest.json"
       }
     },
     {
