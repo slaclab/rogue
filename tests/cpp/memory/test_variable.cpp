@@ -201,3 +201,13 @@ TEST_CASE("Block::setBytes byte-reverse path frees its temporary on range throw"
     CHECK_LT(delta, leakedIfNoFix / 4);
 }
 #endif  // __GLIBC__
+
+// Variable::setLogLevel guards on ``block_``, so the constructor must leave
+// the pointer NULL rather than uninitialized. Calling it before the variable
+// is attached to any block must be a no-op instead of a wild dereference.
+TEST_CASE("Memory variable setLogLevel is safe before block attachment") {
+    auto variable =
+        rim::Variable::create("Detached", "RW", 0, 0, 0, {0}, {32}, false, false, false, false, rim::UInt, false, false, 0, 0, 0, 0, 0);
+
+    CHECK_NOTHROW(variable->setLogLevel(0));
+}
