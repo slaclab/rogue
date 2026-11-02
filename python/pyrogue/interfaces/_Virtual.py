@@ -506,7 +506,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         # Link tracking
         self._link  = True
-        self._ltime = self._root.Time.value()
+        self._ltime = time.time()
 
         # Create monitoring thread
         self._monEnable = True
