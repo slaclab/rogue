@@ -250,3 +250,23 @@ def test_udp_rssi_pack_server_uses_server_backends(monkeypatch):
     dev = net_mod.UdpRssiPack(name="Net", port=9002, server=True, wait=True, jumbo=True)
     assert dev._server is True
     assert fake_udp.port == 9002
+
+
+def test_udp_rssi_pack_subclass_does_not_recurse(monkeypatch):
+    # super(self.__class__, self) in UdpRssiPack.__init__ resolved to the
+    # derived class when subclassed, re-entering UdpRssiPack.__init__ forever.
+    fake_rssi = FakeRssi(1016)
+    fake_udp = FakeUdp("host", 9003, False)
+    fake_pack = FakePack()
+
+    monkeypatch.setattr(net_mod.rogue.protocols.udp, "Client", lambda host, port, jumbo: fake_udp)
+    monkeypatch.setattr(net_mod.rogue.protocols.rssi, "Client", lambda payload: fake_rssi)
+    monkeypatch.setattr(net_mod.rogue.protocols.packetizer, "Core", lambda en_ssi: fake_pack)
+
+    class MyPack(net_mod.UdpRssiPack):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+
+    dev = MyPack(name="Net", host="host", port=9003, wait=False)
+    assert isinstance(dev, net_mod.UdpRssiPack)
+    assert dev.rssiOpen is not None
