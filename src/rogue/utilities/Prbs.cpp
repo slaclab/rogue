@@ -202,7 +202,17 @@ void ru::Prbs::runThread() {
     txLog_->logThreadId();
 
     while (threadEn_) {
-        genFrame(txSize_);
+        // enable() validated txSize_ against byteWidth_/minSize_ once, but
+        // setWidth() may change them while this thread runs. genFrame()
+        // re-validates and throws; an uncaught throw here calls
+        // std::terminate(), so stop the generator instead.
+        try {
+            genFrame(txSize_);
+        } catch (rogue::GeneralError& e) {
+            txLog_->error("Frame generation failed, stopping: %s", e.what());
+            threadEn_ = false;
+            break;
+        }
         if ( txPeriod_ > 0 ) usleep(txPeriod_);
     }
 }
