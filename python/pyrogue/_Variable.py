@@ -1814,7 +1814,7 @@ class LocalVariable(BaseVariable):
         """Initialize a local variable."""
 
         if value is None and localGet is None:
-            raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
+            raise VariableError(f'LocalVariable {name} without localGet() must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description,
                               mode=mode, value=value, disp=disp,
