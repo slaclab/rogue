@@ -66,11 +66,14 @@ class UpdateTracker(object):
     def _check(self) -> None:
         """Flush queued updates when depth or period criteria are met."""
         if self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period):
-            if len(self._list) != 0:
-                #print(f"Update fired {time.time()}")
-                self._last = time.time()
-                self._q.put(self._list)
-                self._list = {}
+            self._flush()
+
+    def _flush(self) -> None:
+        """Queue pending updates without changing the active group depth."""
+        if len(self._list) != 0:
+            self._last = time.time()
+            self._q.put(self._list)
+            self._list = {}
 
     def update(self, var: pr.BaseVariable) -> None:
         """
@@ -598,6 +601,16 @@ class Root(pr.Device):
 
             # After with is done
             self._updateTrack[tid].decrement()
+
+    def _flushUpdates(self) -> None:
+        """Queue this thread's buffered updates before a process pause.
+
+        Preserve nested updateGroup scopes and their leak period. This only
+        enqueues updates; it does not wait for listeners to finish.
+        """
+        tracker = self._updateTrack.get(threading.get_ident())
+        if tracker is not None:
+            tracker._flush()
 
     @contextmanager
     def pollBlock(self) -> Iterator[None]:

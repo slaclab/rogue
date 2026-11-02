@@ -9,6 +9,7 @@ into a tree-facing ``Device`` with built-in commands and status Variables. In
 the current implementation it provides:
 
 * Start/stop commands
+* Cooperative pause/resume commands for procedures with safe checkpoints
 * Running/progress/message status variables
 * Optional argument and return variables
 * Optional wrapped function callback
@@ -73,6 +74,7 @@ The usual extension points are:
 The built-in status Variables are:
 
 * ``Running`` for whether the thread is active
+* ``Paused`` for whether the worker is waiting at a pause checkpoint
 * ``Progress`` for fractional completion
 * ``Message`` for operator-facing status text
 * ``Step`` and ``TotalSteps`` for step-count style progress reporting
@@ -175,6 +177,68 @@ calling the object directly with an optional argument:
 
 When an argument is supplied and ``argVariable`` exists, the argument is first
 written to that Variable before the background thread starts.
+
+The ``Stop`` command requests a cooperative stop and waits for the worker to
+exit. A callback should check ``dev._runEn`` and return when it becomes false.
+When a supplied ``function`` returns normally, the base class reports ``Done``
+and sets ``Progress`` to ``1.0``. If a stop was requested, it preserves the
+current progress and reports ``Stopped``, retaining any callback message that
+already begins with ``Stopped`` or ``Error:``. The callback's return value is
+published in either case. Subclasses that override ``_process()`` manage their
+own terminal status and progress.
+
+Cooperative Pause And Resume
+============================
+
+Call ``pausePoint()`` from the worker between atomic operations to support
+pausing. ``Pause`` requests a pause and returns immediately; ``Paused`` becomes
+true only when the worker reaches a checkpoint. A function that never calls
+``pausePoint()`` continues running normally. Pausing preserves the worker
+thread, local variables, progress, and status message; ``Running`` stays true.
+
+``Resume`` releases a paused worker or cancels a request that has not yet
+reached a checkpoint. ``Start`` and direct invocation still start new runs;
+they do not resume or replace an active worker. ``Pause`` and ``Resume`` do
+nothing when idle. ``Stop`` wakes a paused worker, makes ``pausePoint()`` return
+false, and waits for the worker to exit. Always return from the process body
+when a checkpoint returns false. Pause state is cleared on completion, stop,
+or error, including requests that never reached a checkpoint.
+
+For example, supply this callback as ``function=capture``:
+
+.. code-block:: python
+
+   def capture(dev):
+       samples = []
+       dev.setTotalSteps(100)
+       for i in range(100):
+           if not dev.pausePoint():
+               return samples
+           # Replace this with one complete, indivisible acquisition operation.
+           samples.append(i)
+           dev.incrementSteps()
+       return samples
+
+A checkpoint may accept ``publish=callback`` to publish a partial result before
+acknowledging a pause. This no-argument callback executes on the process worker
+only when a pause is pending, without holding the process lock. Its exceptions
+follow the usual process error path. For example, if a process has a
+``PartialResult`` Variable, call
+``dev.pausePoint(publish=lambda: dev.PartialResult.set(list(samples)))``.
+If Resume or Stop arrives during publication, the worker rechecks the request
+and does not wait. Stop still waits for publication and the worker to finish.
+
+Before blocking, the checkpoint queues pending updates for listeners, including
+the published result and ``Paused``, even inside nested ``updateGroup`` scopes
+or with ``UpdatePeriod = 0``. It also queues the cleared ``Paused`` status on
+wake-up. The active update groups remain in effect after the checkpoint.
+``Paused`` uses the same one-second polling interval as the other status
+Variables; these explicit updates do not depend on polling.
+
+Subclasses can also call ``pausePoint()`` from an overridden ``_process()``.
+Process coordinates lifecycle and pause state with a ``threading.Condition``
+using its plain ``threading.Lock`` at ``_lock``. Subclasses must not replace
+that lock or hold it while calling commands or ``pausePoint()``.
 
 Design Guidance
 ===============
