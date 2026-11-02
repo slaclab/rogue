@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T23:00:54Z",
+  "generated_at": "2026-11-02T23:02:08Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-epicsV4-enum-index-start",
+      "ref_slug": "fix-epicsV4-enum-index-start",
+      "latest_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-epicsV4-enum-index-start",
+          "sha": "1bccae47adb87cefc9e710394074b40054407543",
+          "short_sha": "1bccae4",
+          "published_at": "2026-11-02T23:02:08Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41541032705",
+          "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/history/1bccae47adb87cefc9e710394074b40054407543.json"
+        },
+        {
+          "ref_name": "fix-epicsV4-enum-index-start",
+          "sha": "8a709da5ca442d4f17d1abb4eca7c99bf797936f",
+          "short_sha": "8a709da",
+          "published_at": "2026-10-29T23:33:35Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40972990223",
+          "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/history/8a709da5ca442d4f17d1abb4eca7c99bf797936f.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-epicsV4-enum-index-start",
+        "sha": "1bccae47adb87cefc9e710394074b40054407543",
+        "short_sha": "1bccae4",
+        "published_at": "2026-11-02T23:02:08Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41541032705",
+        "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-prbs-runthread-terminate",
       "ref_slug": "fix-prbs-runthread-terminate",
       "latest_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json",
@@ -381,29 +412,6 @@
         "published_at": "2026-10-30T02:25:12Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/40990761279",
         "summary_url": "/rogue/perf/branches/fix-float8-nan-collision/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-epicsV4-enum-index-start",
-      "ref_slug": "fix-epicsV4-enum-index-start",
-      "latest_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-epicsV4-enum-index-start",
-          "sha": "8a709da5ca442d4f17d1abb4eca7c99bf797936f",
-          "short_sha": "8a709da",
-          "published_at": "2026-10-29T23:33:35Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40972990223",
-          "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/history/8a709da5ca442d4f17d1abb4eca7c99bf797936f.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-epicsV4-enum-index-start",
-        "sha": "8a709da5ca442d4f17d1abb4eca7c99bf797936f",
-        "short_sha": "8a709da",
-        "published_at": "2026-10-29T23:33:35Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40972990223",
-        "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/latest.json"
       }
     },
     {
