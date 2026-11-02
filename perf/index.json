@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T20:41:40Z",
+  "generated_at": "2026-11-02T20:50:56Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "823c112a995546345d3dd21316cd9a01a04638a7",
-      "short_sha": "823c112",
-      "published_at": "2026-11-02T20:40:39Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/41520033204",
+      "sha": "c21d379abaee46d26719de87c1dd3d72952fbe7d",
+      "short_sha": "c21d379",
+      "published_at": "2026-11-02T20:50:56Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/41521644177",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "c21d379abaee46d26719de87c1dd3d72952fbe7d",
+          "short_sha": "c21d379",
+          "published_at": "2026-11-02T20:50:56Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41521644177",
+          "summary_url": "/rogue/perf/branches/pre-release/history/c21d379abaee46d26719de87c1dd3d72952fbe7d.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "823c112a995546345d3dd21316cd9a01a04638a7",
@@ -279,54 +287,15 @@
           "published_at": "2026-10-28T01:04:11Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/40611898982",
           "summary_url": "/rogue/perf/branches/pre-release/history/fcb826fdb2768533bdf27d3efb2d754a219d15d3.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "acc86889f1e78aab8bb60d85d07cdbf508e1c25e",
-          "short_sha": "acc8688",
-          "published_at": "2026-10-28T00:15:30Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40606688995",
-          "summary_url": "/rogue/perf/branches/pre-release/history/acc86889f1e78aab8bb60d85d07cdbf508e1c25e.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "823c112a995546345d3dd21316cd9a01a04638a7",
-        "short_sha": "823c112",
-        "published_at": "2026-11-02T20:40:39Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41520033204",
+        "sha": "c21d379abaee46d26719de87c1dd3d72952fbe7d",
+        "short_sha": "c21d379",
+        "published_at": "2026-11-02T20:50:56Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41521644177",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-pgp2bsim-stop",
-      "ref_slug": "fix-pgp2bsim-stop",
-      "latest_url": "/rogue/perf/branches/fix-pgp2bsim-stop/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-pgp2bsim-stop",
-          "sha": "dbf022208e4cdaabcb28d203bf67b700f3f15393",
-          "short_sha": "dbf0222",
-          "published_at": "2026-11-02T20:41:40Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41520087870",
-          "summary_url": "/rogue/perf/branches/fix-pgp2bsim-stop/history/dbf022208e4cdaabcb28d203bf67b700f3f15393.json"
-        },
-        {
-          "ref_name": "fix-pgp2bsim-stop",
-          "sha": "e0c52d624a1335f8e0cdef4370975e25c207965d",
-          "short_sha": "e0c52d6",
-          "published_at": "2026-10-29T23:24:44Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40971958774",
-          "summary_url": "/rogue/perf/branches/fix-pgp2bsim-stop/history/e0c52d624a1335f8e0cdef4370975e25c207965d.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-pgp2bsim-stop",
-        "sha": "dbf022208e4cdaabcb28d203bf67b700f3f15393",
-        "short_sha": "dbf0222",
-        "published_at": "2026-11-02T20:41:40Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41520087870",
-        "summary_url": "/rogue/perf/branches/fix-pgp2bsim-stop/latest.json"
       }
     },
     {
