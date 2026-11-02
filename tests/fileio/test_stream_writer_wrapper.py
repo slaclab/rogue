@@ -9,6 +9,7 @@
 #-----------------------------------------------------------------------------
 
 import datetime
+import time
 
 import pyrogue as pr
 import pyrogue.utilities.fileio
@@ -177,3 +178,20 @@ def test_stream_writer_wrapper_open_close_and_status(monkeypatch, tmp_path):
         assert cfg1.yaml_calls == 2
         assert fake_writer.closed is True
         assert writer.IsOpen.get() is False
+
+
+def test_stream_writer_wrapper_fractional_timeout_reaches_binding():
+    # Regression for slaclab/rogue#1366: the wrapper converts seconds to
+    # microseconds, and the C++ binding takes uint64_t. A float product
+    # must be truncated to int or Boost.Python raises ArgumentError.
+    # Use the real backend here so the binding signature is exercised.
+    writer = pr.utilities.fileio.StreamWriter(name="Writer")
+
+    start = time.monotonic()
+    assert writer._waitFrameCount(1, timeout=0.25) is False
+    assert writer._waitFrameChannelCount(0, 1, timeout=0.25) is False
+    elapsed = time.monotonic() - start
+
+    # Two 0.25 s waits on an unopened writer. The upper bound is loose to
+    # tolerate slow CI hosts while still catching a zero-length wait.
+    assert 0.4 <= elapsed < 5.0
