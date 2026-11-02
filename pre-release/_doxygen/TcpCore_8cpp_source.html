@@ -475,7 +475,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>        <span class="comment">// Get message</span></div>
 <div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span>        <span class="keywordflow">do</span> {</div>
 <div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>            <span class="comment">// Get the message</span></div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>            <span class="keywordflow">if</span> (zmq_recvmsg(this-&gt;zmqPull_, &amp;(msg[x]), 0) &gt; 0) {</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>            <span class="keywordflow">if</span> (zmq_recvmsg(this-&gt;zmqPull_, &amp;(msg[x]), 0) &gt;= 0) {</div>
 <div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>                <span class="keywordflow">if</span> (x != 3) x++;</div>
 <div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>                msgCnt++;</div>
 <div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span> </div>
