@@ -620,104 +620,109 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00506" name="l00506"></a><span class="lineno">  506</span>    <span class="keywordtype">bool</span> ctg           = flags &amp; (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);</div>
 <div class="line"><a id="l00507" name="l00507"></a><span class="lineno">  507</span>    <span class="keywordflow">if</span> (!ctg) {</div>
 <div class="line"><a id="l00508" name="l00508"></a><span class="lineno">  508</span>        arr = PyArray_GETCONTIGUOUS(arr);</div>
-<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>    }</div>
-<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span> </div>
-<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>    <span class="comment">// Get the number of bytes in both the source and destination buffers</span></div>
-<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>    uint32_t size  = getSize();</div>
-<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span>    uint32_t count = PyArray_NBYTES(arr);</div>
-<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>    uint32_t end   = offset + count;</div>
-<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span> </div>
-<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>    <span class="comment">// Check this does not request data past the EOF</span></div>
-<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>    <span class="keywordflow">if</span> (end &gt; size) {</div>
-<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;Frame::putNumpy&quot;</span>,</div>
-<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>                                          <span class="stringliteral">&quot;Attempt to write %&quot;</span> PRIu32 <span class="stringliteral">&quot; bytes to frame at offset %&quot;</span> PRIu32</div>
-<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>                                          <span class="stringliteral">&quot; with size %&quot;</span> PRIu32,</div>
-<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>                                          count,</div>
-<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>                                          offset,</div>
-<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>                                          size));</div>
-<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>    }</div>
-<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span> </div>
-<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>    uint8_t* src = <span class="keyword">reinterpret_cast&lt;</span>uint8_t*<span class="keyword">&gt;</span>(PyArray_DATA(arr));</div>
-<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span> </div>
-<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>    minPayload(end);</div>
-<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span> </div>
-<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span>    <span class="comment">// Write the numpy data to the array</span></div>
-<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span>    <a class="code hl_class" href="classrogue_1_1interfaces_1_1stream_1_1FrameIterator.html">ris::FrameIterator</a> beg = this-&gt;begin() + offset;</div>
-<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span>    <a class="code hl_function" href="namespacerogue_1_1interfaces_1_1stream.html#ad087a49fb5b902bdb0dddb27ce200d40">ris::toFrame</a>(beg, count, src);</div>
-<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span> </div>
-<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span>    <span class="comment">// If were forced to make a temporary copy, release it</span></div>
-<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>    <span class="keywordflow">if</span> (!ctg) {</div>
-<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>        Py_XDECREF(arr);</div>
-<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>    }</div>
+<div class="line"><a id="l00509" name="l00509"></a><span class="lineno">  509</span>        <span class="keywordflow">if</span> (arr == NULL) {</div>
+<div class="line"><a id="l00510" name="l00510"></a><span class="lineno">  510</span>            <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Frame::putNumpy&quot;</span>, <span class="stringliteral">&quot;Failed to create contiguous copy of numpy array&quot;</span>));</div>
+<div class="line"><a id="l00511" name="l00511"></a><span class="lineno">  511</span>        }</div>
+<div class="line"><a id="l00512" name="l00512"></a><span class="lineno">  512</span>    }</div>
+<div class="line"><a id="l00513" name="l00513"></a><span class="lineno">  513</span> </div>
+<div class="line"><a id="l00514" name="l00514"></a><span class="lineno">  514</span>    <span class="comment">// Get the number of bytes in both the source and destination buffers</span></div>
+<div class="line"><a id="l00515" name="l00515"></a><span class="lineno">  515</span>    uint32_t size  = getSize();</div>
+<div class="line"><a id="l00516" name="l00516"></a><span class="lineno">  516</span>    uint32_t count = PyArray_NBYTES(arr);</div>
+<div class="line"><a id="l00517" name="l00517"></a><span class="lineno">  517</span>    uint32_t end   = offset + count;</div>
+<div class="line"><a id="l00518" name="l00518"></a><span class="lineno">  518</span> </div>
+<div class="line"><a id="l00519" name="l00519"></a><span class="lineno">  519</span>    <span class="comment">// Check this does not request data past the EOF</span></div>
+<div class="line"><a id="l00520" name="l00520"></a><span class="lineno">  520</span>    <span class="keywordflow">if</span> (end &gt; size) {</div>
+<div class="line"><a id="l00521" name="l00521"></a><span class="lineno">  521</span>        <span class="comment">// Release the temporary contiguous copy before throwing</span></div>
+<div class="line"><a id="l00522" name="l00522"></a><span class="lineno">  522</span>        <span class="keywordflow">if</span> (!ctg) Py_XDECREF(arr);</div>
+<div class="line"><a id="l00523" name="l00523"></a><span class="lineno">  523</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;Frame::putNumpy&quot;</span>,</div>
+<div class="line"><a id="l00524" name="l00524"></a><span class="lineno">  524</span>                                          <span class="stringliteral">&quot;Attempt to write %&quot;</span> PRIu32 <span class="stringliteral">&quot; bytes to frame at offset %&quot;</span> PRIu32</div>
+<div class="line"><a id="l00525" name="l00525"></a><span class="lineno">  525</span>                                          <span class="stringliteral">&quot; with size %&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00526" name="l00526"></a><span class="lineno">  526</span>                                          count,</div>
+<div class="line"><a id="l00527" name="l00527"></a><span class="lineno">  527</span>                                          offset,</div>
+<div class="line"><a id="l00528" name="l00528"></a><span class="lineno">  528</span>                                          size));</div>
+<div class="line"><a id="l00529" name="l00529"></a><span class="lineno">  529</span>    }</div>
+<div class="line"><a id="l00530" name="l00530"></a><span class="lineno">  530</span> </div>
+<div class="line"><a id="l00531" name="l00531"></a><span class="lineno">  531</span>    uint8_t* src = <span class="keyword">reinterpret_cast&lt;</span>uint8_t*<span class="keyword">&gt;</span>(PyArray_DATA(arr));</div>
+<div class="line"><a id="l00532" name="l00532"></a><span class="lineno">  532</span> </div>
+<div class="line"><a id="l00533" name="l00533"></a><span class="lineno">  533</span>    minPayload(end);</div>
+<div class="line"><a id="l00534" name="l00534"></a><span class="lineno">  534</span> </div>
+<div class="line"><a id="l00535" name="l00535"></a><span class="lineno">  535</span>    <span class="comment">// Write the numpy data to the array</span></div>
+<div class="line"><a id="l00536" name="l00536"></a><span class="lineno">  536</span>    <a class="code hl_class" href="classrogue_1_1interfaces_1_1stream_1_1FrameIterator.html">ris::FrameIterator</a> beg = this-&gt;begin() + offset;</div>
+<div class="line"><a id="l00537" name="l00537"></a><span class="lineno">  537</span>    <a class="code hl_function" href="namespacerogue_1_1interfaces_1_1stream.html#ad087a49fb5b902bdb0dddb27ce200d40">ris::toFrame</a>(beg, count, src);</div>
 <div class="line"><a id="l00538" name="l00538"></a><span class="lineno">  538</span> </div>
-<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>    <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>}</div>
-</div>
-<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span> </div>
-<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00539" name="l00539"></a><span class="lineno">  539</span>    <span class="comment">// If were forced to make a temporary copy, release it</span></div>
+<div class="line"><a id="l00540" name="l00540"></a><span class="lineno">  540</span>    <span class="keywordflow">if</span> (!ctg) {</div>
+<div class="line"><a id="l00541" name="l00541"></a><span class="lineno">  541</span>        Py_XDECREF(arr);</div>
+<div class="line"><a id="l00542" name="l00542"></a><span class="lineno">  542</span>    }</div>
 <div class="line"><a id="l00543" name="l00543"></a><span class="lineno">  543</span> </div>
-<div class="foldopen" id="foldopen00544" data-start="{" data-end="}">
-<div class="line"><a id="l00544" name="l00544"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html#a7a913eb8cda8c7641dfe46415840ab2e">  544</a></span><span class="keywordtype">void</span> ris::Frame::setup_python() {</div>
-<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
-<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span> </div>
-<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span>    <span class="comment">// Create a NumPy dtype object from the NPY_UINT8 constant</span></div>
-<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span>    PyObject* dtype_uint8 = <span class="keyword">reinterpret_cast&lt;</span>PyObject*<span class="keyword">&gt;</span>(PyArray_DescrFromType(NPY_UINT8));</div>
-<div class="line"><a id="l00549" name="l00549"></a><span class="lineno">  549</span>    <span class="keywordflow">if</span> (!dtype_uint8) {</div>
-<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span>        <span class="keywordflow">throw</span>(</div>
-<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span>            <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;Frame::setup_python&quot;</span>, <span class="stringliteral">&quot;Failed to create default dtype object for NPY_UINT8.&quot;</span>));</div>
-<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>    }</div>
-<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span> </div>
-<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>    bp::class_&lt;ris::Frame, ris::FramePtr, boost::noncopyable&gt;(<span class="stringliteral">&quot;Frame&quot;</span>, bp::no_init)</div>
-<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>        .def(<span class="stringliteral">&quot;lock&quot;</span>, &amp;ris::Frame::lock)</div>
-<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>        .def(<span class="stringliteral">&quot;getSize&quot;</span>, &amp;ris::Frame::getSize)</div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>        .def(<span class="stringliteral">&quot;getAvailable&quot;</span>, &amp;ris::Frame::getAvailable)</div>
-<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span>        .def(<span class="stringliteral">&quot;getPayload&quot;</span>, &amp;ris::Frame::getPayload)</div>
-<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>        .def(<span class="stringliteral">&quot;read&quot;</span>, &amp;ris::Frame::readPy, (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0))</div>
-<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>        .def(<span class="stringliteral">&quot;getBa&quot;</span>, &amp;ris::Frame::getBytearrayPy, (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0, bp::arg(<span class="stringliteral">&quot;count&quot;</span>) = 0))</div>
-<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>        .def(<span class="stringliteral">&quot;getMemoryview&quot;</span>, &amp;ris::Frame::getMemoryviewPy)</div>
-<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>        .def(<span class="stringliteral">&quot;write&quot;</span>, &amp;ris::Frame::writePy, (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0))</div>
-<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>        .def(<span class="stringliteral">&quot;setError&quot;</span>, &amp;ris::Frame::setError)</div>
-<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>        .def(<span class="stringliteral">&quot;getError&quot;</span>, &amp;ris::Frame::getError)</div>
-<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>        .def(<span class="stringliteral">&quot;setFlags&quot;</span>, &amp;ris::Frame::setFlags)</div>
-<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>        .def(<span class="stringliteral">&quot;getFlags&quot;</span>, &amp;ris::Frame::getFlags)</div>
-<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>        .def(<span class="stringliteral">&quot;setFirstUser&quot;</span>, &amp;ris::Frame::setFirstUser)</div>
-<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>        .def(<span class="stringliteral">&quot;getFirstUser&quot;</span>, &amp;ris::Frame::getFirstUser)</div>
-<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>        .def(<span class="stringliteral">&quot;setLastUser&quot;</span>, &amp;ris::Frame::setLastUser)</div>
-<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>        .def(<span class="stringliteral">&quot;getLastUser&quot;</span>, &amp;ris::Frame::getLastUser)</div>
-<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>        .def(<span class="stringliteral">&quot;setChannel&quot;</span>, &amp;ris::Frame::setChannel)</div>
-<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>        .def(<span class="stringliteral">&quot;getChannel&quot;</span>, &amp;ris::Frame::getChannel)</div>
-<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>        .def(<span class="stringliteral">&quot;getNumpy&quot;</span>,</div>
-<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>             &amp;ris::Frame::getNumpy,</div>
-<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>             (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0,</div>
-<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>              bp::arg(<span class="stringliteral">&quot;count&quot;</span>)  = 0))</div>
-<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>        .def(<span class="stringliteral">&quot;putNumpy&quot;</span>,</div>
-<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>             &amp;ris::Frame::putNumpy,</div>
-<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>             (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0))</div>
-<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>        .def(<span class="stringliteral">&quot;_debug&quot;</span>, &amp;ris::Frame::debug);</div>
-<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>}</div>
+<div class="line"><a id="l00544" name="l00544"></a><span class="lineno">  544</span>    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00545" name="l00545"></a><span class="lineno">  545</span>}</div>
 </div>
-<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span> </div>
-<div class="foldopen" id="foldopen00584" data-start="{" data-end="}">
-<div class="line"><a id="l00584" name="l00584"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html#af031fdee7784958fb1bf7b8f35dde7b7">  584</a></span><span class="keywordtype">void</span> ris::Frame::debug() {</div>
-<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>    ris::Frame::BufferIterator it;</div>
-<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span>    uint32_t idx = 0;</div>
-<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span> </div>
-<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span>    printf(<span class="stringliteral">&quot;Frame Info. BufferCount: %&quot;</span> PRIu32 <span class="stringliteral">&quot;, Size: %&quot;</span> PRIu32 <span class="stringliteral">&quot;, Available: %&quot;</span> PRIu32 <span class="stringliteral">&quot;, Payload: %&quot;</span> PRIu32</div>
-<div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span>           <span class="stringliteral">&quot;, Channel: %&quot;</span> PRIu8 <span class="stringliteral">&quot;, Error: 0x%&quot;</span> PRIx8 <span class="stringliteral">&quot;, Flags: 0x%&quot;</span> PRIx16 <span class="stringliteral">&quot;\n&quot;</span>,</div>
-<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>           bufferCount(),</div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>           getSize(),</div>
-<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>           getAvailable(),</div>
-<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>           getPayload(),</div>
-<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>           getChannel(),</div>
-<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>           getError(),</div>
-<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>           getFlags());</div>
-<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span> </div>
-<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>    <span class="keywordflow">for</span> (it = buffers_.begin(); it != buffers_.end(); ++it) {</div>
-<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>        (*it)-&gt;debug(idx);</div>
-<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>        idx++;</div>
-<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>    }</div>
-<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span>}</div>
+<div class="line"><a id="l00546" name="l00546"></a><span class="lineno">  546</span> </div>
+<div class="line"><a id="l00547" name="l00547"></a><span class="lineno">  547</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00548" name="l00548"></a><span class="lineno">  548</span> </div>
+<div class="foldopen" id="foldopen00549" data-start="{" data-end="}">
+<div class="line"><a id="l00549" name="l00549"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html#a7a913eb8cda8c7641dfe46415840ab2e">  549</a></span><span class="keywordtype">void</span> ris::Frame::setup_python() {</div>
+<div class="line"><a id="l00550" name="l00550"></a><span class="lineno">  550</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
+<div class="line"><a id="l00551" name="l00551"></a><span class="lineno">  551</span> </div>
+<div class="line"><a id="l00552" name="l00552"></a><span class="lineno">  552</span>    <span class="comment">// Create a NumPy dtype object from the NPY_UINT8 constant</span></div>
+<div class="line"><a id="l00553" name="l00553"></a><span class="lineno">  553</span>    PyObject* dtype_uint8 = <span class="keyword">reinterpret_cast&lt;</span>PyObject*<span class="keyword">&gt;</span>(PyArray_DescrFromType(NPY_UINT8));</div>
+<div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span>    <span class="keywordflow">if</span> (!dtype_uint8) {</div>
+<div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>        <span class="keywordflow">throw</span>(</div>
+<div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>            <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;Frame::setup_python&quot;</span>, <span class="stringliteral">&quot;Failed to create default dtype object for NPY_UINT8.&quot;</span>));</div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>    }</div>
+<div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span> </div>
+<div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>    bp::class_&lt;ris::Frame, ris::FramePtr, boost::noncopyable&gt;(<span class="stringliteral">&quot;Frame&quot;</span>, bp::no_init)</div>
+<div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span>        .def(<span class="stringliteral">&quot;lock&quot;</span>, &amp;ris::Frame::lock)</div>
+<div class="line"><a id="l00561" name="l00561"></a><span class="lineno">  561</span>        .def(<span class="stringliteral">&quot;getSize&quot;</span>, &amp;ris::Frame::getSize)</div>
+<div class="line"><a id="l00562" name="l00562"></a><span class="lineno">  562</span>        .def(<span class="stringliteral">&quot;getAvailable&quot;</span>, &amp;ris::Frame::getAvailable)</div>
+<div class="line"><a id="l00563" name="l00563"></a><span class="lineno">  563</span>        .def(<span class="stringliteral">&quot;getPayload&quot;</span>, &amp;ris::Frame::getPayload)</div>
+<div class="line"><a id="l00564" name="l00564"></a><span class="lineno">  564</span>        .def(<span class="stringliteral">&quot;read&quot;</span>, &amp;ris::Frame::readPy, (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0))</div>
+<div class="line"><a id="l00565" name="l00565"></a><span class="lineno">  565</span>        .def(<span class="stringliteral">&quot;getBa&quot;</span>, &amp;ris::Frame::getBytearrayPy, (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0, bp::arg(<span class="stringliteral">&quot;count&quot;</span>) = 0))</div>
+<div class="line"><a id="l00566" name="l00566"></a><span class="lineno">  566</span>        .def(<span class="stringliteral">&quot;getMemoryview&quot;</span>, &amp;ris::Frame::getMemoryviewPy)</div>
+<div class="line"><a id="l00567" name="l00567"></a><span class="lineno">  567</span>        .def(<span class="stringliteral">&quot;write&quot;</span>, &amp;ris::Frame::writePy, (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0))</div>
+<div class="line"><a id="l00568" name="l00568"></a><span class="lineno">  568</span>        .def(<span class="stringliteral">&quot;setError&quot;</span>, &amp;ris::Frame::setError)</div>
+<div class="line"><a id="l00569" name="l00569"></a><span class="lineno">  569</span>        .def(<span class="stringliteral">&quot;getError&quot;</span>, &amp;ris::Frame::getError)</div>
+<div class="line"><a id="l00570" name="l00570"></a><span class="lineno">  570</span>        .def(<span class="stringliteral">&quot;setFlags&quot;</span>, &amp;ris::Frame::setFlags)</div>
+<div class="line"><a id="l00571" name="l00571"></a><span class="lineno">  571</span>        .def(<span class="stringliteral">&quot;getFlags&quot;</span>, &amp;ris::Frame::getFlags)</div>
+<div class="line"><a id="l00572" name="l00572"></a><span class="lineno">  572</span>        .def(<span class="stringliteral">&quot;setFirstUser&quot;</span>, &amp;ris::Frame::setFirstUser)</div>
+<div class="line"><a id="l00573" name="l00573"></a><span class="lineno">  573</span>        .def(<span class="stringliteral">&quot;getFirstUser&quot;</span>, &amp;ris::Frame::getFirstUser)</div>
+<div class="line"><a id="l00574" name="l00574"></a><span class="lineno">  574</span>        .def(<span class="stringliteral">&quot;setLastUser&quot;</span>, &amp;ris::Frame::setLastUser)</div>
+<div class="line"><a id="l00575" name="l00575"></a><span class="lineno">  575</span>        .def(<span class="stringliteral">&quot;getLastUser&quot;</span>, &amp;ris::Frame::getLastUser)</div>
+<div class="line"><a id="l00576" name="l00576"></a><span class="lineno">  576</span>        .def(<span class="stringliteral">&quot;setChannel&quot;</span>, &amp;ris::Frame::setChannel)</div>
+<div class="line"><a id="l00577" name="l00577"></a><span class="lineno">  577</span>        .def(<span class="stringliteral">&quot;getChannel&quot;</span>, &amp;ris::Frame::getChannel)</div>
+<div class="line"><a id="l00578" name="l00578"></a><span class="lineno">  578</span>        .def(<span class="stringliteral">&quot;getNumpy&quot;</span>,</div>
+<div class="line"><a id="l00579" name="l00579"></a><span class="lineno">  579</span>             &amp;ris::Frame::getNumpy,</div>
+<div class="line"><a id="l00580" name="l00580"></a><span class="lineno">  580</span>             (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0,</div>
+<div class="line"><a id="l00581" name="l00581"></a><span class="lineno">  581</span>              bp::arg(<span class="stringliteral">&quot;count&quot;</span>)  = 0))</div>
+<div class="line"><a id="l00582" name="l00582"></a><span class="lineno">  582</span>        .def(<span class="stringliteral">&quot;putNumpy&quot;</span>,</div>
+<div class="line"><a id="l00583" name="l00583"></a><span class="lineno">  583</span>             &amp;ris::Frame::putNumpy,</div>
+<div class="line"><a id="l00584" name="l00584"></a><span class="lineno">  584</span>             (bp::arg(<span class="stringliteral">&quot;offset&quot;</span>) = 0))</div>
+<div class="line"><a id="l00585" name="l00585"></a><span class="lineno">  585</span>        .def(<span class="stringliteral">&quot;_debug&quot;</span>, &amp;ris::Frame::debug);</div>
+<div class="line"><a id="l00586" name="l00586"></a><span class="lineno">  586</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00587" name="l00587"></a><span class="lineno">  587</span>}</div>
+</div>
+<div class="line"><a id="l00588" name="l00588"></a><span class="lineno">  588</span> </div>
+<div class="foldopen" id="foldopen00589" data-start="{" data-end="}">
+<div class="line"><a id="l00589" name="l00589"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html#af031fdee7784958fb1bf7b8f35dde7b7">  589</a></span><span class="keywordtype">void</span> ris::Frame::debug() {</div>
+<div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span>    ris::Frame::BufferIterator it;</div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span>    uint32_t idx = 0;</div>
+<div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span> </div>
+<div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span>    printf(<span class="stringliteral">&quot;Frame Info. BufferCount: %&quot;</span> PRIu32 <span class="stringliteral">&quot;, Size: %&quot;</span> PRIu32 <span class="stringliteral">&quot;, Available: %&quot;</span> PRIu32 <span class="stringliteral">&quot;, Payload: %&quot;</span> PRIu32</div>
+<div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>           <span class="stringliteral">&quot;, Channel: %&quot;</span> PRIu8 <span class="stringliteral">&quot;, Error: 0x%&quot;</span> PRIx8 <span class="stringliteral">&quot;, Flags: 0x%&quot;</span> PRIx16 <span class="stringliteral">&quot;\n&quot;</span>,</div>
+<div class="line"><a id="l00595" name="l00595"></a><span class="lineno">  595</span>           bufferCount(),</div>
+<div class="line"><a id="l00596" name="l00596"></a><span class="lineno">  596</span>           getSize(),</div>
+<div class="line"><a id="l00597" name="l00597"></a><span class="lineno">  597</span>           getAvailable(),</div>
+<div class="line"><a id="l00598" name="l00598"></a><span class="lineno">  598</span>           getPayload(),</div>
+<div class="line"><a id="l00599" name="l00599"></a><span class="lineno">  599</span>           getChannel(),</div>
+<div class="line"><a id="l00600" name="l00600"></a><span class="lineno">  600</span>           getError(),</div>
+<div class="line"><a id="l00601" name="l00601"></a><span class="lineno">  601</span>           getFlags());</div>
+<div class="line"><a id="l00602" name="l00602"></a><span class="lineno">  602</span> </div>
+<div class="line"><a id="l00603" name="l00603"></a><span class="lineno">  603</span>    <span class="keywordflow">for</span> (it = buffers_.begin(); it != buffers_.end(); ++it) {</div>
+<div class="line"><a id="l00604" name="l00604"></a><span class="lineno">  604</span>        (*it)-&gt;debug(idx);</div>
+<div class="line"><a id="l00605" name="l00605"></a><span class="lineno">  605</span>        idx++;</div>
+<div class="line"><a id="l00606" name="l00606"></a><span class="lineno">  606</span>    }</div>
+<div class="line"><a id="l00607" name="l00607"></a><span class="lineno">  607</span>}</div>
 </div>
 <div class="ttc" id="aBuffer_8h_html"><div class="ttname"><a href="Buffer_8h.html">Buffer.h</a></div></div>
 <div class="ttc" id="aDirectives_8h_html"><div class="ttname"><a href="Directives_8h.html">Directives.h</a></div></div>
