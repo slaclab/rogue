@@ -93,48 +93,56 @@ class GpibController(rogue.interfaces.memory.Slave):
             if transaction is None:
                 return
 
-            with transaction.lock():
+            try:
+                self._doWork(transaction)
+            except Exception as e:
+                pyrogue.logException(self._log, e)
+                transaction.error(f'Unhandled GPIB worker exception: {e}')
 
-                # First lookup address
-                addr = transaction.address()
-                if addr not in self._map:
-                    transaction.error(f'Unknown address: {addr}')
-                    continue
+    def _doWork(self, transaction: rogue.interfaces.memory.Transaction) -> None:
+        """Process one queued transaction; raises on GPIB or parse failure."""
+        with transaction.lock():
 
-                var = self._map[addr]
-                byteSize = pyrogue.byteCount(var.base.bitSize)
-                readLen = 1024 if byteSize < 1024 else byteSize+10
+            # First lookup address
+            addr = transaction.address()
+            if addr not in self._map:
+                transaction.error(f'Unknown address: {addr}')
+                return
 
-                # Check transaction size
-                if byteSize != transaction.size():
-                    transaction.error(f'Transaction size mismatch: Got={transaction.size()}, Exp={byteSize}')
-                    continue
+            var = self._map[addr]
+            byteSize = pyrogue.byteCount(var.base.bitSize)
+            readLen = 1024 if byteSize < 1024 else byteSize+10
 
-                # Write path
-                if transaction.type() == rogue.interfaces.memory.Write:
-                    valBytes = bytearray(byteSize)
-                    transaction.getData(valBytes, 0)
-                    val = var.base.fromBytes(valBytes)
-                    send = var.getExtraAttribute('key') + " " + var.genDisp(val)
-                    self._log.debug("Write sending %s", send)
-                    self._gpib.write(send.encode('UTF-8'))
-                    transaction.done()
+            # Check transaction size
+            if byteSize != transaction.size():
+                transaction.error(f'Transaction size mismatch: Got={transaction.size()}, Exp={byteSize}')
+                return
 
-                # Read Path
-                elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
-                    send = var.getExtraAttribute('key') + "?"
-                    self._log.debug("Read sending %s", send)
-                    self._gpib.write(send.encode('UTF-8'))
-                    valStr = self._gpib.read(readLen).decode('UTF-8').rstrip()
-                    self._log.debug("Read got: %s", valStr)
-                    val = var.parseDisp(valStr)
-                    valBytes = var.base.toBytes(val)
-                    transaction.setData(valBytes, 0)
-                    transaction.done()
+            # Write path
+            if transaction.type() == rogue.interfaces.memory.Write:
+                valBytes = bytearray(byteSize)
+                transaction.getData(valBytes, 0)
+                val = var.base.fromBytes(valBytes)
+                send = var.getExtraAttribute('key') + " " + var.genDisp(val)
+                self._log.debug("Write sending %s", send)
+                self._gpib.write(send.encode('UTF-8'))
+                transaction.done()
 
-                else:
-                    # Posted writes not supported (for now)
-                    transaction.error(f'Unsupported transaction type: {transaction.type()}')
+            # Read Path
+            elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
+                send = var.getExtraAttribute('key') + "?"
+                self._log.debug("Read sending %s", send)
+                self._gpib.write(send.encode('UTF-8'))
+                valStr = self._gpib.read(readLen).decode('UTF-8').rstrip()
+                self._log.debug("Read got: %s", valStr)
+                val = var.parseDisp(valStr)
+                valBytes = var.base.toBytes(val)
+                transaction.setData(valBytes, 0)
+                transaction.done()
+
+            else:
+                # Posted writes not supported (for now)
+                transaction.error(f'Unsupported transaction type: {transaction.type()}')
 
 
 class GpibDevice(pyrogue.Device):
