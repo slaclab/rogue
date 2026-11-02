@@ -1324,7 +1324,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         offset, bitOffset, bitSize = addrParams # Assign back
 
         # Verify the the list lengths match
-        if len(offset) != len(bitOffset) != len(bitSize):
+        if not (len(offset) == len(bitOffset) == len(bitSize)):
             raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))
 
         # Check for invalid values
