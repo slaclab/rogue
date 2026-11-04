@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T17:00:14Z",
+  "generated_at": "2026-11-04T17:47:41Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -305,6 +305,14 @@
       "history": [
         {
           "ref_name": "ci-ubuntu-26.04",
+          "sha": "006cddc20cd6d4a1b127d0a65f4bad1d916b7fb0",
+          "short_sha": "006cddc",
+          "published_at": "2026-11-04T17:47:41Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/41877449129",
+          "summary_url": "/rogue/perf/branches/ci-ubuntu-26.04/history/006cddc20cd6d4a1b127d0a65f4bad1d916b7fb0.json"
+        },
+        {
+          "ref_name": "ci-ubuntu-26.04",
           "sha": "48ddc1a26f18f209a616357344689def6232848d",
           "short_sha": "48ddc1a",
           "published_at": "2026-11-04T17:00:14Z",
@@ -322,10 +330,10 @@
       ],
       "latest": {
         "ref_name": "ci-ubuntu-26.04",
-        "sha": "48ddc1a26f18f209a616357344689def6232848d",
-        "short_sha": "48ddc1a",
-        "published_at": "2026-11-04T17:00:14Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41872137698",
+        "sha": "006cddc20cd6d4a1b127d0a65f4bad1d916b7fb0",
+        "short_sha": "006cddc",
+        "published_at": "2026-11-04T17:47:41Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/41877449129",
         "summary_url": "/rogue/perf/branches/ci-ubuntu-26.04/latest.json"
       }
     },
