@@ -21,6 +21,16 @@ import json
 from typing import Any
 
 
+def _disposeEngine(engine: sqlalchemy.Engine | None) -> None:
+    """Dispose an engine, closing its pooled connections; ignore errors."""
+    if engine is None:
+        return
+    try:
+        engine.dispose()
+    except Exception:
+        pass
+
+
 class SqlLogger(object):
     """Logs variable updates and system log entries to a SQL database.
 
@@ -87,8 +97,12 @@ class SqlLogger(object):
             sqlalchemy.Column('levelName',   sqlalchemy.String),
             sqlalchemy.Column('levelNumber', sqlalchemy.Integer))
 
-        self._varTable.create(engine, checkfirst=True)
-        self._logTable.create(engine, checkfirst=True)
+        try:
+            self._varTable.create(engine, checkfirst=True)
+            self._logTable.create(engine, checkfirst=True)
+        except Exception:
+            _disposeEngine(engine)
+            raise
         self._engine = engine
 
     def _stop(self) -> None:
@@ -105,12 +119,8 @@ class SqlLogger(object):
                 and threading.current_thread() is not thr):
             thr.join()
 
-        if self._engine is not None:
-            try:
-                self._engine.dispose()
-            except Exception:
-                pass
-            self._engine = None
+        engine, self._engine = self._engine, None
+        _disposeEngine(engine)
 
         print('Sql logger stopped')
 
@@ -196,7 +206,8 @@ class SqlLogger(object):
 
 
             except Exception as e:
-                self._engine = None
+                engine, self._engine = self._engine, None
+                _disposeEngine(engine)
                 pr.logException(self._log,e)
                 self._log.error("Lost database connection to %s", self._url)
 
@@ -227,8 +238,16 @@ class SqlReader(object):
             return
 
         self._metadata = sqlalchemy.MetaData()
-        self._varTable = sqlalchemy.Table('variables', self._metadata, autoload_with=engine)
-        self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload_with=engine)
+        # Reflection opens a pooled connection and raises if the database lacks
+        # the SqlLogger tables. self._engine is not set yet, so close() cannot
+        # release that connection; dispose the engine here before re-raising,
+        # otherwise it leaks until garbage collection.
+        try:
+            self._varTable = sqlalchemy.Table('variables', self._metadata, autoload_with=engine)
+            self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload_with=engine)
+        except Exception:
+            _disposeEngine(engine)
+            raise
         self._engine = engine
 
     def getVariable(self) -> None:
@@ -248,3 +267,8 @@ class SqlReader(object):
         with self._engine.connect() as conn:
             r = conn.execute(sqlalchemy.select(self._logTable))
             print(r.fetchall())
+
+    def close(self) -> None:
+        """Release the SQLAlchemy engine and its pooled database connections."""
+        engine, self._engine = self._engine, None
+        _disposeEngine(engine)
