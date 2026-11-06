@@ -319,7 +319,9 @@ class UdpRssiPack(pr.Device):
 
         self.add(pr.LocalCommand(
             name        = 'stop',
-            function    = self._stop
+            # RSSI only: the UDP socket has no restart API, so the full
+            # _stop() is reserved for Root.stop()
+            function    = lambda: self._rssi._stop()
         ))
 
         self.add(pr.LocalCommand(
