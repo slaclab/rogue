@@ -234,8 +234,10 @@ void rogue::interfaces::ZmqClient::stop() {
         // send()/sendString() before tearing down zmqReq_ and the context:
         // stopping_ guarantees such a call releases reqLock_ promptly, so this
         // cannot deadlock. The SUB thread is already joined, so zmqSub_ is idle.
+        // zmqSub_ is created in both modes (only connected in standard mode);
+        // leaving it open makes zmq_ctx_destroy block forever.
         std::lock_guard<std::mutex> lock(reqLock_);
-        if (!doString_) zmq_close(this->zmqSub_);
+        zmq_close(this->zmqSub_);
         zmq_close(this->zmqReq_);
         zmq_ctx_destroy(this->zmqCtx_);
     }
