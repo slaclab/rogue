@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T22:51:35Z",
+  "generated_at": "2026-11-06T22:51:53Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-monotonic-elapsed-time",
+      "ref_slug": "fix-monotonic-elapsed-time",
+      "latest_url": "/rogue/perf/branches/fix-monotonic-elapsed-time/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-monotonic-elapsed-time",
+          "sha": "dd3fa496fbc5f1546d1b5e6d127c082843f3d403",
+          "short_sha": "dd3fa49",
+          "published_at": "2026-11-06T22:51:53Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42305131688",
+          "summary_url": "/rogue/perf/branches/fix-monotonic-elapsed-time/history/dd3fa496fbc5f1546d1b5e6d127c082843f3d403.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-monotonic-elapsed-time",
+        "sha": "dd3fa496fbc5f1546d1b5e6d127c082843f3d403",
+        "short_sha": "dd3fa49",
+        "published_at": "2026-11-06T22:51:53Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42305131688",
+        "summary_url": "/rogue/perf/branches/fix-monotonic-elapsed-time/latest.json"
       }
     },
     {
