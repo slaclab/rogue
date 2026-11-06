@@ -32,8 +32,11 @@ class SqlTestRoot(pr.Root):
 
 def _read_rows(url, table):
     engine = sqlalchemy.create_engine(url)
-    with engine.connect() as conn:
-        return conn.execute(sqlalchemy.text(f"SELECT * FROM {table}")).fetchall()
+    try:
+        with engine.connect() as conn:
+            return conn.execute(sqlalchemy.text(f"SELECT * FROM {table}")).fetchall()
+    finally:
+        engine.dispose()
 
 
 def _wait_for(predicate, timeout=2.0, interval=0.01):
@@ -192,6 +195,8 @@ def test_sql_reader_get_variable(tmp_path, capsys):
     assert reader._engine is not None
 
     reader.getVariable()
+    reader.close()
+    assert reader._engine is None
     captured = capsys.readouterr()
     assert "root.Dev.Value" in captured.out
 
@@ -219,5 +224,6 @@ def test_sql_reader_get_syslog(tmp_path, capsys):
     assert reader._engine is not None
 
     reader.getSyslog()
+    reader.close()
     captured = capsys.readouterr()
     assert "reader test message" in captured.out

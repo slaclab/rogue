@@ -12,7 +12,7 @@ RUN conda config --set channel_priority strict &&\
     conda install -n base conda-libmamba-solver &&\
     conda config --set solver libmamba
 
-RUN conda create -n rogue_tag -c tidair-tag -c conda-forge rogue
+RUN conda create -n rogue_tag -c conda-forge slac-rogue
 
 RUN echo "source activate rogue_tag" > ~/.bashrc
 
