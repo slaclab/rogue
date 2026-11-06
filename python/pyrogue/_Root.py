@@ -1196,27 +1196,29 @@ class Root(pr.Device):
 
                     # Call root listener functions,
                     with self._varListenLock:
-                        for func,doneFunc,incGroups,excGroups in self._varListeners:
-                            if v.filterByGroup(incGroups, excGroups):
-                                try:
-                                    func(p,val)
+                        listeners = list(self._varListeners)
+                    for func,doneFunc,incGroups,excGroups in listeners:
+                        if v.filterByGroup(incGroups, excGroups):
+                            try:
+                                func(p,val)
 
-                                except Exception as e:
-                                    if v == self.SystemLog or v == self.SystemLogLast:
-                                        print("------- Error Executing Syslog Listeners -------")
-                                        print("Error: {}".format(e))
-                                        print("------------------------------------------------")
-                                    else:
-                                        pr.logException(self._log,e)
+                            except Exception as e:
+                                if v == self.SystemLog or v == self.SystemLogLast:
+                                    print("------- Error Executing Syslog Listeners -------")
+                                    print("Error: {}".format(e))
+                                    print("------------------------------------------------")
+                                else:
+                                    pr.logException(self._log,e)
 
                 # Finalize root listeners
                 with self._varListenLock:
-                    for func,doneFunc,incGroups,excGroups in self._varListeners:
-                        if doneFunc is not None:
-                            try:
-                                doneFunc()
-                            except Exception as e:
-                                pr.logException(self._log,e)
+                    listeners = list(self._varListeners)
+                for func,doneFunc,incGroups,excGroups in listeners:
+                    if doneFunc is not None:
+                        try:
+                            doneFunc()
+                        except Exception as e:
+                            pr.logException(self._log,e)
 
                 if not syslogOnly:
                     self._log.debug(
