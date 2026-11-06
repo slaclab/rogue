@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-node-add-generator",
+  "ref_slug": "fix-node-add-generator",
+  "latest_url": "/rogue/perf/branches/fix-node-add-generator/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-node-add-generator",
+      "sha": "ce32dbb0cbc4cc6e4db1851e9210aff29cdf2255",
+      "short_sha": "ce32dbb",
+      "published_at": "2026-11-06T22:40:24Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42305505164",
+      "summary_url": "/rogue/perf/branches/fix-node-add-generator/history/ce32dbb0cbc4cc6e4db1851e9210aff29cdf2255.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-node-add-generator",
+    "sha": "ce32dbb0cbc4cc6e4db1851e9210aff29cdf2255",
+    "short_sha": "ce32dbb",
+    "published_at": "2026-11-06T22:40:24Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42305505164",
+    "summary_url": "/rogue/perf/branches/fix-node-add-generator/latest.json"
+  }
+}
