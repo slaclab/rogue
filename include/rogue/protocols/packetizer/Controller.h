@@ -68,7 +68,8 @@ class Controller {
     std::mutex tranMtx_;
 
     std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
-    std::shared_ptr<rogue::protocols::packetizer::Application>* app_;
+    // Weak references: Core owns the applications; slots fill via setApplication().
+    std::weak_ptr<rogue::protocols::packetizer::Application> app_[256];
 
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
 
@@ -76,14 +77,12 @@ class Controller {
     /**
      * @brief Constructs a packetizer controller base.
      * @param tran Transport endpoint associated with this controller.
-     * @param app Pointer to application endpoint array indexed by destination.
      * @param headSize Header bytes inserted per packet.
      * @param tailSize Trailer bytes inserted per packet.
      * @param alignSize Payload alignment requirement in bytes.
      * @param enSsi Enable SSI framing behavior.
      */
     Controller(std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-               std::shared_ptr<rogue::protocols::packetizer::Application>* app,
                uint32_t headSize,
                uint32_t tailSize,
                uint32_t alignSize,
@@ -135,6 +134,14 @@ class Controller {
      * @param timeout Timeout value in microseconds.
      */
     void setTimeout(uint32_t timeout);
+
+    /**
+     * @brief Registers the application endpoint for a destination.
+     * @details Held as a weak reference; frames for an expired slot are dropped.
+     * @param dest Destination channel ID.
+     * @param app Application endpoint for `dest`.
+     */
+    void setApplication(uint8_t dest, std::shared_ptr<rogue::protocols::packetizer::Application> app);
 };
 
 // Convenience

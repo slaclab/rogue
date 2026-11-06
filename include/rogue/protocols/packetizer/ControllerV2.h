@@ -63,15 +63,10 @@ class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue
      * @param enObCrc Enable outbound CRC generation.
      * @param enSsi Enable SSI framing behavior.
      * @param tran Transport endpoint attached to this controller.
-     * @param app Pointer to array of application endpoints indexed by destination.
      * @return Shared pointer to a new controller instance.
      */
-    static std::shared_ptr<rogue::protocols::packetizer::ControllerV2> create(
-        bool enIbCrc,
-        bool enObCrc,
-        bool enSsi,
-        std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-        std::shared_ptr<rogue::protocols::packetizer::Application>* app);
+    static std::shared_ptr<rogue::protocols::packetizer::ControllerV2>
+    create(bool enIbCrc, bool enObCrc, bool enSsi, std::shared_ptr<rogue::protocols::packetizer::Transport> tran);
 
     /**
      * @brief Constructs a packetizer v2 controller.
@@ -84,13 +79,8 @@ class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue
      * @param enObCrc Enable outbound CRC generation.
      * @param enSsi Enable SSI framing behavior.
      * @param tran Transport endpoint attached to this controller.
-     * @param app Pointer to array of application endpoints indexed by destination.
      */
-    ControllerV2(bool enIbCrc,
-                 bool enObCrc,
-                 bool enSsi,
-                 std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                 std::shared_ptr<rogue::protocols::packetizer::Application>* app);
+    ControllerV2(bool enIbCrc, bool enObCrc, bool enSsi, std::shared_ptr<rogue::protocols::packetizer::Transport> tran);
 
     /** @brief Destroys the controller instance. */
     ~ControllerV2();
