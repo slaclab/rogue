@@ -660,8 +660,15 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
                     buff[x] = createBuffer(desc_->rawBuff[meta[x]], 0x80000000 | meta[x], desc_->bSize, desc_->bSize);
             }
 
-            // Return of -1 is bad
-            if (rxCount < 0) throw(rogue::GeneralError("AxiStreamDma::runThread", "DMA Interface Failure!"));
+            // A negative return means the driver read failed (ioctl error, driver
+            // unload, or fd closed by a concurrent stop()).  runThread() has no
+            // top-level catch, so throwing here would call std::terminate.  Log
+            // and exit the worker cleanly, matching the fd_/POLLERR paths above.
+            if (rxCount < 0) {
+                log_->error("AxiStreamDma::runThread: DMA read failed (ret=%" PRId32 "); exiting worker", rxCount);
+                threadEn_ = false;
+                break;
+            }
 
             // Read was successful
             for (x = 0; x < rxCount; x++) {

@@ -10,7 +10,8 @@
  * backs the "DMA" buffers with ordinary anonymous mappings, tracking how many
  * are currently mapped. Tests query that count via fakedma_mapped_count() and
  * use the blocking hooks below to exercise deferred buffer returns overlapping
- * stop() deterministically.
+ * stop() deterministically, and the read-failure hook to make the RX worker
+ * observe a failed driver read.
  *
  * This object is built only under -DROGUE_BUILD_TESTS=ON and is never linked
  * into rogue-core or shipped.
@@ -83,6 +84,8 @@ static int      g_active_calls            = 0;
 static int      g_close_during_driver_call = 0;
 static int      g_ret_index_count         = 0;
 static int      g_tracking_overflow_count = 0;
+static int      g_fail_next_read          = 0;
+static int      g_read_fail_count         = 0;
 
 typedef int (*open_fn)(const char*, int, ...);
 typedef void* (*mmap_fn)(void*, size_t, int, int, int, off_t);
@@ -90,6 +93,7 @@ typedef int (*munmap_fn)(void*, size_t);
 typedef int (*close_fn)(int);
 typedef int (*ioctl_fn)(int, unsigned long, ...);
 typedef int (*poll_fn)(struct pollfd*, nfds_t, int);
+typedef ssize_t (*read_fn)(int, void*, size_t);
 
 static open_fn   real_open;
 static open_fn   real_open64;
@@ -99,6 +103,7 @@ static munmap_fn real_munmap;
 static close_fn  real_close;
 static ioctl_fn  real_ioctl;
 static poll_fn   real_poll;
+static read_fn   real_read;
 
 /* ------- bookkeeping helpers (caller holds g_lock) ------- */
 
@@ -377,14 +382,42 @@ int poll(struct pollfd* fds, nfds_t nfds, int timeout) {
                 fds[0].revents = POLLOUT;
                 return 1;
             }
-            /* RX path waits for POLLIN: stay idle for the requested timeout and
-             * report nothing so the worker thread never issues a read. */
+            /* RX path waits for POLLIN: when a read failure is armed, report
+             * readable so the worker issues the read that will fail. */
+            if (fds[0].events & POLLIN) {
+                int fail;
+                pthread_mutex_lock(&g_lock);
+                fail = g_fail_next_read;
+                pthread_mutex_unlock(&g_lock);
+                if (fail) {
+                    fds[0].revents = POLLIN;
+                    return 1;
+                }
+            }
+            /* Otherwise stay idle for the requested timeout and report nothing
+             * so the worker thread never issues a read. */
             if (timeout > 0) real_poll(NULL, 0, timeout);
             fds[0].revents = 0;
             return 0;
         }
     }
     return real_poll(fds, nfds, timeout);
+}
+
+ssize_t read(int fd, void* buf, size_t count) {
+    if (!real_read) real_read = (read_fn)dlsym(RTLD_NEXT, "read");
+
+    pthread_mutex_lock(&g_lock);
+    if (g_fail_next_read && is_our_fd_locked(fd)) {
+        g_fail_next_read = 0;
+        g_read_fail_count++;
+        pthread_cond_broadcast(&g_cond);
+        pthread_mutex_unlock(&g_lock);
+        errno = EIO;
+        return -1;
+    }
+    pthread_mutex_unlock(&g_lock);
+    return real_read(fd, buf, count);
 }
 
 /* Query hook for the test: number of fake DMA buffers currently mapped. */
@@ -450,6 +483,8 @@ void fakedma_reset(void) {
     g_close_during_driver_call = 0;
     g_ret_index_count          = 0;
     g_next_index               = 0;
+    g_fail_next_read           = 0;
+    g_read_fail_count          = 0;
     pthread_cond_broadcast(&g_cond);
     pthread_mutex_unlock(&g_lock);
 }
@@ -504,4 +539,42 @@ int fakedma_close_during_driver_call(void) {
     n = g_close_during_driver_call;
     pthread_mutex_unlock(&g_lock);
     return n;
+}
+
+/* Arm a one-shot RX failure: the next POLLIN poll reports readable and the
+ * following read() on a fake fd returns -1 with errno = EIO. */
+void fakedma_fail_next_read(void) {
+    pthread_mutex_lock(&g_lock);
+    g_fail_next_read = 1;
+    pthread_mutex_unlock(&g_lock);
+}
+
+int fakedma_read_fail_count(void) {
+    int n;
+    pthread_mutex_lock(&g_lock);
+    n = g_read_fail_count;
+    pthread_mutex_unlock(&g_lock);
+    return n;
+}
+
+/* Wait until at least one armed read failure has been delivered. */
+int fakedma_wait_read_failed(uint32_t timeout_ms) {
+    struct timespec deadline;
+    int ret = 0;
+
+    clock_gettime(CLOCK_REALTIME, &deadline);
+    deadline.tv_sec += timeout_ms / 1000u;
+    deadline.tv_nsec += (long)(timeout_ms % 1000u) * 1000000L;
+    if (deadline.tv_nsec >= 1000000000L) {
+        deadline.tv_sec++;
+        deadline.tv_nsec -= 1000000000L;
+    }
+
+    pthread_mutex_lock(&g_lock);
+    while (g_read_fail_count == 0) {
+        if (pthread_cond_timedwait(&g_cond, &g_lock, &deadline) == ETIMEDOUT) break;
+    }
+    ret = g_read_fail_count != 0;
+    pthread_mutex_unlock(&g_lock);
+    return ret;
 }
