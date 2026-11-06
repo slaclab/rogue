@@ -277,11 +277,13 @@ jobs:
 
       # macOS mirrors the full-build native coverage on Apple silicon using the
       # Python-enabled build configuration.
+      # rogue-cpp-srp-rssi is skipped here: its RSSI timing is unreliable on the
+      # shared macOS runner. It still runs in the Linux jobs.
       - name: Rogue Native C++ Tests
         shell: bash -el {0}
         run: |
           source build/setup_rogue.sh
-          ctest --test-dir build --output-on-failure -L cpp
+          ctest --test-dir build --output-on-failure -L cpp -E '^rogue-cpp-srp-rssi$'
 
       - name: Rogue Tests
         run: |
