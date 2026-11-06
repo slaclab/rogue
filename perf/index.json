@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T21:09:05Z",
+  "generated_at": "2026-11-06T21:17:59Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-pool-setfixedsize-cache",
+      "ref_slug": "fix-pool-setfixedsize-cache",
+      "latest_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-pool-setfixedsize-cache",
+          "sha": "2d25e9777e93f53070585e2423a23cf4ad735617",
+          "short_sha": "2d25e97",
+          "published_at": "2026-11-06T21:17:59Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42294574103",
+          "summary_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/history/2d25e9777e93f53070585e2423a23cf4ad735617.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-pool-setfixedsize-cache",
+        "sha": "2d25e9777e93f53070585e2423a23cf4ad735617",
+        "short_sha": "2d25e97",
+        "published_at": "2026-11-06T21:17:59Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42294574103",
+        "summary_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/latest.json"
       }
     },
     {
