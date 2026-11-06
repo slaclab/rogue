@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-runcontrol-stop-deadlock",
+  "ref_slug": "fix-runcontrol-stop-deadlock",
+  "latest_url": "/rogue/perf/branches/fix-runcontrol-stop-deadlock/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-runcontrol-stop-deadlock",
+      "sha": "765c17b6ada0f9f7b750142c32312b4545a0a347",
+      "short_sha": "765c17b",
+      "published_at": "2026-11-06T23:23:34Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42310614691",
+      "summary_url": "/rogue/perf/branches/fix-runcontrol-stop-deadlock/history/765c17b6ada0f9f7b750142c32312b4545a0a347.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-runcontrol-stop-deadlock",
+    "sha": "765c17b6ada0f9f7b750142c32312b4545a0a347",
+    "short_sha": "765c17b",
+    "published_at": "2026-11-06T23:23:34Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42310614691",
+    "summary_url": "/rogue/perf/branches/fix-runcontrol-stop-deadlock/latest.json"
+  }
+}
