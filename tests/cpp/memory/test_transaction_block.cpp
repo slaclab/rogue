@@ -5,7 +5,8 @@
  * Description:
  * Native C++ tests for memory block transaction behavior, including write,
  * read, and verify sequencing, minimum-access expansion to the downstream
- * slave contract, and propagation of verify mismatches as block-level errors.
+ * slave contract, propagation of verify mismatches as block-level errors, and
+ * Hub forwarding to an unconnected downstream slave.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -19,6 +20,7 @@
 #include <stdint.h>
 
 #include <algorithm>
+#include <chrono>
 #include <cstring>
 #include <memory>
 #include <string>
@@ -28,6 +30,8 @@
 #include "rogue/GeneralError.h"
 #include "rogue/interfaces/memory/Block.h"
 #include "rogue/interfaces/memory/Constants.h"
+#include "rogue/interfaces/memory/Hub.h"
+#include "rogue/interfaces/memory/Master.h"
 #include "rogue/interfaces/memory/Slave.h"
 #include "rogue/interfaces/memory/Transaction.h"
 #include "rogue/interfaces/memory/Variable.h"
@@ -168,4 +172,23 @@ TEST_CASE("Memory block surfaces verify mismatches as transaction errors") {
     REQUIRE_EQ(slave->records.size(), 2U);
     CHECK_EQ(slave->records[0].type, rim::Write);
     CHECK_EQ(slave->records[1].type, rim::Verify);
+}
+
+TEST_CASE("Memory hub forwards to an unconnected slave instead of splitting by zero max access") {
+    // The placeholder slave behind an unwired Hub reports maxAccess 0. The Hub
+    // must forward the transaction so the placeholder reports the unconnected
+    // bus error, rather than splitting into zero children and timing out.
+    auto hub    = rim::Hub::create(0x1000, 0, 0);
+    auto master = rim::Master::create();
+    master->setSlave(hub);
+    master->setTimeout(2000000);  // 2 s
+
+    std::vector<uint8_t> data(4, 0);
+    const auto start = std::chrono::steady_clock::now();
+    master->reqTransaction(0, static_cast<uint32_t>(data.size()), data.data(), rim::Read);
+    master->waitTransaction(0);
+    const auto elapsed = std::chrono::steady_clock::now() - start;
+
+    CHECK_NE(master->getError().find("unconnected memory bus"), std::string::npos);
+    CHECK_LT(elapsed, std::chrono::seconds(1));
 }
