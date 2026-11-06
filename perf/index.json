@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T23:10:13Z",
+  "generated_at": "2026-11-06T23:14:53Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-process-double-start",
+      "ref_slug": "fix-process-double-start",
+      "latest_url": "/rogue/perf/branches/fix-process-double-start/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-process-double-start",
+          "sha": "704a1e2046b09633225f6a684a36aff1ac87d17a",
+          "short_sha": "704a1e2",
+          "published_at": "2026-11-06T23:14:53Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42307900537",
+          "summary_url": "/rogue/perf/branches/fix-process-double-start/history/704a1e2046b09633225f6a684a36aff1ac87d17a.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-process-double-start",
+        "sha": "704a1e2046b09633225f6a684a36aff1ac87d17a",
+        "short_sha": "704a1e2",
+        "published_at": "2026-11-06T23:14:53Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42307900537",
+        "summary_url": "/rogue/perf/branches/fix-process-double-start/latest.json"
       }
     },
     {
