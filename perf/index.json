@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T22:40:47Z",
+  "generated_at": "2026-11-06T22:50:22Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-axistreamdma-read-failure",
+      "ref_slug": "fix-axistreamdma-read-failure",
+      "latest_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-axistreamdma-read-failure",
+          "sha": "aaa27711f93a3c1b08080988707a8f01c10eea31",
+          "short_sha": "aaa2771",
+          "published_at": "2026-11-06T22:50:22Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42306767998",
+          "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/history/aaa27711f93a3c1b08080988707a8f01c10eea31.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-axistreamdma-read-failure",
+        "sha": "aaa27711f93a3c1b08080988707a8f01c10eea31",
+        "short_sha": "aaa2771",
+        "published_at": "2026-11-06T22:50:22Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42306767998",
+        "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/latest.json"
       }
     },
     {
