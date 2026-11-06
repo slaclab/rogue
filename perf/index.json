@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T23:23:34Z",
+  "generated_at": "2026-11-06T23:24:40Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-device-poll-hide-variables",
+      "ref_slug": "fix-device-poll-hide-variables",
+      "latest_url": "/rogue/perf/branches/fix-device-poll-hide-variables/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-device-poll-hide-variables",
+          "sha": "fc04b44721a1519ecc050abef1d051268c45eb93",
+          "short_sha": "fc04b44",
+          "published_at": "2026-11-06T23:24:40Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42310803003",
+          "summary_url": "/rogue/perf/branches/fix-device-poll-hide-variables/history/fc04b44721a1519ecc050abef1d051268c45eb93.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-device-poll-hide-variables",
+        "sha": "fc04b44721a1519ecc050abef1d051268c45eb93",
+        "short_sha": "fc04b44",
+        "published_at": "2026-11-06T23:24:40Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42310803003",
+        "summary_url": "/rogue/perf/branches/fix-device-poll-hide-variables/latest.json"
       }
     },
     {
