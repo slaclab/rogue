@@ -9,6 +9,8 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import gc
+import os
 import sys
 import time
 
@@ -188,6 +190,31 @@ def test_rssi_graceful_shutdown():
     finally:
         rssiCli._stop()
         rssiSrv._stop()
+
+
+def _native_thread_count():
+    return len(os.listdir("/proc/self/task"))
+
+
+@pytest.mark.skipif(not os.path.isdir("/proc/self/task"), reason="needs /proc/self/task")
+def test_rssi_release_does_not_leak_threads():
+    """Dropping an RSSI Client/Server must join its RssiApp thread."""
+    before = _native_thread_count()
+
+    for _ in range(5):
+        rssiSrv = rogue.protocols.rssi.Server(1400)
+        rssiCli = rogue.protocols.rssi.Client(1400)
+        rssiSrv._start()
+        rssiCli._start()
+        rssiCli._stop()
+        rssiSrv._stop()
+        del rssiCli, rssiSrv
+        gc.collect()
+
+    assert wait_for(
+        lambda: _native_thread_count() <= before,
+        timeout=5.0
+    ), f"native threads grew from {before} to {_native_thread_count()}"
 
 
 if __name__ == "__main__":

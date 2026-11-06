@@ -97,6 +97,7 @@ rpr::Client::Client(uint32_t segSize) {
 //! Destructor
 rpr::Client::~Client() {
     cntl_->stop();
+    app_->stop();
 }
 
 //! Get transport interface
