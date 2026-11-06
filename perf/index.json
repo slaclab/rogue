@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T22:36:05Z",
+  "generated_at": "2026-11-06T22:36:54Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-setdict-local-array-index",
+      "ref_slug": "fix-setdict-local-array-index",
+      "latest_url": "/rogue/perf/branches/fix-setdict-local-array-index/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-setdict-local-array-index",
+          "sha": "9f5240cdd2ee088d61dd31f0a5a3af28519eff72",
+          "short_sha": "9f5240c",
+          "published_at": "2026-11-06T22:36:54Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42305215457",
+          "summary_url": "/rogue/perf/branches/fix-setdict-local-array-index/history/9f5240cdd2ee088d61dd31f0a5a3af28519eff72.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-setdict-local-array-index",
+        "sha": "9f5240cdd2ee088d61dd31f0a5a3af28519eff72",
+        "short_sha": "9f5240c",
+        "published_at": "2026-11-06T22:36:54Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42305215457",
+        "summary_url": "/rogue/perf/branches/fix-setdict-local-array-index/latest.json"
       }
     },
     {
