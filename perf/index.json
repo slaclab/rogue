@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T21:35:33Z",
+  "generated_at": "2026-11-06T21:47:39Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-hub-zero-maxaccess",
+      "ref_slug": "fix-hub-zero-maxaccess",
+      "latest_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-hub-zero-maxaccess",
+          "sha": "535f31dd7972e810988310ca6d6a9e4fa3f4bfde",
+          "short_sha": "535f31d",
+          "published_at": "2026-11-06T21:47:39Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42293902961",
+          "summary_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/history/535f31dd7972e810988310ca6d6a9e4fa3f4bfde.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-hub-zero-maxaccess",
+        "sha": "535f31dd7972e810988310ca6d6a9e4fa3f4bfde",
+        "short_sha": "535f31d",
+        "published_at": "2026-11-06T21:47:39Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42293902961",
+        "summary_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/latest.json"
       }
     },
     {
