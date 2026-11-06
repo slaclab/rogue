@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-stream-reader-close-deadlock",
+  "ref_slug": "fix-stream-reader-close-deadlock",
+  "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-stream-reader-close-deadlock",
+      "sha": "cd7f25e941385272b301e0ce7b85cd06ea1a6bce",
+      "short_sha": "cd7f25e",
+      "published_at": "2026-11-06T23:28:02Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42311383724",
+      "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/history/cd7f25e941385272b301e0ce7b85cd06ea1a6bce.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-stream-reader-close-deadlock",
+    "sha": "cd7f25e941385272b301e0ce7b85cd06ea1a6bce",
+    "short_sha": "cd7f25e",
+    "published_at": "2026-11-06T23:28:02Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42311383724",
+    "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json"
+  }
+}
