@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-pollqueue-lost-wakeup",
+  "ref_slug": "fix-pollqueue-lost-wakeup",
+  "latest_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-pollqueue-lost-wakeup",
+      "sha": "0f03c242ac1fd10ff7e29d92951a5090c6de1d70",
+      "short_sha": "0f03c24",
+      "published_at": "2026-11-06T22:51:35Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42306841775",
+      "summary_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/history/0f03c242ac1fd10ff7e29d92951a5090c6de1d70.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-pollqueue-lost-wakeup",
+    "sha": "0f03c242ac1fd10ff7e29d92951a5090c6de1d70",
+    "short_sha": "0f03c24",
+    "published_at": "2026-11-06T22:51:35Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42306841775",
+    "summary_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/latest.json"
+  }
+}
