@@ -138,6 +138,9 @@ class SqlLogger(object):
 
         # Syslog
         if entry[0] == self._sysLogPath:
+            # ClearLog writes '' to SystemLogLast; nothing to record
+            if not entry[1].value:
+                return
             val = json.loads(entry[1].value)
 
             ins = self._logTable.insert().values(
@@ -155,9 +158,9 @@ class SqlLogger(object):
             if isinstance(value, int) and value.bit_length() > 64:
                 # Support >64 bit ints
                 value = entry[1].valueDisp
-            elif isinstance(value, tuple):
-                # Support tuples
-                value = str(value)
+            elif not isinstance(value, (bool, int, float, str, type(None))):
+                # Containers and arrays go in as their display string
+                value = entry[1].valueDisp
 
             ins = self._varTable.insert().values(
                 path=entry[0],
@@ -193,8 +196,15 @@ class SqlLogger(object):
                         if entry is None:
                             return
 
-                        # Insert the entry
-                        self.insert_from_q(entry, conn)
+                        # Insert the entry; a Python-side conversion error
+                        # drops only that row, while database errors fall
+                        # through to the lost-connection handler below
+                        try:
+                            self.insert_from_q(entry, conn)
+                        except sqlalchemy.exc.SQLAlchemyError:
+                            raise
+                        except Exception as e:
+                            pr.logException(self._log, e)
 
                         # Break from loop and close the transaction
                         # when queue has been emptied
