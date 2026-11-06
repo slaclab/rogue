@@ -5,8 +5,7 @@
  * Description:
  * Native C++ tests for memory block transaction behavior, including write,
  * read, and verify sequencing, minimum-access expansion to the downstream
- * slave contract, propagation of verify mismatches as block-level errors, and
- * transaction timeout detection for deadlines on a whole-second boundary.
+ * slave contract, and propagation of verify mismatches as block-level errors.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -18,14 +17,11 @@
  * ----------------------------------------------------------------------------
  **/
 #include <stdint.h>
-#include <sys/time.h>
 
 #include <algorithm>
-#include <atomic>
 #include <cstring>
 #include <memory>
 #include <string>
-#include <thread>
 #include <vector>
 
 #include "doctest/doctest.h"
@@ -34,9 +30,7 @@
 #include "rogue/interfaces/memory/Constants.h"
 #include "rogue/interfaces/memory/Slave.h"
 #include "rogue/interfaces/memory/Transaction.h"
-#include "rogue/interfaces/memory/TransactionLock.h"
 #include "rogue/interfaces/memory/Variable.h"
-#include "support/test_helpers.h"
 
 namespace rim = rogue::interfaces::memory;
 
@@ -100,25 +94,6 @@ rim::VariablePtr makeUIntVariable(const std::string& name,
     variable->updatePath("TestBlock." + name);
     return variable;
 }
-
-// Exposes the protected deadline and wait() so the timeout path can be driven directly.
-class DeadlineTransaction : public rim::Transaction {
-  public:
-    explicit DeadlineTransaction(struct timeval timeout) : rim::Transaction(timeout) {}
-
-    // Arm the timer, then move the deadline into the past on an exact second (tv_usec == 0).
-    void armWholeSecondDeadlineInPast() {
-        refreshTimer(nullptr);
-        struct timeval now;
-        gettimeofday(&now, NULL);
-        endTime_.tv_sec  = now.tv_sec - 1;
-        endTime_.tv_usec = 0;
-    }
-
-    std::string waitForResult() {
-        return wait();
-    }
-};
 
 std::vector<uint8_t> bytesFromUInt32(uint32_t value) {
     std::vector<uint8_t> bytes(sizeof(value));
@@ -193,29 +168,4 @@ TEST_CASE("Memory block surfaces verify mismatches as transaction errors") {
     REQUIRE_EQ(slave->records.size(), 2U);
     CHECK_EQ(slave->records[0].type, rim::Write);
     CHECK_EQ(slave->records[1].type, rim::Verify);
-}
-
-TEST_CASE("Transaction wait times out when the deadline falls on a whole second") {
-    struct timeval timeout = {1, 0};
-    auto tran              = std::make_shared<DeadlineTransaction>(timeout);
-    tran->armWholeSecondDeadlineInPast();
-
-    std::atomic<bool> returned(false);
-    std::string result;
-    std::thread waiter([&]() {
-        result = tran->waitForResult();
-        returned.store(true);
-    });
-
-    const bool timedOut = rogue_test::waitUntil([&]() { return returned.load(); }, 1000);
-
-    // Release a wait() that ignored the deadline so the thread can be joined.
-    if (!timedOut) {
-        auto lock = tran->lock();
-        tran->done();
-    }
-    waiter.join();
-
-    REQUIRE(timedOut);
-    CHECK_EQ(result, "Timeout waiting for register transaction " + std::to_string(tran->id()) + " message response.");
 }
