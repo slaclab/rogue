@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._SqlLogging &mdash; Rogue v6.16.0-89-gc822ff22d documentation</title>
+  <title>pyrogue.interfaces._SqlLogging &mdash; Rogue v6.16.0-94-g6d9be553f documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=58de8879"></script>
+      <script src="../../../_static/documentation_options.js?v=4e62b7f4"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -132,6 +132,16 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_disposeEngine</span><span class="p">(</span><span class="n">engine</span><span class="p">:</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Engine</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Dispose an engine, closing its pooled connections; ignore errors."""</span>
+    <span class="k">if</span> <span class="n">engine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+
 <div class="viewcode-block" id="SqlLogger">
 <a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/sqllogger.html#pyrogue.interfaces.SqlLogger">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SqlLogger</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -202,8 +212,12 @@
             <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'levelName'</span><span class="p">,</span>   <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">String</span><span class="p">),</span>
             <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">'levelNumber'</span><span class="p">,</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Integer</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_varTable</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">checkfirst</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logTable</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">checkfirst</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_varTable</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">checkfirst</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logTable</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">checkfirst</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">_disposeEngine</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+            <span class="k">raise</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="n">engine</span></div>
 
 
@@ -221,12 +235,8 @@
                 <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">thr</span><span class="p">):</span>
             <span class="n">thr</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="k">pass</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">engine</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="n">_disposeEngine</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s1">'Sql logger stopped'</span><span class="p">)</span>
 
@@ -315,7 +325,8 @@
 
 
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">engine</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="n">_disposeEngine</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
                 <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Lost database connection to </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">)</span>
 
@@ -351,8 +362,16 @@
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">MetaData</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_varTable</span> <span class="o">=</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">'variables'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span> <span class="n">autoload_with</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_logTable</span> <span class="o">=</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">'syslog'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span> <span class="n">autoload_with</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+        <span class="c1"># Reflection opens a pooled connection and raises if the database lacks</span>
+        <span class="c1"># the SqlLogger tables. self._engine is not set yet, so close() cannot</span>
+        <span class="c1"># release that connection; dispose the engine here before re-raising,</span>
+        <span class="c1"># otherwise it leaks until garbage collection.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_varTable</span> <span class="o">=</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">'variables'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span> <span class="n">autoload_with</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logTable</span> <span class="o">=</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">'syslog'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span> <span class="n">autoload_with</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">_disposeEngine</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+            <span class="k">raise</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="n">engine</span></div>
 
 
@@ -378,6 +397,14 @@
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_logTable</span><span class="p">))</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="SqlReader.close">
+<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/sqlreader.html#pyrogue.interfaces.SqlReader.close">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Release the SQLAlchemy engine and its pooled database connections."""</span>
+        <span class="n">engine</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="n">_disposeEngine</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
