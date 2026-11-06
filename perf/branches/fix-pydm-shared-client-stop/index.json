@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-pydm-shared-client-stop",
+  "ref_slug": "fix-pydm-shared-client-stop",
+  "latest_url": "/rogue/perf/branches/fix-pydm-shared-client-stop/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-pydm-shared-client-stop",
+      "sha": "07d525bffe9edab6c3f73b1acbcc9a698969b044",
+      "short_sha": "07d525b",
+      "published_at": "2026-11-06T22:40:47Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42304287431",
+      "summary_url": "/rogue/perf/branches/fix-pydm-shared-client-stop/history/07d525bffe9edab6c3f73b1acbcc9a698969b044.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-pydm-shared-client-stop",
+    "sha": "07d525bffe9edab6c3f73b1acbcc9a698969b044",
+    "short_sha": "07d525b",
+    "published_at": "2026-11-06T22:40:47Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42304287431",
+    "summary_url": "/rogue/perf/branches/fix-pydm-shared-client-stop/latest.json"
+  }
+}
