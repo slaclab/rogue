@@ -231,7 +231,7 @@ std::string rim::Transaction::wait() {
     while (!done_) {
         // Timeout?
         gettimeofday(&currTime, NULL);
-        if (endTime_.tv_sec != 0 && endTime_.tv_usec != 0 && timercmp(&currTime, &(endTime_), >)) {
+        if (timerisset(&endTime_) && timercmp(&currTime, &(endTime_), >)) {
             done_  = true;
             error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
