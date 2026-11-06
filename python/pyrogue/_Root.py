@@ -39,7 +39,7 @@ class UpdateTracker(object):
         self._count = 0
         self._list = {}
         self._period = 0
-        self._last = time.time()
+        self._last = time.monotonic()
         self._q = q
 
     def increment(self, period: float) -> None:
@@ -65,10 +65,9 @@ class UpdateTracker(object):
 
     def _check(self) -> None:
         """Flush queued updates when depth or period criteria are met."""
-        if self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period):
+        if self._count == 0 or (self._period != 0 and (time.monotonic() - self._last) > self._period):
             if len(self._list) != 0:
-                #print(f"Update fired {time.time()}")
-                self._last = time.time()
+                self._last = time.monotonic()
                 self._q.put(self._list)
                 self._list = {}
 
