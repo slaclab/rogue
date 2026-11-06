@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T22:26:46Z",
+  "generated_at": "2026-11-06T22:36:05Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-filereader-batched-wide",
+      "ref_slug": "fix-filereader-batched-wide",
+      "latest_url": "/rogue/perf/branches/fix-filereader-batched-wide/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-filereader-batched-wide",
+          "sha": "c73918817a4bc3faa5dfd04852e84867823767f8",
+          "short_sha": "c739188",
+          "published_at": "2026-11-06T22:36:05Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42302332566",
+          "summary_url": "/rogue/perf/branches/fix-filereader-batched-wide/history/c73918817a4bc3faa5dfd04852e84867823767f8.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-filereader-batched-wide",
+        "sha": "c73918817a4bc3faa5dfd04852e84867823767f8",
+        "short_sha": "c739188",
+        "published_at": "2026-11-06T22:36:05Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42302332566",
+        "summary_url": "/rogue/perf/branches/fix-filereader-batched-wide/latest.json"
       }
     },
     {
