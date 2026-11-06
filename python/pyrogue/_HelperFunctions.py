@@ -283,7 +283,7 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
         # File is relative without a base path, assume cwd (Current working directory)
         else:
-            filename = node
+            filename = rel
 
         # Recursive call, flatten relative jumps
         return yamlToData(fName=os.path.abspath(filename))
