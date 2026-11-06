@@ -277,6 +277,43 @@ def test_process_start_and_call_warn_when_already_running(monkeypatch):
         assert warnings == ["Process already running!", "Process already running!"]
 
 
+def test_process_back_to_back_start_spawns_single_worker(monkeypatch):
+    with ProcessRoot() as root:
+        warnings = []
+        process_calls = []
+        workers = []
+        gate = threading.Event()
+        orig_run = root.Proc._run
+        orig_process = root.Proc._process
+
+        # Hold each worker before it sets Running so the second Start lands
+        # in the window where Running is still False.
+        def gated_run():
+            workers.append(threading.current_thread())
+            gate.wait(timeout=1.0)
+            orig_run()
+
+        def counting_process():
+            process_calls.append(threading.current_thread())
+            orig_process()
+
+        monkeypatch.setattr(root.Proc, "_run", gated_run)
+        monkeypatch.setattr(root.Proc, "_process", counting_process)
+        monkeypatch.setattr(root.Proc._log, "warning", lambda msg: warnings.append(msg))
+
+        root.Proc.Start()
+        root.Proc()
+        root.Proc.Start()
+
+        gate.set()
+        for thr in workers:
+            thr.join(timeout=1.0)
+
+        assert len(workers) == 1
+        assert len(process_calls) == 1
+        assert warnings == ["Process already running!", "Process already running!"]
+
+
 def test_process_without_callback_runs_default_loop(monkeypatch):
     sleep_calls = []
     monkeypatch.setattr(process_module.time, "sleep", lambda delay: sleep_calls.append(delay))
