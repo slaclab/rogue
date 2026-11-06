@@ -28,6 +28,9 @@
 # at the same layer.
 
 import gc
+import subprocess
+import sys
+import textwrap
 import time
 
 import pytest
@@ -168,3 +171,77 @@ def test_memory_tcp_python_stop_bindings_are_exposed(free_tcp_port):
     # Idempotence matters because application teardown may also call close().
     client._stop()
     server._stop()
+
+
+# Runs in a child interpreter so a use-after-close crash inside libzmq surfaces
+# as a non-zero exit code instead of taking down the pytest worker.
+_STOP_RACE_CHILD = textwrap.dedent(
+    """
+    import threading
+    import time
+
+    import rogue.interfaces.memory as rim
+
+    emu = rim.Emulate(4, 0x1000)
+    srv = rim.TcpServer("127.0.0.1", {port})
+    emu << srv
+
+    for cycle in range({cycles}):
+        cli = rim.TcpClient("127.0.0.1", {port}, False)
+        mst = rim.Master()
+        mst >> cli
+        mst._setTimeout(200000)
+
+        stopped = threading.Event()
+        postStop = []
+
+        def transact():
+            mst._clearError()
+            tid = mst._reqTransaction(0, bytearray(4), 4, 0, rim.Write)
+            mst._waitTransaction(tid)
+            return mst._getError()
+
+        def writer():
+            # Race stop(): keep sending until the main thread reports it returned.
+            while not stopped.is_set():
+                transact()
+            # Every transaction issued after stop() returned must fail fast.
+            for _ in range(5):
+                postStop.append(transact())
+
+        thread = threading.Thread(target=writer)
+        thread.start()
+        time.sleep(0.02)
+        cli._stop()
+        stopped.set()
+        thread.join(timeout=10.0)
+
+        assert not thread.is_alive(), f"cycle {{cycle}}: writer thread hung after stop"
+        for err in postStop:
+            assert "TcpClient stopped" in err, f"cycle {{cycle}}: unexpected post-stop error {{err!r}}"
+
+    srv._stop()
+    print("OK")
+    """
+)
+
+
+def test_memory_tcp_client_stop_races_in_flight_transactions(free_tcp_port):
+    """``stop()`` must serialize socket teardown against ``doTransaction()``.
+
+    A writer thread hammers ``_reqTransaction`` through a ``TcpClient`` while
+    the main thread calls ``_stop()``. Without ``bridgeMtx_`` held across the
+    teardown, a sender can hit ``zmq_sendmsg`` on a socket being closed. After
+    stop, transactions must fail immediately with ``TcpClient stopped`` rather
+    than waiting out the transaction timeout.
+    """
+    result = subprocess.run(
+        [sys.executable, "-c", _STOP_RACE_CHILD.format(port=free_tcp_port, cycles=10)],
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    assert result.returncode == 0, (
+        f"child exited {result.returncode}\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+    )
+    assert "OK" in result.stdout
