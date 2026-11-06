@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-transaction-wait-timerisset",
+  "ref_slug": "fix-transaction-wait-timerisset",
+  "latest_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-transaction-wait-timerisset",
+      "sha": "df7cf713a6050dc0b5f066aa7b3996db298c8cb9",
+      "short_sha": "df7cf71",
+      "published_at": "2026-11-06T22:26:46Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42297611253",
+      "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/history/df7cf713a6050dc0b5f066aa7b3996db298c8cb9.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-transaction-wait-timerisset",
+    "sha": "df7cf713a6050dc0b5f066aa7b3996db298c8cb9",
+    "short_sha": "df7cf71",
+    "published_at": "2026-11-06T22:26:46Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42297611253",
+    "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json"
+  }
+}
