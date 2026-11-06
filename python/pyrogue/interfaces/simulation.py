@@ -135,6 +135,7 @@ class SideBandSim():
 
                 if len(ba) != 4:
                     self._log.error("Got bad size frame: %r size: %s", ba, len(ba))
+                    continue
 
                 # Got normal data
                 opCode = None

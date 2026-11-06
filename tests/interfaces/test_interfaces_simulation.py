@@ -113,6 +113,35 @@ def test_sideband_sim_send_receive_and_stop(monkeypatch):
     assert sideband._run is False
 
 
+def test_sideband_sim_drops_bad_size_frame(monkeypatch):
+    fake_ctx = FakeZmqContext()
+    monkeypatch.setattr(sim_mod.zmq, "Context", lambda: fake_ctx)
+    monkeypatch.setattr(sim_mod.threading, "Thread", FakeThread)
+
+    select_calls = {"count": 0}
+
+    def fake_select(read_list, _write, _error, _timeout):
+        select_calls["count"] += 1
+        if select_calls["count"] <= 2:
+            return ([read_list[0]], [], [])
+        sideband._run = False
+        return ([], [], [])
+
+    monkeypatch.setattr(sim_mod.zmq, "select", fake_select)
+
+    sideband = sim_mod.SideBandSim("127.0.0.1", 9050)
+
+    seen = []
+    sideband.setRecvCb(lambda op_code, rem_data: seen.append((op_code, rem_data)))
+    # A short frame must be discarded without raising; the following valid
+    # frame must still be delivered and the worker must exit normally.
+    sideband._sbPull.to_recv.append(b"\x01\x56")
+    sideband._sbPull.to_recv.append(b"\x01\x56\x01\x78")
+    sideband._recvWorker()
+    assert seen == [(0x56, 0x78)]
+    assert sideband._sbPull.to_recv == []
+
+
 def test_sideband_sim_context_manager_stops_worker(monkeypatch):
     fake_ctx = FakeZmqContext()
     monkeypatch.setattr(sim_mod.zmq, "Context", lambda: fake_ctx)
