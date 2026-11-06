@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-test-main-python-include-order",
+  "ref_slug": "fix-test-main-python-include-order",
+  "latest_url": "/rogue/perf/branches/fix-test-main-python-include-order/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-test-main-python-include-order",
+      "sha": "bfc2ccf54cce7bc0e41d9ed87eef8bf500336626",
+      "short_sha": "bfc2ccf",
+      "published_at": "2026-11-06T21:09:05Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42293200381",
+      "summary_url": "/rogue/perf/branches/fix-test-main-python-include-order/history/bfc2ccf54cce7bc0e41d9ed87eef8bf500336626.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-test-main-python-include-order",
+    "sha": "bfc2ccf54cce7bc0e41d9ed87eef8bf500336626",
+    "short_sha": "bfc2ccf",
+    "published_at": "2026-11-06T21:09:05Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42293200381",
+    "summary_url": "/rogue/perf/branches/fix-test-main-python-include-order/latest.json"
+  }
+}
