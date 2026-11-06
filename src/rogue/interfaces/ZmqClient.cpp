@@ -288,7 +288,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
 
     while (1) {
         zmq_msg_init(&msg);
-        if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
+        if (zmq_recvmsg(this->zmqReq_, &msg, 0) < 0) {
             seconds += static_cast<double>(timeout_) / 1000.0;
             // failTime_ == 0 preserves the historic forever-retry contract
             // (issue #1236). A finite failTime_ throws once the accumulated
@@ -385,7 +385,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
         while (1) {
             zmq_msg_init(&rxMsg);
-            if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
+            if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) < 0) {
                 seconds += static_cast<double>(timeout_) / 1000.0;
                 // failTime_ == 0 preserves the historic forever-retry contract
                 // (issue #1236). A finite failTime_ throws once the accumulated
