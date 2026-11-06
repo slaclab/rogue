@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06T21:20:24Z",
+  "generated_at": "2026-11-06T21:35:33Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-06T19:50:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-memory-tcpclient-stop-race",
+      "ref_slug": "fix-memory-tcpclient-stop-race",
+      "latest_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-memory-tcpclient-stop-race",
+          "sha": "ab0094a391d7af0e2ce8093ceb46104659bf4b33",
+          "short_sha": "ab0094a",
+          "published_at": "2026-11-06T21:35:33Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42295490303",
+          "summary_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/history/ab0094a391d7af0e2ce8093ceb46104659bf4b33.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-memory-tcpclient-stop-race",
+        "sha": "ab0094a391d7af0e2ce8093ceb46104659bf4b33",
+        "short_sha": "ab0094a",
+        "published_at": "2026-11-06T21:35:33Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42295490303",
+        "summary_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/latest.json"
       }
     },
     {
