@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T03:53:57Z",
+  "generated_at": "2026-11-07T03:55:17Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-transaction-wait-timerisset",
+      "ref_slug": "fix-transaction-wait-timerisset",
+      "latest_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-transaction-wait-timerisset",
+          "sha": "cd0409e444b16da0400112384d8521bcbe6e2bd9",
+          "short_sha": "cd0409e",
+          "published_at": "2026-11-07T03:55:17Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42335586599",
+          "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/history/cd0409e444b16da0400112384d8521bcbe6e2bd9.json"
+        },
+        {
+          "ref_name": "fix-transaction-wait-timerisset",
+          "sha": "df7cf713a6050dc0b5f066aa7b3996db298c8cb9",
+          "short_sha": "df7cf71",
+          "published_at": "2026-11-06T22:26:46Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42297611253",
+          "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/history/df7cf713a6050dc0b5f066aa7b3996db298c8cb9.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-transaction-wait-timerisset",
+        "sha": "cd0409e444b16da0400112384d8521bcbe6e2bd9",
+        "short_sha": "cd0409e",
+        "published_at": "2026-11-07T03:55:17Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42335586599",
+        "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -358,29 +389,6 @@
         "published_at": "2026-11-06T22:50:22Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42306767998",
         "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-transaction-wait-timerisset",
-      "ref_slug": "fix-transaction-wait-timerisset",
-      "latest_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-transaction-wait-timerisset",
-          "sha": "df7cf713a6050dc0b5f066aa7b3996db298c8cb9",
-          "short_sha": "df7cf71",
-          "published_at": "2026-11-06T22:26:46Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42297611253",
-          "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/history/df7cf713a6050dc0b5f066aa7b3996db298c8cb9.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-transaction-wait-timerisset",
-        "sha": "df7cf713a6050dc0b5f066aa7b3996db298c8cb9",
-        "short_sha": "df7cf71",
-        "published_at": "2026-11-06T22:26:46Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42297611253",
-        "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json"
       }
     },
     {

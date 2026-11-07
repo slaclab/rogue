@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-transaction-wait-timerisset",
+      "sha": "cd0409e444b16da0400112384d8521bcbe6e2bd9",
+      "short_sha": "cd0409e",
+      "published_at": "2026-11-07T03:55:17Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42335586599",
+      "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/history/cd0409e444b16da0400112384d8521bcbe6e2bd9.json"
+    },
+    {
+      "ref_name": "fix-transaction-wait-timerisset",
       "sha": "df7cf713a6050dc0b5f066aa7b3996db298c8cb9",
       "short_sha": "df7cf71",
       "published_at": "2026-11-06T22:26:46Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-transaction-wait-timerisset",
-    "sha": "df7cf713a6050dc0b5f066aa7b3996db298c8cb9",
-    "short_sha": "df7cf71",
-    "published_at": "2026-11-06T22:26:46Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42297611253",
+    "sha": "cd0409e444b16da0400112384d8521bcbe6e2bd9",
+    "short_sha": "cd0409e",
+    "published_at": "2026-11-07T03:55:17Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42335586599",
     "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json"
   }
 }
