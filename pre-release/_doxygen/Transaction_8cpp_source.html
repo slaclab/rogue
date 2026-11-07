@@ -319,7 +319,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    <span class="keywordflow">while</span> (!done_) {</div>
 <div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        <span class="comment">// Timeout?</span></div>
 <div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        gettimeofday(&amp;currTime, NULL);</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        <span class="keywordflow">if</span> (endTime_.tv_sec != 0 &amp;&amp; endTime_.tv_usec != 0 &amp;&amp; timercmp(&amp;currTime, &amp;(endTime_), &gt;)) {</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        <span class="keywordflow">if</span> (timerisset(&amp;endTime_) &amp;&amp; timercmp(&amp;currTime, &amp;(endTime_), &gt;)) {</div>
 <div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>            done_  = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>            error_ = <span class="stringliteral">&quot;Timeout waiting for register transaction &quot;</span> + std::to_string(id_) + <span class="stringliteral">&quot; message response.&quot;</span>;</div>
 <div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
