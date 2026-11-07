@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-sqllogger-bad-row",
+      "sha": "a60e64f166a710f911b14aa3459888d63864f1dc",
+      "short_sha": "a60e64f",
+      "published_at": "2026-11-07T03:04:34Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42331699908",
+      "summary_url": "/rogue/perf/branches/fix-sqllogger-bad-row/history/a60e64f166a710f911b14aa3459888d63864f1dc.json"
+    },
+    {
+      "ref_name": "fix-sqllogger-bad-row",
       "sha": "2d84e3f37ad235b37af4aea0ce469483eab105f1",
       "short_sha": "2d84e3f",
       "published_at": "2026-11-06T22:37:14Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-sqllogger-bad-row",
-    "sha": "2d84e3f37ad235b37af4aea0ce469483eab105f1",
-    "short_sha": "2d84e3f",
-    "published_at": "2026-11-06T22:37:14Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42303439520",
+    "sha": "a60e64f166a710f911b14aa3459888d63864f1dc",
+    "short_sha": "a60e64f",
+    "published_at": "2026-11-07T03:04:34Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42331699908",
     "summary_url": "/rogue/perf/branches/fix-sqllogger-bad-row/latest.json"
   }
 }
