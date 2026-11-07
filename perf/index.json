@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T01:41:19Z",
+  "generated_at": "2026-11-07T01:43:15Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-pollqueue-lost-wakeup",
+      "ref_slug": "fix-pollqueue-lost-wakeup",
+      "latest_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-pollqueue-lost-wakeup",
+          "sha": "8661622a433bbd046229eed7b21a431cc6192c5a",
+          "short_sha": "8661622",
+          "published_at": "2026-11-07T01:43:15Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42324890026",
+          "summary_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/history/8661622a433bbd046229eed7b21a431cc6192c5a.json"
+        },
+        {
+          "ref_name": "fix-pollqueue-lost-wakeup",
+          "sha": "0f03c242ac1fd10ff7e29d92951a5090c6de1d70",
+          "short_sha": "0f03c24",
+          "published_at": "2026-11-06T22:51:35Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42306841775",
+          "summary_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/history/0f03c242ac1fd10ff7e29d92951a5090c6de1d70.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-pollqueue-lost-wakeup",
+        "sha": "8661622a433bbd046229eed7b21a431cc6192c5a",
+        "short_sha": "8661622",
+        "published_at": "2026-11-07T01:43:15Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42324890026",
+        "summary_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -404,29 +435,6 @@
         "published_at": "2026-11-06T22:51:53Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42305131688",
         "summary_url": "/rogue/perf/branches/fix-monotonic-elapsed-time/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-pollqueue-lost-wakeup",
-      "ref_slug": "fix-pollqueue-lost-wakeup",
-      "latest_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-pollqueue-lost-wakeup",
-          "sha": "0f03c242ac1fd10ff7e29d92951a5090c6de1d70",
-          "short_sha": "0f03c24",
-          "published_at": "2026-11-06T22:51:35Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42306841775",
-          "summary_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/history/0f03c242ac1fd10ff7e29d92951a5090c6de1d70.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-pollqueue-lost-wakeup",
-        "sha": "0f03c242ac1fd10ff7e29d92951a5090c6de1d70",
-        "short_sha": "0f03c24",
-        "published_at": "2026-11-06T22:51:35Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42306841775",
-        "summary_url": "/rogue/perf/branches/fix-pollqueue-lost-wakeup/latest.json"
       }
     },
     {
