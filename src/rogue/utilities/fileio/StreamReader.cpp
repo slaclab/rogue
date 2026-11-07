@@ -75,7 +75,7 @@ ruf::StreamReader::~StreamReader() {
 void ruf::StreamReader::open(std::string file) {
     rogue::GilRelease noGil;
     std::unique_lock<std::mutex> lock(mtx_);
-    intClose();
+    intClose(lock);
 
     // Determine if we read a group of files
     if (file.substr(file.find_last_of('.')) == ".1") {
@@ -131,7 +131,7 @@ bool ruf::StreamReader::nextFile() {
 void ruf::StreamReader::close() {
     rogue::GilRelease noGil;
     std::unique_lock<std::mutex> lock(mtx_);
-    intClose();
+    intClose(lock);
 }
 
 //! Get open status
@@ -140,12 +140,17 @@ bool ruf::StreamReader::isOpen() {
 }
 
 //! Close a data file
-void ruf::StreamReader::intClose() {
-    if (readThread_ != NULL) {
+void ruf::StreamReader::intClose(std::unique_lock<std::mutex>& lock) {
+    std::thread* thread = readThread_;
+    readThread_         = NULL;
+    if (thread != NULL) {
         threadEn_ = false;
-        readThread_->join();
-        delete readThread_;
-        readThread_ = NULL;
+        // The read thread takes mtx_ in nextFile() and on exit, so release
+        // it for the join or close() deadlocks against an active reader.
+        lock.unlock();
+        thread->join();
+        lock.lock();
+        delete thread;
     }
     if (fd_ >= 0) ::close(fd_);
 }
@@ -155,7 +160,7 @@ void ruf::StreamReader::closeWait() {
     rogue::GilRelease noGil;
     std::unique_lock<std::mutex> lock(mtx_);
     while (active_) cond_.wait_for(lock, std::chrono::microseconds(1000));
-    intClose();
+    intClose(lock);
 }
 
 //! Return true when done
@@ -183,7 +188,7 @@ void ruf::StreamReader::runThread() {
     err = false;
     do {
         // Read size of each frame
-        while ((fd_ >= 0) && (read(fd_, &size, 4) == 4)) {
+        while (threadEn_ && (fd_ >= 0) && (read(fd_, &size, 4) == 4)) {
             if (size == 0) {
                 log.warning("Bad size read %" PRIu32, size);
                 err = true;
