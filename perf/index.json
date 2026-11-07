@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T01:53:22Z",
+  "generated_at": "2026-11-07T01:55:02Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-node-add-generator",
+      "ref_slug": "fix-node-add-generator",
+      "latest_url": "/rogue/perf/branches/fix-node-add-generator/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-node-add-generator",
+          "sha": "62d13a5da9c3a86989ef3fb43cb8a677d8ef14a5",
+          "short_sha": "62d13a5",
+          "published_at": "2026-11-07T01:55:02Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42325919216",
+          "summary_url": "/rogue/perf/branches/fix-node-add-generator/history/62d13a5da9c3a86989ef3fb43cb8a677d8ef14a5.json"
+        },
+        {
+          "ref_name": "fix-node-add-generator",
+          "sha": "ce32dbb0cbc4cc6e4db1851e9210aff29cdf2255",
+          "short_sha": "ce32dbb",
+          "published_at": "2026-11-06T22:40:24Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42305505164",
+          "summary_url": "/rogue/perf/branches/fix-node-add-generator/history/ce32dbb0cbc4cc6e4db1851e9210aff29cdf2255.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-node-add-generator",
+        "sha": "62d13a5da9c3a86989ef3fb43cb8a677d8ef14a5",
+        "short_sha": "62d13a5",
+        "published_at": "2026-11-07T01:55:02Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42325919216",
+        "summary_url": "/rogue/perf/branches/fix-node-add-generator/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -450,29 +481,6 @@
         "published_at": "2026-11-06T22:40:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42304287431",
         "summary_url": "/rogue/perf/branches/fix-pydm-shared-client-stop/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-node-add-generator",
-      "ref_slug": "fix-node-add-generator",
-      "latest_url": "/rogue/perf/branches/fix-node-add-generator/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-node-add-generator",
-          "sha": "ce32dbb0cbc4cc6e4db1851e9210aff29cdf2255",
-          "short_sha": "ce32dbb",
-          "published_at": "2026-11-06T22:40:24Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42305505164",
-          "summary_url": "/rogue/perf/branches/fix-node-add-generator/history/ce32dbb0cbc4cc6e4db1851e9210aff29cdf2255.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-node-add-generator",
-        "sha": "ce32dbb0cbc4cc6e4db1851e9210aff29cdf2255",
-        "short_sha": "ce32dbb",
-        "published_at": "2026-11-06T22:40:24Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42305505164",
-        "summary_url": "/rogue/perf/branches/fix-node-add-generator/latest.json"
       }
     },
     {
