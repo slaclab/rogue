@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T02:03:54Z",
+  "generated_at": "2026-11-07T02:06:50Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-yaml-include-relative-string",
+      "ref_slug": "fix-yaml-include-relative-string",
+      "latest_url": "/rogue/perf/branches/fix-yaml-include-relative-string/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-yaml-include-relative-string",
+          "sha": "e2145f43638a0deb88a6607c3a2955f858b78fc7",
+          "short_sha": "e2145f4",
+          "published_at": "2026-11-07T02:06:50Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42326802700",
+          "summary_url": "/rogue/perf/branches/fix-yaml-include-relative-string/history/e2145f43638a0deb88a6607c3a2955f858b78fc7.json"
+        },
+        {
+          "ref_name": "fix-yaml-include-relative-string",
+          "sha": "b4605c02443be931cd195248721c85cdfaf3628e",
+          "short_sha": "b4605c0",
+          "published_at": "2026-11-06T22:39:57Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42305435820",
+          "summary_url": "/rogue/perf/branches/fix-yaml-include-relative-string/history/b4605c02443be931cd195248721c85cdfaf3628e.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-yaml-include-relative-string",
+        "sha": "e2145f43638a0deb88a6607c3a2955f858b78fc7",
+        "short_sha": "e2145f4",
+        "published_at": "2026-11-07T02:06:50Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42326802700",
+        "summary_url": "/rogue/perf/branches/fix-yaml-include-relative-string/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -450,29 +481,6 @@
         "published_at": "2026-11-06T22:40:47Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42304287431",
         "summary_url": "/rogue/perf/branches/fix-pydm-shared-client-stop/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-yaml-include-relative-string",
-      "ref_slug": "fix-yaml-include-relative-string",
-      "latest_url": "/rogue/perf/branches/fix-yaml-include-relative-string/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-yaml-include-relative-string",
-          "sha": "b4605c02443be931cd195248721c85cdfaf3628e",
-          "short_sha": "b4605c0",
-          "published_at": "2026-11-06T22:39:57Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42305435820",
-          "summary_url": "/rogue/perf/branches/fix-yaml-include-relative-string/history/b4605c02443be931cd195248721c85cdfaf3628e.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-yaml-include-relative-string",
-        "sha": "b4605c02443be931cd195248721c85cdfaf3628e",
-        "short_sha": "b4605c0",
-        "published_at": "2026-11-06T22:39:57Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42305435820",
-        "summary_url": "/rogue/perf/branches/fix-yaml-include-relative-string/latest.json"
       }
     },
     {
