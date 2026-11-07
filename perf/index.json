@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T01:34:37Z",
+  "generated_at": "2026-11-07T01:35:14Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-axistreamdma-shared-from-this",
+      "ref_slug": "fix-axistreamdma-shared-from-this",
+      "latest_url": "/rogue/perf/branches/fix-axistreamdma-shared-from-this/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-axistreamdma-shared-from-this",
+          "sha": "ce72bca27dd26b02ed9d9778ce2cb7cefede157d",
+          "short_sha": "ce72bca",
+          "published_at": "2026-11-07T01:35:14Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42324212341",
+          "summary_url": "/rogue/perf/branches/fix-axistreamdma-shared-from-this/history/ce72bca27dd26b02ed9d9778ce2cb7cefede157d.json"
+        },
+        {
+          "ref_name": "fix-axistreamdma-shared-from-this",
+          "sha": "2e02f3b436ec7b79707391bede2b06a58ff5ae2f",
+          "short_sha": "2e02f3b",
+          "published_at": "2026-11-06T22:52:40Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42307047567",
+          "summary_url": "/rogue/perf/branches/fix-axistreamdma-shared-from-this/history/2e02f3b436ec7b79707391bede2b06a58ff5ae2f.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-axistreamdma-shared-from-this",
+        "sha": "ce72bca27dd26b02ed9d9778ce2cb7cefede157d",
+        "short_sha": "ce72bca",
+        "published_at": "2026-11-07T01:35:14Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42324212341",
+        "summary_url": "/rogue/perf/branches/fix-axistreamdma-shared-from-this/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -381,29 +412,6 @@
         "published_at": "2026-11-06T22:54:39Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42305219604",
         "summary_url": "/rogue/perf/branches/fix-root-listener-deadlock/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-axistreamdma-shared-from-this",
-      "ref_slug": "fix-axistreamdma-shared-from-this",
-      "latest_url": "/rogue/perf/branches/fix-axistreamdma-shared-from-this/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-axistreamdma-shared-from-this",
-          "sha": "2e02f3b436ec7b79707391bede2b06a58ff5ae2f",
-          "short_sha": "2e02f3b",
-          "published_at": "2026-11-06T22:52:40Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42307047567",
-          "summary_url": "/rogue/perf/branches/fix-axistreamdma-shared-from-this/history/2e02f3b436ec7b79707391bede2b06a58ff5ae2f.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-axistreamdma-shared-from-this",
-        "sha": "2e02f3b436ec7b79707391bede2b06a58ff5ae2f",
-        "short_sha": "2e02f3b",
-        "published_at": "2026-11-06T22:52:40Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42307047567",
-        "summary_url": "/rogue/perf/branches/fix-axistreamdma-shared-from-this/latest.json"
       }
     },
     {
