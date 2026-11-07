@@ -112,8 +112,10 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
     // Adjust address
     tran->address_ += offset_;
 
-    // Split into smaller transactions if necessary
-    if (tran->size() > maxAccess) {
+    // Split into smaller transactions if necessary. A maxAccess of 0 (e.g. the
+    // unconnected placeholder slave) has no limit to split against, so forward
+    // the transaction and let the slave report.
+    if (maxAccess != 0 && tran->size() > maxAccess) {
         uint32_t numberOfTransactions = std::ceil(1.0 * tran->size() / maxAccess);
         std::vector<rim::TransactionPtr> subTransactions;
         subTransactions.reserve(numberOfTransactions);
