@@ -208,6 +208,9 @@ class FileReader(object):
                     # Batch Mode
                     if self._batched:
 
+                        # Expects the InverterV1 layout: each sub-frame is a
+                        # bus-width header (former CoreV1 tail) followed by its
+                        # payload padded to the bus width.
                         curIdx = 0
 
                         while True:
@@ -221,7 +224,7 @@ class FileReader(object):
                             curIdx += 8
 
                             # Fix header width
-                            bHead.width = [2, 4, 8, 16][bHead.width]
+                            bHead.width = [2, 4, 8, 16, 32, 64][bHead.width & 0xF]
 
                             # Skip rest of header if more than 64-bits
                             if bHead.width > 8:
@@ -229,7 +232,8 @@ class FileReader(object):
                                 if curIdx + (bHead.width-8) > self._header.size:
                                     raise FileReaderException(f'Batch frame header underrun in {self._currFName}')
 
-                                self._currFile.seek(bHead.width-8)
+                                self._currFile.seek(bHead.width-8, 1)
+                                curIdx += bHead.width-8
 
                             # Check payload size
                             if curIdx + bHead.size > self._header.size:
@@ -238,6 +242,12 @@ class FileReader(object):
                             # Get data
                             data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=bHead.size)
                             curIdx += bHead.size
+
+                            # Sub-frame payloads are padded to the bus width
+                            pad = (-bHead.size) % bHead.width
+                            if pad:
+                                self._currFile.seek(pad, 1)
+                                curIdx += pad
 
                             yield (self._header, bHead, data)
 
