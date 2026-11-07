@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T03:32:53Z",
+  "generated_at": "2026-11-07T03:34:54Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-memory-tcpclient-stop-race",
+      "ref_slug": "fix-memory-tcpclient-stop-race",
+      "latest_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-memory-tcpclient-stop-race",
+          "sha": "0bc4332304bc968ea2c01eff8d48b7b7a53fe975",
+          "short_sha": "0bc4332",
+          "published_at": "2026-11-07T03:34:54Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42334019778",
+          "summary_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/history/0bc4332304bc968ea2c01eff8d48b7b7a53fe975.json"
+        },
+        {
+          "ref_name": "fix-memory-tcpclient-stop-race",
+          "sha": "ab0094a391d7af0e2ce8093ceb46104659bf4b33",
+          "short_sha": "ab0094a",
+          "published_at": "2026-11-06T21:35:33Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42295490303",
+          "summary_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/history/ab0094a391d7af0e2ce8093ceb46104659bf4b33.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-memory-tcpclient-stop-race",
+        "sha": "0bc4332304bc968ea2c01eff8d48b7b7a53fe975",
+        "short_sha": "0bc4332",
+        "published_at": "2026-11-07T03:34:54Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42334019778",
+        "summary_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -427,29 +458,6 @@
         "published_at": "2026-11-06T21:47:39Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42293902961",
         "summary_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-memory-tcpclient-stop-race",
-      "ref_slug": "fix-memory-tcpclient-stop-race",
-      "latest_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-memory-tcpclient-stop-race",
-          "sha": "ab0094a391d7af0e2ce8093ceb46104659bf4b33",
-          "short_sha": "ab0094a",
-          "published_at": "2026-11-06T21:35:33Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42295490303",
-          "summary_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/history/ab0094a391d7af0e2ce8093ceb46104659bf4b33.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-memory-tcpclient-stop-race",
-        "sha": "ab0094a391d7af0e2ce8093ceb46104659bf4b33",
-        "short_sha": "ab0094a",
-        "published_at": "2026-11-06T21:35:33Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42295490303",
-        "summary_url": "/rogue/perf/branches/fix-memory-tcpclient-stop-race/latest.json"
       }
     },
     {
