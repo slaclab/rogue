@@ -21,3 +21,11 @@ rogue_add_cpp_test(rogue-cpp-protocols-packetizer-v2-last-validation
       cpp-core
       no-python
 )
+
+rogue_add_cpp_test(rogue-cpp-protocols-packetizer-core-lifetime
+   SOURCES
+      test_core_lifetime.cpp
+   LABELS
+      cpp-core
+      no-python
+)

@@ -121,6 +121,34 @@ class RestartingRunControlRoot(pr.Root):
         self.add(RestartingRunControl(name="RC"))
 
 
+class ConcurrentStopRunControl(pr.RunControl):
+    def __init__(self, **kwargs):
+        self.externalStopEntered = threading.Event()
+        super().__init__(
+            rates={1000: "1000 Hz"},
+            cmd=self._cmd,
+            **kwargs,
+        )
+
+    def _setRunState(self, value, changed):
+        # Signal once an external "Stopped" write is inside localSet, i.e.
+        # while the runState block lock is held.
+        if changed and value == 0 and threading.current_thread() is not self._thread:
+            self.externalStopEntered.set()
+        super()._setRunState(value, changed)
+
+    def _cmd(self):
+        # Write runState from the worker while the external stop is in flight.
+        self.externalStopEntered.wait(timeout=2.0)
+        self.runState.set(0)
+
+
+class ConcurrentStopRunControlRoot(pr.Root):
+    def __init__(self):
+        super().__init__(name="RunControlRoot", description="RunControl root", pollEn=False)
+        self.add(ConcurrentStopRunControl(name="RC"))
+
+
 class DummyRoot:
     def _queueUpdates(self, _var):
         pass
@@ -277,6 +305,43 @@ def test_process_start_and_call_warn_when_already_running(monkeypatch):
         assert warnings == ["Process already running!", "Process already running!"]
 
 
+def test_process_back_to_back_start_spawns_single_worker(monkeypatch):
+    with ProcessRoot() as root:
+        warnings = []
+        process_calls = []
+        workers = []
+        gate = threading.Event()
+        orig_run = root.Proc._run
+        orig_process = root.Proc._process
+
+        # Hold each worker before it sets Running so the second Start lands
+        # in the window where Running is still False.
+        def gated_run():
+            workers.append(threading.current_thread())
+            gate.wait(timeout=1.0)
+            orig_run()
+
+        def counting_process():
+            process_calls.append(threading.current_thread())
+            orig_process()
+
+        monkeypatch.setattr(root.Proc, "_run", gated_run)
+        monkeypatch.setattr(root.Proc, "_process", counting_process)
+        monkeypatch.setattr(root.Proc._log, "warning", lambda msg: warnings.append(msg))
+
+        root.Proc.Start()
+        root.Proc()
+        root.Proc.Start()
+
+        gate.set()
+        for thr in workers:
+            thr.join(timeout=1.0)
+
+        assert len(workers) == 1
+        assert len(process_calls) == 1
+        assert warnings == ["Process already running!", "Process already running!"]
+
+
 def test_process_without_callback_runs_default_loop(monkeypatch):
     sleep_calls = []
     monkeypatch.setattr(process_module.time, "sleep", lambda delay: sleep_calls.append(delay))
@@ -350,5 +415,23 @@ def test_runcontrol_does_not_spawn_second_thread_when_restarted_from_worker():
 
         assert root.RC._cmdCalls >= 2
         assert root.RC._runEntries == 1
+        with root.RC._threadLock:
+            assert root.RC._thread is None
+
+
+def test_runcontrol_concurrent_stop_from_worker_and_external_does_not_deadlock():
+    with ConcurrentStopRunControlRoot() as root:
+        root.RC.runState.set(1)
+        with root.RC._threadLock:
+            worker = root.RC._thread
+        assert worker is not None
+
+        stopper = threading.Thread(target=root.RC.runState.set, args=(0,), daemon=True)
+        stopper.start()
+
+        stopper.join(timeout=2.0)
+        worker.join(timeout=2.0)
+        assert not stopper.is_alive()
+        assert not worker.is_alive()
         with root.RC._threadLock:
             assert root.RC._thread is None
