@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T02:21:52Z",
+  "generated_at": "2026-11-07T02:23:54Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-root-listener-deadlock",
+      "ref_slug": "fix-root-listener-deadlock",
+      "latest_url": "/rogue/perf/branches/fix-root-listener-deadlock/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-root-listener-deadlock",
+          "sha": "5185bc01841a090ae970dd4db24bab792dbb82b2",
+          "short_sha": "5185bc0",
+          "published_at": "2026-11-07T02:23:54Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42328367147",
+          "summary_url": "/rogue/perf/branches/fix-root-listener-deadlock/history/5185bc01841a090ae970dd4db24bab792dbb82b2.json"
+        },
+        {
+          "ref_name": "fix-root-listener-deadlock",
+          "sha": "6acb770db4d538802ec5411cd09bf0a8254da8e2",
+          "short_sha": "6acb770",
+          "published_at": "2026-11-06T22:54:39Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42305219604",
+          "summary_url": "/rogue/perf/branches/fix-root-listener-deadlock/history/6acb770db4d538802ec5411cd09bf0a8254da8e2.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-root-listener-deadlock",
+        "sha": "5185bc01841a090ae970dd4db24bab792dbb82b2",
+        "short_sha": "5185bc0",
+        "published_at": "2026-11-07T02:23:54Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42328367147",
+        "summary_url": "/rogue/perf/branches/fix-root-listener-deadlock/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -335,29 +366,6 @@
         "published_at": "2026-11-07T00:45:13Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42319592132",
         "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-root-listener-deadlock",
-      "ref_slug": "fix-root-listener-deadlock",
-      "latest_url": "/rogue/perf/branches/fix-root-listener-deadlock/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-root-listener-deadlock",
-          "sha": "6acb770db4d538802ec5411cd09bf0a8254da8e2",
-          "short_sha": "6acb770",
-          "published_at": "2026-11-06T22:54:39Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42305219604",
-          "summary_url": "/rogue/perf/branches/fix-root-listener-deadlock/history/6acb770db4d538802ec5411cd09bf0a8254da8e2.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-root-listener-deadlock",
-        "sha": "6acb770db4d538802ec5411cd09bf0a8254da8e2",
-        "short_sha": "6acb770",
-        "published_at": "2026-11-06T22:54:39Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42305219604",
-        "summary_url": "/rogue/perf/branches/fix-root-listener-deadlock/latest.json"
       }
     },
     {
