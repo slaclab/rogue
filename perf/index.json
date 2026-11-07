@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T03:47:16Z",
+  "generated_at": "2026-11-07T03:53:57Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "0670590516a039fce6b14484a014266104dc9dd6",
-      "short_sha": "0670590",
-      "published_at": "2026-11-07T03:45:07Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/42334927058",
+      "sha": "66b586ae5a60585b9b7f4369bc2fec068e2cca6a",
+      "short_sha": "66b586a",
+      "published_at": "2026-11-07T03:53:57Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42335567803",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "66b586ae5a60585b9b7f4369bc2fec068e2cca6a",
+          "short_sha": "66b586a",
+          "published_at": "2026-11-07T03:53:57Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42335567803",
+          "summary_url": "/rogue/perf/branches/pre-release/history/66b586ae5a60585b9b7f4369bc2fec068e2cca6a.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "0670590516a039fce6b14484a014266104dc9dd6",
@@ -279,54 +287,15 @@
           "published_at": "2026-11-02T23:23:26Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/41543784004",
           "summary_url": "/rogue/perf/branches/pre-release/history/c822ff22da8b4a75e5f68aca54221c578c7806b4.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "885e3b9bc1752867250d53afd27ab3290e76511e",
-          "short_sha": "885e3b9",
-          "published_at": "2026-11-02T23:11:44Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41542235499",
-          "summary_url": "/rogue/perf/branches/pre-release/history/885e3b9bc1752867250d53afd27ab3290e76511e.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "0670590516a039fce6b14484a014266104dc9dd6",
-        "short_sha": "0670590",
-        "published_at": "2026-11-07T03:45:07Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42334927058",
+        "sha": "66b586ae5a60585b9b7f4369bc2fec068e2cca6a",
+        "short_sha": "66b586a",
+        "published_at": "2026-11-07T03:53:57Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42335567803",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-subtran-expired-parent",
-      "ref_slug": "fix-subtran-expired-parent",
-      "latest_url": "/rogue/perf/branches/fix-subtran-expired-parent/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-subtran-expired-parent",
-          "sha": "631cc387ed381a0810c88db596b137d5aaee4752",
-          "short_sha": "631cc38",
-          "published_at": "2026-11-07T03:47:16Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42334961222",
-          "summary_url": "/rogue/perf/branches/fix-subtran-expired-parent/history/631cc387ed381a0810c88db596b137d5aaee4752.json"
-        },
-        {
-          "ref_name": "fix-subtran-expired-parent",
-          "sha": "97d57cf287ae64d08ac33eb1f61d85571d750dae",
-          "short_sha": "97d57cf",
-          "published_at": "2026-11-06T21:20:24Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42294848104",
-          "summary_url": "/rogue/perf/branches/fix-subtran-expired-parent/history/97d57cf287ae64d08ac33eb1f61d85571d750dae.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-subtran-expired-parent",
-        "sha": "631cc387ed381a0810c88db596b137d5aaee4752",
-        "short_sha": "631cc38",
-        "published_at": "2026-11-07T03:47:16Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42334961222",
-        "summary_url": "/rogue/perf/branches/fix-subtran-expired-parent/latest.json"
       }
     },
     {
