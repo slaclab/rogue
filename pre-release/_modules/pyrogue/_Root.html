@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Root &mdash; Rogue v6.16.0-133-gff7c7826a documentation</title>
+  <title>pyrogue._Root &mdash; Rogue v6.16.0-136-g77a776e6f documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2535cb2f"></script>
+      <script src="../../_static/documentation_options.js?v=8ae4e5f3"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1353,27 +1353,29 @@
 
                     <span class="c1"># Call root listener functions,</span>
                     <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varListenLock</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">doneFunc</span><span class="p">,</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">filterByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="p">):</span>
-                                <span class="k">try</span><span class="p">:</span>
-                                    <span class="n">func</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+                        <span class="n">listeners</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">doneFunc</span><span class="p">,</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">filterByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="p">):</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">func</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
 
-                                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                                    <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">SystemLog</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">SystemLogLast</span><span class="p">:</span>
-                                        <span class="nb">print</span><span class="p">(</span><span class="s2">"------- Error Executing Syslog Listeners -------"</span><span class="p">)</span>
-                                        <span class="nb">print</span><span class="p">(</span><span class="s2">"Error: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-                                        <span class="nb">print</span><span class="p">(</span><span class="s2">"------------------------------------------------"</span><span class="p">)</span>
-                                    <span class="k">else</span><span class="p">:</span>
-                                        <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">SystemLog</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">SystemLogLast</span><span class="p">:</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s2">"------- Error Executing Syslog Listeners -------"</span><span class="p">)</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s2">"Error: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s2">"------------------------------------------------"</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
 
                 <span class="c1"># Finalize root listeners</span>
                 <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varListenLock</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">doneFunc</span><span class="p">,</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">doneFunc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                            <span class="k">try</span><span class="p">:</span>
-                                <span class="n">doneFunc</span><span class="p">()</span>
-                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                                <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+                    <span class="n">listeners</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">doneFunc</span><span class="p">,</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">doneFunc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">doneFunc</span><span class="p">()</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">syslogOnly</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
