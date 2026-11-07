@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-issue-1355",
+      "sha": "c4db6b466cbe1608d0fba29d1504096e378b8261",
+      "short_sha": "c4db6b4",
+      "published_at": "2026-11-07T02:15:48Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42327648656",
+      "summary_url": "/rogue/perf/branches/fix-issue-1355/history/c4db6b466cbe1608d0fba29d1504096e378b8261.json"
+    },
+    {
+      "ref_name": "fix-issue-1355",
       "sha": "1884f4f1c6b02de9cee8695a198dfab8ea66896d",
       "short_sha": "1884f4f",
       "published_at": "2026-11-06T22:56:24Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-issue-1355",
-    "sha": "1884f4f1c6b02de9cee8695a198dfab8ea66896d",
-    "short_sha": "1884f4f",
-    "published_at": "2026-11-06T22:56:24Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42305244082",
+    "sha": "c4db6b466cbe1608d0fba29d1504096e378b8261",
+    "short_sha": "c4db6b4",
+    "published_at": "2026-11-07T02:15:48Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42327648656",
     "summary_url": "/rogue/perf/branches/fix-issue-1355/latest.json"
   }
 }
