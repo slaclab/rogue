@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-virtualclient-hash-eq",
+  "ref_slug": "fix-virtualclient-hash-eq",
+  "latest_url": "/rogue/perf/branches/fix-virtualclient-hash-eq/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-virtualclient-hash-eq",
+      "sha": "82257791580735144c48b6c607ff3f6093170b3e",
+      "short_sha": "8225779",
+      "published_at": "2026-11-07T03:12:43Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42332376557",
+      "summary_url": "/rogue/perf/branches/fix-virtualclient-hash-eq/history/82257791580735144c48b6c607ff3f6093170b3e.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-virtualclient-hash-eq",
+    "sha": "82257791580735144c48b6c607ff3f6093170b3e",
+    "short_sha": "8225779",
+    "published_at": "2026-11-07T03:12:43Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42332376557",
+    "summary_url": "/rogue/perf/branches/fix-virtualclient-hash-eq/latest.json"
+  }
+}

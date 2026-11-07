@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T03:04:34Z",
+  "generated_at": "2026-11-07T03:12:43Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,34 +299,26 @@
       }
     },
     {
-      "ref_name": "fix-sqllogger-bad-row",
-      "ref_slug": "fix-sqllogger-bad-row",
-      "latest_url": "/rogue/perf/branches/fix-sqllogger-bad-row/latest.json",
+      "ref_name": "fix-virtualclient-hash-eq",
+      "ref_slug": "fix-virtualclient-hash-eq",
+      "latest_url": "/rogue/perf/branches/fix-virtualclient-hash-eq/latest.json",
       "history": [
         {
-          "ref_name": "fix-sqllogger-bad-row",
-          "sha": "a60e64f166a710f911b14aa3459888d63864f1dc",
-          "short_sha": "a60e64f",
-          "published_at": "2026-11-07T03:04:34Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42331699908",
-          "summary_url": "/rogue/perf/branches/fix-sqllogger-bad-row/history/a60e64f166a710f911b14aa3459888d63864f1dc.json"
-        },
-        {
-          "ref_name": "fix-sqllogger-bad-row",
-          "sha": "2d84e3f37ad235b37af4aea0ce469483eab105f1",
-          "short_sha": "2d84e3f",
-          "published_at": "2026-11-06T22:37:14Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42303439520",
-          "summary_url": "/rogue/perf/branches/fix-sqllogger-bad-row/history/2d84e3f37ad235b37af4aea0ce469483eab105f1.json"
+          "ref_name": "fix-virtualclient-hash-eq",
+          "sha": "82257791580735144c48b6c607ff3f6093170b3e",
+          "short_sha": "8225779",
+          "published_at": "2026-11-07T03:12:43Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42332376557",
+          "summary_url": "/rogue/perf/branches/fix-virtualclient-hash-eq/history/82257791580735144c48b6c607ff3f6093170b3e.json"
         }
       ],
       "latest": {
-        "ref_name": "fix-sqllogger-bad-row",
-        "sha": "a60e64f166a710f911b14aa3459888d63864f1dc",
-        "short_sha": "a60e64f",
-        "published_at": "2026-11-07T03:04:34Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42331699908",
-        "summary_url": "/rogue/perf/branches/fix-sqllogger-bad-row/latest.json"
+        "ref_name": "fix-virtualclient-hash-eq",
+        "sha": "82257791580735144c48b6c607ff3f6093170b3e",
+        "short_sha": "8225779",
+        "published_at": "2026-11-07T03:12:43Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42332376557",
+        "summary_url": "/rogue/perf/branches/fix-virtualclient-hash-eq/latest.json"
       }
     },
     {
