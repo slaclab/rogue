@@ -31,6 +31,9 @@ class SideBandSim():
         Base sideband port.
     """
 
+    # Upper bound (ms) on how long _stop() waits for queued outbound frames
+    _PUSH_LINGER_MS = 1000
+
     def __init__(self, host: str, port: int) -> None:
         self._log = pyrogue.logInit(cls=self, name=f'{host}.{port}')
 
@@ -99,11 +102,14 @@ class SideBandSim():
                 and threading.current_thread() is not thr):
             thr.join(timeout=2.0)
 
-        for sock_name in ("_sbPush", "_sbPull"):
+        # Give the PUSH socket a bounded linger so frames queued by send()
+        # just before stopping are flushed instead of discarded. The PULL
+        # socket has nothing outbound and can still close immediately.
+        for sock_name, linger in (("_sbPush", self._PUSH_LINGER_MS), ("_sbPull", 0)):
             sock = getattr(self, sock_name, None)
             if sock is not None:
                 try:
-                    sock.close(linger=0)
+                    sock.close(linger=linger)
                 except Exception:
                     pass
         try:
