@@ -195,6 +195,10 @@ def test_node_reduce_add_iterable_and_array_helpers():
     assert root.Top.ExtraArray[0].value() == 1
     assert root.Top.ExtraArray[1].value() == 2
 
+    # A generator must not be exhausted by the type check before nodes are added.
+    root.Top.add(pr.LocalVariable(name=f"GenVar{i}", value=i) for i in range(3))
+    assert [root.Top.node(f"GenVar{i}").value() for i in range(3)] == [0, 1, 2]
+
     reduced = ExposedNode(name="Expose").__reduce__()
     factory, args = reduced
     assert factory is pr_interfaces.VirtualFactory
