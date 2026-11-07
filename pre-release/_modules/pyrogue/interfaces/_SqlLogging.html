@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._SqlLogging &mdash; Rogue v6.16.0-145-gfe2237e2b documentation</title>
+  <title>pyrogue.interfaces._SqlLogging &mdash; Rogue v6.16.0-148-g98bcec34e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e1e60c62"></script>
+      <script src="../../../_static/documentation_options.js?v=477b8c85"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -256,6 +256,9 @@
 
         <span class="c1"># Syslog</span>
         <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sysLogPath</span><span class="p">:</span>
+            <span class="c1"># ClearLog writes '' to SystemLogLast; nothing to record</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
             <span class="n">ins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logTable</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(</span>
@@ -273,9 +276,9 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">64</span><span class="p">:</span>
                 <span class="c1"># Support &gt;64 bit ints</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">valueDisp</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="c1"># Support tuples</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
+                <span class="c1"># Containers and arrays go in as their display string</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">valueDisp</span>
 
             <span class="n">ins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varTable</span><span class="o">.</span><span class="n">insert</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(</span>
                 <span class="n">path</span><span class="o">=</span><span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -312,8 +315,15 @@
                         <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                             <span class="k">return</span>
 
-                        <span class="c1"># Insert the entry</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">insert_from_q</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+                        <span class="c1"># Insert the entry; a Python-side conversion error</span>
+                        <span class="c1"># drops only that row, while database errors fall</span>
+                        <span class="c1"># through to the lost-connection handler below</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">insert_from_q</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">conn</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">SQLAlchemyError</span><span class="p">:</span>
+                            <span class="k">raise</span>
+                        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 
                         <span class="c1"># Break from loop and close the transaction</span>
                         <span class="c1"># when queue has been emptied</span>
