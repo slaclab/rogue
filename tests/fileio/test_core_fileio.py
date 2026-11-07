@@ -14,6 +14,9 @@ import numpy as np
 import pyrogue as pr
 import pyrogue.utilities.fileio
 import pytest
+import rogue.interfaces.stream
+import rogue.protocols.batcher
+import rogue.utilities.fileio
 import yaml
 
 
@@ -109,6 +112,52 @@ def test_file_reader_reads_records_and_config(tmp_path):
     assert reader.totCount == 1
     assert reader.configDict == {"root": {"Child": {"Value": 9}}}
     assert reader.configValue("root.Child.Value") == 9
+
+
+class _BatchSource(rogue.interfaces.stream.Master):
+    def send(self, data, channel, fUser, lUser):
+        frame = self._reqFrame(len(data), True)
+        frame.write(bytearray(data))
+        frame.setChannel(channel)
+        frame.setFirstUser(fUser)
+        frame.setLastUser(lUser)
+        self._sendFrame(frame)
+
+
+# CombinerV1 width codes whose header and tail sizes match (8..64 bytes),
+# which is the precondition for InverterV1.
+@pytest.mark.parametrize("width", [2, 3, 4, 5])
+def test_file_reader_batched_inverter_v1_widths(tmp_path, width):
+    data_path = tmp_path / "batched.dat"
+    subFrames = [
+        (bytes(range(5)), 1, 0x2, 0x3),
+        (bytes(range(64, 128)), 2, 0x4, 0x5),
+        (bytes(range(200, 237)), 3, 0x6, 0x7),
+    ]
+
+    source = _BatchSource()
+    combiner = rogue.protocols.batcher.CombinerV1(width)
+    inverter = rogue.protocols.batcher.InverterV1()
+    writer = rogue.utilities.fileio.StreamWriter()
+    source >> combiner >> inverter >> writer.getChannel(4)
+
+    writer.open(str(data_path))
+    for sub in subFrames:
+        source.send(*sub)
+    combiner.sendBatch()
+    writer.close()
+
+    reader = pyrogue.utilities.fileio.FileReader(files=str(data_path), batched=True)
+    records = list(reader.records())
+
+    assert len(records) == len(subFrames)
+    for (header, bHead, data), (payload, tdest, fUser, lUser) in zip(records, subFrames):
+        assert header.channel == 4
+        assert bHead.width == 2 << width
+        assert bHead.size == len(payload)
+        assert (bHead.tdest, bHead.fUser, bHead.lUser) == (tdest, fUser, lUser)
+        assert data.tobytes() == payload
+    assert reader.totCount == 1
 
 
 def test_file_reader_decodes_float_with_grouped_display_format(tmp_path):

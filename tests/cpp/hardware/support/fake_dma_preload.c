@@ -6,11 +6,14 @@
  * Test-only LD_PRELOAD shim that emulates just enough of the aes-stream-driver
  * character device for AxiStreamDma to construct, hand out a zero-copy buffer,
  * and tear down on a machine with no DMA hardware. It intercepts
- * open/close/ioctl/mmap/munmap/poll for a single sentinel device path and
- * backs the "DMA" buffers with ordinary anonymous mappings, tracking how many
- * are currently mapped. Tests query that count via fakedma_mapped_count() and
- * use the blocking hooks below to exercise deferred buffer returns overlapping
- * stop() deterministically.
+ * open/close/ioctl/mmap/munmap/poll/read for a single sentinel device path
+ * and backs the "DMA" buffers with ordinary anonymous mappings, tracking how
+ * many are currently mapped. Tests query that count via fakedma_mapped_count()
+ * and use the blocking hooks below to exercise deferred buffer returns
+ * overlapping stop() deterministically. fakedma_queue_rx() queues received
+ * frames that poll(POLLIN) reports and read() hands out as zero-copy indices,
+ * and fakedma_fail_next_read() makes the RX worker observe a failed driver
+ * read.
  *
  * This object is built only under -DROGUE_BUILD_TESTS=ON and is never linked
  * into rogue-core or shipped.
@@ -61,6 +64,21 @@
 #define FAKE_BUFF_SIZE  4096u
 #define FAKE_BUFF_COUNT 8u
 
+/* Payload size reported for each queued RX frame. */
+#define FAKE_RX_SIZE 4
+
+/* Mirrors struct DmaReadData in include/rogue/hardware/drivers/DmaDriver.h. */
+struct FakeDmaReadData {
+    uint64_t data;
+    uint32_t dest;
+    uint32_t flags;
+    uint32_t index;
+    uint32_t error;
+    uint32_t size;
+    uint32_t is32;
+    int32_t  ret;
+};
+
 #define MAX_FDS     16
 #define MAX_REGIONS 64
 
@@ -83,6 +101,9 @@ static int      g_active_calls            = 0;
 static int      g_close_during_driver_call = 0;
 static int      g_ret_index_count         = 0;
 static int      g_tracking_overflow_count = 0;
+static int      g_rx_pending              = 0;
+static int      g_fail_next_read          = 0;
+static int      g_read_fail_count         = 0;
 
 typedef int (*open_fn)(const char*, int, ...);
 typedef void* (*mmap_fn)(void*, size_t, int, int, int, off_t);
@@ -90,6 +111,7 @@ typedef int (*munmap_fn)(void*, size_t);
 typedef int (*close_fn)(int);
 typedef int (*ioctl_fn)(int, unsigned long, ...);
 typedef int (*poll_fn)(struct pollfd*, nfds_t, int);
+typedef ssize_t (*read_fn)(int, void*, size_t);
 
 static open_fn   real_open;
 static open_fn   real_open64;
@@ -99,6 +121,7 @@ static munmap_fn real_munmap;
 static close_fn  real_close;
 static ioctl_fn  real_ioctl;
 static poll_fn   real_poll;
+static read_fn   real_read;
 
 /* ------- bookkeeping helpers (caller holds g_lock) ------- */
 
@@ -377,14 +400,68 @@ int poll(struct pollfd* fds, nfds_t nfds, int timeout) {
                 fds[0].revents = POLLOUT;
                 return 1;
             }
-            /* RX path waits for POLLIN: stay idle for the requested timeout and
-             * report nothing so the worker thread never issues a read. */
+            /* RX path waits for POLLIN: report ready while frames are queued or
+             * a read failure is armed, otherwise stay idle for the requested
+             * timeout and report nothing so the worker thread never issues a
+             * read. */
+            if (fds[0].events & POLLIN) {
+                int ready;
+                pthread_mutex_lock(&g_lock);
+                ready = (g_rx_pending > 0) || g_fail_next_read;
+                pthread_mutex_unlock(&g_lock);
+                if (ready) {
+                    fds[0].revents = POLLIN;
+                    return 1;
+                }
+            }
             if (timeout > 0) real_poll(NULL, 0, timeout);
             fds[0].revents = 0;
             return 0;
         }
     }
     return real_poll(fds, nfds, timeout);
+}
+
+/* Zero-copy bulk read: one record per queued frame, up to the caller's count.
+ * Each frame is a single buffer (cont=0) carrying FAKE_RX_SIZE bytes. When a
+ * read failure is armed, the read instead fails once with errno = EIO. */
+ssize_t read(int fd, void* buf, size_t count) {
+    struct FakeDmaReadData* r = (struct FakeDmaReadData*)buf;
+    size_t max;
+    ssize_t n = 0;
+
+    if (!real_read) real_read = (read_fn)dlsym(RTLD_NEXT, "read");
+    if (!is_our_fd(fd)) return real_read(fd, buf, count);
+
+    driver_call_begin();
+    pthread_mutex_lock(&g_lock);
+    if (g_fail_next_read) {
+        g_fail_next_read = 0;
+        g_read_fail_count++;
+        pthread_cond_broadcast(&g_cond);
+        pthread_mutex_unlock(&g_lock);
+        driver_call_end();
+        errno = EIO;
+        return -1;
+    }
+    max = count / sizeof(struct FakeDmaReadData);
+    while ((size_t)n < max && g_rx_pending > 0) {
+        memset(&r[n], 0, sizeof(r[n]));
+        r[n].index = g_next_index++ % FAKE_BUFF_COUNT;
+        r[n].ret   = FAKE_RX_SIZE;
+        g_rx_pending--;
+        n++;
+    }
+    pthread_mutex_unlock(&g_lock);
+    driver_call_end();
+    return n;
+}
+
+/* Queue frames for the RX path to receive. */
+void fakedma_queue_rx(int count) {
+    pthread_mutex_lock(&g_lock);
+    g_rx_pending += count;
+    pthread_mutex_unlock(&g_lock);
 }
 
 /* Query hook for the test: number of fake DMA buffers currently mapped. */
@@ -450,6 +527,9 @@ void fakedma_reset(void) {
     g_close_during_driver_call = 0;
     g_ret_index_count          = 0;
     g_next_index               = 0;
+    g_rx_pending               = 0;
+    g_fail_next_read           = 0;
+    g_read_fail_count          = 0;
     pthread_cond_broadcast(&g_cond);
     pthread_mutex_unlock(&g_lock);
 }
@@ -504,4 +584,42 @@ int fakedma_close_during_driver_call(void) {
     n = g_close_during_driver_call;
     pthread_mutex_unlock(&g_lock);
     return n;
+}
+
+/* Arm a one-shot RX failure: the next POLLIN poll reports readable and the
+ * following read() on a fake fd returns -1 with errno = EIO. */
+void fakedma_fail_next_read(void) {
+    pthread_mutex_lock(&g_lock);
+    g_fail_next_read = 1;
+    pthread_mutex_unlock(&g_lock);
+}
+
+int fakedma_read_fail_count(void) {
+    int n;
+    pthread_mutex_lock(&g_lock);
+    n = g_read_fail_count;
+    pthread_mutex_unlock(&g_lock);
+    return n;
+}
+
+/* Wait until at least one armed read failure has been delivered. */
+int fakedma_wait_read_failed(uint32_t timeout_ms) {
+    struct timespec deadline;
+    int ret = 0;
+
+    clock_gettime(CLOCK_REALTIME, &deadline);
+    deadline.tv_sec += timeout_ms / 1000u;
+    deadline.tv_nsec += (long)(timeout_ms % 1000u) * 1000000L;
+    if (deadline.tv_nsec >= 1000000000L) {
+        deadline.tv_sec++;
+        deadline.tv_nsec -= 1000000000L;
+    }
+
+    pthread_mutex_lock(&g_lock);
+    while (g_read_fail_count == 0) {
+        if (pthread_cond_timedwait(&g_cond, &g_lock, &deadline) == ETIMEDOUT) break;
+    }
+    ret = g_read_fail_count != 0;
+    pthread_mutex_unlock(&g_lock);
+    return ret;
 }

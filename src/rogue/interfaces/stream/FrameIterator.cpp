@@ -26,8 +26,8 @@ ris::FrameIterator::FrameIterator(ris::FramePtr frame, bool write, bool end) {
     frame_     = frame;
     frameSize_ = (write_) ? frame_->getSize() : frame_->getPayload();
 
-    // end iterator
-    if (end) {
+    // end iterator, or a frame with no buffers (nothing to point at)
+    if (end || frame_->isEmpty()) {
         buff_     = frame_->endBuffer();
         framePos_ = frameSize_;
         buffBeg_  = frameSize_;

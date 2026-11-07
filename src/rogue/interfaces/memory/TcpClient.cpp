@@ -171,6 +171,9 @@ void rim::TcpClient::stop() {
         threadEn_ = false;
         thread_->join();
         thread_.reset();
+        // Serialize with in-flight doTransaction()/waitReady() senders before
+        // destroying sockets.
+        std::lock_guard<std::mutex> lock(bridgeMtx_);
         zmq_close(this->zmqResp_);
         zmqResp_ = nullptr;
         zmq_close(this->zmqReq_);
@@ -267,6 +270,11 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
     rogue::GilRelease noGil;
     std::lock_guard<std::mutex> block(bridgeMtx_);
     rim::TransactionLockPtr lock = tran->lock();
+
+    if (this->zmqReq_ == nullptr) {
+        tran->error("TcpClient stopped");
+        return;
+    }
 
     // ID message
     id = tran->id();
@@ -410,43 +418,33 @@ void rim::TcpClient::runThread() {
             // Lock transaction
             rim::TransactionLockPtr lock = tran->lock();
 
+            // No early continue past this point: every path must fall through to
+            // the GIL-protected tran release at the bottom of the loop.
             if (tran->expired()) {
                 bridgeLog_->warning("Dropping late response for expired transaction. Id=%" PRIu32, id);
-                for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-                continue;  // while (1)
-            }
-
-            // Double check transaction
-            if ((addr != tran->address()) || (size != tran->size()) || (type != tran->type())) {
+            } else if ((addr != tran->address()) || (size != tran->size()) || (type != tran->type())) {
                 bridgeLog_->warning("Transaction data mismatch. Id=%" PRIu32, id);
                 tran->error("Transaction data mismatch in TcpClient");
-                for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-                continue;  // while (1)
+            } else if ((type != rim::Write) && (zmq_msg_size(&(msg[4])) != size)) {
+                bridgeLog_->warning("Transaction size mismatch. Id=%" PRIu32, id);
+                tran->error("Received transaction response did not match header size");
+            } else {
+                // Copy data if read
+                if (type != rim::Write) std::memcpy(tran->begin(), zmq_msg_data(&(msg[4])), size);
+                if (strcmp(result, "OK") != 0)
+                    tran->errorStr(std::string(result));
+                else
+                    tran->done();
+                bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32
+                                  ", type=%" PRIu32 ", cnt=%" PRIu32 ", port: %s, Result: (%s)",
+                                  id,
+                                  addr,
+                                  size,
+                                  type,
+                                  msgCnt,
+                                  this->respAddr_.c_str(),
+                                  result);
             }
-
-            // Copy data if read
-            if (type != rim::Write) {
-                if (zmq_msg_size(&(msg[4])) != size) {
-                    bridgeLog_->warning("Transaction size mismatch. Id=%" PRIu32, id);
-                    tran->error("Received transaction response did not match header size");
-                    for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-                    continue;  // while (1)
-                }
-                std::memcpy(tran->begin(), zmq_msg_data(&(msg[4])), size);
-            }
-            if (strcmp(result, "OK") != 0)
-                tran->error(result);
-            else
-                tran->done();
-            bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32
-                              ", type=%" PRIu32 ", cnt=%" PRIu32 ", port: %s, Result: (%s)",
-                              id,
-                              addr,
-                              size,
-                              type,
-                              msgCnt,
-                              this->respAddr_.c_str(),
-                              result);
         }
         for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
 

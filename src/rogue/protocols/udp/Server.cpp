@@ -251,6 +251,23 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
         res    = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC | MSG_DONTWAIT, (struct sockaddr*)&tmpAddr, &tmpLen);
 
         if (res > 0) {
+            // Learn the peer before delivering the frame, so a slave that
+            // replies from within sendFrame(), or a sender that waits for the
+            // frame to arrive, reaches the sender of this datagram.
+            if (memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0) {
+                std::lock_guard<std::mutex> lock(udpMtx_);
+                char tmpIp[INET_ADDRSTRLEN];
+                if (inet_ntop(AF_INET, &(tmpAddr.sin_addr), tmpIp, sizeof(tmpIp)) != NULL) {
+                    udpLog_->debug("UDP server peer updated on local port %" PRIu16 " to %s:%" PRIu16,
+                                   port_,
+                                   tmpIp,
+                                   ntohs(tmpAddr.sin_port));
+                } else {
+                    udpLog_->debug("UDP server peer updated on local port %" PRIu16, port_);
+                }
+                remAddr_ = tmpAddr;
+            }
+
             // Message was too big
             if (res > avail) {
                 udpLog_->warning("Receive data was too large on local port %" PRIu16 ". rx=%i, avail=%" PRIu32
@@ -265,21 +282,6 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
 
             // Get new frame
             frame = reqLocalFrame(maxPayload(), false);
-
-            // Lock before updating address
-            if (memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0) {
-                std::lock_guard<std::mutex> lock(udpMtx_);
-                char tmpIp[INET_ADDRSTRLEN];
-                if (inet_ntop(AF_INET, &(tmpAddr.sin_addr), tmpIp, sizeof(tmpIp)) != NULL) {
-                    udpLog_->debug("UDP server peer updated on local port %" PRIu16 " to %s:%" PRIu16,
-                                   port_,
-                                   tmpIp,
-                                   ntohs(tmpAddr.sin_port));
-                } else {
-                    udpLog_->debug("UDP server peer updated on local port %" PRIu16, port_);
-                }
-                remAddr_ = tmpAddr;
-            }
         } else {
             // No datagram pending. Wait for one with a bounded timeout so the
             // loop re-checks threadEn_ and stop() can join without traffic.
