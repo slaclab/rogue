@@ -117,6 +117,14 @@ void ris::Pool::setFixedSize(uint32_t size) {
     rogue::GilRelease noGil;
     std::lock_guard<std::mutex> lock(mtx_);
 
+    // Cached buffers were malloc'd at the previous fixed size and must not
+    // be reissued with the new bAlloc.
+    if (size != fixedSize_) {
+        while (!dataQ_.empty()) {
+            free(dataQ_.front());
+            dataQ_.pop();
+        }
+    }
     fixedSize_ = size;
 }
 

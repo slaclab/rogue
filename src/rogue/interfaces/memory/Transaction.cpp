@@ -110,7 +110,13 @@ rim::TransactionLockPtr rim::Transaction::lock() {
 bool rim::Transaction::expired() {
     bool done = false;
     if (isSubTransaction_) {
-        done = parentTransaction_.expired();
+        // The child's iter_ points into the parent's buffer, which the parent
+        // releases in wait() even while it is still referenced elsewhere.
+        rim::TransactionPtr parentTran = parentTransaction_.lock();
+        if (!parentTran)
+            done = true;
+        else
+            done = (parentTran->iter_ == NULL || parentTran->done_);
     }
     return done || (iter_ == NULL || done_);
 }
@@ -231,7 +237,7 @@ std::string rim::Transaction::wait() {
     while (!done_) {
         // Timeout?
         gettimeofday(&currTime, NULL);
-        if (endTime_.tv_sec != 0 && endTime_.tv_usec != 0 && timercmp(&currTime, &(endTime_), >)) {
+        if (timerisset(&endTime_) && timercmp(&currTime, &(endTime_), >)) {
             done_  = true;
             error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
