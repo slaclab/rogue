@@ -58,13 +58,11 @@ class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue
      *
      * @param enSsi Enable SSI framing behavior.
      * @param tran Transport endpoint attached to this controller.
-     * @param app Pointer to array of application endpoints indexed by destination.
      * @return Shared pointer to a new controller instance.
      */
     static std::shared_ptr<rogue::protocols::packetizer::ControllerV1> create(
         bool enSsi,
-        std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-        std::shared_ptr<rogue::protocols::packetizer::Application>* app);
+        std::shared_ptr<rogue::protocols::packetizer::Transport> tran);
 
     /**
      * @brief Constructs a packetizer v1 controller.
@@ -75,11 +73,8 @@ class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue
      *
      * @param enSsi Enable SSI framing behavior.
      * @param tran Transport endpoint attached to this controller.
-     * @param app Pointer to array of application endpoints indexed by destination.
      */
-    ControllerV1(bool enSsi,
-                 std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                 std::shared_ptr<rogue::protocols::packetizer::Application>* app);
+    ControllerV1(bool enSsi, std::shared_ptr<rogue::protocols::packetizer::Transport> tran);
 
     /** @brief Destroys the controller instance. */
     ~ControllerV1();

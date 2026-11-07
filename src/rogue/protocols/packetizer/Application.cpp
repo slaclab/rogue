@@ -76,7 +76,7 @@ void rpp::Application::setController(rpp::ControllerPtr cntl) {
     if (thread_) return;
 
     // threadEn_ must precede thread ctor; rollback both on spawn failure.
-    rpp::ControllerPtr prevCntl = cntl_;
+    std::weak_ptr<rpp::Controller> prevCntl = cntl_;
     cntl_ = cntl;
     threadEn_ = true;
     try {
@@ -95,12 +95,17 @@ void rpp::Application::setController(rpp::ControllerPtr cntl) {
 
 //! Generate a Frame. Called from master
 ris::FramePtr rpp::Application::acceptReq(uint32_t size, bool zeroCopyEn) {
-    return (cntl_->reqFrame(size));
+    rpp::ControllerPtr cntl = cntl_.lock();
+    if (!cntl)
+        throw(rogue::GeneralError::create("packetizer::Application::acceptReq",
+                                          "Packetizer controller has been destroyed"));
+    return (cntl->reqFrame(size));
 }
 
 //! Accept a frame from master
 void rpp::Application::acceptFrame(ris::FramePtr frame) {
-    cntl_->applicationRx(frame, id_);
+    // Drop if the controller is gone (owning Core destroyed).
+    if (rpp::ControllerPtr cntl = cntl_.lock()) cntl->applicationRx(frame, id_);
 }
 
 //! Push frame for transmit

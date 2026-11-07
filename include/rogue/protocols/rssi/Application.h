@@ -45,12 +45,13 @@ class Controller;
  *   `setController()` and drained from `Controller::applicationTx()`.
  *
  * Lifetime contract:
- * - `setController()` must be called before destruction so the TX thread is
- *   created and can be cleanly stopped/joined.
+ * - The controller reference is weak, so the owner (`Client`/`Server`) must
+ *   keep the controller alive and call `stop()` before releasing it.
+ * - `stop()` is idempotent and is also called from the destructor.
  */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    // RSSI controller backend.
-    std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
+    // RSSI controller backend. Weak to avoid a cycle with Controller::app_.
+    std::weak_ptr<rogue::protocols::rssi::Controller> cntl_;
 
     //! \cond INTERNAL
   protected:
@@ -99,6 +100,16 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
      * @param cntl Controller instance that owns protocol state.
      */
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
+
+    /**
+     * @brief Stops and joins the outbound worker thread.
+     *
+     * @details
+     * Stops the controller application queue so a blocked worker wakes up.
+     * The queue is not restarted, so this is a terminal shutdown. Safe to call
+     * more than once, or if `setController()` never ran.
+     */
+    void stop();
 
     /**
      * @brief Allocates a frame for upstream writers.
