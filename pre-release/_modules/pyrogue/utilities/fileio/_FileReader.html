@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v6.16.0-151-gb2c5fde25 documentation</title>
+  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v6.16.0-154-g78dc8db0d documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=89750f1c"></script>
+      <script src="../../../../_static/documentation_options.js?v=1815c563"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -326,6 +326,9 @@
                     <span class="c1"># Batch Mode</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batched</span><span class="p">:</span>
 
+                        <span class="c1"># Expects the InverterV1 layout: each sub-frame is a</span>
+                        <span class="c1"># bus-width header (former CoreV1 tail) followed by its</span>
+                        <span class="c1"># payload padded to the bus width.</span>
                         <span class="n">curIdx</span> <span class="o">=</span> <span class="mi">0</span>
 
                         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -339,7 +342,7 @@
                             <span class="n">curIdx</span> <span class="o">+=</span> <span class="mi">8</span>
 
                             <span class="c1"># Fix header width</span>
-                            <span class="n">bHead</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">][</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="p">]</span>
+                            <span class="n">bHead</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">][</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">]</span>
 
                             <span class="c1"># Skip rest of header if more than 64-bits</span>
                             <span class="k">if</span> <span class="n">bHead</span><span class="o">.</span><span class="n">width</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
@@ -347,7 +350,8 @@
                                 <span class="k">if</span> <span class="n">curIdx</span> <span class="o">+</span> <span class="p">(</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
                                     <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Batch frame header underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
-                                <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                                <span class="n">curIdx</span> <span class="o">+=</span> <span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">8</span>
 
                             <span class="c1"># Check payload size</span>
                             <span class="k">if</span> <span class="n">curIdx</span> <span class="o">+</span> <span class="n">bHead</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
@@ -356,6 +360,12 @@
                             <span class="c1"># Get data</span>
                             <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">bHead</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
                             <span class="n">curIdx</span> <span class="o">+=</span> <span class="n">bHead</span><span class="o">.</span><span class="n">size</span>
+
+                            <span class="c1"># Sub-frame payloads are padded to the bus width</span>
+                            <span class="n">pad</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">bHead</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">%</span> <span class="n">bHead</span><span class="o">.</span><span class="n">width</span>
+                            <span class="k">if</span> <span class="n">pad</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">pad</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                                <span class="n">curIdx</span> <span class="o">+=</span> <span class="n">pad</span>
 
                             <span class="k">yield</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="p">,</span> <span class="n">bHead</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
