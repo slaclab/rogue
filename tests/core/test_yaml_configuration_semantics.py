@@ -8,6 +8,9 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import numpy as np
+import pytest
+
 import pyrogue as pr
 from conftest import MemoryRoot
 
@@ -120,6 +123,13 @@ def test_root_load_yaml_resolves_include_under_root_name(tmp_path):
         assert root.SomeDeviceArray[2].SomeValue.value() == "init"
 
 
+def test_yaml_to_data_string_resolves_relative_include_from_cwd(tmp_path, monkeypatch):
+    (tmp_path / "inc.yml").write_text("a: 1\n")
+    monkeypatch.chdir(tmp_path)
+
+    assert pr.yamlToData(stream="x: !include inc.yml\n") == {"x": {"a": 1}}
+
+
 def test_root_set_yaml_init_after_config(monkeypatch):
     with YamlConfigRoot() as root:
         monkeypatch.setattr(root, "_write", lambda: True)
@@ -161,3 +171,32 @@ def test_bool_enum_variable_yaml_round_trip(monkeypatch):
         root.setYaml(yml=yml, writeEach=False, modes=["RW"])
         assert root.EnableFlag.value() is True
         assert root.EnableFlag.valueDisp() == 'Enabled'
+
+
+class LocalArrayRoot(MemoryRoot):
+    def __init__(self):
+        super().__init__(name="root")
+        self.add(pr.LocalVariable(name="ListVar", value=[1, 2, 3]))
+        self.add(pr.LocalVariable(name="ArrayVar", value=np.array([1, 2, 3], dtype=np.int64)))
+
+
+@pytest.mark.parametrize("name", ["ListVar", "ArrayVar"])
+@pytest.mark.parametrize(
+    ("key", "yaml_value", "expected"),
+    [
+        ("[*]", "5", [5, 5, 5]),
+        ("[1]", "5", [1, 5, 3]),
+        ("[0:2]", "[7, 8]", [7, 8, 3]),
+    ],
+)
+def test_local_array_variable_indexed_yaml_keys(monkeypatch, name, key, yaml_value, expected):
+    with LocalArrayRoot() as root:
+        monkeypatch.setattr(root, "_write", lambda: True)
+
+        root.setYaml(
+            yml=f"root:\n  {name}{key}: {yaml_value}\n",
+            writeEach=False,
+            modes=["RW"],
+        )
+
+        assert list(root.node(name).value()) == expected

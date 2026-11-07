@@ -305,7 +305,9 @@ class RogueConnection(PyDMConnection):
             Whether removal is part of channel/widget destruction.
         """
         self._client.remLinkMonitor(self.linkState)
-        self._client.stop()
+        # The VirtualClient is cached per (host, port) and shared by every
+        # channel on that server; stopping it here would kill the other
+        # channels. It is released at application exit instead.
         #if channel.value_signal is not None:
         #    #try:
         #    #    channel.value_signal[str].disconnect(self.put_value)

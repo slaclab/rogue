@@ -443,6 +443,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             return
 
         self._cacheKey = hash((addr, port))
+        self._addr = addr
+        self._port = port
         self._monEnable = False
         self._monThread = None
         self._vcInitialized = True
@@ -786,11 +788,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __hash__(self) -> int:
         """Hash based on host and port."""
-        return hash((self._host, self._port))
+        return hash((self._addr, self._port))
 
     def __eq__(self, other: "VirtualClient") -> bool:
         """Compare by host and port."""
-        return (self.host, self.port) == (other._host, other._port)
+        if not isinstance(other, VirtualClient):
+            return NotImplemented
+        return (self._addr, self._port) == (other._addr, other._port)
 
     def __ne__(self, other: "VirtualClient") -> bool:
         """Compare by host and port."""

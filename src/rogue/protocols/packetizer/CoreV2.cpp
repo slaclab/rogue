@@ -53,7 +53,7 @@ void rpp::CoreV2::setup_python() {
 //! Creator
 rpp::CoreV2::CoreV2(bool enIbCrc, bool enObCrc, bool enSsi) {
     tran_ = rpp::Transport::create();
-    cntl_ = rpp::ControllerV2::create(enIbCrc, enObCrc, enSsi, tran_, app_);
+    cntl_ = rpp::ControllerV2::create(enIbCrc, enObCrc, enSsi, tran_);
 
     tran_->setController(cntl_);
 }
@@ -61,6 +61,9 @@ rpp::CoreV2::CoreV2(bool enIbCrc, bool enObCrc, bool enSsi) {
 //! Destructor
 rpp::CoreV2::~CoreV2() {
     uint32_t x;
+
+    // Join the TX thread first: upstream masters may keep tran_ alive past this Core.
+    tran_->stop();
 
     tran_.reset();
     cntl_.reset();
@@ -78,6 +81,7 @@ rpp::ApplicationPtr rpp::CoreV2::application(uint8_t dest) {
     if (!app_[dest]) {
         app_[dest] = rpp::Application::create(dest);
         app_[dest]->setController(cntl_);
+        cntl_->setApplication(dest, app_[dest]);
     }
     return (app_[dest]);
 }
