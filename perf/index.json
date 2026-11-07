@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T03:19:39Z",
+  "generated_at": "2026-11-07T03:21:40Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-filereader-batched-wide",
+      "ref_slug": "fix-filereader-batched-wide",
+      "latest_url": "/rogue/perf/branches/fix-filereader-batched-wide/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-filereader-batched-wide",
+          "sha": "933dcd579f43dffd6a40958128ef9920b0b6be34",
+          "short_sha": "933dcd5",
+          "published_at": "2026-11-07T03:21:40Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42333055969",
+          "summary_url": "/rogue/perf/branches/fix-filereader-batched-wide/history/933dcd579f43dffd6a40958128ef9920b0b6be34.json"
+        },
+        {
+          "ref_name": "fix-filereader-batched-wide",
+          "sha": "c73918817a4bc3faa5dfd04852e84867823767f8",
+          "short_sha": "c739188",
+          "published_at": "2026-11-06T22:36:05Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42302332566",
+          "summary_url": "/rogue/perf/branches/fix-filereader-batched-wide/history/c73918817a4bc3faa5dfd04852e84867823767f8.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-filereader-batched-wide",
+        "sha": "933dcd579f43dffd6a40958128ef9920b0b6be34",
+        "short_sha": "933dcd5",
+        "published_at": "2026-11-07T03:21:40Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42333055969",
+        "summary_url": "/rogue/perf/branches/fix-filereader-batched-wide/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -358,29 +389,6 @@
         "published_at": "2026-11-06T22:50:22Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42306767998",
         "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-filereader-batched-wide",
-      "ref_slug": "fix-filereader-batched-wide",
-      "latest_url": "/rogue/perf/branches/fix-filereader-batched-wide/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-filereader-batched-wide",
-          "sha": "c73918817a4bc3faa5dfd04852e84867823767f8",
-          "short_sha": "c739188",
-          "published_at": "2026-11-06T22:36:05Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42302332566",
-          "summary_url": "/rogue/perf/branches/fix-filereader-batched-wide/history/c73918817a4bc3faa5dfd04852e84867823767f8.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-filereader-batched-wide",
-        "sha": "c73918817a4bc3faa5dfd04852e84867823767f8",
-        "short_sha": "c739188",
-        "published_at": "2026-11-06T22:36:05Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42302332566",
-        "summary_url": "/rogue/perf/branches/fix-filereader-batched-wide/latest.json"
       }
     },
     {
