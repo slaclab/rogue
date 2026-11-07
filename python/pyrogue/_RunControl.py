@@ -117,19 +117,18 @@ class RunControl(pr.Device):
                 thread.start()
 
         else:
-            with self._threadLock:
-                thread = self._thread
+            # Do not join here: this runs under the runState block lock and the
+            # worker may itself be writing runState. The loop in _run() exits on
+            # its next iteration; _stop() performs the join.
+            pass
 
-            # When a caller outside the worker requests "Stopped", wait for the
-            # current run thread to exit before returning so the state change is
-            # complete from the caller's perspective.
-            #
-            # The current_thread() check is required because _cmd() may stop
-            # the run by writing runState from inside the worker itself. A
-            # thread cannot join itself, so in that case we just let _run()
-            # fall out of its loop and perform the final cleanup.
-            if thread is not None and threading.current_thread() is not thread:
-                thread.join()
+    def _stop(self) -> None:
+        """Join the run thread before device teardown."""
+        with self._threadLock:
+            thread = self._thread
+        if thread is not None and threading.current_thread() is not thread:
+            thread.join()
+        super()._stop()
 
     def _setRunRate(self, value: int) -> None:
         """Set run rate.

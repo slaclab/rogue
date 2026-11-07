@@ -207,3 +207,41 @@ def test_update_worker_survives_raising_listener():
 
         assert got_good.wait(timeout=5), f"root listener not called for GoodVar: {received}"
         assert root._updateThread.is_alive(), "update worker thread died"
+
+
+
+def test_root_listener_can_add_root_listener(wait_until):
+    """A root listener that registers another root listener must not deadlock the update worker."""
+    second_calls = []
+    registered = threading.Event()
+    added = threading.Event()
+
+    def second_listener(path, val):
+        second_calls.append((path, val.value))
+
+    with DummyRoot(pollEn=False) as root:
+        def first_listener(path, val):
+            if registered.is_set():
+                return
+            registered.set()
+            # Register from a helper thread joined with a timeout so a
+            # regression (listener invoked while _varListenLock is held)
+            # fails the test instead of deadlocking the update worker,
+            # which would also hang Root.stop() on teardown.
+            t = threading.Thread(
+                target=lambda: (root.addVarListener(second_listener), added.set()),
+                daemon=True,
+            )
+            t.start()
+            t.join(timeout=2)
+
+        root.addVarListener(first_listener)
+
+        root.Dev.TestVar.set(1)
+        assert wait_until(registered.is_set, timeout=5), "first root listener never called"
+        assert added.is_set(), "addVarListener blocked while a root listener was running"
+
+        root.Dev.TestVar.set(2)
+        assert wait_until(
+            lambda: ('DummyRoot.Dev.TestVar', 2) in second_calls, timeout=5
+        ), f"second root listener not called: {second_calls}"

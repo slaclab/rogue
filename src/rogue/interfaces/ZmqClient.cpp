@@ -234,8 +234,10 @@ void rogue::interfaces::ZmqClient::stop() {
         // send()/sendString() before tearing down zmqReq_ and the context:
         // stopping_ guarantees such a call releases reqLock_ promptly, so this
         // cannot deadlock. The SUB thread is already joined, so zmqSub_ is idle.
+        // zmqSub_ is created in both modes (only connected in standard mode);
+        // leaving it open makes zmq_ctx_destroy block forever.
         std::lock_guard<std::mutex> lock(reqLock_);
-        if (!doString_) zmq_close(this->zmqSub_);
+        zmq_close(this->zmqSub_);
         zmq_close(this->zmqReq_);
         zmq_ctx_destroy(this->zmqCtx_);
     }
@@ -286,7 +288,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
 
     while (1) {
         zmq_msg_init(&msg);
-        if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
+        if (zmq_recvmsg(this->zmqReq_, &msg, 0) < 0) {
             seconds += static_cast<double>(timeout_) / 1000.0;
             // failTime_ == 0 preserves the historic forever-retry contract
             // (issue #1236). A finite failTime_ throws once the accumulated
@@ -383,7 +385,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
         while (1) {
             zmq_msg_init(&rxMsg);
-            if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
+            if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) < 0) {
                 seconds += static_cast<double>(timeout_) / 1000.0;
                 // failTime_ == 0 preserves the historic forever-retry contract
                 // (issue #1236). A finite failTime_ throws once the accumulated

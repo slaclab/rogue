@@ -172,10 +172,18 @@ def test_root_log_handler_formatter_interpolates_args():
                 'Root left RootLogHandler without an explicit formatter'
             assert handler.format(record) == 'Making device EthPhy0'
 
-    # Root.stop() does not detach the handler; restore the logger for isolation.
-    for handler in list(logger.handlers):
-        if handler not in old_handlers:
-            logger.removeHandler(handler)
+
+def test_root_stop_removes_log_handler():
+    # Regression: Root.stop() must detach its RootLogHandler from the global
+    # 'pyrogue' logger so stopped roots are not kept alive by the logger.
+    logger = logging.getLogger('pyrogue')
+    before = len(logger.handlers)
+
+    for _ in range(3):
+        with pr.Root(name='root', pollEn=False):
+            assert len(logger.handlers) == before + 1
+
+    assert len(logger.handlers) == before
 
 
 def test_root_debug_logging_does_not_feedback_through_system_log(monkeypatch):

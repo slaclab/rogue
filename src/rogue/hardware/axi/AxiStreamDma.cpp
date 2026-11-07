@@ -21,12 +21,14 @@
 #include <inttypes.h>
 #include <poll.h>
 
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <thread>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -605,6 +607,19 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
 
     // Wait until constructor completes
     while (!lockPtr.expired()) continue;
+
+    // The inherited Pool needs shared_from_this() to create buffers, and the
+    // constructor starts this thread before a shared_ptr owns the object.
+    // Received data stays queued in the driver until then.
+    while (threadEn_) {
+        try {
+            ris::Pool::shared_from_this();
+            break;
+        } catch (const std::bad_weak_ptr&) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+    }
+    if (!threadEn_) return;
 
     log_->logThreadId();
 

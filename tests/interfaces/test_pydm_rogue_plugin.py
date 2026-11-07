@@ -46,3 +46,32 @@ def test_rogue_connection_link_state_refreshes_static_name_channels():
     RogueConnection.linkState(conn, True)
     assert conn.connection_state_signal.values == [False, True]
     assert conn.new_value_signal.values == ["MyVar"]
+
+
+class _SharedClient:
+    def __init__(self):
+        self.monitors = []
+        self.stopCalls = 0
+
+    def addLinkMonitor(self, function):
+        self.monitors.append(function)
+
+    def remLinkMonitor(self, function):
+        self.monitors.remove(function)
+
+    def stop(self):
+        self.stopCalls += 1
+
+
+def test_rogue_connection_remove_listener_keeps_shared_client_running():
+    client = _SharedClient()
+    connA = SimpleNamespace(_client=client, linkState=object())
+    connB = SimpleNamespace(_client=client, linkState=object())
+
+    for conn in (connA, connB):
+        client.addLinkMonitor(conn.linkState)
+
+    RogueConnection.remove_listener(connA, channel=None, destroying=True)
+
+    assert client.stopCalls == 0
+    assert client.monitors == [connB.linkState]
