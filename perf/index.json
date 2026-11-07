@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T00:46:36Z",
+  "generated_at": "2026-11-07T00:59:55Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-packetizer-shared-ptr-cycle",
+      "ref_slug": "fix-packetizer-shared-ptr-cycle",
+      "latest_url": "/rogue/perf/branches/fix-packetizer-shared-ptr-cycle/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-packetizer-shared-ptr-cycle",
+          "sha": "8b7acedec8a8e8c1601ceb2e8288ca20d27026b8",
+          "short_sha": "8b7aced",
+          "published_at": "2026-11-07T00:59:55Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42320771767",
+          "summary_url": "/rogue/perf/branches/fix-packetizer-shared-ptr-cycle/history/8b7acedec8a8e8c1601ceb2e8288ca20d27026b8.json"
+        },
+        {
+          "ref_name": "fix-packetizer-shared-ptr-cycle",
+          "sha": "57099e24d6c9c1f4a4347aa38454b5fdc52548a2",
+          "short_sha": "57099e2",
+          "published_at": "2026-11-06T23:02:36Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42307945912",
+          "summary_url": "/rogue/perf/branches/fix-packetizer-shared-ptr-cycle/history/57099e24d6c9c1f4a4347aa38454b5fdc52548a2.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-packetizer-shared-ptr-cycle",
+        "sha": "8b7acedec8a8e8c1601ceb2e8288ca20d27026b8",
+        "short_sha": "8b7aced",
+        "published_at": "2026-11-07T00:59:55Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42320771767",
+        "summary_url": "/rogue/perf/branches/fix-packetizer-shared-ptr-cycle/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
@@ -381,29 +412,6 @@
         "published_at": "2026-11-06T23:08:48Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42307861440",
         "summary_url": "/rogue/perf/branches/fix-rssi-shared-ptr-cycle/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-packetizer-shared-ptr-cycle",
-      "ref_slug": "fix-packetizer-shared-ptr-cycle",
-      "latest_url": "/rogue/perf/branches/fix-packetizer-shared-ptr-cycle/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-packetizer-shared-ptr-cycle",
-          "sha": "57099e24d6c9c1f4a4347aa38454b5fdc52548a2",
-          "short_sha": "57099e2",
-          "published_at": "2026-11-06T23:02:36Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42307945912",
-          "summary_url": "/rogue/perf/branches/fix-packetizer-shared-ptr-cycle/history/57099e24d6c9c1f4a4347aa38454b5fdc52548a2.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-packetizer-shared-ptr-cycle",
-        "sha": "57099e24d6c9c1f4a4347aa38454b5fdc52548a2",
-        "short_sha": "57099e2",
-        "published_at": "2026-11-06T23:02:36Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42307945912",
-        "summary_url": "/rogue/perf/branches/fix-packetizer-shared-ptr-cycle/latest.json"
       }
     },
     {
