@@ -446,7 +446,8 @@ class Device(pr.Node,rim.Hub):
             variables = [k for k,v in self.variables.items() if v.pollInterval != 0]
 
         for x in variables:
-            self.node(x).setPollInterval(interval)
+            var = x if isinstance(x, pr.BaseVariable) else self.node(x)
+            var.setPollInterval(interval)
 
     def hideVariables(
         self,
@@ -468,7 +469,7 @@ class Device(pr.Node,rim.Hub):
         for v in variables:
             if isinstance(v, pr.BaseVariable):
                 v.hidden = hidden
-            elif isinstance(variables[0], str):
+            elif isinstance(v, str):
                 self.variables[v].hidden = hidden
 
     def initialize(self) -> None:
@@ -1125,10 +1126,11 @@ class Device(pr.Node,rim.Hub):
 
                         # Just in case a variable extends past the end of pre-made block, user mistake
                         if n.varBytes > b.size:
-                            msg = 'Failed to add variable {n.name} to pre-made block with offset {b.offset} and size {b.size}'
+                            msg = f'Failed to add variable {n.name} to pre-made block with offset {b.offset} and size {b.size}'
                             raise pr.MemoryError(name=self.path, address=self.address, msg=msg)
 
                         blk = {'offset':b.offset, 'size':b.size, 'vars':[n], 'block':b}
+                        blocks.append(blk)
                         break
 
                 # Block not found

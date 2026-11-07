@@ -58,12 +58,19 @@ rpr::Application::Application() {}
 
 //! Destructor
 rpr::Application::~Application() {
-    // No-op if setController() never ran.
-    if (thread_ != nullptr) {
-        threadEn_ = false;
+    stop();
+}
+
+//! Stop the worker thread
+void rpr::Application::stop() {
+    // No-op on a repeat call, or if setController() never ran.
+    if (threadEn_.exchange(false) && thread_ != nullptr) {
         // Release the GIL: worker may be mid-sendFrame to a Python slave.
         rogue::GilRelease noGil;
-        cntl_->stopQueue();
+        // Expired means the worker cannot be blocked in applicationTx(), since
+        // it holds a strong reference for the duration of that call.
+        rpr::ControllerPtr cntl = cntl_.lock();
+        if (cntl) cntl->stopQueue();
         thread_->join();
         delete thread_;
         thread_ = nullptr;
@@ -86,12 +93,15 @@ void rpr::Application::setController(rpr::ControllerPtr cntl) {
 
 //! Generate a Frame. Called from master
 ris::FramePtr rpr::Application::acceptReq(uint32_t size, bool zeroCopyEn) {
-    return (cntl_->reqFrame(size));
+    rpr::ControllerPtr cntl = cntl_.lock();
+    if (!cntl) throw(rogue::GeneralError::create("rssi::Application::acceptReq", "RSSI controller has been released"));
+    return (cntl->reqFrame(size));
 }
 
 //! Accept a frame from master
 void rpr::Application::acceptFrame(ris::FramePtr frame) {
-    cntl_->applicationRx(frame);
+    rpr::ControllerPtr cntl = cntl_.lock();
+    if (cntl) cntl->applicationRx(frame);
 }
 
 //! Thread background
@@ -101,6 +111,10 @@ void rpr::Application::runThread() {
     log.logThreadId();
 
     while (threadEn_) {
-        if ((frame = cntl_->applicationTx()) != NULL) sendFrame(frame);
+        rpr::ControllerPtr cntl = cntl_.lock();
+        if (!cntl) break;
+        frame = cntl->applicationTx();
+        cntl.reset();
+        if (frame) sendFrame(frame);
     }
 }
