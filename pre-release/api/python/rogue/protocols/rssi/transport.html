@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transport &mdash; Rogue v6.16.0-112-g3567f97a9 documentation</title>
+  <title>Transport &mdash; Rogue v6.16.0-115-g8af5096b3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=01b0f38f"></script>
+      <script src="../../../../../_static/documentation_options.js?v=3d258cea"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -166,7 +166,7 @@
 <dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/transport.html#_CPPv4N5rogue9protocols4rssi9TransportE" title="rogue::protocols::rssi::Transport"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Transport</span></code></a></p>
 <p>Binding source: <a class="reference external" href="../../../../../_doxygen/rssi_2Transport_8cpp_source.html">[Transport.cpp]</a></p>
 <p>RSSI transport endpoint.</p>
-<p>Bridges stream traffic between the RSSI controller and the underlying link. Inbound frames are forwarded synchronously to <code class="docutils literal notranslate"><span class="pre">Controller::transportRx()</span></code>. Outbound transport frames are produced via controller APIs and emitted by other RSSI components.</p>
+<p>Bridges stream traffic between the RSSI controller and the underlying link. Inbound frames are forwarded synchronously to <code class="docutils literal notranslate"><span class="pre">Controller::transportRx()</span></code>, or dropped once the controller is gone. Outbound transport frames are produced via controller APIs and emitted by other RSSI components.</p>
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>

@@ -114,6 +114,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a3817755bb70b2ace86c86c58f681cfed" id="r_a3817755bb70b2ace86c86c58f681cfed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Application.html#a3817755bb70b2ace86c86c58f681cfed">setController</a> (std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html">rogue::protocols::rssi::Controller</a> &gt; cntl)</td></tr>
 <tr class="memdesc:a3817755bb70b2ace86c86c58f681cfed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attaches the RSSI controller.  <br /></td></tr>
 <tr class="separator:a3817755bb70b2ace86c86c58f681cfed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea8862c221b841d769fb6ebd232f390f" id="r_aea8862c221b841d769fb6ebd232f390f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Application.html#aea8862c221b841d769fb6ebd232f390f">stop</a> ()</td></tr>
+<tr class="memdesc:aea8862c221b841d769fb6ebd232f390f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops and joins the outbound worker thread.  <br /></td></tr>
+<tr class="separator:aea8862c221b841d769fb6ebd232f390f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a6b7b3ff9e861be4d93febd6f4eb9dc" id="r_a3a6b7b3ff9e861be4d93febd6f4eb9dc"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html">rogue::interfaces::stream::Frame</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Application.html#a3a6b7b3ff9e861be4d93febd6f4eb9dc">acceptReq</a> (uint32_t size, bool zeroCopyEn)</td></tr>
 <tr class="memdesc:a3a6b7b3ff9e861be4d93febd6f4eb9dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates a frame for upstream writers.  <br /></td></tr>
 <tr class="separator:a3a6b7b3ff9e861be4d93febd6f4eb9dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,9 +145,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a80fb7808644726ddca72e8e196477229"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a80fb7808644726ddca72e8e196477229">ensureSingleBuffer</a> (std::shared_ptr&lt; <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html">rogue::interfaces::stream::Frame</a> &gt; &amp;frame, bool reqEn)</td></tr>
 <tr class="memdesc:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensures a frame is represented by a single buffer.  <br /></td></tr>
 <tr class="separator:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a212b04404a6767dddd1e58ba8298cf9e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">stop</a> ()</td></tr>
-<tr class="memdesc:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops frame generation and shuts down associated threads.  <br /></td></tr>
-<tr class="separator:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a913f40b8d390d1b2f26fa0aecfea34eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a913f40b8d390d1b2f26fa0aecfea34eb">equalsPy</a> (boost::python::object p)</td></tr>
 <tr class="memdesc:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Supports <code>==</code> operator usage from Python.  <br /></td></tr>
 <tr class="separator:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -172,9 +172,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_a74588fad9c45c5ac06c75e534db4da42"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#a74588fad9c45c5ac06c75e534db4da42">~Slave</a> ()</td></tr>
 <tr class="memdesc:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the stream slave.  <br /></td></tr>
 <tr class="separator:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_ac859b66aedfa71ee9ae24a3778599dd3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ac859b66aedfa71ee9ae24a3778599dd3">stop</a> ()</td></tr>
-<tr class="memdesc:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuts down threads associated with this object.  <br /></td></tr>
-<tr class="separator:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_a0db1eae3e974be56cfe5cd35653d752d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#a0db1eae3e974be56cfe5cd35653d752d">setDebug</a> (uint32_t debug, std::string name)</td></tr>
 <tr class="memdesc:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets debug message verbosity and logger name.  <br /></td></tr>
 <tr class="separator:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -281,10 +278,11 @@ Additional Inherited Members</h2></td></tr>
 <li>Outbound application frames are produced by a background thread started in <code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Application.html#a3817755bb70b2ace86c86c58f681cfed" title="Attaches the RSSI controller.">setController()</a></code> and drained from <code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#a983ddd353d6b8af413b76649b057660a" title="Gets next frame to transmit from the application side.">Controller::applicationTx()</a></code>.</li>
 </ul>
 <p>Lifetime contract:</p><ul>
-<li><code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Application.html#a3817755bb70b2ace86c86c58f681cfed" title="Attaches the RSSI controller.">setController()</a></code> must be called before destruction so the TX thread is created and can be cleanly stopped/joined. </li>
+<li>The controller reference is weak, so the owner (<code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Client.html" title="RSSI client convenience wrapper.">Client</a></code>/<code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Server.html" title="RSSI server convenience wrapper.">Server</a></code>) must keep the controller alive and call <code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Application.html#aea8862c221b841d769fb6ebd232f390f" title="Stops and joins the outbound worker thread.">stop()</a></code> before releasing it.</li>
+<li><code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Application.html#aea8862c221b841d769fb6ebd232f390f" title="Stops and joins the outbound worker thread.">stop()</a></code> is idempotent and is also called from the destructor. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="rssi_2Application_8h_source.html#l00051">51</a> of file <a class="el" href="rssi_2Application_8h_source.html">Application.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rssi_2Application_8h_source.html#l00052">52</a> of file <a class="el" href="rssi_2Application_8h_source.html">Application.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7d2e94b58722c8d6c30f6e99bd654911" name="a7d2e94b58722c8d6c30f6e99bd654911"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7d2e94b58722c8d6c30f6e99bd654911">&#9670;&#160;</a></span>Application()</h2>
@@ -367,7 +365,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="rssi_2Application_8cpp_source.html#l00093">93</a> of file <a class="el" href="rssi_2Application_8cpp_source.html">Application.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rssi_2Application_8cpp_source.html#l00102">102</a> of file <a class="el" href="rssi_2Application_8cpp_source.html">Application.cpp</a>.</p>
 
 </div>
 </div>
@@ -419,7 +417,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Pool.html#ab2731033cbedad75750e0ebe67921fe0">rogue::interfaces::stream::Pool</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="rssi_2Application_8cpp_source.html#l00088">88</a> of file <a class="el" href="rssi_2Application_8cpp_source.html">Application.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rssi_2Application_8cpp_source.html#l00095">95</a> of file <a class="el" href="rssi_2Application_8cpp_source.html">Application.cpp</a>.</p>
 
 </div>
 </div>
@@ -485,7 +483,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="rssi_2Application_8cpp_source.html#l00074">74</a> of file <a class="el" href="rssi_2Application_8cpp_source.html">Application.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rssi_2Application_8cpp_source.html#l00081">81</a> of file <a class="el" href="rssi_2Application_8cpp_source.html">Application.cpp</a>.</p>
 
 </div>
 </div>
@@ -515,6 +513,39 @@ Additional Inherited Members</h2></td></tr>
 <p>Registers Python bindings for this class. </p>
 
 <p class="definition">Definition at line <a class="el" href="rssi_2Application_8cpp_source.html#l00044">44</a> of file <a class="el" href="rssi_2Application_8cpp_source.html">Application.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aea8862c221b841d769fb6ebd232f390f" name="aea8862c221b841d769fb6ebd232f390f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea8862c221b841d769fb6ebd232f390f">&#9670;&#160;</a></span>stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rogue::protocols::rssi::Application::stop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Stops and joins the outbound worker thread. </p>
+<p>Stop the worker thread.</p>
+<p>Stops the controller application queue so a blocked worker wakes up. The queue is not restarted, so this is a terminal shutdown. Safe to call more than once, or if <code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Application.html#a3817755bb70b2ace86c86c58f681cfed" title="Attaches the RSSI controller.">setController()</a></code> never ran. </p>
+
+<p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">rogue::interfaces::stream::Master</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="rssi_2Application_8cpp_source.html#l00065">65</a> of file <a class="el" href="rssi_2Application_8cpp_source.html">Application.cpp</a>.</p>
 
 </div>
 </div>
