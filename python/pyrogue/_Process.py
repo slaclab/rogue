@@ -240,7 +240,7 @@ class Process(pr.Device):
     def _startProcess(self) -> None:
         """ """
         with self._lock:
-            if self.Running.value() is False:
+            if self._thread is None or not self._thread.is_alive():
                 self._runEn  = True
                 self._thread = threading.Thread(target=self._run)
                 self._thread.start()
@@ -274,7 +274,7 @@ class Process(pr.Device):
             Argument to set on ``argVariable`` before running.
         """
         with self._lock:
-            if self.Running.value() is False:
+            if self._thread is None or not self._thread.is_alive():
                 if arg is not None and self._argVar is not None:
                     self._argVar.setDisp(arg)
 

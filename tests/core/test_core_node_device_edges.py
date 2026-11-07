@@ -195,6 +195,10 @@ def test_node_reduce_add_iterable_and_array_helpers():
     assert root.Top.ExtraArray[0].value() == 1
     assert root.Top.ExtraArray[1].value() == 2
 
+    # A generator must not be exhausted by the type check before nodes are added.
+    root.Top.add(pr.LocalVariable(name=f"GenVar{i}", value=i) for i in range(3))
+    assert [root.Top.node(f"GenVar{i}").value() for i in range(3)] == [0, 1, 2]
+
     reduced = ExposedNode(name="Expose").__reduce__()
     factory, args = reduced
     assert factory is pr_interfaces.VirtualFactory
@@ -333,3 +337,36 @@ def test_iterate_dict_slice_holes_and_array_device_generation(tmp_path, capsys):
         child_doc = (tmp_path / "root_LeafArray_Custom[0].rst").read_text()
         assert "Sub Devices:" in top_doc
         assert "Variable List" in child_doc
+
+
+def test_device_set_poll_interval_accepts_variables_names_and_generators():
+    with NodeEdgeRoot() as root:
+        cfg = root.Top.CfgValue
+
+        root.Top.setPollInterval(2.0, variables=[cfg])
+        assert cfg.pollInterval == 2.0
+
+        root.Top.setPollInterval(3.0, variables=["CfgValue"])
+        assert cfg.pollInterval == 3.0
+
+        root.Top.setPollInterval(4.0, variables=(n for n in ["CfgValue"]))
+        assert cfg.pollInterval == 4.0
+
+
+def test_device_hide_variables_accepts_variables_names_generators_and_mixed():
+    with NodeEdgeRoot() as root:
+        cfg = root.Top.CfgValue
+        status = root.Top.StatusValue
+
+        root.Top.hideVariables(True, variables=[cfg, status])
+        assert cfg.hidden is True and status.hidden is True
+
+        root.Top.hideVariables(False, variables=["CfgValue", "StatusValue"])
+        assert cfg.hidden is False and status.hidden is False
+
+        root.Top.hideVariables(True, variables=(n for n in ["CfgValue"]))
+        assert cfg.hidden is True
+
+        # Each element is classified by its own type, not by the first one.
+        root.Top.hideVariables(True, variables=[cfg, "StatusValue"])
+        assert cfg.hidden is True and status.hidden is True
