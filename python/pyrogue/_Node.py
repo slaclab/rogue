@@ -322,7 +322,10 @@ class Node(object):
         """Add a node as a child."""
 
         # Special case if list (or iterable of nodes) is passed
-        if isinstance(node, collections.abc.Iterable) and all(isinstance(n, Node) for n in node):
+        # Materialize first so a generator is not exhausted by the all() check
+        if isinstance(node, collections.abc.Iterable):
+            node = list(node)
+        if isinstance(node, list) and all(isinstance(n, Node) for n in node):
             for n in node:
                 self.add(n)
             return

@@ -171,6 +171,9 @@ void rim::TcpClient::stop() {
         threadEn_ = false;
         thread_->join();
         thread_.reset();
+        // Serialize with in-flight doTransaction()/waitReady() senders before
+        // destroying sockets.
+        std::lock_guard<std::mutex> lock(bridgeMtx_);
         zmq_close(this->zmqResp_);
         zmqResp_ = nullptr;
         zmq_close(this->zmqReq_);
@@ -267,6 +270,11 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
     rogue::GilRelease noGil;
     std::lock_guard<std::mutex> block(bridgeMtx_);
     rim::TransactionLockPtr lock = tran->lock();
+
+    if (this->zmqReq_ == nullptr) {
+        tran->error("TcpClient stopped");
+        return;
+    }
 
     // ID message
     id = tran->id();
@@ -435,7 +443,7 @@ void rim::TcpClient::runThread() {
                 std::memcpy(tran->begin(), zmq_msg_data(&(msg[4])), size);
             }
             if (strcmp(result, "OK") != 0)
-                tran->error(result);
+                tran->errorStr(std::string(result));
             else
                 tran->done();
             bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32

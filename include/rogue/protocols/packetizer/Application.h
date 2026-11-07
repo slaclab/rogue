@@ -40,8 +40,8 @@ class Controller;
  * Provides per-destination stream ingress/egress into the packetizer stack.
  */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    // Core module
-    std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
+    // Core module. Weak: frames are dropped once the owning Core is destroyed.
+    std::weak_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
     // ID
     uint8_t id_;
