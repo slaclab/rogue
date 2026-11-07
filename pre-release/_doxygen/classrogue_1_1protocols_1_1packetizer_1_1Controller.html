@@ -98,9 +98,9 @@ Inheritance diagram for rogue::protocols::packetizer::Controller:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afbae1488981837571d10fe200bb753e4" id="r_afbae1488981837571d10fe200bb753e4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#afbae1488981837571d10fe200bb753e4">Controller</a> (std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html">rogue::protocols::packetizer::Transport</a> &gt; tran, std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html">rogue::protocols::packetizer::Application</a> &gt; *app, uint32_t headSize, uint32_t tailSize, uint32_t alignSize, bool enSsi)</td></tr>
-<tr class="memdesc:afbae1488981837571d10fe200bb753e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a packetizer controller base.  <br /></td></tr>
-<tr class="separator:afbae1488981837571d10fe200bb753e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a142d8002aeb1f2cf82104f0d8b65141a" id="r_a142d8002aeb1f2cf82104f0d8b65141a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a142d8002aeb1f2cf82104f0d8b65141a">Controller</a> (std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html">rogue::protocols::packetizer::Transport</a> &gt; tran, uint32_t headSize, uint32_t tailSize, uint32_t alignSize, bool enSsi)</td></tr>
+<tr class="memdesc:a142d8002aeb1f2cf82104f0d8b65141a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a packetizer controller base.  <br /></td></tr>
+<tr class="separator:a142d8002aeb1f2cf82104f0d8b65141a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6def90a90ce452f580915b4a4722a1c8" id="r_a6def90a90ce452f580915b4a4722a1c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a6def90a90ce452f580915b4a4722a1c8">~Controller</a> ()</td></tr>
 <tr class="memdesc:a6def90a90ce452f580915b4a4722a1c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the packetizer controller base.  <br /></td></tr>
 <tr class="separator:a6def90a90ce452f580915b4a4722a1c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,6 +128,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:add76a8091bfd00aba3961bd1dc65b428" id="r_add76a8091bfd00aba3961bd1dc65b428"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#add76a8091bfd00aba3961bd1dc65b428">setTimeout</a> (uint32_t timeout)</td></tr>
 <tr class="memdesc:add76a8091bfd00aba3961bd1dc65b428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets timeout in microseconds for frame transmits.  <br /></td></tr>
 <tr class="separator:add76a8091bfd00aba3961bd1dc65b428"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a185f5e07e01c761529eb8fe2b6eea63c" id="r_a185f5e07e01c761529eb8fe2b6eea63c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a185f5e07e01c761529eb8fe2b6eea63c">setApplication</a> (uint8_t dest, std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html">rogue::protocols::packetizer::Application</a> &gt; app)</td></tr>
+<tr class="memdesc:a185f5e07e01c761529eb8fe2b6eea63c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers the application endpoint for a destination.  <br /></td></tr>
+<tr class="separator:a185f5e07e01c761529eb8fe2b6eea63c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -165,8 +168,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a14ba5359c6a1623c359ec308017815ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84638dbc8e311af6b2b7f70dd5155dfd" id="r_a84638dbc8e311af6b2b7f70dd5155dfd"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html">rogue::protocols::packetizer::Transport</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a84638dbc8e311af6b2b7f70dd5155dfd">tran_</a></td></tr>
 <tr class="separator:a84638dbc8e311af6b2b7f70dd5155dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7cd699a43f4e61828169385eb28d4cfc" id="r_a7cd699a43f4e61828169385eb28d4cfc"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html">rogue::protocols::packetizer::Application</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a7cd699a43f4e61828169385eb28d4cfc">app_</a></td></tr>
-<tr class="separator:a7cd699a43f4e61828169385eb28d4cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c4e3437503669e10fa617b503ebf2e4" id="r_a5c4e3437503669e10fa617b503ebf2e4"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html">rogue::protocols::packetizer::Application</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a5c4e3437503669e10fa617b503ebf2e4">app_</a> [256]</td></tr>
+<tr class="separator:a5c4e3437503669e10fa617b503ebf2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03a7e1a09ded73826be38b35f4c30f77" id="r_a03a7e1a09ded73826be38b35f4c30f77"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classrogue_1_1Queue.html">rogue::Queue</a>&lt; std::shared_ptr&lt; <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html">rogue::interfaces::stream::Frame</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a03a7e1a09ded73826be38b35f4c30f77">tranQueue_</a></td></tr>
 <tr class="separator:a03a7e1a09ded73826be38b35f4c30f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -176,8 +179,8 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8h_source.html#l00046">46</a> of file <a class="el" href="packetizer_2Controller_8h_source.html">Controller.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="afbae1488981837571d10fe200bb753e4" name="afbae1488981837571d10fe200bb753e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afbae1488981837571d10fe200bb753e4">&#9670;&#160;</a></span>Controller()</h2>
+<a id="a142d8002aeb1f2cf82104f0d8b65141a" name="a142d8002aeb1f2cf82104f0d8b65141a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a142d8002aeb1f2cf82104f0d8b65141a">&#9670;&#160;</a></span>Controller()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -187,12 +190,6 @@ Protected Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html">rogue::protocols::packetizer::Transport</a> &gt;&#160;</td>
           <td class="paramname"><em>tran</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html">rogue::protocols::packetizer::Application</a> &gt; *&#160;</td>
-          <td class="paramname"><em>app</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -231,7 +228,6 @@ Protected Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tran</td><td><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html" title="Packetizer transport endpoint.">Transport</a> endpoint associated with this controller. </td></tr>
-    <tr><td class="paramname">app</td><td>Pointer to application endpoint array indexed by destination. </td></tr>
     <tr><td class="paramname">headSize</td><td>Header bytes inserted per packet. </td></tr>
     <tr><td class="paramname">tailSize</td><td>Trailer bytes inserted per packet. </td></tr>
     <tr><td class="paramname">alignSize</td><td>Payload alignment requirement in bytes. </td></tr>
@@ -266,7 +262,7 @@ Protected Attributes</h2></td></tr>
 <p>Destroys the packetizer controller base. </p>
 <p>Destructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00069">69</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00067">67</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
 
 </div>
 </div>
@@ -317,7 +313,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1ControllerV1.html#a5289f399e4f917210601377fa28c02f5">rogue::protocols::packetizer::ControllerV1</a>, and <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2.html#aedc05ab8c0afa5029981b68d450ca006">rogue::protocols::packetizer::ControllerV2</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00138">138</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00136">136</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
 
 </div>
 </div>
@@ -340,7 +336,7 @@ Protected Attributes</h2></td></tr>
 <p>Get drop count.</p>
 <dl class="section return"><dt>Returns</dt><dd>Number of dropped frames. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00141">141</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00139">139</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
 
 </div>
 </div>
@@ -370,7 +366,47 @@ Protected Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Allocated frame. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00081">81</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00079">79</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a185f5e07e01c761529eb8fe2b6eea63c" name="a185f5e07e01c761529eb8fe2b6eea63c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a185f5e07e01c761529eb8fe2b6eea63c">&#9670;&#160;</a></span>setApplication()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rogue::protocols::packetizer::Controller::setApplication </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html">rogue::protocols::packetizer::Application</a> &gt;&#160;</td>
+          <td class="paramname"><em>app</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Registers the application endpoint for a destination. </p>
+<p>Register application endpoint for a destination.</p>
+<p>Held as a weak reference; frames for an expired slot are dropped. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>Destination channel ID. </td></tr>
+    <tr><td class="paramname">app</td><td><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html" title="Packetizer application endpoint.">Application</a> endpoint for <code>dest</code>. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00144">144</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
 
 </div>
 </div>
@@ -399,7 +435,7 @@ Protected Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00146">146</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00150">150</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
 
 </div>
 </div>
@@ -440,7 +476,7 @@ Protected Attributes</h2></td></tr>
 <p>Stops the internal transmit queue. </p>
 <p>Stop TX. </p>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00074">74</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00072">72</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
 
 </div>
 </div>
@@ -479,7 +515,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1ControllerV1.html#af5030f8302bc16cb06c40f3c70cdc115">rogue::protocols::packetizer::ControllerV1</a>, and <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2.html#a3b327d3b2922671dd68f56f4daa94b78">rogue::protocols::packetizer::ControllerV2</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00127">127</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00125">125</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
 
 </div>
 </div>
@@ -502,7 +538,7 @@ Protected Attributes</h2></td></tr>
 <p>Frame transmit at transport interface.</p>
 <dl class="section return"><dt>Returns</dt><dd>Frame ready for transport transmit, or null when none is available. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00131">131</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8cpp_source.html#l00129">129</a> of file <a class="el" href="packetizer_2Controller_8cpp_source.html">Controller.cpp</a>.</p>
 
 </div>
 </div>
@@ -531,8 +567,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a7cd699a43f4e61828169385eb28d4cfc" name="a7cd699a43f4e61828169385eb28d4cfc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7cd699a43f4e61828169385eb28d4cfc">&#9670;&#160;</a></span>app_</h2>
+<a id="a5c4e3437503669e10fa617b503ebf2e4" name="a5c4e3437503669e10fa617b503ebf2e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c4e3437503669e10fa617b503ebf2e4">&#9670;&#160;</a></span>app_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -541,7 +577,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html">rogue::protocols::packetizer::Application</a>&gt;* rogue::protocols::packetizer::Controller::app_</td>
+          <td class="memname">std::weak_ptr&lt;<a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Application.html">rogue::protocols::packetizer::Application</a>&gt; rogue::protocols::packetizer::Controller::app_[256]</td>
         </tr>
       </table>
   </td>
@@ -551,7 +587,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8h_source.html#l00071">71</a> of file <a class="el" href="packetizer_2Controller_8h_source.html">Controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8h_source.html#l00072">72</a> of file <a class="el" href="packetizer_2Controller_8h_source.html">Controller.h</a>.</p>
 
 </div>
 </div>
@@ -935,7 +971,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8h_source.html#l00073">73</a> of file <a class="el" href="packetizer_2Controller_8h_source.html">Controller.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Controller_8h_source.html#l00074">74</a> of file <a class="el" href="packetizer_2Controller_8h_source.html">Controller.h</a>.</p>
 
 </div>
 </div>

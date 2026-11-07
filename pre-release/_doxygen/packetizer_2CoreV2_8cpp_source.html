@@ -124,7 +124,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00054" data-start="{" data-end="}">
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#a935a1d916e1f5f4a72aecbe0c258872e">   54</a></span>rpp::CoreV2::CoreV2(<span class="keywordtype">bool</span> enIbCrc, <span class="keywordtype">bool</span> enObCrc, <span class="keywordtype">bool</span> enSsi) {</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    tran_ = rpp::Transport::create();</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    cntl_ = rpp::ControllerV2::create(enIbCrc, enObCrc, enSsi, tran_, app_);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    cntl_ = rpp::ControllerV2::create(enIbCrc, enObCrc, enSsi, tran_);</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    tran_-&gt;setController(cntl_);</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>}</div>
@@ -134,39 +134,43 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#a3ad92d4a7a2c3057956d201c42f52cf9">   62</a></span>rpp::CoreV2::~CoreV2() {</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    uint32_t x;</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    tran_.reset();</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    cntl_.reset();</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="comment">// Join the TX thread first: upstream masters may keep tran_ alive past this Core.</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    tran_-&gt;stop();</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordflow">for</span> (x = 0; x &lt; 256; x++) app_[x].reset();</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>}</div>
-</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    tran_.reset();</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    cntl_.reset();</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="foldopen" id="foldopen00072" data-start="{" data-end="}">
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#a52ab7cfa2a781933646a8880882ca21e">   72</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1packetizer.html#a79e59649c5eee18cb218a8e4950581b7">rpp::TransportPtr</a> rpp::CoreV2::transport() {</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordflow">return</span> (tran_);</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>}</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordflow">for</span> (x = 0; x &lt; 256; x++) app_[x].reset();</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>}</div>
 </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="foldopen" id="foldopen00077" data-start="{" data-end="}">
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#a1ec1980d72950669aab8ea1f1273b890">   77</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1packetizer.html#ac951c2e8c596f8084b1c63b8f8403b47">rpp::ApplicationPtr</a> rpp::CoreV2::application(uint8_t dest) {</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <span class="keywordflow">if</span> (!app_[dest]) {</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        app_[dest] = rpp::Application::create(dest);</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        app_[dest]-&gt;setController(cntl_);</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    }</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keywordflow">return</span> (app_[dest]);</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>}</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="foldopen" id="foldopen00075" data-start="{" data-end="}">
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#a52ab7cfa2a781933646a8880882ca21e">   75</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1packetizer.html#a79e59649c5eee18cb218a8e4950581b7">rpp::TransportPtr</a> rpp::CoreV2::transport() {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordflow">return</span> (tran_);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>}</div>
 </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
-<div class="foldopen" id="foldopen00086" data-start="{" data-end="}">
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#af69fbdcbf96d18bfecafd5d62683c5bf">   86</a></span>uint32_t rpp::CoreV2::getDropCount() {</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keywordflow">return</span> (cntl_-&gt;getDropCount());</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>}</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="foldopen" id="foldopen00080" data-start="{" data-end="}">
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#a1ec1980d72950669aab8ea1f1273b890">   80</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1packetizer.html#ac951c2e8c596f8084b1c63b8f8403b47">rpp::ApplicationPtr</a> rpp::CoreV2::application(uint8_t dest) {</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keywordflow">if</span> (!app_[dest]) {</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        app_[dest] = rpp::Application::create(dest);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        app_[dest]-&gt;setController(cntl_);</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        cntl_-&gt;setApplication(dest, app_[dest]);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    }</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordflow">return</span> (app_[dest]);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>}</div>
 </div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
 <div class="foldopen" id="foldopen00090" data-start="{" data-end="}">
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#a2691685bfb26fdef0289ced3f518aa46">   90</a></span><span class="keywordtype">void</span> rpp::CoreV2::setTimeout(uint32_t timeout) {</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    cntl_-&gt;setTimeout(timeout);</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#af69fbdcbf96d18bfecafd5d62683c5bf">   90</a></span>uint32_t rpp::CoreV2::getDropCount() {</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="keywordflow">return</span> (cntl_-&gt;getDropCount());</div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>}</div>
+</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="foldopen" id="foldopen00094" data-start="{" data-end="}">
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1packetizer_1_1CoreV2.html#a2691685bfb26fdef0289ced3f518aa46">   94</a></span><span class="keywordtype">void</span> rpp::CoreV2::setTimeout(uint32_t timeout) {</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    cntl_-&gt;setTimeout(timeout);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>}</div>
 </div>
 <div class="ttc" id="aControllerV2_8h_html"><div class="ttname"><a href="ControllerV2_8h.html">ControllerV2.h</a></div></div>
 <div class="ttc" id="aDirectives_8h_html"><div class="ttname"><a href="Directives_8h.html">Directives.h</a></div></div>
@@ -175,7 +179,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1stream_html"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1stream.html">rogue::interfaces::stream</a></div><div class="ttdef"><b>Definition</b> <a href="Buffer_8h_source.html#l00029">Buffer.h:29</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1protocols_1_1packetizer_html"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1packetizer.html">rogue::protocols::packetizer</a></div><div class="ttdef"><b>Definition</b> <a href="packetizer_2Application_8h_source.html#l00032">Application.h:32</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1protocols_1_1packetizer_html_a40fd02e2219a5da68d0063596f20bb70"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1packetizer.html#a40fd02e2219a5da68d0063596f20bb70">rogue::protocols::packetizer::CoreV2Ptr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::packetizer::CoreV2 &gt; CoreV2Ptr</div><div class="ttdef"><b>Definition</b> <a href="packetizer_2CoreV2_8h_source.html#l00115">CoreV2.h:115</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1packetizer_html_a79e59649c5eee18cb218a8e4950581b7"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1packetizer.html#a79e59649c5eee18cb218a8e4950581b7">rogue::protocols::packetizer::TransportPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::packetizer::Transport &gt; TransportPtr</div><div class="ttdef"><b>Definition</b> <a href="packetizer_2Transport_8h_source.html#l00113">Transport.h:113</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1protocols_1_1packetizer_html_a79e59649c5eee18cb218a8e4950581b7"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1packetizer.html#a79e59649c5eee18cb218a8e4950581b7">rogue::protocols::packetizer::TransportPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::packetizer::Transport &gt; TransportPtr</div><div class="ttdef"><b>Definition</b> <a href="packetizer_2Transport_8h_source.html#l00120">Transport.h:120</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1protocols_1_1packetizer_html_ac951c2e8c596f8084b1c63b8f8403b47"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1packetizer.html#ac951c2e8c596f8084b1c63b8f8403b47">rogue::protocols::packetizer::ApplicationPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::packetizer::Application &gt; ApplicationPtr</div><div class="ttdef"><b>Definition</b> <a href="packetizer_2Application_8h_source.html#l00127">Application.h:127</a></div></div>
 <div class="ttc" id="apacketizer_2Application_8h_html"><div class="ttname"><a href="packetizer_2Application_8h.html">Application.h</a></div></div>
 <div class="ttc" id="apacketizer_2CoreV2_8h_html"><div class="ttname"><a href="packetizer_2CoreV2_8h.html">CoreV2.h</a></div></div>

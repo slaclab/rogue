@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transport &mdash; Rogue v6.16.0-106-g144549ab8 documentation</title>
+  <title>Transport &mdash; Rogue v6.16.0-109-g2a5df558e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6f1aff5f"></script>
+      <script src="../../../../../_static/documentation_options.js?v=895920c3"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -170,7 +170,7 @@
 <ul class="simple">
 <li><p>Inbound frames are handled synchronously by <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code>, which forwards each frame to <code class="docutils literal notranslate"><span class="pre">Controller::transportRx()</span></code>.</p></li>
 <li><p>Outbound frames are produced by a dedicated background thread started in <code class="docutils literal notranslate"><span class="pre">setController()</span></code>. That thread drains <code class="docutils literal notranslate"><span class="pre">Controller::transportTx()</span></code> and forwards returned frames via <code class="docutils literal notranslate"><span class="pre">sendFrame()</span></code>. Lifetime contract:</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">setController()</span></code> must be called before destruction so the TX queue thread can be started/stopped against a valid controller.</p></li>
+<li><p>The controller is held weakly. Once it is destroyed, inbound frames are dropped and the TX thread exits. The owning Core calls <code class="docutils literal notranslate"><span class="pre">stop()</span></code> before releasing the controller, since upstream masters may keep this endpoint alive.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py">
