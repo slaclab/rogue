@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-tcpclient-tran-release-1384",
+      "sha": "ee4469dea04ab771393997952730fbc7c02c4a96",
+      "short_sha": "ee4469d",
+      "published_at": "2026-11-07T04:52:37Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42339759693",
+      "summary_url": "/rogue/perf/branches/fix-tcpclient-tran-release-1384/history/ee4469dea04ab771393997952730fbc7c02c4a96.json"
+    },
+    {
+      "ref_name": "fix-tcpclient-tran-release-1384",
       "sha": "a52e31aa1242ab276ed25b23cc54a083909ff1dd",
       "short_sha": "a52e31a",
       "published_at": "2026-11-06T22:13:44Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-tcpclient-tran-release-1384",
-    "sha": "a52e31aa1242ab276ed25b23cc54a083909ff1dd",
-    "short_sha": "a52e31a",
-    "published_at": "2026-11-06T22:13:44Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42297537685",
+    "sha": "ee4469dea04ab771393997952730fbc7c02c4a96",
+    "short_sha": "ee4469d",
+    "published_at": "2026-11-07T04:52:37Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42339759693",
     "summary_url": "/rogue/perf/branches/fix-tcpclient-tran-release-1384/latest.json"
   }
 }
