@@ -16,3 +16,13 @@ rogue_add_cpp_test(rogue-cpp-utilities-prbs-set-width-while-enabled
 )
 
 set_tests_properties(rogue-cpp-utilities-prbs-set-width-while-enabled PROPERTIES TIMEOUT 30)
+
+rogue_add_cpp_test(rogue-cpp-utilities-stream-reader-close
+   SOURCES
+      test_stream_reader_close.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+
+set_tests_properties(rogue-cpp-utilities-stream-reader-close PROPERTIES TIMEOUT 30)
