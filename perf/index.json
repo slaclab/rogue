@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T00:24:58Z",
+  "generated_at": "2026-11-07T00:34:26Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "6d9be553f7a59966849e627dedeacdd9bb1e357b",
-      "short_sha": "6d9be55",
-      "published_at": "2026-11-06T19:50:47Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
+      "sha": "7b9bd5bc1e600f4d18ebd67bed58c5631d6ce297",
+      "short_sha": "7b9bd5b",
+      "published_at": "2026-11-07T00:34:26Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42318326469",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "7b9bd5bc1e600f4d18ebd67bed58c5631d6ce297",
+          "short_sha": "7b9bd5b",
+          "published_at": "2026-11-07T00:34:26Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42318326469",
+          "summary_url": "/rogue/perf/branches/pre-release/history/7b9bd5bc1e600f4d18ebd67bed58c5631d6ce297.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "6d9be553f7a59966849e627dedeacdd9bb1e357b",
@@ -279,54 +287,15 @@
           "published_at": "2026-11-02T19:34:21Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/41509843182",
           "summary_url": "/rogue/perf/branches/pre-release/history/f711796a54fe42359a7fd7676f7318fe4d402102.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "0b5167135d6d4b5795fab3a55a114e1b34a01ad4",
-          "short_sha": "0b51671",
-          "published_at": "2026-11-02T19:23:16Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41508081623",
-          "summary_url": "/rogue/perf/branches/pre-release/history/0b5167135d6d4b5795fab3a55a114e1b34a01ad4.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "6d9be553f7a59966849e627dedeacdd9bb1e357b",
-        "short_sha": "6d9be55",
-        "published_at": "2026-11-06T19:50:47Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42282263344",
+        "sha": "7b9bd5bc1e600f4d18ebd67bed58c5631d6ce297",
+        "short_sha": "7b9bd5b",
+        "published_at": "2026-11-07T00:34:26Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42318326469",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-runcontrol-stop-deadlock",
-      "ref_slug": "fix-runcontrol-stop-deadlock",
-      "latest_url": "/rogue/perf/branches/fix-runcontrol-stop-deadlock/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-runcontrol-stop-deadlock",
-          "sha": "428f03750c876c5d7c7660471fda93b81862a67b",
-          "short_sha": "428f037",
-          "published_at": "2026-11-07T00:24:58Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42316353988",
-          "summary_url": "/rogue/perf/branches/fix-runcontrol-stop-deadlock/history/428f03750c876c5d7c7660471fda93b81862a67b.json"
-        },
-        {
-          "ref_name": "fix-runcontrol-stop-deadlock",
-          "sha": "765c17b6ada0f9f7b750142c32312b4545a0a347",
-          "short_sha": "765c17b",
-          "published_at": "2026-11-06T23:23:34Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42310614691",
-          "summary_url": "/rogue/perf/branches/fix-runcontrol-stop-deadlock/history/765c17b6ada0f9f7b750142c32312b4545a0a347.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-runcontrol-stop-deadlock",
-        "sha": "428f03750c876c5d7c7660471fda93b81862a67b",
-        "short_sha": "428f037",
-        "published_at": "2026-11-07T00:24:58Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42316353988",
-        "summary_url": "/rogue/perf/branches/fix-runcontrol-stop-deadlock/latest.json"
       }
     },
     {
