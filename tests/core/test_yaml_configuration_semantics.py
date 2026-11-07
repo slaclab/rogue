@@ -120,6 +120,13 @@ def test_root_load_yaml_resolves_include_under_root_name(tmp_path):
         assert root.SomeDeviceArray[2].SomeValue.value() == "init"
 
 
+def test_yaml_to_data_string_resolves_relative_include_from_cwd(tmp_path, monkeypatch):
+    (tmp_path / "inc.yml").write_text("a: 1\n")
+    monkeypatch.chdir(tmp_path)
+
+    assert pr.yamlToData(stream="x: !include inc.yml\n") == {"x": {"a": 1}}
+
+
 def test_root_set_yaml_init_after_config(monkeypatch):
     with YamlConfigRoot() as root:
         monkeypatch.setattr(root, "_write", lambda: True)
