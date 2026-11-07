@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T05:20:26Z",
+  "generated_at": "2026-11-07T06:31:34Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "dbb0455bdeb80f2a2ada24a61b0468dc66e63949",
-      "short_sha": "dbb0455",
-      "published_at": "2026-11-07T05:14:45Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/42341440281",
+      "sha": "41cd7bb57572dd59bfe021828f2af467b14b9296",
+      "short_sha": "41cd7bb",
+      "published_at": "2026-11-07T06:31:34Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42342363965",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "41cd7bb57572dd59bfe021828f2af467b14b9296",
+          "short_sha": "41cd7bb",
+          "published_at": "2026-11-07T06:31:34Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42342363965",
+          "summary_url": "/rogue/perf/branches/pre-release/history/41cd7bb57572dd59bfe021828f2af467b14b9296.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "dbb0455bdeb80f2a2ada24a61b0468dc66e63949",
@@ -279,22 +287,14 @@
           "published_at": "2026-11-07T01:53:22Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/42325888827",
           "summary_url": "/rogue/perf/branches/pre-release/history/4f01edf84aba04d0cd0425d611d4735619f64249.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "9a8b410b322ed565b44c6b567dfe170da9b098b3",
-          "short_sha": "9a8b410",
-          "published_at": "2026-11-07T01:41:19Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42324849004",
-          "summary_url": "/rogue/perf/branches/pre-release/history/9a8b410b322ed565b44c6b567dfe170da9b098b3.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "dbb0455bdeb80f2a2ada24a61b0468dc66e63949",
-        "short_sha": "dbb0455",
-        "published_at": "2026-11-07T05:14:45Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42341440281",
+        "sha": "41cd7bb57572dd59bfe021828f2af467b14b9296",
+        "short_sha": "41cd7bb",
+        "published_at": "2026-11-07T06:31:34Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42342363965",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
       }
     },
@@ -338,37 +338,6 @@
       }
     },
     {
-      "ref_name": "fix-bsp-pyerr-clear",
-      "ref_slug": "fix-bsp-pyerr-clear",
-      "latest_url": "/rogue/perf/branches/fix-bsp-pyerr-clear/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-bsp-pyerr-clear",
-          "sha": "bda89bad31358e8765aa2ed5ac6205856d713625",
-          "short_sha": "bda89ba",
-          "published_at": "2026-11-07T05:20:06Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42341716668",
-          "summary_url": "/rogue/perf/branches/fix-bsp-pyerr-clear/history/bda89bad31358e8765aa2ed5ac6205856d713625.json"
-        },
-        {
-          "ref_name": "fix-bsp-pyerr-clear",
-          "sha": "023e804eef9360ef0a273c6635faa4572c6788b3",
-          "short_sha": "023e804",
-          "published_at": "2026-10-29T23:07:29Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40969920329",
-          "summary_url": "/rogue/perf/branches/fix-bsp-pyerr-clear/history/023e804eef9360ef0a273c6635faa4572c6788b3.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-bsp-pyerr-clear",
-        "sha": "bda89bad31358e8765aa2ed5ac6205856d713625",
-        "short_sha": "bda89ba",
-        "published_at": "2026-11-07T05:20:06Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42341716668",
-        "summary_url": "/rogue/perf/branches/fix-bsp-pyerr-clear/latest.json"
-      }
-    },
-    {
       "ref_name": "fix-sideband-sim-push-linger",
       "ref_slug": "fix-sideband-sim-push-linger",
       "latest_url": "/rogue/perf/branches/fix-sideband-sim-push-linger/latest.json",
@@ -397,154 +366,6 @@
         "published_at": "2026-11-07T04:27:15Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42338025818",
         "summary_url": "/rogue/perf/branches/fix-sideband-sim-push-linger/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-stream-reader-close-deadlock",
-      "ref_slug": "fix-stream-reader-close-deadlock",
-      "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-stream-reader-close-deadlock",
-          "sha": "45fb98c4027951f2ab6a252f12b745eab1d3df5e",
-          "short_sha": "45fb98c",
-          "published_at": "2026-11-07T00:45:13Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42319592132",
-          "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/history/45fb98c4027951f2ab6a252f12b745eab1d3df5e.json"
-        },
-        {
-          "ref_name": "fix-stream-reader-close-deadlock",
-          "sha": "8f0f36f53a303b13556ed25490fce5db40a247db",
-          "short_sha": "8f0f36f",
-          "published_at": "2026-11-06T23:50:35Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42312408763",
-          "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/history/8f0f36f53a303b13556ed25490fce5db40a247db.json"
-        },
-        {
-          "ref_name": "fix-stream-reader-close-deadlock",
-          "sha": "cd7f25e941385272b301e0ce7b85cd06ea1a6bce",
-          "short_sha": "cd7f25e",
-          "published_at": "2026-11-06T23:28:02Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42311383724",
-          "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/history/cd7f25e941385272b301e0ce7b85cd06ea1a6bce.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-stream-reader-close-deadlock",
-        "sha": "45fb98c4027951f2ab6a252f12b745eab1d3df5e",
-        "short_sha": "45fb98c",
-        "published_at": "2026-11-07T00:45:13Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42319592132",
-        "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json"
-      }
-    },
-    {
-      "ref_name": "ci-ubuntu-26.04",
-      "ref_slug": "ci-ubuntu-26.04",
-      "latest_url": "/rogue/perf/branches/ci-ubuntu-26.04/latest.json",
-      "history": [
-        {
-          "ref_name": "ci-ubuntu-26.04",
-          "sha": "eac3c74f513fdba8b3c7b306692b644bc89e7353",
-          "short_sha": "eac3c74",
-          "published_at": "2026-11-04T18:33:56Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41887303407",
-          "summary_url": "/rogue/perf/branches/ci-ubuntu-26.04/history/eac3c74f513fdba8b3c7b306692b644bc89e7353.json"
-        },
-        {
-          "ref_name": "ci-ubuntu-26.04",
-          "sha": "006cddc20cd6d4a1b127d0a65f4bad1d916b7fb0",
-          "short_sha": "006cddc",
-          "published_at": "2026-11-04T17:47:41Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41877449129",
-          "summary_url": "/rogue/perf/branches/ci-ubuntu-26.04/history/006cddc20cd6d4a1b127d0a65f4bad1d916b7fb0.json"
-        },
-        {
-          "ref_name": "ci-ubuntu-26.04",
-          "sha": "48ddc1a26f18f209a616357344689def6232848d",
-          "short_sha": "48ddc1a",
-          "published_at": "2026-11-04T17:00:14Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41872137698",
-          "summary_url": "/rogue/perf/branches/ci-ubuntu-26.04/history/48ddc1a26f18f209a616357344689def6232848d.json"
-        },
-        {
-          "ref_name": "ci-ubuntu-26.04",
-          "sha": "e4e75049902492688056e7ee72b1488ecd7e9069",
-          "short_sha": "e4e7504",
-          "published_at": "2026-11-04T16:45:23Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41869045164",
-          "summary_url": "/rogue/perf/branches/ci-ubuntu-26.04/history/e4e75049902492688056e7ee72b1488ecd7e9069.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "ci-ubuntu-26.04",
-        "sha": "eac3c74f513fdba8b3c7b306692b644bc89e7353",
-        "short_sha": "eac3c74",
-        "published_at": "2026-11-04T18:33:56Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41887303407",
-        "summary_url": "/rogue/perf/branches/ci-ubuntu-26.04/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-epicsV4-enum-index-start",
-      "ref_slug": "fix-epicsV4-enum-index-start",
-      "latest_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-epicsV4-enum-index-start",
-          "sha": "1bccae47adb87cefc9e710394074b40054407543",
-          "short_sha": "1bccae4",
-          "published_at": "2026-11-02T23:02:08Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41541032705",
-          "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/history/1bccae47adb87cefc9e710394074b40054407543.json"
-        },
-        {
-          "ref_name": "fix-epicsV4-enum-index-start",
-          "sha": "8a709da5ca442d4f17d1abb4eca7c99bf797936f",
-          "short_sha": "8a709da",
-          "published_at": "2026-10-29T23:33:35Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40972990223",
-          "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/history/8a709da5ca442d4f17d1abb4eca7c99bf797936f.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-epicsV4-enum-index-start",
-        "sha": "1bccae47adb87cefc9e710394074b40054407543",
-        "short_sha": "1bccae4",
-        "published_at": "2026-11-02T23:02:08Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41541032705",
-        "summary_url": "/rogue/perf/branches/fix-epicsV4-enum-index-start/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-prbs-runthread-terminate",
-      "ref_slug": "fix-prbs-runthread-terminate",
-      "latest_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-prbs-runthread-terminate",
-          "sha": "72b96328b4b64abb1ef49cd3da2b69d9ecae2bc7",
-          "short_sha": "72b9632",
-          "published_at": "2026-11-02T18:09:17Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/41496252038",
-          "summary_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/history/72b96328b4b64abb1ef49cd3da2b69d9ecae2bc7.json"
-        },
-        {
-          "ref_name": "fix-prbs-runthread-terminate",
-          "sha": "66af11d967ee672b5edd583d7b05c7b320bf8827",
-          "short_sha": "66af11d",
-          "published_at": "2026-10-30T03:54:42Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40999209132",
-          "summary_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/history/66af11d967ee672b5edd583d7b05c7b320bf8827.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-prbs-runthread-terminate",
-        "sha": "72b96328b4b64abb1ef49cd3da2b69d9ecae2bc7",
-        "short_sha": "72b9632",
-        "published_at": "2026-11-02T18:09:17Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/41496252038",
-        "summary_url": "/rogue/perf/branches/fix-prbs-runthread-terminate/latest.json"
       }
     },
     {
