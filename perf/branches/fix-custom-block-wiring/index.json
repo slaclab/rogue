@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-custom-block-wiring",
+      "sha": "3a82bd23f9590d523f5ab13060af623fcdf9b24d",
+      "short_sha": "3a82bd2",
+      "published_at": "2026-11-07T01:27:53Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42323515622",
+      "summary_url": "/rogue/perf/branches/fix-custom-block-wiring/history/3a82bd23f9590d523f5ab13060af623fcdf9b24d.json"
+    },
+    {
+      "ref_name": "fix-custom-block-wiring",
       "sha": "b17f841786d340c386c0e6c3fd561804f107d596",
       "short_sha": "b17f841",
       "published_at": "2026-11-06T22:54:20Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-custom-block-wiring",
-    "sha": "b17f841786d340c386c0e6c3fd561804f107d596",
-    "short_sha": "b17f841",
-    "published_at": "2026-11-06T22:54:20Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42307101767",
+    "sha": "3a82bd23f9590d523f5ab13060af623fcdf9b24d",
+    "short_sha": "3a82bd2",
+    "published_at": "2026-11-07T01:27:53Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42323515622",
     "summary_url": "/rogue/perf/branches/fix-custom-block-wiring/latest.json"
   }
 }
