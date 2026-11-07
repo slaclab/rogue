@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-stream-reader-close-deadlock",
+      "sha": "45fb98c4027951f2ab6a252f12b745eab1d3df5e",
+      "short_sha": "45fb98c",
+      "published_at": "2026-11-07T00:45:13Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42319592132",
+      "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/history/45fb98c4027951f2ab6a252f12b745eab1d3df5e.json"
+    },
+    {
+      "ref_name": "fix-stream-reader-close-deadlock",
       "sha": "8f0f36f53a303b13556ed25490fce5db40a247db",
       "short_sha": "8f0f36f",
       "published_at": "2026-11-06T23:50:35Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "fix-stream-reader-close-deadlock",
-    "sha": "8f0f36f53a303b13556ed25490fce5db40a247db",
-    "short_sha": "8f0f36f",
-    "published_at": "2026-11-06T23:50:35Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42312408763",
+    "sha": "45fb98c4027951f2ab6a252f12b745eab1d3df5e",
+    "short_sha": "45fb98c",
+    "published_at": "2026-11-07T00:45:13Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42319592132",
     "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json"
   }
 }

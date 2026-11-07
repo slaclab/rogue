@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T00:37:47Z",
+  "generated_at": "2026-11-07T00:45:13Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,41 +299,18 @@
       }
     },
     {
-      "ref_name": "fix-zmqclient-empty-reply",
-      "ref_slug": "fix-zmqclient-empty-reply",
-      "latest_url": "/rogue/perf/branches/fix-zmqclient-empty-reply/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-zmqclient-empty-reply",
-          "sha": "5d8a29bbdfac5574be84b3850bbc0ca19c0a3944",
-          "short_sha": "5d8a29b",
-          "published_at": "2026-11-07T00:37:47Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42318352087",
-          "summary_url": "/rogue/perf/branches/fix-zmqclient-empty-reply/history/5d8a29bbdfac5574be84b3850bbc0ca19c0a3944.json"
-        },
-        {
-          "ref_name": "fix-zmqclient-empty-reply",
-          "sha": "3821f2134fae0e8c5f096983a3199c01ec3ec19c",
-          "short_sha": "3821f21",
-          "published_at": "2026-11-06T23:10:13Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42309164129",
-          "summary_url": "/rogue/perf/branches/fix-zmqclient-empty-reply/history/3821f2134fae0e8c5f096983a3199c01ec3ec19c.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-zmqclient-empty-reply",
-        "sha": "5d8a29bbdfac5574be84b3850bbc0ca19c0a3944",
-        "short_sha": "5d8a29b",
-        "published_at": "2026-11-07T00:37:47Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42318352087",
-        "summary_url": "/rogue/perf/branches/fix-zmqclient-empty-reply/latest.json"
-      }
-    },
-    {
       "ref_name": "fix-stream-reader-close-deadlock",
       "ref_slug": "fix-stream-reader-close-deadlock",
       "latest_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json",
       "history": [
+        {
+          "ref_name": "fix-stream-reader-close-deadlock",
+          "sha": "45fb98c4027951f2ab6a252f12b745eab1d3df5e",
+          "short_sha": "45fb98c",
+          "published_at": "2026-11-07T00:45:13Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42319592132",
+          "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/history/45fb98c4027951f2ab6a252f12b745eab1d3df5e.json"
+        },
         {
           "ref_name": "fix-stream-reader-close-deadlock",
           "sha": "8f0f36f53a303b13556ed25490fce5db40a247db",
@@ -353,10 +330,10 @@
       ],
       "latest": {
         "ref_name": "fix-stream-reader-close-deadlock",
-        "sha": "8f0f36f53a303b13556ed25490fce5db40a247db",
-        "short_sha": "8f0f36f",
-        "published_at": "2026-11-06T23:50:35Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42312408763",
+        "sha": "45fb98c4027951f2ab6a252f12b745eab1d3df5e",
+        "short_sha": "45fb98c",
+        "published_at": "2026-11-07T00:45:13Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42319592132",
         "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json"
       }
     },
