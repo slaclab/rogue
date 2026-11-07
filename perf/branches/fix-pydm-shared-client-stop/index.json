@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-pydm-shared-client-stop",
+      "sha": "acc67784d7b6d8de9aff6d0fd5f9253ddceb315f",
+      "short_sha": "acc6778",
+      "published_at": "2026-11-07T02:51:12Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42330616871",
+      "summary_url": "/rogue/perf/branches/fix-pydm-shared-client-stop/history/acc67784d7b6d8de9aff6d0fd5f9253ddceb315f.json"
+    },
+    {
+      "ref_name": "fix-pydm-shared-client-stop",
       "sha": "07d525bffe9edab6c3f73b1acbcc9a698969b044",
       "short_sha": "07d525b",
       "published_at": "2026-11-06T22:40:47Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-pydm-shared-client-stop",
-    "sha": "07d525bffe9edab6c3f73b1acbcc9a698969b044",
-    "short_sha": "07d525b",
-    "published_at": "2026-11-06T22:40:47Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42304287431",
+    "sha": "acc67784d7b6d8de9aff6d0fd5f9253ddceb315f",
+    "short_sha": "acc6778",
+    "published_at": "2026-11-07T02:51:12Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42330616871",
     "summary_url": "/rogue/perf/branches/fix-pydm-shared-client-stop/latest.json"
   }
 }
