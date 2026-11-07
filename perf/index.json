@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T04:02:07Z",
+  "generated_at": "2026-11-07T04:09:48Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,34 +299,34 @@
       }
     },
     {
-      "ref_name": "fix-transaction-wait-timerisset",
-      "ref_slug": "fix-transaction-wait-timerisset",
-      "latest_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json",
+      "ref_name": "fix-pool-setfixedsize-cache",
+      "ref_slug": "fix-pool-setfixedsize-cache",
+      "latest_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/latest.json",
       "history": [
         {
-          "ref_name": "fix-transaction-wait-timerisset",
-          "sha": "cd0409e444b16da0400112384d8521bcbe6e2bd9",
-          "short_sha": "cd0409e",
-          "published_at": "2026-11-07T03:55:17Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42335586599",
-          "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/history/cd0409e444b16da0400112384d8521bcbe6e2bd9.json"
+          "ref_name": "fix-pool-setfixedsize-cache",
+          "sha": "13f73a726fbdcfe649851155de1190c8e5fb928f",
+          "short_sha": "13f73a7",
+          "published_at": "2026-11-07T04:09:48Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42336670382",
+          "summary_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/history/13f73a726fbdcfe649851155de1190c8e5fb928f.json"
         },
         {
-          "ref_name": "fix-transaction-wait-timerisset",
-          "sha": "df7cf713a6050dc0b5f066aa7b3996db298c8cb9",
-          "short_sha": "df7cf71",
-          "published_at": "2026-11-06T22:26:46Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42297611253",
-          "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/history/df7cf713a6050dc0b5f066aa7b3996db298c8cb9.json"
+          "ref_name": "fix-pool-setfixedsize-cache",
+          "sha": "2d25e9777e93f53070585e2423a23cf4ad735617",
+          "short_sha": "2d25e97",
+          "published_at": "2026-11-06T21:17:59Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42294574103",
+          "summary_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/history/2d25e9777e93f53070585e2423a23cf4ad735617.json"
         }
       ],
       "latest": {
-        "ref_name": "fix-transaction-wait-timerisset",
-        "sha": "cd0409e444b16da0400112384d8521bcbe6e2bd9",
-        "short_sha": "cd0409e",
-        "published_at": "2026-11-07T03:55:17Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42335586599",
-        "summary_url": "/rogue/perf/branches/fix-transaction-wait-timerisset/latest.json"
+        "ref_name": "fix-pool-setfixedsize-cache",
+        "sha": "13f73a726fbdcfe649851155de1190c8e5fb928f",
+        "short_sha": "13f73a7",
+        "published_at": "2026-11-07T04:09:48Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42336670382",
+        "summary_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/latest.json"
       }
     },
     {
@@ -435,29 +435,6 @@
         "published_at": "2026-11-06T21:47:39Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42293902961",
         "summary_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-pool-setfixedsize-cache",
-      "ref_slug": "fix-pool-setfixedsize-cache",
-      "latest_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-pool-setfixedsize-cache",
-          "sha": "2d25e9777e93f53070585e2423a23cf4ad735617",
-          "short_sha": "2d25e97",
-          "published_at": "2026-11-06T21:17:59Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42294574103",
-          "summary_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/history/2d25e9777e93f53070585e2423a23cf4ad735617.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-pool-setfixedsize-cache",
-        "sha": "2d25e9777e93f53070585e2423a23cf4ad735617",
-        "short_sha": "2d25e97",
-        "published_at": "2026-11-06T21:17:59Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42294574103",
-        "summary_url": "/rogue/perf/branches/fix-pool-setfixedsize-cache/latest.json"
       }
     },
     {
