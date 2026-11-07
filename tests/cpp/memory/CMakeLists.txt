@@ -14,6 +14,20 @@ rogue_add_cpp_test(rogue-cpp-memory-transaction-block
       no-python
 )
 
+# Subclasses Transaction, so it must see the same class layout as the library:
+# the no-python label would force NO_PYTHON and drop pyBuf_ in a Python build.
+set(rogue_cpp_memory_transaction_wait_timeout_labels cpp-core)
+if (NO_PYTHON)
+   list(APPEND rogue_cpp_memory_transaction_wait_timeout_labels no-python)
+endif()
+
+rogue_add_cpp_test(rogue-cpp-memory-transaction-wait-timeout
+   SOURCES
+      test_transaction_wait_timeout.cpp
+   LABELS
+      ${rogue_cpp_memory_transaction_wait_timeout_labels}
+)
+
 rogue_add_cpp_test(rogue-cpp-memory-variable
    SOURCES
       test_variable.cpp
