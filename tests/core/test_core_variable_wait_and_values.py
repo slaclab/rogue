@@ -11,9 +11,12 @@
 import threading
 import time
 import io
+import queue
+import types
 import warnings
 
 import numpy as np
+import pytest
 import pyrogue as pr
 import rogue.interfaces.memory
 from conftest import MemoryRoot
@@ -163,6 +166,59 @@ def test_variable_wait_timeout_rearm_and_get_values(wait_until):
             thread.join(timeout=1.0)
 
 
+def _step_wall_clock(monkeypatch, step):
+    """Make every ``time.time()`` read jump by ``step`` seconds from the last one."""
+    real_time = time.time
+    calls = [0]
+
+    def stepped():
+        calls[0] += 1
+        return real_time() + step * calls[0]
+
+    monkeypatch.setattr(time, "time", stepped)
+
+
+def test_variable_wait_timeout_ignores_wall_clock_step(monkeypatch):
+    with WaitRoot() as root:
+        waiter = pr.VariableWaitClass(root.Dev.Counter, timeout=0.2)
+        result = []
+
+        _step_wall_clock(monkeypatch, -3600.0)
+        thread = threading.Thread(target=lambda: result.append(waiter.wait()), daemon=True)
+        thread.start()
+        thread.join(timeout=2.0)
+        alive = thread.is_alive()
+        monkeypatch.undo()
+        thread.join(timeout=2.0)
+
+        assert not alive
+        assert result == [False]
+
+
+def test_update_tracker_period_ignores_wall_clock_step(monkeypatch, wait_until):
+    updates = queue.Queue()
+    var = types.SimpleNamespace(path="root.Dev.Counter")
+
+    # A forward wall-clock step must not flush a grouped batch early.
+    _step_wall_clock(monkeypatch, 3600.0)
+    tracker = pr._Root.UpdateTracker(updates)
+    tracker.increment(0.5)
+    tracker.update(var)
+    assert updates.empty()
+
+    # A backward wall-clock step must not hold the batch past its period.
+    _step_wall_clock(monkeypatch, -3600.0)
+    tracker = pr._Root.UpdateTracker(updates)
+    tracker.increment(0.1)
+    tracker.update(var)
+
+    def flushed():
+        tracker._check()
+        return not updates.empty()
+
+    assert wait_until(flushed, timeout=2.0)
+    assert updates.get_nowait() == {var.path: var}
+
 def test_variable_value_metadata_and_array_display_paths():
     with WaitRoot() as root:
         value = root.Dev.Counter.getVariableValue(read=False)
@@ -252,3 +308,14 @@ def test_variable_set_dict_mode_skips_and_generates_docs(monkeypatch):
         assert "root.Dev.Counter" in docs
         assert "lowWarning" in docs
         assert "highAlarm" in docs
+
+
+@pytest.mark.parametrize("disp, expected", [
+    ("{:.3f}", 3),
+    ("{:1.3f}", 3),
+    ("{:10.2f}", 2),
+    ("{}", 8),
+])
+def test_variable_precision_parses_optional_width(disp, expected):
+    var = pr.LocalVariable(name="Prec", value=1.0, disp=disp)
+    assert var.precision == expected

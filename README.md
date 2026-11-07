@@ -11,17 +11,13 @@ Development guidance for contributors and AI agents is available in
 
    https://slaclab.github.io/rogue/
 
-*Email List For Announcements:*
+*Issue Reporting:*
 
-   https://listserv.slac.stanford.edu/cgi-bin/wa?A0=AIR-ROGUE-USERS
-
-*JIRA:*
-
-   https://jira.slac.stanford.edu/projects/ESROGUE
+   Report bugs and feature requests at https://github.com/slaclab/rogue/issues
 
 # Getting Rogue
 
-[![Anaconda-Server Badge](https://anaconda.org/tidair-tag/rogue/badges/version.svg)](https://anaconda.org/tidair-tag/rogue) [![Anaconda-Server Badge](https://anaconda.org/tidair-tag/rogue/badges/platforms.svg)](https://anaconda.org/tidair-tag/rogue)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/slac-rogue/badges/version.svg)](https://anaconda.org/conda-forge/slac-rogue) [![Anaconda-Server Badge](https://anaconda.org/conda-forge/slac-rogue/badges/platforms.svg)](https://anaconda.org/conda-forge/slac-rogue)
 
 Instructions for getting and installing Rogue can be found here:
 
@@ -33,7 +29,7 @@ The following is how you install the latest released version of Rogue with minif
 
 ```
 
-   $ conda create -n rogue_tag -c tidair-tag -c conda-forge rogue
+   $ conda create -n rogue_tag -c conda-forge slac-rogue
 
 ```
 

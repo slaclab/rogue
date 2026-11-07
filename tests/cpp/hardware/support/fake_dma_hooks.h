@@ -32,6 +32,7 @@ class FakeDma {
     using WaitBlockedFn = int (*)(uint32_t);
     using ReleaseFn     = void (*)();
     using CountFn       = int (*)();
+    using QueueFn       = void (*)(int);
 
     FakeDma() {
         path_            = load<PathFn>("fakedma_path");
@@ -47,6 +48,10 @@ class FakeDma {
         isClean_         = load<CountFn>("fakedma_is_clean");
         retIndexCount_     = load<CountFn>("fakedma_ret_index_count");
         closeDuringCall_   = load<CountFn>("fakedma_close_during_driver_call");
+        queueRx_           = load<QueueFn>("fakedma_queue_rx");
+        failNextRead_      = load<ResetFn>("fakedma_fail_next_read");
+        readFailCount_     = load<CountFn>("fakedma_read_fail_count");
+        waitReadFailed_    = load<WaitBlockedFn>("fakedma_wait_read_failed");
     }
 
     const char* path() const { return path_(); }
@@ -62,6 +67,10 @@ class FakeDma {
     bool isClean() const { return isClean_() != 0; }
     int retIndexCount() const { return retIndexCount_(); }
     bool closeDuringDriverCall() const { return closeDuringCall_() != 0; }
+    void queueRx(int count) const { queueRx_(count); }
+    void failNextRead() const { failNextRead_(); }
+    int readFailCount() const { return readFailCount_(); }
+    bool waitReadFailed(uint32_t timeoutMs) const { return waitReadFailed_(timeoutMs) != 0; }
 
   private:
     template <typename Func>
@@ -88,6 +97,10 @@ class FakeDma {
     CountFn isClean_;
     CountFn retIndexCount_;
     CountFn closeDuringCall_;
+    QueueFn queueRx_;
+    ResetFn failNextRead_;
+    CountFn readFailCount_;
+    WaitBlockedFn waitReadFailed_;
 };
 
 inline FakeDma& fakeDma() {

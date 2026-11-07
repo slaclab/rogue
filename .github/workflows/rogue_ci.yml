@@ -22,7 +22,7 @@ concurrency:
 jobs:
   full_build_test:
     name: Full Build Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -35,7 +35,8 @@ jobs:
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
-          python-version: 3.12
+          # Match the system Boost.Python (libboost_python314 on ubuntu-26.04).
+          python-version: 3.14
           cache: 'pip'
           cache-dependency-path: |
             pip_requirements_ci.txt
@@ -79,10 +80,13 @@ jobs:
         # Observed on GHA: a SIGABRT inside a C extension leaves execnet's
         # thread_receiver waiting forever; workflow_dispatch then hits its own
         # 360-minute wall instead of failing fast.
+        # Use one worker per logical CPU, capped at 8: -n auto counts physical
+        # cores (2 on the 4-vCPU hosted runner).
         timeout-minutes: 15
         run: |
           source ./scripts/ci_test_env.sh
-          python -m pytest -n auto --dist loadfile --cov -m "not perf"
+          workers="$(python -c 'import os; print(min(os.cpu_count() or 1, 8))')"
+          python -m pytest -n "${workers}" --dist loadfile --cov -m "not perf"
           coverage xml -o coverage-py.xml
 
       # Generate C++ coverage report from .gcda files produced by ctest + pytest.
@@ -127,7 +131,7 @@ jobs:
 
   small_build_test:
     name: Small Build Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -157,7 +161,7 @@ jobs:
 
   external_build_test:
     name: External Build Test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
 
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -166,7 +170,8 @@ jobs:
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
-          python-version: 3.12
+          # Match the system Boost.Python (libboost_python314 on ubuntu-26.04).
+          python-version: 3.14
           cache: 'pip'
           cache-dependency-path: |
             pip_requirements_ci.txt
@@ -271,12 +276,14 @@ jobs:
           python -c "import rogue, pyrogue; print('rogue import ok')"
 
       # macOS mirrors the full-build native coverage on Apple silicon using the
-      # Python-enabled build configuration.
+      # Python-enabled build configuration. rogue-cpp-srp-rssi is skipped here:
+      # its timed RSSI/SRP exchange is too jittery on the hosted macOS runner's
+      # localhost traffic. It still runs in the Linux jobs.
       - name: Rogue Native C++ Tests
         shell: bash -el {0}
         run: |
           source build/setup_rogue.sh
-          ctest --test-dir build --output-on-failure -L cpp
+          ctest --test-dir build --output-on-failure -L cpp -E '^rogue-cpp-srp-rssi$'
 
       - name: Rogue Tests
         run: |
@@ -287,7 +294,7 @@ jobs:
 
   perf_test:
     name: Performance Tests
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
 
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -296,7 +303,8 @@ jobs:
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
-          python-version: 3.12
+          # Match the system Boost.Python (libboost_python314 on ubuntu-26.04).
+          python-version: 3.14
           cache: 'pip'
           cache-dependency-path: 'pip_requirements.txt'
 
