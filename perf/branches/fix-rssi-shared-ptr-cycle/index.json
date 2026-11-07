@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-rssi-shared-ptr-cycle",
+      "sha": "731b81b7c7d6e5792b4970cc0a50c1ccd701b3b3",
+      "short_sha": "731b81b",
+      "published_at": "2026-11-07T01:20:04Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42322784199",
+      "summary_url": "/rogue/perf/branches/fix-rssi-shared-ptr-cycle/history/731b81b7c7d6e5792b4970cc0a50c1ccd701b3b3.json"
+    },
+    {
+      "ref_name": "fix-rssi-shared-ptr-cycle",
       "sha": "0593e9ae680cc7be896113859c58779fa5057ba1",
       "short_sha": "0593e9a",
       "published_at": "2026-11-06T23:08:48Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-rssi-shared-ptr-cycle",
-    "sha": "0593e9ae680cc7be896113859c58779fa5057ba1",
-    "short_sha": "0593e9a",
-    "published_at": "2026-11-06T23:08:48Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42307861440",
+    "sha": "731b81b7c7d6e5792b4970cc0a50c1ccd701b3b3",
+    "short_sha": "731b81b",
+    "published_at": "2026-11-07T01:20:04Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42322784199",
     "summary_url": "/rogue/perf/branches/fix-rssi-shared-ptr-cycle/latest.json"
   }
 }
