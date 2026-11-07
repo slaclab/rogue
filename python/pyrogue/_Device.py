@@ -1126,10 +1126,11 @@ class Device(pr.Node,rim.Hub):
 
                         # Just in case a variable extends past the end of pre-made block, user mistake
                         if n.varBytes > b.size:
-                            msg = 'Failed to add variable {n.name} to pre-made block with offset {b.offset} and size {b.size}'
+                            msg = f'Failed to add variable {n.name} to pre-made block with offset {b.offset} and size {b.size}'
                             raise pr.MemoryError(name=self.path, address=self.address, msg=msg)
 
                         blk = {'offset':b.offset, 'size':b.size, 'vars':[n], 'block':b}
+                        blocks.append(blk)
                         break
 
                 # Block not found
