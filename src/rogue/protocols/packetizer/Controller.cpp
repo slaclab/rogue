@@ -35,7 +35,6 @@ namespace ris = rogue::interfaces::stream;
 
 //! Creator
 rpp::Controller::Controller(rpp::TransportPtr tran,
-                            rpp::ApplicationPtr* app,
                             uint32_t headSize,
                             uint32_t tailSize,
                             uint32_t alignSize,
@@ -43,7 +42,6 @@ rpp::Controller::Controller(rpp::TransportPtr tran,
     uint32_t x;
 
     enSsi_     = enSsi;
-    app_       = app;
     tran_      = tran;
     appIndex_  = 0;
     tranIndex_ = 0;
@@ -140,6 +138,12 @@ void rpp::Controller::applicationRx(ris::FramePtr frame, uint8_t tDest) {}
 //! Get drop count
 uint32_t rpp::Controller::getDropCount() {
     return (dropCount_);
+}
+
+//! Register application endpoint for a destination
+void rpp::Controller::setApplication(uint8_t dest, rpp::ApplicationPtr app) {
+    std::lock_guard<std::mutex> lock(tranMtx_);
+    app_[dest] = app;
 }
 
 //! Set timeout for frame transmits in microseconds
