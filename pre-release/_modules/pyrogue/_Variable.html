@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Variable &mdash; Rogue v6.16.0-139-g89870506c documentation</title>
+  <title>pyrogue._Variable &mdash; Rogue v6.16.0-142-g2da8ab37e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=5e15a109"></script>
+      <script src="../../_static/documentation_options.js?v=805d1fc7"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -223,13 +223,13 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Wait until the condition is met or timeout occurs."""</span>
-        <span class="n">start</span>  <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">start</span>  <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check</span><span class="p">()</span>
 
             <span class="c1"># Run until timeout or all conditions have been met</span>
-            <span class="k">while</span> <span class="p">(</span><span class="ow">not</span> <span class="n">ret</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)):</span>
+            <span class="k">while</span> <span class="p">(</span><span class="ow">not</span> <span class="n">ret</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span><span class="o">-</span><span class="n">start</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check</span><span class="p">()</span>
 
