@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Device &mdash; Rogue v6.16.0-115-g8af5096b3 documentation</title>
+  <title>pyrogue._Device &mdash; Rogue v6.16.0-118-g53123848a documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=3d258cea"></script>
+      <script src="../../_static/documentation_options.js?v=2212e97c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1308,10 +1308,11 @@
 
                         <span class="c1"># Just in case a variable extends past the end of pre-made block, user mistake</span>
                         <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">varBytes</span> <span class="o">&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'Failed to add variable </span><span class="si">{n.name}</span><span class="s1"> to pre-made block with offset </span><span class="si">{b.offset}</span><span class="s1"> and size </span><span class="si">{b.size}</span><span class="s1">'</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'Failed to add variable </span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> to pre-made block with offset </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s1"> and size </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">'</span>
                             <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">MemoryError</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
 
                         <span class="n">blk</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'offset'</span><span class="p">:</span><span class="n">b</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="s1">'size'</span><span class="p">:</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="s1">'vars'</span><span class="p">:[</span><span class="n">n</span><span class="p">],</span> <span class="s1">'block'</span><span class="p">:</span><span class="n">b</span><span class="p">}</span>
+                        <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blk</span><span class="p">)</span>
                         <span class="k">break</span>
 
                 <span class="c1"># Block not found</span>
