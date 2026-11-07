@@ -72,6 +72,8 @@ Common Device-level properties include:
 * ``memBase`` for the memory interface used by hardware-backed children.
 * ``enable`` for controlling whether the subtree participates in hardware
   access behavior.
+* ``defaultVerify`` for overriding the inherited write-verification default
+  for RemoteVariables in the subtree.
 * ``forceWaitEach`` for forcing block reads, writes, and verifies to wait
   for each transaction immediately rather than deferring completion waits.
 

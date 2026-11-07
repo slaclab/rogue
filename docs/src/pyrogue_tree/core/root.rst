@@ -25,6 +25,26 @@ tree underneath it. In practice, that means ``Root`` is where you decide:
 * How startup and shutdown should happen.
 * Which top-level system actions and configuration workflows are available.
 
+Write Verification Defaults
+===========================
+
+RemoteVariables normally verify each write with a readback transaction. For
+systems where the write response is sufficient, construct the Root with
+``defaultVerify=False`` to make verification opt-in for the full tree:
+
+.. code-block:: python
+
+   root = MyRoot(defaultVerify=False)
+
+An explicit ``RemoteVariable(verify=True)`` still enables verification for a
+register that needs it. A child ``Device(defaultVerify=True)`` can restore
+verification for an entire subtree, such as an I2C or SPI bridge. Explicit
+RemoteVariable settings take precedence over the nearest Device setting,
+which takes precedence over the Root setting.
+
+The setting is resolved when the Root builds its memory Blocks during startup.
+It is a construction-time default, not a runtime switch.
+
 What Root Usually Owns
 ======================
 
