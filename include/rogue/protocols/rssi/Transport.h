@@ -39,12 +39,13 @@ class Controller;
  * Bridges stream traffic between the RSSI controller and the underlying link.
  *
  * Inbound frames are forwarded synchronously to
- * `Controller::transportRx()`. Outbound transport frames are produced via
- * controller APIs and emitted by other RSSI components.
+ * `Controller::transportRx()`, or dropped once the controller is gone.
+ * Outbound transport frames are produced via controller APIs and emitted by
+ * other RSSI components.
  */
 class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    // RSSI controller backend.
-    std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
+    // RSSI controller backend. Weak to avoid a cycle with Controller::tran_.
+    std::weak_ptr<rogue::protocols::rssi::Controller> cntl_;
 
   public:
     /**
