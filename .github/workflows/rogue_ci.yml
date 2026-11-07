@@ -276,12 +276,14 @@ jobs:
           python -c "import rogue, pyrogue; print('rogue import ok')"
 
       # macOS mirrors the full-build native coverage on Apple silicon using the
-      # Python-enabled build configuration.
+      # Python-enabled build configuration. rogue-cpp-srp-rssi is skipped here:
+      # its timed RSSI/SRP exchange is too jittery on the hosted macOS runner's
+      # localhost traffic. It still runs in the Linux jobs.
       - name: Rogue Native C++ Tests
         shell: bash -el {0}
         run: |
           source build/setup_rogue.sh
-          ctest --test-dir build --output-on-failure -L cpp
+          ctest --test-dir build --output-on-failure -L cpp -E '^rogue-cpp-srp-rssi$'
 
       - name: Rogue Tests
         run: |

@@ -36,14 +36,14 @@ namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
 //! Class creation
-rpp::ControllerV1Ptr rpp::ControllerV1::create(bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr* app) {
-    rpp::ControllerV1Ptr r = std::make_shared<rpp::ControllerV1>(enSsi, tran, app);
+rpp::ControllerV1Ptr rpp::ControllerV1::create(bool enSsi, rpp::TransportPtr tran) {
+    rpp::ControllerV1Ptr r = std::make_shared<rpp::ControllerV1>(enSsi, tran);
     return (r);
 }
 
 //! Creator
-rpp::ControllerV1::ControllerV1(bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr* app)
-    : rpp::Controller::Controller(tran, app, 8, 1, 8, enSsi) {}
+rpp::ControllerV1::ControllerV1(bool enSsi, rpp::TransportPtr tran)
+    : rpp::Controller::Controller(tran, 8, 1, 8, enSsi) {}
 
 //! Destructor
 rpp::ControllerV1::~ControllerV1() {}
@@ -169,9 +169,7 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
         // Detect SSI error — must precede pushFrame/reset or the indication is lost.
         if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[0]->setError(0x80);
 
-        if (app_[tranDest_]) {
-            app_[tranDest_]->pushFrame(tranFrame_[0]);
-        }
+        if (rpp::ApplicationPtr app = app_[tranDest_].lock()) app->pushFrame(tranFrame_[0]);
         tranFrame_[0].reset();
     } else {
         tranCount_[0]++;
