@@ -74,8 +74,9 @@ class StreamReader : public rogue::interfaces::stream::Master {
     // Open next indexed file in sequence.
     bool nextFile();
 
-    // Internal close helper.
-    void intClose();
+    // Internal close helper. Caller holds lock on mtx_; it is released while
+    // joining the read thread.
+    void intClose(std::unique_lock<std::mutex>& lock);
 
     // Condition signaled when activity state changes.
     std::condition_variable cond_;
