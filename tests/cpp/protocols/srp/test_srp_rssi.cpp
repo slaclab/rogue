@@ -168,10 +168,11 @@ struct PacketizerEndpoint {
     rpp::TransportPtr transport = rpp::Transport::create();
 
     PacketizerEndpoint() {
-        controller = rpp::ControllerV2::create(true, true, true, borrowed(transport), applications.data());
+        controller      = rpp::ControllerV2::create(true, true, true, borrowed(transport));
         applications[0] = rpp::Application::create(0);
         transport->setController(controller);
         applications[0]->setController(controller);
+        controller->setApplication(0, applications[0]);
     }
 };
 
@@ -202,8 +203,8 @@ struct Stack {
         peer.controller->stop();
         outbound->stop();
         inbound->stop();
-        // Stop RSSI receive workers before destroying packetizer application
-        // arrays, which the packetizer controllers reference directly.
+        // Stop RSSI receive workers before destroying the packetizer
+        // endpoints they feed.
         host.application.reset();
         peer.application.reset();
     }
