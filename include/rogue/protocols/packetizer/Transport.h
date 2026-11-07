@@ -46,12 +46,13 @@ class Controller;
  *   forwards returned frames via `sendFrame()`.
  *
  * Lifetime contract:
- * - `setController()` must be called before destruction so the TX queue thread
- *   can be started/stopped against a valid controller.
+ * - The controller is held weakly. Once it is destroyed, inbound frames are
+ *   dropped and the TX thread exits. The owning Core calls `stop()` before
+ *   releasing the controller, since upstream masters may keep this endpoint alive.
  */
 class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    // Packetizer controller endpoint.
-    std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
+    // Packetizer controller endpoint. Weak: the Controller owns this Transport.
+    std::weak_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
     //! \cond INTERNAL
   protected:
@@ -101,6 +102,12 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
      * @param cntl Controller instance that handles packetizer protocol processing.
      */
     void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
+
+    /**
+     * @brief Stops and joins the outbound worker thread.
+     * @details Idempotent; no-op if `setController()` never ran.
+     */
+    void stop();
 
     /**
      * @brief Accepts a frame from the upstream stream interface.

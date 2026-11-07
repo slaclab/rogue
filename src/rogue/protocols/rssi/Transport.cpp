@@ -65,5 +65,6 @@ void rpr::Transport::setController(rpr::ControllerPtr cntl) {
 
 //! Accept a frame from master
 void rpr::Transport::acceptFrame(ris::FramePtr frame) {
-    cntl_->transportRx(frame);
+    rpr::ControllerPtr cntl = cntl_.lock();
+    if (cntl) cntl->transportRx(frame);
 }
