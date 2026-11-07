@@ -39,7 +39,7 @@ class UpdateTracker(object):
         self._count = 0
         self._list = {}
         self._period = 0
-        self._last = time.time()
+        self._last = time.monotonic()
         self._q = q
 
     def increment(self, period: float) -> None:
@@ -65,10 +65,9 @@ class UpdateTracker(object):
 
     def _check(self) -> None:
         """Flush queued updates when depth or period criteria are met."""
-        if self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period):
+        if self._count == 0 or (self._period != 0 and (time.monotonic() - self._last) > self._period):
             if len(self._list) != 0:
-                #print(f"Update fired {time.time()}")
-                self._last = time.time()
+                self._last = time.monotonic()
                 self._q.put(self._list)
                 self._list = {}
 
@@ -213,8 +212,6 @@ class Root(pr.Device):
                  maxLog: int = 1000,
                  unifyLogs: bool = False) -> None:
         """Initialize the root node, workers, and built-in variables/commands."""
-        rogue.interfaces.stream.Master.__init__(self)
-
         # Store startup parameters
         self._timeout         = timeout
         self._initRead        = initRead
@@ -232,10 +229,10 @@ class Root(pr.Device):
         # interpolated; %(msg)s would emit the raw format string (e.g. a literal
         # "Making device %s") whenever the record is rendered through this handler.
         formatter = logging.Formatter("%(message)s")
-        handler = RootLogHandler(root=self)
-        handler.setFormatter(formatter)
+        self._logHandler = RootLogHandler(root=self)
+        self._logHandler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
-        self._logger.addHandler(handler)
+        self._logger.addHandler(self._logHandler)
 
         # Running status
         self._running = False
@@ -514,6 +511,7 @@ class Root(pr.Device):
 
         pr.Device._stop(self)
         self._log.info("Root lifecycle stopped")
+        self._logger.removeHandler(self._logHandler)
 
     @pr.expose
     @property
@@ -1188,31 +1186,37 @@ class Root(pr.Device):
                 for p,v in nvars.items():
 
                     # Process updates
-                    val = v._doUpdate()
+                    try:
+                        val = v._doUpdate()
+                    except Exception as e:
+                        pr.logException(self._log,e)
+                        continue
 
                     # Call root listener functions,
                     with self._varListenLock:
-                        for func,doneFunc,incGroups,excGroups in self._varListeners:
-                            if v.filterByGroup(incGroups, excGroups):
-                                try:
-                                    func(p,val)
+                        listeners = list(self._varListeners)
+                    for func,doneFunc,incGroups,excGroups in listeners:
+                        if v.filterByGroup(incGroups, excGroups):
+                            try:
+                                func(p,val)
 
-                                except Exception as e:
-                                    if v == self.SystemLog or v == self.SystemLogLast:
-                                        print("------- Error Executing Syslog Listeners -------")
-                                        print("Error: {}".format(e))
-                                        print("------------------------------------------------")
-                                    else:
-                                        pr.logException(self._log,e)
+                            except Exception as e:
+                                if v == self.SystemLog or v == self.SystemLogLast:
+                                    print("------- Error Executing Syslog Listeners -------")
+                                    print("Error: {}".format(e))
+                                    print("------------------------------------------------")
+                                else:
+                                    pr.logException(self._log,e)
 
                 # Finalize root listeners
                 with self._varListenLock:
-                    for func,doneFunc,incGroups,excGroups in self._varListeners:
-                        if doneFunc is not None:
-                            try:
-                                doneFunc()
-                            except Exception as e:
-                                pr.logException(self._log,e)
+                    listeners = list(self._varListeners)
+                for func,doneFunc,incGroups,excGroups in listeners:
+                    if doneFunc is not None:
+                        try:
+                            doneFunc()
+                        except Exception as e:
+                            pr.logException(self._log,e)
 
                 if not syslogOnly:
                     self._log.debug(

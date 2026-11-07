@@ -1,6 +1,8 @@
-# CI for conda package release
+# Released conda package
 
-https://github.com/slaclab/ruckus/blob/main/.github/workflows/conda_build_lib.yml
+Rogue releases are published on conda-forge as `slac-rogue` from the
+feedstock at https://github.com/conda-forge/slac-rogue-feedstock. This
+recipe is for building and testing a `.conda` package locally.
 
 
 # How to build rogue .conda package file and test it locally
@@ -38,7 +40,7 @@ cd rogue
 export GIT_DESCRIBE_TAG=$(git describe --tags --abbrev=0)
 
 # Build the .conda file
-conda build conda-recipe --output-folder bld-dir -c tidair-tag -c conda-forge
+conda build conda-recipe --output-folder bld-dir -c conda-forge
 ```
 
 3) Test the .conda package locally
@@ -54,7 +56,7 @@ cd rogue
 conda index $PWD/bld-dir
 
 # Create environment using the package name, not the file path
-conda create -n test-rogue -c file:///$PWD/bld-dir -c conda-forge rogue
+conda create -n test-rogue -c file:///$PWD/bld-dir -c conda-forge slac-rogue
 
 # Test env
 conda activate test-rogue
@@ -63,9 +65,9 @@ python -c "import pyrogue; print(pyrogue.__version__)"
 
 # Build matrix
 
-`conda_build_config.yaml` declares the Python variants built for the
-`tidair-tag` channel: py310, py311, py312, and py313. Running
-`conda build conda-recipe` produces one `.conda` per variant.
+`conda_build_config.yaml` declares the Python variants built locally: py310,
+py311, py312, py313, py314, and py315. Running `conda build conda-recipe`
+produces one `.conda` per variant.
 
 # GLIBC compatibility floor
 
@@ -79,15 +81,21 @@ older system (Rocky 8/9, Ubuntu 22.04, etc.).
 
 # Version convention
 
-The `tidair-tag` channel uses the `v`-prefixed tag (e.g. `rogue-v6.13.0-py312_0.conda`).
-`meta.yaml` reads `GIT_DESCRIBE_TAG` (or `GITHUB_REF_NAME` in CI) and forces a leading
-`v` on the package version. `build.sh` then passes the same string to CMake as
-`ROGUE_VERSION`, which the C++ `Version::init()` parser requires to start with `v`.
+The package follows the conda-forge `slac-rogue` naming, with no `v` on the
+version (e.g. `slac-rogue-6.16.0-py312_0.conda`). `meta.yaml` reads
+`GIT_DESCRIBE_TAG` (or `GITHUB_REF_NAME` in CI) and strips the leading `v`
+from the git tag. `build.sh` then passes the version to CMake as
+`ROGUE_VERSION` with the `v` restored, because the C++ `Version::init()`
+parser requires it to start with `v`.
+
+Releases older than v6.15.0 were published only to the legacy `tidair-tag`
+Anaconda channel as the `rogue` package with a `v`-prefixed version
+(e.g. `rogue-v6.13.0-py312_0.conda`).
 
 # conda-forge submission notes
 
 When submitting to conda-forge, the feedstock copy of this recipe should:
-1. Replace the `environ.get(...)` version logic with a hardcoded `{% set version = "x.y.z" %}` (no `v` prefix per conda-forge convention)
+1. Replace the `environ.get(...)` version logic with a hardcoded `{% set version = "x.y.z" %}`
 2. Replace `path: ..` source with a GitHub release tarball URL and `sha256:`
 3. Remove the `GIT_DESCRIBE_TAG` / `GITHUB_REF_NAME` fallback logic (version is hardcoded)
 4. Drop `conda_build_config.yaml` (conda-forge supplies global pinning)

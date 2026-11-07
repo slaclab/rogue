@@ -161,11 +161,16 @@ class PollQueue(object):
         """Run by the poll thread"""
         while True:
 
-            if self.empty() or self.paused():
-                # Sleep until woken
-                with self._condLock:
-                    self._condLock.wait()
+            # Evaluate the idle condition and wait under the same lock hold so a
+            # stop or unpause notify issued between the check and the wait
+            # cannot be lost.
+            with self._condLock:
+                idle = self.empty() or self.paused()
+                if idle:
+                    self._condLock.wait_for(
+                        lambda: not self._run or not (self.empty() or self.paused()))
 
+            if idle:
                 if self._run is False:
                     self._log.info("PollQueue thread exiting")
                     return
@@ -189,9 +194,11 @@ class PollQueue(object):
                     self._log.info("PollQueue thread exiting")
                     return
 
-                # Wait for block count to be zero
-                while self.blockCount > 0:
-                    self._condLock.wait()
+                # Wait for block count to be zero, honoring a stop request
+                self._condLock.wait_for(lambda: self.blockCount == 0 or not self._run)
+                if self._run is False:
+                    self._log.info("PollQueue thread exiting")
+                    return
 
                 # Start update capture
                 with self._root.updateGroup():

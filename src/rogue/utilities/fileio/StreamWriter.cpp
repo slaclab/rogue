@@ -108,6 +108,8 @@ ruf::StreamWriter::StreamWriter() {
 //! Deconstructor
 ruf::StreamWriter::~StreamWriter() {
     this->close();
+    if (buffer_ != NULL) free(buffer_);
+    buffer_ = NULL;
 }
 
 //! Open a data file
@@ -188,6 +190,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 
         // Free old buffer
         if (buffer_ != NULL) free(buffer_);
+        buffer_   = NULL;
         buffSize_ = 0;
 
         // Buffer is enabled

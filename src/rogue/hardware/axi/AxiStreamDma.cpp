@@ -21,12 +21,14 @@
 #include <inttypes.h>
 #include <poll.h>
 
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <thread>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -606,6 +608,19 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     // Wait until constructor completes
     while (!lockPtr.expired()) continue;
 
+    // The inherited Pool needs shared_from_this() to create buffers, and the
+    // constructor starts this thread before a shared_ptr owns the object.
+    // Received data stays queued in the driver until then.
+    while (threadEn_) {
+        try {
+            ris::Pool::shared_from_this();
+            break;
+        } catch (const std::bad_weak_ptr&) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+    }
+    if (!threadEn_) return;
+
     log_->logThreadId();
 
     // Preallocate empty frame
@@ -660,8 +675,15 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
                     buff[x] = createBuffer(desc_->rawBuff[meta[x]], 0x80000000 | meta[x], desc_->bSize, desc_->bSize);
             }
 
-            // Return of -1 is bad
-            if (rxCount < 0) throw(rogue::GeneralError("AxiStreamDma::runThread", "DMA Interface Failure!"));
+            // A negative return means the driver read failed (ioctl error, driver
+            // unload, or fd closed by a concurrent stop()).  runThread() has no
+            // top-level catch, so throwing here would call std::terminate.  Log
+            // and exit the worker cleanly, matching the fd_/POLLERR paths above.
+            if (rxCount < 0) {
+                log_->error("AxiStreamDma::runThread: DMA read failed (ret=%" PRId32 "); exiting worker", rxCount);
+                threadEn_ = false;
+                break;
+            }
 
             // Read was successful
             for (x = 0; x < rxCount; x++) {

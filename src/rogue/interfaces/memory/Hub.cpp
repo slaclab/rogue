@@ -112,8 +112,10 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
     // Adjust address
     tran->address_ += offset_;
 
-    // Split into smaller transactions if necessary
-    if (tran->size() > maxAccess) {
+    // Split into smaller transactions if necessary. A maxAccess of 0 (e.g. the
+    // unconnected placeholder slave) has no limit to split against, so forward
+    // the transaction and let the slave report.
+    if (maxAccess != 0 && tran->size() > maxAccess) {
         uint32_t numberOfTransactions = std::ceil(1.0 * tran->size() / maxAccess);
         std::vector<rim::TransactionPtr> subTransactions;
         subTransactions.reserve(numberOfTransactions);
@@ -179,7 +181,9 @@ rim::HubWrap::HubWrap(uint64_t offset, uint32_t min, uint32_t max) : rim::Hub(of
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::HubWrap::doTransaction(rim::TransactionPtr transaction) {
-    {
+    // A C++ worker can still deliver a transaction while the interpreter
+    // shuts down; PyGILState_Ensure() aborts once finalization has started.
+    if (Py_IsInitialized()) {
         rogue::ScopedGil gil;
 
         if (boost::python::override pb = this->get_override("_doTransaction")) {

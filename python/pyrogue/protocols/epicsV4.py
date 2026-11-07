@@ -240,12 +240,12 @@ class EpicsPvHolder(object):
                 else:
                     self._valType = 'l'
 
-            # Float
-            elif 'float' in typeStr or 'Float32' in typeStr:
+            # Float (only explicit Float32 models)
+            elif 'Float32' in typeStr:
                 self._valType = 'f'
 
-            # Double
-            elif 'Double64' in typeStr or 'Float64' in typeStr:
+            # Double (native Python float is double precision)
+            elif typeStr == 'float' or 'Double64' in typeStr or 'Float64' in typeStr:
                 self._valType = 'd'
 
             # Default to string
@@ -280,7 +280,11 @@ class EpicsPvHolder(object):
                     control=False,
                     valueAlarm=False)
                 enum = list(self._var.enum.values())
-                iv = {'choices': enum, 'index': enum.index(varVal.valueDisp)}
+                try:
+                    idx = enum.index(varVal.valueDisp)
+                except ValueError:
+                    idx = 0
+                iv = {'choices': enum, 'index': idx}
             elif self._valType == 's':
                 nt = p4p.nt.NTScalar(
                     self._valType,
@@ -416,8 +420,6 @@ class EpicsPvServer(object):
         if self._started:
             return
 
-        self._started = True
-
         self._stop()
         self._list = {}
 
@@ -454,6 +456,7 @@ class EpicsPvServer(object):
                     self._log.error("Failed to find %s from P4P mapping in Rogue tree", k)
 
         self._server = p4p.server.Server(providers=[self._provider])
+        self._started = True
 
     def list(self) -> dict[str, str]:
         """
