@@ -10,6 +10,7 @@
 
 import contextlib
 import datetime
+import threading
 
 import pyrogue as pr
 
@@ -23,6 +24,18 @@ class FakeBlock:
     def __init__(self, path):
         self.path = path
         self.variables = []
+
+
+class UntimedWaitCondition(threading.Condition):
+    """Condition that flags when a waiter blocks without a timeout."""
+    def __init__(self):
+        super().__init__(threading.RLock())
+        self.untimed_wait = threading.Event()
+
+    def wait(self, timeout=None):
+        if timeout is None:
+            self.untimed_wait.set()
+        return super().wait(timeout)
 
 
 class FakeVar:
@@ -135,3 +148,64 @@ def test_poll_queue_pause_and_block_count_controls():
 
     pq._stop()
     assert pq._run is False
+
+
+def test_poll_queue_stop_between_idle_check_and_wait_is_not_lost(wait_until, monkeypatch):
+    pq = pr.PollQueue(root=FakeRoot())
+    # Daemon so a regression fails the join assertion instead of hanging pytest
+    pq._pollThread.daemon = True
+    # Non-empty and paused, so the idle check consults paused()
+    pq._addEntry(FakeBlock("idle.block"), 10.0)
+
+    orig_paused = pq.paused
+    stoppers = []
+
+    def racing_paused():
+        result = orig_paused()
+        if not stoppers and threading.current_thread() is pq._pollThread:
+            # Issue the stop from another thread after the idle check but
+            # before the poll thread reaches its wait.
+            stopper = threading.Thread(target=pq._stop, daemon=True)
+            stoppers.append(stopper)
+            stopper.start()
+            wait_until(lambda: pq._run is False, timeout=0.2)
+        return result
+
+    monkeypatch.setattr(pq, "paused", racing_paused)
+
+    pq._start()
+    pq._pollThread.join(timeout=2.0)
+
+    assert stoppers
+    assert pq._pollThread.is_alive() is False
+    stoppers[0].join(timeout=2.0)
+    assert stoppers[0].is_alive() is False
+
+
+def test_poll_queue_stop_during_poll_block_exits_without_unblocking(monkeypatch):
+    pq = pr.PollQueue(root=FakeRoot())
+    pq._pollThread.daemon = True
+    pq._condLock = UntimedWaitCondition()
+    calls = []
+
+    monkeypatch.setattr(pr, "startTransaction", lambda block, **kwargs: calls.append(block))
+    monkeypatch.setattr(pr, "waitTransaction", lambda block, **kwargs: None)
+
+    pq.pause(False)
+    pq._addEntry(FakeBlock("blocked.block"), 10.0)
+    # Equivalent to holding a Root.pollBlock() section open
+    pq._blockIncrement()
+    pq._start()
+
+    # The entry is due immediately, so the only untimed wait is the
+    # block-count wait.
+    assert pq._condLock.untimed_wait.wait(timeout=2.0)
+
+    stopper = threading.Thread(target=pq._stop, daemon=True)
+    stopper.start()
+    stopper.join(timeout=2.0)
+
+    assert stopper.is_alive() is False
+    assert pq._pollThread.is_alive() is False
+    assert pq.blockCount == 1
+    assert calls == []
