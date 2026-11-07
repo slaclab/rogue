@@ -112,13 +112,13 @@ class VariableWaitClass(object):
 
     def wait(self) -> bool:
         """Wait until the condition is met or timeout occurs."""
-        start  = time.time()
+        start  = time.monotonic()
 
         with self._cv:
             ret = self._check()
 
             # Run until timeout or all conditions have been met
-            while (not ret) and ((self._timeout == 0) or ((time.time()-start) < self._timeout)):
+            while (not ret) and ((self._timeout == 0) or ((time.monotonic()-start) < self._timeout)):
                 self._cv.wait(0.5)
                 ret = self._check()
 
@@ -1025,11 +1025,18 @@ class BaseVariable(pr.Node):
                 self._log.error("Entry %s with key %s not found", self.name, keys)
 
             elif self._mode in modes:
+                # _numValues() comes from rim.Variable, so only RemoteVariable
+                # has it; other list/ndarray variables use the stored length.
+                if isinstance(self, RemoteVariable):
+                    count = self._numValues()
+                else:
+                    count = len(self.value())
+
                 if keys[0] == '*' or keys[0] == ':':
-                    for i in range(self._numValues()):
+                    for i in range(count):
                         self.setDisp(d, write=writeEach, index=i)
                 else:
-                    idxSlice = eval(f'[i for i in range(self._numValues())][{keys[0]}]')
+                    idxSlice = eval(f'[i for i in range(count)][{keys[0]}]')
 
                     # Single entry item
                     if ':' not in keys[0]:
