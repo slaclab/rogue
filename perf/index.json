@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T04:59:20Z",
+  "generated_at": "2026-11-07T05:03:58Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-axistreamdma-read-failure",
+      "ref_slug": "fix-axistreamdma-read-failure",
+      "latest_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-axistreamdma-read-failure",
+          "sha": "0a80d0e4f89e33a79262cd5dac946b08447bd294",
+          "short_sha": "0a80d0e",
+          "published_at": "2026-11-07T05:03:58Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42340561517",
+          "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/history/0a80d0e4f89e33a79262cd5dac946b08447bd294.json"
+        },
+        {
+          "ref_name": "fix-axistreamdma-read-failure",
+          "sha": "aaa27711f93a3c1b08080988707a8f01c10eea31",
+          "short_sha": "aaa2771",
+          "published_at": "2026-11-06T22:50:22Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42306767998",
+          "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/history/aaa27711f93a3c1b08080988707a8f01c10eea31.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-axistreamdma-read-failure",
+        "sha": "0a80d0e4f89e33a79262cd5dac946b08447bd294",
+        "short_sha": "0a80d0e",
+        "published_at": "2026-11-07T05:03:58Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42340561517",
+        "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-sideband-sim-push-linger",
       "ref_slug": "fix-sideband-sim-push-linger",
       "latest_url": "/rogue/perf/branches/fix-sideband-sim-push-linger/latest.json",
@@ -366,29 +397,6 @@
         "published_at": "2026-11-07T00:45:13Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42319592132",
         "summary_url": "/rogue/perf/branches/fix-stream-reader-close-deadlock/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-axistreamdma-read-failure",
-      "ref_slug": "fix-axistreamdma-read-failure",
-      "latest_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-axistreamdma-read-failure",
-          "sha": "aaa27711f93a3c1b08080988707a8f01c10eea31",
-          "short_sha": "aaa2771",
-          "published_at": "2026-11-06T22:50:22Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42306767998",
-          "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/history/aaa27711f93a3c1b08080988707a8f01c10eea31.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-axistreamdma-read-failure",
-        "sha": "aaa27711f93a3c1b08080988707a8f01c10eea31",
-        "short_sha": "aaa2771",
-        "published_at": "2026-11-06T22:50:22Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42306767998",
-        "summary_url": "/rogue/perf/branches/fix-axistreamdma-read-failure/latest.json"
       }
     },
     {
