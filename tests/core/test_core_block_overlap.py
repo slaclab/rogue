@@ -10,6 +10,9 @@
 
 import pyrogue as pr
 import rogue
+import rogue.interfaces.memory as rim
+
+from conftest import MemoryRoot
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
@@ -139,5 +142,60 @@ def test_block():
             raise AssertionError('Read error detected after read then index get!')
 
 
+class CustomBlockDevice(pr.Device):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # Pre-made block covering the first two registers
+        self.addCustomBlock(rim.Block(0x0, 8))
+
+        self.add(pr.RemoteVariable(
+            name    = 'Inner0',
+            offset  = 0x0,
+            bitSize = 32,
+            base    = pr.UInt,
+        ))
+
+        self.add(pr.RemoteVariable(
+            name    = 'Inner1',
+            offset  = 0x4,
+            bitSize = 32,
+            base    = pr.UInt,
+        ))
+
+        self.add(pr.RemoteVariable(
+            name    = 'Outer',
+            offset  = 0x10,
+            bitSize = 32,
+            base    = pr.UInt,
+        ))
+
+class CustomBlockRoot(MemoryRoot):
+    def __init__(self):
+        super().__init__(name='CustomBlockRoot')
+        self.add(CustomBlockDevice(name='Dev', offset=0x0, memBase=self._mem))
+
+def test_custom_block_wired():
+
+    with CustomBlockRoot() as root:
+        dev = root.Dev
+
+        assert dev.Inner0._block is not None
+        assert dev.Inner0._block is dev.Inner1._block
+        assert dev.Outer._block is not None
+        assert dev.Outer._block is not dev.Inner0._block
+        assert len(dev._blocks) == 2
+
+        dev.Inner0.set(0x11223344)
+        dev.Inner1.set(0x55667788)
+        dev.Outer.set(0x99AABBCC)
+        dev.readBlocks()
+
+        assert dev.Inner0.get() == 0x11223344
+        assert dev.Inner1.get() == 0x55667788
+        assert dev.Outer.get() == 0x99AABBCC
+
+
 if __name__ == "__main__":
     test_block()
+    test_custom_block_wired()

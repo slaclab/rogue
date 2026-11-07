@@ -24,7 +24,9 @@ What RunControl Provides
 When ``runState`` is set to ``Running``, ``RunControl`` starts a background
 thread. That thread sleeps for the selected ``runRate``, calls the optional
 ``cmd`` callback, and increments ``runCount``. When ``runState`` leaves the
-running state, the thread exits and is joined.
+running state, the thread exits on its next loop iteration. The write does not
+wait for the thread; it is joined when the device is stopped during
+``Root.stop()``.
 
 This makes ``RunControl`` a good fit when the system needs a simple
 operator-visible "start a repeating loop" control surface without building a

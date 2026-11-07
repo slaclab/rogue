@@ -41,3 +41,18 @@ set_tests_properties(rogue-cpp-hardware-axi-stream-dma-lifecycle PROPERTIES
    ENVIRONMENT "${_rogue_fake_dma_env}"
    TIMEOUT 10
 )
+
+rogue_add_cpp_test(rogue-cpp-hardware-axi-stream-dma-rx-before-ownership
+   SOURCES
+      test_axi_stream_dma_rx_before_ownership.cpp
+   LABELS
+      cpp-hardware
+      no-python
+   LIBRARIES
+      ${CMAKE_DL_LIBS}
+)
+add_dependencies(rogue-cpp-hardware-axi-stream-dma-rx-before-ownership rogue-cpp-fake-dma-preload)
+set_tests_properties(rogue-cpp-hardware-axi-stream-dma-rx-before-ownership PROPERTIES
+   ENVIRONMENT "${_rogue_fake_dma_env}"
+   TIMEOUT 10
+)
