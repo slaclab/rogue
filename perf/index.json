@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-07T04:41:18Z",
+  "generated_at": "2026-11-07T04:49:12Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "4d1913487bcb1dbe61c29dab673be2aad52f3c5e",
-      "short_sha": "4d19134",
-      "published_at": "2026-11-07T04:26:49Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/42337992491",
+      "sha": "b794680868d0f8c48960f430e5a52078c85f1879",
+      "short_sha": "b794680",
+      "published_at": "2026-11-07T04:49:12Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42339677795",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "b794680868d0f8c48960f430e5a52078c85f1879",
+          "short_sha": "b794680",
+          "published_at": "2026-11-07T04:49:12Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42339677795",
+          "summary_url": "/rogue/perf/branches/pre-release/history/b794680868d0f8c48960f430e5a52078c85f1879.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "4d1913487bcb1dbe61c29dab673be2aad52f3c5e",
@@ -279,54 +287,15 @@
           "published_at": "2026-11-07T01:27:30Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/42323491202",
           "summary_url": "/rogue/perf/branches/pre-release/history/8af5096b3357614ee259f30974299f5a7dcb722f.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "dc982a687c65992d5095b22d246d4e0c147f30c4",
-          "short_sha": "dc982a6",
-          "published_at": "2026-11-07T00:46:36Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42319567266",
-          "summary_url": "/rogue/perf/branches/pre-release/history/dc982a687c65992d5095b22d246d4e0c147f30c4.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "4d1913487bcb1dbe61c29dab673be2aad52f3c5e",
-        "short_sha": "4d19134",
-        "published_at": "2026-11-07T04:26:49Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42337992491",
+        "sha": "b794680868d0f8c48960f430e5a52078c85f1879",
+        "short_sha": "b794680",
+        "published_at": "2026-11-07T04:49:12Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42339677795",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-hub-zero-maxaccess",
-      "ref_slug": "fix-hub-zero-maxaccess",
-      "latest_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-hub-zero-maxaccess",
-          "sha": "78b6b256922c6fa30065eeb9ddd706a03e9c3988",
-          "short_sha": "78b6b25",
-          "published_at": "2026-11-07T04:41:18Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42338943121",
-          "summary_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/history/78b6b256922c6fa30065eeb9ddd706a03e9c3988.json"
-        },
-        {
-          "ref_name": "fix-hub-zero-maxaccess",
-          "sha": "535f31dd7972e810988310ca6d6a9e4fa3f4bfde",
-          "short_sha": "535f31d",
-          "published_at": "2026-11-06T21:47:39Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42293902961",
-          "summary_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/history/535f31dd7972e810988310ca6d6a9e4fa3f4bfde.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-hub-zero-maxaccess",
-        "sha": "78b6b256922c6fa30065eeb9ddd706a03e9c3988",
-        "short_sha": "78b6b25",
-        "published_at": "2026-11-07T04:41:18Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42338943121",
-        "summary_url": "/rogue/perf/branches/fix-hub-zero-maxaccess/latest.json"
       }
     },
     {
