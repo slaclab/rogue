@@ -187,7 +187,12 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
      * first opened file is `<file>.1` and rollover continues with `.2`, `.3`,
      * etc.
      *
-     * @param file Output file path.
+     * Every file the writer creates must be a new file. If the target path
+     * (or a rollover file) already exists a rogue::GeneralError is thrown and
+     * the existing file is left untouched; the writer is never appended to or
+     * truncated over an existing file. On failure the writer stays closed.
+     *
+     * @param file Output file path. Must not already exist.
      */
     void open(std::string file);
 

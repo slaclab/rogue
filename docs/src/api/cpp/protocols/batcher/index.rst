@@ -18,7 +18,6 @@ These pages provide the C++ API reference for
    coreV2
    data
    inverterV1
-   inverterV2
    splitterV1
    splitterV2
 
