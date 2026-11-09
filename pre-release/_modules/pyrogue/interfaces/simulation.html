@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces.simulation &mdash; Rogue v6.16.0-191-g857bcc458 documentation</title>
+  <title>pyrogue.interfaces.simulation &mdash; Rogue v6.16.0-195-g4dbb89b5e documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=2c0b34c7"></script>
+      <script src="../../../_static/documentation_options.js?v=af21adc7"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -144,6 +144,9 @@
 <span class="sd">        Base sideband port.</span>
 <span class="sd">    """</span>
 
+    <span class="c1"># Upper bound (ms) on how long _stop() waits for queued outbound frames</span>
+    <span class="n">_PUSH_LINGER_MS</span> <span class="o">=</span> <span class="mi">1000</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
@@ -218,11 +221,14 @@
                 <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">thr</span><span class="p">):</span>
             <span class="n">thr</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">sock_name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"_sbPush"</span><span class="p">,</span> <span class="s2">"_sbPull"</span><span class="p">):</span>
+        <span class="c1"># Give the PUSH socket a bounded linger so frames queued by send()</span>
+        <span class="c1"># just before stopping are flushed instead of discarded. The PULL</span>
+        <span class="c1"># socket has nothing outbound and can still close immediately.</span>
+        <span class="k">for</span> <span class="n">sock_name</span><span class="p">,</span> <span class="n">linger</span> <span class="ow">in</span> <span class="p">((</span><span class="s2">"_sbPush"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_PUSH_LINGER_MS</span><span class="p">),</span> <span class="p">(</span><span class="s2">"_sbPull"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
             <span class="n">sock</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sock_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">sock</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">linger</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">linger</span><span class="o">=</span><span class="n">linger</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="k">pass</span>
         <span class="k">try</span><span class="p">:</span>
