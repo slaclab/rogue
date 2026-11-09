@@ -20,7 +20,6 @@ target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/CombinerV1.cpp")
 
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SplitterV2.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/CoreV2.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/InverterV2.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/CombinerV2.cpp")
 
 if (NOT NO_PYTHON)
