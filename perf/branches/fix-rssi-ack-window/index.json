@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-rssi-ack-window",
+      "sha": "5ff7ebcf42e49f63fe8dced07273948294b9f791",
+      "short_sha": "5ff7ebc",
+      "published_at": "2026-11-09T22:05:34Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42707453715",
+      "summary_url": "/rogue/perf/branches/fix-rssi-ack-window/history/5ff7ebcf42e49f63fe8dced07273948294b9f791.json"
+    },
+    {
+      "ref_name": "fix-rssi-ack-window",
       "sha": "b768ca17b69444587b762b5bc8c1f8008932463a",
       "short_sha": "b768ca1",
       "published_at": "2026-11-09T20:20:23Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-rssi-ack-window",
-    "sha": "b768ca17b69444587b762b5bc8c1f8008932463a",
-    "short_sha": "b768ca1",
-    "published_at": "2026-11-09T20:20:23Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42690046069",
+    "sha": "5ff7ebcf42e49f63fe8dced07273948294b9f791",
+    "short_sha": "5ff7ebc",
+    "published_at": "2026-11-09T22:05:34Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42707453715",
     "summary_url": "/rogue/perf/branches/fix-rssi-ack-window/latest.json"
   }
 }
