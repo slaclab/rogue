@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T22:15:21Z",
+  "generated_at": "2026-11-09T22:16:32Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-stream-writer-excl-open",
+      "ref_slug": "fix-stream-writer-excl-open",
+      "latest_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-stream-writer-excl-open",
+          "sha": "ec25f4c12ce75027cc550a6f8131e711de05529d",
+          "short_sha": "ec25f4c",
+          "published_at": "2026-11-09T22:16:32Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42709081994",
+          "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/history/ec25f4c12ce75027cc550a6f8131e711de05529d.json"
+        },
+        {
+          "ref_name": "fix-stream-writer-excl-open",
+          "sha": "65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d",
+          "short_sha": "65e39f3",
+          "published_at": "2026-11-09T20:15:57Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42689934662",
+          "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/history/65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-stream-writer-excl-open",
+        "sha": "ec25f4c12ce75027cc550a6f8131e711de05529d",
+        "short_sha": "ec25f4c",
+        "published_at": "2026-11-09T22:16:32Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42709081994",
+        "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json"
+      }
+    },
+    {
       "ref_name": "fix/remove-batcher-inverter-v2",
       "ref_slug": "fix_remove-batcher-inverter-v2",
       "latest_url": "/rogue/perf/branches/fix_remove-batcher-inverter-v2/latest.json",
@@ -319,29 +350,6 @@
         "published_at": "2026-11-09T21:54:06Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42705493890",
         "summary_url": "/rogue/perf/branches/fix_remove-batcher-inverter-v2/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-stream-writer-excl-open",
-      "ref_slug": "fix-stream-writer-excl-open",
-      "latest_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-stream-writer-excl-open",
-          "sha": "65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d",
-          "short_sha": "65e39f3",
-          "published_at": "2026-11-09T20:15:57Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42689934662",
-          "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/history/65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-stream-writer-excl-open",
-        "sha": "65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d",
-        "short_sha": "65e39f3",
-        "published_at": "2026-11-09T20:15:57Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42689934662",
-        "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json"
       }
     },
     {
