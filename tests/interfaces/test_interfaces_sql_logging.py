@@ -12,9 +12,11 @@ import json
 import logging
 import time
 
+import numpy as np
 import pyrogue as pr
 import pyrogue.interfaces as pr_intf
 import pyrogue.interfaces._SqlLogging as sql_logging_mod
+import pytest
 import sqlalchemy
 
 
@@ -30,10 +32,19 @@ class SqlTestRoot(pr.Root):
         self.add(SqlTestDevice(name="Dev"))
 
 
+class SqlContainerRoot(pr.Root):
+    def __init__(self, value):
+        super().__init__(name="root", pollEn=False)
+        self.add(pr.LocalVariable(name="Container", value=value))
+
+
 def _read_rows(url, table):
     engine = sqlalchemy.create_engine(url)
-    with engine.connect() as conn:
-        return conn.execute(sqlalchemy.text(f"SELECT * FROM {table}")).fetchall()
+    try:
+        with engine.connect() as conn:
+            return conn.execute(sqlalchemy.text(f"SELECT * FROM {table}")).fetchall()
+    finally:
+        engine.dispose()
 
 
 def _wait_for(predicate, timeout=2.0, interval=0.01):
@@ -143,15 +154,102 @@ def test_sql_logger_open_failure_and_worker_disconnect(monkeypatch, tmp_path, ca
     with SqlTestRoot() as root:
         logger = pr_intf.SqlLogger(root=root, url=url)
 
-        # Force the worker transaction path to fail once and verify it disables
-        # the engine instead of looping forever on a dead connection.
-        monkeypatch.setattr(logger, "insert_from_q", lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("write failed")))
+        # Force the worker transaction path to fail once with a database error
+        # and verify it disables the engine instead of looping forever on a
+        # dead connection.
+        db_error = sqlalchemy.exc.OperationalError("INSERT", {}, RuntimeError("write failed"))
+        monkeypatch.setattr(logger, "insert_from_q", lambda *_args, **_kwargs: (_ for _ in ()).throw(db_error))
         with caplog.at_level(logging.ERROR):
             logger._varUpdate("root.Dev.Value", root.Dev.Value.getVariableValue(read=False))
             logger._stop()
 
         assert logger._engine is None
         assert "Lost database connection" in caplog.text
+
+
+def test_sql_logger_row_error_keeps_engine(monkeypatch, tmp_path, caplog):
+    db_path = tmp_path / "sql_logger_row_error.db"
+    url = f"sqlite:///{db_path}"
+
+    with SqlTestRoot() as root:
+        logger = pr_intf.SqlLogger(root=root, url=url)
+
+        # A Python-side error for one row must not tear down the engine.
+        orig_insert = logger.insert_from_q
+
+        def _insert(entry, conn):
+            if entry[0] == "root.Dev.Bad":
+                raise RuntimeError("bad row")
+            orig_insert(entry, conn)
+
+        monkeypatch.setattr(logger, "insert_from_q", _insert)
+        good = root.Dev.Value.getVariableValue(read=False)
+        with caplog.at_level(logging.ERROR):
+            logger._varUpdate("root.Dev.Bad", good)
+            logger._varUpdate(root.Dev.Value.path, good)
+            logger._stop()
+
+        assert "Lost database connection" not in caplog.text
+
+    rows = _read_rows(url, "variables")
+    assert any(row.path == "root.Dev.Value" for row in rows)
+    assert not any(row.path == "root.Dev.Bad" for row in rows)
+
+
+def test_sql_logger_survives_clear_log(tmp_path):
+    db_path = tmp_path / "sql_logger_clear_log.db"
+    url = f"sqlite:///{db_path}"
+    log = logging.getLogger("pyrogue.test.sqlclear")
+    log.setLevel(logging.INFO)
+
+    with SqlTestRoot() as root:
+        logger = pr_intf.SqlLogger(root=root, url=url)
+
+        # Stop the non-daemon worker even if an assert fails, so a regression
+        # fails the test instead of hanging the pytest process.
+        try:
+            # Populate SystemLogLast first so ClearLog produces a real '' update.
+            log.info("before clear")
+            assert _wait_for(
+                lambda: any(row.message == "before clear" for row in _read_rows(url, "syslog")),
+                timeout=2.0,
+            )
+
+            root.ClearLog()
+            root.Dev.Value.set(7)
+
+            assert _wait_for(
+                lambda: any(
+                    row.path == "root.Dev.Value" and str(row.value) == "7"
+                    for row in _read_rows(url, "variables")
+                ),
+                timeout=2.0,
+            )
+            assert logger._engine is not None
+        finally:
+            logger._stop()
+
+
+@pytest.mark.parametrize(
+    "value",
+    [[1, 2, 3], {"a": 1, "b": 2}, np.array([1, 2, 3])],
+    ids=["list", "dict", "ndarray"],
+)
+def test_sql_logger_container_values_use_value_disp(tmp_path, value):
+    db_path = tmp_path / "sql_logger_container.db"
+    url = f"sqlite:///{db_path}"
+
+    with SqlContainerRoot(value) as root:
+        logger = pr_intf.SqlLogger(root=root, url=url)
+
+        var_value = root.Container.getVariableValue(read=False)
+        logger._varUpdate(root.Container.path, var_value)
+        logger._stop()
+
+    rows = [row for row in _read_rows(url, "variables") if row.path == "root.Container"]
+    assert len(rows) == 1
+    assert rows[0].value == var_value.valueDisp
+    assert rows[0].valueDisp == var_value.valueDisp
 
 
 def test_sql_logger_syslog_insert_from_queue(tmp_path):
@@ -192,6 +290,8 @@ def test_sql_reader_get_variable(tmp_path, capsys):
     assert reader._engine is not None
 
     reader.getVariable()
+    reader.close()
+    assert reader._engine is None
     captured = capsys.readouterr()
     assert "root.Dev.Value" in captured.out
 
@@ -219,5 +319,6 @@ def test_sql_reader_get_syslog(tmp_path, capsys):
     assert reader._engine is not None
 
     reader.getSyslog()
+    reader.close()
     captured = capsys.readouterr()
     assert "reader test message" in captured.out

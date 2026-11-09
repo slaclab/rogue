@@ -312,17 +312,13 @@ class PrbsPair(pyrogue.Device):
         self.PrbsTx.setTaps(taps)
         self.PrbsRx.setTaps(taps)
 
-    def setCount(self, count: int) -> None:
-        """Set RX count threshold."""
-        self.PrbsRx.setCount(count)
-
     def _getStreamMaster(self) -> rogue.utilities.Prbs:
-        """Return the stream master endpoint."""
-        return self.PrbsRx._getStreamMaster()
+        """Return the stream master endpoint (the PrbsTx output)."""
+        return self.PrbsTx._getStreamMaster()
 
     def _getStreamSlave(self) -> rogue.utilities.Prbs:
-        """Return the stream slave endpoint."""
-        return self.PrbsTx._getStreamSlave()
+        """Return the stream slave endpoint (the PrbsRx input)."""
+        return self.PrbsRx._getStreamSlave()
 
     def __rshift__(self, other: Any) -> Any:
         """Connect this pair output to ``other``."""
