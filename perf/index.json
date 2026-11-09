@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T19:49:38Z",
+  "generated_at": "2026-11-09T20:04:35Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,33 +299,18 @@
       }
     },
     {
-      "ref_name": "fix-validate-membase-rewired-slave",
-      "ref_slug": "fix-validate-membase-rewired-slave",
-      "latest_url": "/rogue/perf/branches/fix-validate-membase-rewired-slave/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-validate-membase-rewired-slave",
-          "sha": "df4403d72caaa91f24da30efc043660323494883",
-          "short_sha": "df4403d",
-          "published_at": "2026-11-09T19:49:38Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42685709112",
-          "summary_url": "/rogue/perf/branches/fix-validate-membase-rewired-slave/history/df4403d72caaa91f24da30efc043660323494883.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-validate-membase-rewired-slave",
-        "sha": "df4403d72caaa91f24da30efc043660323494883",
-        "short_sha": "df4403d",
-        "published_at": "2026-11-09T19:49:38Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42685709112",
-        "summary_url": "/rogue/perf/branches/fix-validate-membase-rewired-slave/latest.json"
-      }
-    },
-    {
       "ref_name": "fix-prbs-pair-stream-endpoints",
       "ref_slug": "fix-prbs-pair-stream-endpoints",
       "latest_url": "/rogue/perf/branches/fix-prbs-pair-stream-endpoints/latest.json",
       "history": [
+        {
+          "ref_name": "fix-prbs-pair-stream-endpoints",
+          "sha": "038fc4c714c3f5268684f3859a4631a9f8ff6316",
+          "short_sha": "038fc4c",
+          "published_at": "2026-11-09T20:04:35Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42688394666",
+          "summary_url": "/rogue/perf/branches/fix-prbs-pair-stream-endpoints/history/038fc4c714c3f5268684f3859a4631a9f8ff6316.json"
+        },
         {
           "ref_name": "fix-prbs-pair-stream-endpoints",
           "sha": "11f7d0cf1b5108c69cd3bb45d857349d5fe7f008",
@@ -337,10 +322,10 @@
       ],
       "latest": {
         "ref_name": "fix-prbs-pair-stream-endpoints",
-        "sha": "11f7d0cf1b5108c69cd3bb45d857349d5fe7f008",
-        "short_sha": "11f7d0c",
-        "published_at": "2026-11-09T19:22:06Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42681384117",
+        "sha": "038fc4c714c3f5268684f3859a4631a9f8ff6316",
+        "short_sha": "038fc4c",
+        "published_at": "2026-11-09T20:04:35Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42688394666",
         "summary_url": "/rogue/perf/branches/fix-prbs-pair-stream-endpoints/latest.json"
       }
     },
