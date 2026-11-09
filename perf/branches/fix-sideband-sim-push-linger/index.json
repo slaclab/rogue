@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-sideband-sim-push-linger",
+      "sha": "3fcae89c32aa4ba30e800f0bbb62d7c616ecf06d",
+      "short_sha": "3fcae89",
+      "published_at": "2026-11-09T20:26:02Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42691404747",
+      "summary_url": "/rogue/perf/branches/fix-sideband-sim-push-linger/history/3fcae89c32aa4ba30e800f0bbb62d7c616ecf06d.json"
+    },
+    {
+      "ref_name": "fix-sideband-sim-push-linger",
       "sha": "1e347f670345867b9c83697543baf28daf2c1ee0",
       "short_sha": "1e347f6",
       "published_at": "2026-11-07T04:27:15Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "fix-sideband-sim-push-linger",
-    "sha": "1e347f670345867b9c83697543baf28daf2c1ee0",
-    "short_sha": "1e347f6",
-    "published_at": "2026-11-07T04:27:15Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42338025818",
+    "sha": "3fcae89c32aa4ba30e800f0bbb62d7c616ecf06d",
+    "short_sha": "3fcae89",
+    "published_at": "2026-11-09T20:26:02Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42691404747",
     "summary_url": "/rogue/perf/branches/fix-sideband-sim-push-linger/latest.json"
   }
 }
