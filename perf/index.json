@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T20:15:58Z",
+  "generated_at": "2026-11-09T20:20:23Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,29 @@
       }
     },
     {
+      "ref_name": "fix-rssi-ack-window",
+      "ref_slug": "fix-rssi-ack-window",
+      "latest_url": "/rogue/perf/branches/fix-rssi-ack-window/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-rssi-ack-window",
+          "sha": "b768ca17b69444587b762b5bc8c1f8008932463a",
+          "short_sha": "b768ca1",
+          "published_at": "2026-11-09T20:20:23Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42690046069",
+          "summary_url": "/rogue/perf/branches/fix-rssi-ack-window/history/b768ca17b69444587b762b5bc8c1f8008932463a.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-rssi-ack-window",
+        "sha": "b768ca17b69444587b762b5bc8c1f8008932463a",
+        "short_sha": "b768ca1",
+        "published_at": "2026-11-09T20:20:23Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42690046069",
+        "summary_url": "/rogue/perf/branches/fix-rssi-ack-window/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-stream-writer-excl-open",
       "ref_slug": "fix-stream-writer-excl-open",
       "latest_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json",
@@ -319,37 +342,6 @@
         "published_at": "2026-11-09T20:15:57Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42689934662",
         "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-sideband-sim-bad-frame-size",
-      "ref_slug": "fix-sideband-sim-bad-frame-size",
-      "latest_url": "/rogue/perf/branches/fix-sideband-sim-bad-frame-size/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-sideband-sim-bad-frame-size",
-          "sha": "b0f9697b249c276669db953121a772aa0fdc6ca4",
-          "short_sha": "b0f9697",
-          "published_at": "2026-11-09T20:14:57Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42689636013",
-          "summary_url": "/rogue/perf/branches/fix-sideband-sim-bad-frame-size/history/b0f9697b249c276669db953121a772aa0fdc6ca4.json"
-        },
-        {
-          "ref_name": "fix-sideband-sim-bad-frame-size",
-          "sha": "4a0ada91e1685138acd696c4435c0e2578bec7dd",
-          "short_sha": "4a0ada9",
-          "published_at": "2026-10-29T23:18:27Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40971275118",
-          "summary_url": "/rogue/perf/branches/fix-sideband-sim-bad-frame-size/history/4a0ada91e1685138acd696c4435c0e2578bec7dd.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-sideband-sim-bad-frame-size",
-        "sha": "b0f9697b249c276669db953121a772aa0fdc6ca4",
-        "short_sha": "b0f9697",
-        "published_at": "2026-11-09T20:14:57Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42689636013",
-        "summary_url": "/rogue/perf/branches/fix-sideband-sim-bad-frame-size/latest.json"
       }
     },
     {
