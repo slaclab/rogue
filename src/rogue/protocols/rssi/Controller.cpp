@@ -228,10 +228,26 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
         {
             std::unique_lock<std::mutex> lock(txMtx_);
 
-            do {
-                acked.push_back(std::move(txList_[++lastAckRx_]));
-                if (txListCount_ != 0) txListCount_--;
-            } while (lastAckRx_ != head->acknowledge);
+            // Sequences in (lastAckRx_, locSequence_) have been sent and not yet
+            // acknowledged. Only an acknowledgement inside that window is valid,
+            // computed modulo 256. A stale, reordered or corrupted ack outside it
+            // would otherwise walk txList_ past the outstanding frames, dropping
+            // them from retransmission without ever being acknowledged.
+            uint8_t pending = static_cast<uint8_t>(locSequence_ - lastAckRx_ - 1);
+            uint8_t delta   = static_cast<uint8_t>(head->acknowledge - lastAckRx_);
+
+            if (delta <= pending) {
+                do {
+                    acked.push_back(std::move(txList_[++lastAckRx_]));
+                    if (txListCount_ != 0) txListCount_--;
+                } while (lastAckRx_ != head->acknowledge);
+            } else {
+                log_->warning("Ignoring out of window ack=%" PRIu8 " lastAckRx=%" PRIu8 " locSeq=%" PRIu8 " server=%d",
+                              head->acknowledge,
+                              lastAckRx_,
+                              locSequence_,
+                              server_);
+            }
         }
 
         releaseHeaders(acked);
