@@ -15,3 +15,12 @@ rogue_add_cpp_test(rogue-cpp-rssi-client-server-release
       no-python
 )
 set_tests_properties(rogue-cpp-rssi-client-server-release PROPERTIES TIMEOUT 10)
+
+rogue_add_cpp_test(rogue-cpp-rssi-ack-window
+   SOURCES
+      test_ack_window.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+set_tests_properties(rogue-cpp-rssi-ack-window PROPERTIES TIMEOUT 30)

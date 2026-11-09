@@ -100,3 +100,48 @@ def test_root_subclass_no_membase_raises():
     root.add(RemoteVarDevice(name='BadDev'))
     with pytest.raises(pr.DeviceError, match='has RemoteVariables or RemoteCommands but no memBase'):
         root.__enter__()
+
+
+def test_rshift_after_add_passes():
+    """TEST-06: Device wired with >> after add() starts and round-trips through Emulate."""
+    mem = rogue.interfaces.memory.Emulate(4, 0x4000)
+    root = pr.Root(name='root', pollEn=False)
+    root.add(RemoteVarDevice(name='Dev'))
+    root.Dev >> mem
+    with root:
+        root.Dev.TestVar.set(0x1234)
+        assert root.Dev.TestVar.get() == 0x1234
+
+
+def test_bus_connect_after_add_passes():
+    """TEST-07: Device wired with pr.busConnect after add() starts and round-trips through Emulate."""
+    mem = rogue.interfaces.memory.Emulate(4, 0x4000)
+    root = pr.Root(name='root', pollEn=False)
+    root.add(RemoteVarDevice(name='Dev'))
+    pr.busConnect(root.Dev, mem)
+    with root:
+        root.Dev.TestVar.set(0xABCD)
+        assert root.Dev.TestVar.get() == 0xABCD
+
+
+def test_set_slave_after_add_passes():
+    """TEST-08: Device wired with _setSlave after add() starts and round-trips through Emulate."""
+    mem = rogue.interfaces.memory.Emulate(4, 0x4000)
+    root = pr.Root(name='root', pollEn=False)
+    root.add(RemoteCmdDevice(name='Dev'))
+    root.Dev._setSlave(mem)
+    with root:
+        root.Dev.TestCmd()
+
+
+def test_sub_device_inherits_rewired_slave():
+    """TEST-09: Child device under a parent wired with >> after add() inherits the memory path."""
+    mem = rogue.interfaces.memory.Emulate(4, 0x4000)
+    root = pr.Root(name='root', pollEn=False)
+    parent = pr.Device(name='Parent')
+    parent.add(RemoteVarDevice(name='Child', offset=0x100))
+    root.add(parent)
+    root.Parent >> mem
+    with root:
+        root.Parent.Child.TestVar.set(0x55)
+        assert root.Parent.Child.TestVar.get() == 0x55
