@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Batcher Protocol &mdash; Rogue v6.16.0-198-gbe71264e5 documentation</title>
+  <title>Batcher Protocol &mdash; Rogue v6.16.0-200-g4234fef46 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=0571c59a"></script>
+      <script src="../../../_static/documentation_options.js?v=a4dae5cc"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -179,8 +179,10 @@ record metadata.</p></li>
 metadata.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SplitterV1</span></code> and <code class="docutils literal notranslate"><span class="pre">SplitterV2</span></code> use the parser output to emit one output
 frame per record.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">InverterV1</span></code> and <code class="docutils literal notranslate"><span class="pre">InverterV2</span></code> use the same parser metadata to rewrite
-framing in place and emit one transformed frame.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">InverterV1</span></code> uses the same parser metadata to rewrite v1 framing in place
+and emit one transformed frame. There is no v2 inverter: the v2 header
+(2 bytes) and tail (7 bytes) differ in width, so the in-place transform is
+not defined for that format.</p></li>
 </ul>
 <p>Choose the v1 or v2 class family to match the firmware batcher format. Do not
 mix v1 and v2 parsing or transform stages in the same path.</p>
@@ -280,8 +282,7 @@ downstream debug <code class="docutils literal notranslate"><span class="pre">Sl
 <a class="reference internal" href="../../../api/python/rogue/protocols/batcher/combinerv2.html"><span class="doc">CombinerV2</span></a>
 <a class="reference internal" href="../../../api/python/rogue/protocols/batcher/splitterv1.html"><span class="doc">SplitterV1</span></a>
 <a class="reference internal" href="../../../api/python/rogue/protocols/batcher/splitterv2.html"><span class="doc">SplitterV2</span></a>
-<a class="reference internal" href="../../../api/python/rogue/protocols/batcher/inverterv1.html"><span class="doc">InverterV1</span></a>
-<a class="reference internal" href="../../../api/python/rogue/protocols/batcher/inverterv2.html"><span class="doc">InverterV2</span></a></p></li>
+<a class="reference internal" href="../../../api/python/rogue/protocols/batcher/inverterv1.html"><span class="doc">InverterV1</span></a></p></li>
 <li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/batcher/index.html"><span class="doc">rogue::protocols::batcher</span></a></p></li>
 </ul>
 <div class="toctree-wrapper compound">

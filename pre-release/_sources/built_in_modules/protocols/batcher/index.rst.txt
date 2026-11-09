@@ -44,8 +44,10 @@ monolithic:
   metadata.
 - ``SplitterV1`` and ``SplitterV2`` use the parser output to emit one output
   frame per record.
-- ``InverterV1`` and ``InverterV2`` use the same parser metadata to rewrite
-  framing in place and emit one transformed frame.
+- ``InverterV1`` uses the same parser metadata to rewrite v1 framing in place
+  and emit one transformed frame. There is no v2 inverter: the v2 header
+  (2 bytes) and tail (7 bytes) differ in width, so the in-place transform is
+  not defined for that format.
 
 Choose the v1 or v2 class family to match the firmware batcher format. Do not
 mix v1 and v2 parsing or transform stages in the same path.
@@ -155,7 +157,6 @@ API Reference
   :doc:`/api/python/rogue/protocols/batcher/splitterv1`
   :doc:`/api/python/rogue/protocols/batcher/splitterv2`
   :doc:`/api/python/rogue/protocols/batcher/inverterv1`
-  :doc:`/api/python/rogue/protocols/batcher/inverterv2`
 - C++: :doc:`/api/cpp/protocols/batcher/index`
 
 .. toctree::

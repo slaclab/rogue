@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Batcher Protocol Inverter &mdash; Rogue v6.16.0-198-gbe71264e5 documentation</title>
+  <title>Batcher Protocol Inverter &mdash; Rogue v6.16.0-200-g4234fef46 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=0571c59a"></script>
+      <script src="../../../_static/documentation_options.js?v=a4dae5cc"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,50 +141,41 @@
            <div itemprop="articleBody">
              
   <section id="batcher-protocol-inverter">
-<span id="protocols-batcher-inverterv2"></span><span id="protocols-batcher-inverterv1"></span><span id="protocols-batcher-inverter"></span><h1>Batcher Protocol Inverter<a class="headerlink" href="#batcher-protocol-inverter" title="Link to this heading"></a></h1>
-<p>For in-place transformation of batched super-frames, Rogue provides
-<code class="docutils literal notranslate"><span class="pre">rogue.protocols.batcher.InverterV1</span></code> and <code class="docutils literal notranslate"><span class="pre">InverterV2</span></code>. These classes are
-not unbatchers: each input frame produces exactly one output frame.</p>
-<p>Use an inverter when the downstream stage still wants one super-frame-shaped
+<span id="protocols-batcher-inverterv1"></span><span id="protocols-batcher-inverter"></span><h1>Batcher Protocol Inverter<a class="headerlink" href="#batcher-protocol-inverter" title="Link to this heading"></a></h1>
+<p>For in-place transformation of batched v1 super-frames, Rogue provides
+<code class="docutils literal notranslate"><span class="pre">rogue.protocols.batcher.InverterV1</span></code>. This class is not an unbatcher: each
+input frame produces exactly one output frame.</p>
+<p>Use the inverter when the downstream stage still wants one super-frame-shaped
 message, but needs the framing rewritten into the layout expected by that
 consumer.</p>
 <section id="version-selection">
 <h2>Version Selection<a class="headerlink" href="#version-selection" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">InverterV1</span></code> with batcher v1 framing.</p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">InverterV2</span></code> with batcher v2 framing.</p></li>
+<li><p>There is no v2 inverter. The v2 format has a fixed 2-byte header and a fixed
+7-byte tail, so the in-place transform described below is not defined for
+it. Use <a class="reference internal" href="splitter.html"><span class="doc">Batcher Protocol Splitter</span></a> to unbatch v2 frames.</p></li>
 </ul>
 </section>
 <section id="how-inversion-works">
 <h2>How Inversion Works<a class="headerlink" href="#how-inversion-works" title="Link to this heading"></a></h2>
-<p>The inverter uses the corresponding parser core to locate record boundaries and
-tail metadata, then rewrites the frame in place:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">InverterV1</span></code> uses <code class="docutils literal notranslate"><span class="pre">CoreV1</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">InverterV2</span></code> uses <code class="docutils literal notranslate"><span class="pre">CoreV2</span></code>.</p></li>
-</ul>
-<p>In both cases, one input frame yields one output frame. No record fan-out
-occurs. Instead, the framing information is shifted into the layout expected by
-the downstream consumer, and the payload is trimmed to remove the final framing
-segment that has been folded into the transformed layout.</p>
-</section>
-<section id="version-behavior">
-<h2>Version Behavior<a class="headerlink" href="#version-behavior" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">InverterV1</span></code> rewrites batcher v1 framing by copying per-record tail fields
-into the positions expected by downstream consumers and trimming the final
-tail-width segment from the payload.</p>
-<p><code class="docutils literal notranslate"><span class="pre">InverterV2</span></code> performs the same overall role for the v2 format, trimming the
-final header-width segment after the in-place framing transform.</p>
+<p>The inverter uses <code class="docutils literal notranslate"><span class="pre">CoreV1</span></code> to locate record boundaries and tail metadata,
+then rewrites the frame in place. The transform requires the header and tail
+to have the same width. In v1 the header width equals the AXI stream width and
+the tail is at least 8 bytes, so this holds for 64-bit and wider interfaces.
+Frames whose header and tail widths differ are dropped.</p>
+<p>One input frame yields one output frame. No record fan-out occurs. Instead,
+each record’s tail is copied into the header or tail slot that precedes it,
+and the payload is trimmed to remove the final tail-width segment that has been
+folded into the transformed layout.</p>
 </section>
 <section id="inverter-vs-splitter">
 <h2>Inverter vs Splitter<a class="headerlink" href="#inverter-vs-splitter" title="Link to this heading"></a></h2>
 <p>Use an inverter when downstream expects one transformed super-frame. Use
 <a class="reference internal" href="splitter.html"><span class="doc">Batcher Protocol Splitter</span></a> when downstream expects one frame per logical record.</p>
 </section>
-<section id="python-examples">
-<h2>Python Examples<a class="headerlink" href="#python-examples" title="Link to this heading"></a></h2>
-<section id="v1">
-<h3>V1<a class="headerlink" href="#v1" title="Link to this heading"></a></h3>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.batcher</span>
 
 <span class="c1"># Source produces batcher-v1 super-frames.</span>
@@ -198,34 +189,18 @@ final header-width segment after the in-place framing transform.</p>
 </pre></div>
 </div>
 </section>
-<section id="v2">
-<h3>V2<a class="headerlink" href="#v2" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.batcher</span>
-
-<span class="c1"># Source produces batcher-v2 super-frames.</span>
-<span class="n">src</span> <span class="o">=</span> <span class="n">MyBatcherV2Source</span><span class="p">()</span>
-
-<span class="c1"># Rewrite framing in place and keep one output frame per input frame.</span>
-<span class="n">inv</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">batcher</span><span class="o">.</span><span class="n">InverterV2</span><span class="p">()</span>
-<span class="n">dst</span> <span class="o">=</span> <span class="n">MyTransformedFrameSink</span><span class="p">()</span>
-
-<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">inv</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
-</pre></div>
-</div>
-</section>
-</section>
 <section id="c-example">
 <h2>C++ Example<a class="headerlink" href="#c-example" title="Link to this heading"></a></h2>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/batcher/InverterV2.h&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/batcher/InverterV1.h&gt;</span>
 
 <span class="k">namespace</span><span class="w"> </span><span class="nn">rpb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">protocols</span><span class="o">::</span><span class="nn">batcher</span><span class="p">;</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// Source produces batcher-v2 super-frames.</span>
+<span class="w">    </span><span class="c1">// Source produces batcher-v1 super-frames.</span>
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyBatchedFrameSource</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="w">    </span><span class="c1">// Rewrite framing in place and keep one output frame per input frame.</span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">inv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpb</span><span class="o">::</span><span class="n">InverterV2</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">inv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpb</span><span class="o">::</span><span class="n">InverterV1</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyTransformedFrameSink</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="w">    </span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">src</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">inv</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dst</span><span class="p">;</span>
@@ -236,7 +211,7 @@ final header-width segment after the in-place framing transform.</p>
 </section>
 <section id="threading-and-lifecycle">
 <h2>Threading And Lifecycle<a class="headerlink" href="#threading-and-lifecycle" title="Link to this heading"></a></h2>
-<p>The inverter classes do not create worker threads. Frame transformation runs
+<p>The inverter does not create worker threads. Frame transformation runs
 synchronously inside <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> in the caller thread.</p>
 </section>
 <section id="related-topics">
@@ -249,12 +224,8 @@ synchronously inside <code class="docutils literal notranslate"><span class="pre
 <section id="api-reference">
 <h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Python:
-<a class="reference internal" href="../../../api/python/rogue/protocols/batcher/inverterv1.html"><span class="doc">InverterV1</span></a>
-<a class="reference internal" href="../../../api/python/rogue/protocols/batcher/inverterv2.html"><span class="doc">InverterV2</span></a></p></li>
-<li><p>C++:
-<a class="reference internal" href="../../../api/cpp/protocols/batcher/inverterV1.html"><span class="doc">InverterV1</span></a>
-<a class="reference internal" href="../../../api/cpp/protocols/batcher/inverterV2.html"><span class="doc">InverterV2</span></a></p></li>
+<li><p>Python: <a class="reference internal" href="../../../api/python/rogue/protocols/batcher/inverterv1.html"><span class="doc">InverterV1</span></a></p></li>
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/batcher/inverterV1.html"><span class="doc">InverterV1</span></a></p></li>
 </ul>
 </section>
 </section>

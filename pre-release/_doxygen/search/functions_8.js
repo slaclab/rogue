@@ -7,10 +7,9 @@ var searchData=
   ['inttransaction_4',['intTransaction',['../classrogue_1_1interfaces_1_1memory_1_1Master.html#a33ea89bb24e4d4115c8fef6c145c7a02',1,'rogue::interfaces::memory::Master']]],
   ['intwrite_5',['intWrite',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a7275075af6e5f273b98397883e2d02dd',1,'rogue::utilities::fileio::StreamWriter']]],
   ['inverterv1_6',['InverterV1',['../classrogue_1_1protocols_1_1batcher_1_1InverterV1.html#a0b6ad863909a3fd675b6efcc4151591e',1,'rogue::protocols::batcher::InverterV1']]],
-  ['inverterv2_7',['InverterV2',['../classrogue_1_1protocols_1_1batcher_1_1InverterV2.html#a20d5ce652b588860f423a32ae5566ce2',1,'rogue::protocols::batcher::InverterV2']]],
-  ['isactive_8',['isActive',['../classrogue_1_1utilities_1_1fileio_1_1StreamReader.html#af310a52ac05d8a0b58518961894625de',1,'rogue::utilities::fileio::StreamReader']]],
-  ['isdone_9',['isDone',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a34bfa7da5e6d28dd943066b786fc80e8',1,'rogue::protocols::xilinx::JtagDriver']]],
-  ['isempty_10',['isEmpty',['../classrogue_1_1interfaces_1_1stream_1_1Frame.html#abeaa1812591830ce728a83075bcb400e',1,'rogue::interfaces::stream::Frame']]],
-  ['isle_11',['isLE',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#acf92ecc3b7131d74d2a49d3584ca8222',1,'rogue::protocols::xilinx::JtagDriver']]],
-  ['isopen_12',['isopen',['../classrogue_1_1utilities_1_1fileio_1_1StreamReader.html#a9290704af6468aa0707d90a5d9ef8f7d',1,'rogue::utilities::fileio::StreamReader::isOpen()'],['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a2e66c4eaab26b80b11c9d3c15d45db17',1,'rogue::utilities::fileio::StreamWriter::isOpen()']]]
+  ['isactive_7',['isActive',['../classrogue_1_1utilities_1_1fileio_1_1StreamReader.html#af310a52ac05d8a0b58518961894625de',1,'rogue::utilities::fileio::StreamReader']]],
+  ['isdone_8',['isDone',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a34bfa7da5e6d28dd943066b786fc80e8',1,'rogue::protocols::xilinx::JtagDriver']]],
+  ['isempty_9',['isEmpty',['../classrogue_1_1interfaces_1_1stream_1_1Frame.html#abeaa1812591830ce728a83075bcb400e',1,'rogue::interfaces::stream::Frame']]],
+  ['isle_10',['isLE',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#acf92ecc3b7131d74d2a49d3584ca8222',1,'rogue::protocols::xilinx::JtagDriver']]],
+  ['isopen_11',['isopen',['../classrogue_1_1utilities_1_1fileio_1_1StreamReader.html#a9290704af6468aa0707d90a5d9ef8f7d',1,'rogue::utilities::fileio::StreamReader::isOpen()'],['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a2e66c4eaab26b80b11c9d3c15d45db17',1,'rogue::utilities::fileio::StreamWriter::isOpen()']]]
 ];
