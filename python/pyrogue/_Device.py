@@ -1056,6 +1056,11 @@ class Device(pr.Node,rim.Hub):
                     f"Device '{self.path}' has RemoteVariables or RemoteCommands but no memBase. "
                     f"Pass memBase= when creating this device or when adding it to the tree."
                 )
+            # Device.add installs the parent as the default slave. Any other slave
+            # means the memory path was wired after add() via busConnect(), >> or
+            # _setSlave(), so the C++ path is valid even though _memBase is None.
+            if node._getSlave() is not node._parent:
+                return
             node = node._parent
 
     def _buildBlocks(self) -> None:
