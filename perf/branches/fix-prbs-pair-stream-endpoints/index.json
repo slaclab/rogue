@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-prbs-pair-stream-endpoints",
+  "ref_slug": "fix-prbs-pair-stream-endpoints",
+  "latest_url": "/rogue/perf/branches/fix-prbs-pair-stream-endpoints/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-prbs-pair-stream-endpoints",
+      "sha": "11f7d0cf1b5108c69cd3bb45d857349d5fe7f008",
+      "short_sha": "11f7d0c",
+      "published_at": "2026-11-09T19:22:06Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42681384117",
+      "summary_url": "/rogue/perf/branches/fix-prbs-pair-stream-endpoints/history/11f7d0cf1b5108c69cd3bb45d857349d5fe7f008.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-prbs-pair-stream-endpoints",
+    "sha": "11f7d0cf1b5108c69cd3bb45d857349d5fe7f008",
+    "short_sha": "11f7d0c",
+    "published_at": "2026-11-09T19:22:06Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42681384117",
+    "summary_url": "/rogue/perf/branches/fix-prbs-pair-stream-endpoints/latest.json"
+  }
+}
