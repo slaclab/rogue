@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T22:16:32Z",
+  "generated_at": "2026-11-09T22:27:44Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "d169fc7e04a7b38d3d109a693cfa27a1fb3a495b",
-      "short_sha": "d169fc7",
-      "published_at": "2026-11-09T22:15:21Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/42709034555",
+      "sha": "b36f627f49882df407beaee9e65e7366ccf69501",
+      "short_sha": "b36f627",
+      "published_at": "2026-11-09T22:27:44Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42711035698",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -128,6 +128,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "b36f627f49882df407beaee9e65e7366ccf69501",
+          "short_sha": "b36f627",
+          "published_at": "2026-11-09T22:27:44Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42711035698",
+          "summary_url": "/rogue/perf/branches/pre-release/history/b36f627f49882df407beaee9e65e7366ccf69501.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "d169fc7e04a7b38d3d109a693cfa27a1fb3a495b",
@@ -279,54 +287,15 @@
           "published_at": "2026-11-07T02:40:06Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/42329812242",
           "summary_url": "/rogue/perf/branches/pre-release/history/89870506cf3d343d341b706f1c80e8f91d22306e.json"
-        },
-        {
-          "ref_name": "pre-release",
-          "sha": "77a776e6f69bd309c05b185b6251c7079743a402",
-          "short_sha": "77a776e",
-          "published_at": "2026-11-07T02:30:33Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42329049738",
-          "summary_url": "/rogue/perf/branches/pre-release/history/77a776e6f69bd309c05b185b6251c7079743a402.json"
         }
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "d169fc7e04a7b38d3d109a693cfa27a1fb3a495b",
-        "short_sha": "d169fc7",
-        "published_at": "2026-11-09T22:15:21Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42709034555",
+        "sha": "b36f627f49882df407beaee9e65e7366ccf69501",
+        "short_sha": "b36f627",
+        "published_at": "2026-11-09T22:27:44Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42711035698",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-stream-writer-excl-open",
-      "ref_slug": "fix-stream-writer-excl-open",
-      "latest_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-stream-writer-excl-open",
-          "sha": "ec25f4c12ce75027cc550a6f8131e711de05529d",
-          "short_sha": "ec25f4c",
-          "published_at": "2026-11-09T22:16:32Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42709081994",
-          "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/history/ec25f4c12ce75027cc550a6f8131e711de05529d.json"
-        },
-        {
-          "ref_name": "fix-stream-writer-excl-open",
-          "sha": "65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d",
-          "short_sha": "65e39f3",
-          "published_at": "2026-11-09T20:15:57Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42689934662",
-          "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/history/65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-stream-writer-excl-open",
-        "sha": "ec25f4c12ce75027cc550a6f8131e711de05529d",
-        "short_sha": "ec25f4c",
-        "published_at": "2026-11-09T22:16:32Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42709081994",
-        "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json"
       }
     },
     {
