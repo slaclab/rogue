@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.prbs &mdash; Rogue v6.16.0-185-g99e660781 documentation</title>
+  <title>pyrogue.utilities.prbs &mdash; Rogue v6.16.0-188-g2d1473669 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=b23cf443"></script>
+      <script src="../../../_static/documentation_options.js?v=709fd230"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -458,20 +458,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PrbsPair.setCount">
-<a class="viewcode-back" href="../../../api/python/pyrogue/utilities/prbs/prbspair.html#pyrogue.utilities.prbs.PrbsPair.setCount">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Set RX count threshold."""</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">setCount</span><span class="p">(</span><span class="n">count</span><span class="p">)</span></div>
-
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Return the stream master endpoint."""</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">_getStreamMaster</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">"""Return the stream master endpoint (the PrbsTx output)."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">_getStreamMaster</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Return the stream slave endpoint."""</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">_getStreamSlave</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">"""Return the stream slave endpoint (the PrbsRx input)."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">_getStreamSlave</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Connect this pair output to ``other``."""</span>
