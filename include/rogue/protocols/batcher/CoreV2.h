@@ -44,9 +44,8 @@ class Data;
  * - A list of per-record `Data` descriptors.
  * - A list of tail iterators for each record.
  *
- * This class is the shared parser used by `SplitterV2` and `InverterV2`.
+ * This class is the parser used by `SplitterV2`.
  * - `SplitterV2` uses parsed `Data` records to emit one frame per batch entry.
- * - `InverterV2` uses parsed tail/header locations to rewrite framing in place.
  *
  * Record accessors (`record()`, `beginTail()`, `endTail()`) expose records in
  * stream order, even though parsing walks tails from the end of the frame.
