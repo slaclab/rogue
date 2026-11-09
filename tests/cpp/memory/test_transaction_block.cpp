@@ -5,8 +5,9 @@
  * Description:
  * Native C++ tests for memory block transaction behavior, including write,
  * read, and verify sequencing, minimum-access expansion to the downstream
- * slave contract, propagation of verify mismatches as block-level errors, and
- * expiry of hub sub-transactions once their parent has completed.
+ * slave contract, propagation of verify mismatches as block-level errors,
+ * expiry of hub sub-transactions once their parent has completed, and Hub
+ * forwarding to an unconnected downstream slave.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -20,6 +21,7 @@
 #include <stdint.h>
 
 #include <algorithm>
+#include <chrono>
 #include <cstring>
 #include <memory>
 #include <string>
@@ -231,4 +233,23 @@ TEST_CASE("Hub sub-transactions expire once their parent has timed out") {
     }
 
     CHECK_EQ(buffer, std::vector<uint8_t>(kSize, kFill));
+}
+
+TEST_CASE("Memory hub forwards to an unconnected slave instead of splitting by zero max access") {
+    // The placeholder slave behind an unwired Hub reports maxAccess 0. The Hub
+    // must forward the transaction so the placeholder reports the unconnected
+    // bus error, rather than splitting into zero children and timing out.
+    auto hub    = rim::Hub::create(0x1000, 0, 0);
+    auto master = rim::Master::create();
+    master->setSlave(hub);
+    master->setTimeout(2000000);  // 2 s
+
+    std::vector<uint8_t> data(4, 0);
+    const auto start = std::chrono::steady_clock::now();
+    master->reqTransaction(0, static_cast<uint32_t>(data.size()), data.data(), rim::Read);
+    master->waitTransaction(0);
+    const auto elapsed = std::chrono::steady_clock::now() - start;
+
+    CHECK_NE(master->getError().find("unconnected memory bus"), std::string::npos);
+    CHECK_LT(elapsed, std::chrono::seconds(1));
 }
