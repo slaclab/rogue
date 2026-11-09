@@ -18,15 +18,19 @@
  **/
 #include "rogue/Directives.h"
 
+#ifndef NO_PYTHON
+    // Python.h must precede any standard header: its pyconfig.h sets
+    // _POSIX_C_SOURCE and _XOPEN_SOURCE, which features.h would otherwise
+    // have already defined with different values on newer glibc.
+    #include <Python.h>
+#endif
+
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
 
 #ifndef NO_PYTHON
-
-    #include <Python.h>
     #include "rogue/numpy.h"
     #include "support/test_python.h"
-
 #endif
 
 #ifndef NO_PYTHON

@@ -75,6 +75,8 @@ std::string ria::Bsp::getAttribute(std::string attribute) {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr(attribute.c_str()))));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::getAttribute",
                                           "Invalid attribute %s for node %s",
                                           attribute.c_str(),
@@ -88,6 +90,8 @@ rogue::interfaces::api::Bsp ria::Bsp::operator[](std::string name) {
         bp::object obj = this->_obj.attr("node")(name);
         return (ria::Bsp(obj));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::[]",
                                           "Invalid child node %s for node %s",
                                           name.c_str(),
@@ -101,6 +105,8 @@ std::shared_ptr<rogue::interfaces::api::Bsp> ria::Bsp::getNode(std::string name)
         bp::object obj = this->_obj.attr("getNode")(name);
         return (ria::Bsp::create(obj));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::node",
                                           "Invalid child node %s for node %s",
                                           name.c_str(),
@@ -113,6 +119,8 @@ std::string ria::Bsp::operator()(std::string arg) {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")(arg))));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str()));
     }
 }
@@ -122,6 +130,8 @@ std::string ria::Bsp::operator()() {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")())));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str()));
     }
 }
@@ -131,6 +141,8 @@ std::string ria::Bsp::execute(std::string arg) {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")(arg))));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::execute", "Error executing node %s", this->_name.c_str()));
     }
 }
@@ -140,6 +152,8 @@ std::string ria::Bsp::execute() {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")())));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::execute", "Error executing node %s", this->_name.c_str()));
     }
 }
@@ -149,6 +163,8 @@ void ria::Bsp::set(std::string value) {
     try {
         this->_obj.attr("setDisp")(value, false, -1);
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::set",
                                           "Error setting value %s on node %s",
                                           value.c_str(),
@@ -161,6 +177,8 @@ void ria::Bsp::setWrite(std::string value) {
     try {
         this->_obj.attr("setDisp")(value, true, -1);
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::set",
                                           "Error setting value %s on node %s",
                                           value.c_str(),
@@ -173,6 +191,8 @@ std::string ria::Bsp::get() {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("getDisp")(false, -1))));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::set", "Error getting value on node %s", this->_name.c_str()));
     }
 }
@@ -182,6 +202,8 @@ std::string ria::Bsp::readGet() {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("getDisp")(true, -1))));
     } catch (...) {
+        // Boost.Python leaves the interpreter error indicator set on error_already_set.
+        if (PyErr_Occurred()) PyErr_Clear();
         throw(rogue::GeneralError::create("Bsp::set", "Error getting value on node %s", this->_name.c_str()));
     }
 }

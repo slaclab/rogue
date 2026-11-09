@@ -85,3 +85,26 @@ TEST_CASE("Frame payload helpers enforce bounds and minimums") {
     frame->setPayloadEmpty();
     CHECK_EQ(frame->getPayload(), 0U);
 }
+
+TEST_CASE("Stream pool drops cached buffers when the fixed size changes") {
+    auto pool = rogue_test::makePool(16, 4);
+
+    // Populate the cache with a 16-byte buffer
+    {
+        auto frame = pool->acceptReq(16, false);
+        CHECK_EQ(pool->getAllocBytes(), 16U);
+    }
+    CHECK_EQ(pool->getAllocBytes(), 0U);
+
+    pool->setFixedSize(64);
+
+    std::vector<uint8_t> data(64);
+    for (uint32_t i = 0; i < data.size(); ++i) data[i] = static_cast<uint8_t>(i);
+
+    auto frame = pool->acceptReq(64, false);
+    CHECK_EQ(frame->bufferCount(), 1U);
+    CHECK_EQ(pool->getAllocBytes(), 64U);
+
+    rogue_test::writeFrame(frame, data);
+    CHECK_EQ(rogue_test::readFrame(frame, 64), data);
+}

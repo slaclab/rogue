@@ -57,14 +57,20 @@ rpp::Transport::Transport() {}
 
 //! Destructor
 rpp::Transport::~Transport() {
-    // No-op if setController() never ran.
-    if (thread_) {
-        threadEn_ = false;
-        // Release the GIL: worker may be mid-sendFrame to a Python slave.
-        rogue::GilRelease noGil;
-        cntl_->stopQueue();
-        thread_->join();
-    }
+    stop();
+}
+
+//! Stop and join the TX thread
+void rpp::Transport::stop() {
+    // No-op if setController() never ran or the thread was already joined.
+    if (!thread_ || !thread_->joinable()) return;
+
+    threadEn_ = false;
+    // Release the GIL: worker may be mid-sendFrame to a Python slave.
+    rogue::GilRelease noGil;
+    // Expired controller means the worker has already exited its loop.
+    if (rpp::ControllerPtr cntl = cntl_.lock()) cntl->stopQueue();
+    thread_->join();
 }
 
 //! Setup links
@@ -73,7 +79,7 @@ void rpp::Transport::setController(rpp::ControllerPtr cntl) {
     if (thread_) return;
 
     // threadEn_ must precede thread ctor; rollback both on spawn failure.
-    rpp::ControllerPtr prevCntl = cntl_;
+    std::weak_ptr<rpp::Controller> prevCntl = cntl_;
     cntl_ = cntl;
     threadEn_ = true;
     try {
@@ -92,7 +98,8 @@ void rpp::Transport::setController(rpp::ControllerPtr cntl) {
 
 //! Accept a frame from master
 void rpp::Transport::acceptFrame(ris::FramePtr frame) {
-    cntl_->transportRx(frame);
+    // Drop if the controller is gone (owning Core destroyed).
+    if (rpp::ControllerPtr cntl = cntl_.lock()) cntl->transportRx(frame);
 }
 
 //! Thread background
@@ -102,6 +109,8 @@ void rpp::Transport::runThread() {
     log.logThreadId();
 
     while (threadEn_) {
-        if ((frame = cntl_->transportTx()) != NULL) sendFrame(frame);
+        rpp::ControllerPtr cntl = cntl_.lock();
+        if (!cntl) break;
+        if ((frame = cntl->transportTx()) != NULL) sendFrame(frame);
     }
 }
