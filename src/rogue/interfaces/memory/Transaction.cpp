@@ -172,15 +172,8 @@ void rim::Transaction::done() {
 
     // If applicable, notify parent transaction about completion of a sub-transaction
     if (isSubTransaction_) {
-        // Get a shared_ptr to the parent transaction
         rim::TransactionPtr parentTran = this->parentTransaction_.lock();
-        if (parentTran) {
-            // Remove own ID from parent subtransaction map
-            parentTran->subTranMap_.erase(id_);
-
-            // If this is the last sub-transaction, notify parent transaction it is all done
-            if (parentTran->subTranMap_.empty() && parentTran->doneCreatingSubTransactions_) parentTran->done();
-        }
+        if (parentTran) parentTran->subTransactionDone(id_, "");
     }
 }
 
@@ -201,18 +194,31 @@ void rim::Transaction::errorStr(std::string error) {
 
     // If applicable, notify parent transaction about completion of a sub-transaction
     if (isSubTransaction_) {
-        // Get a shared_ptr to the parent transaction
         rim::TransactionPtr parentTran = parentTransaction_.lock();
-        if (parentTran) {
-            // Remove own ID from parent subtransaction map
-            parentTran->subTranMap_.erase(id_);
+        if (parentTran) parentTran->subTransactionDone(id_, error);
+    }
+}
 
-            // If this is the last sub-transaction, notify parent transaction it is all done
-            if (parentTran->subTranMap_.empty() && parentTran->doneCreatingSubTransactions_)
-                parentTran->error("Transaction error. Subtransaction %" PRIu32 " failed with error: %s.\n",
-                                  id_,
-                                  error.c_str());
-        }
+//! Record completion of a sub-transaction, called with the child's lock held
+void rim::Transaction::subTransactionDone(uint32_t subId, const std::string& subError) {
+    // Remove the child from the pending map
+    subTranMap_.erase(subId);
+
+    // Retain the failure rather than completing now. Completing the parent on
+    // the first failure could let the caller release a buffer that other
+    // children are still accessing.
+    if (!subError.empty()) {
+        subTranError_ += "Transaction error. Subtransaction " + std::to_string(subId) + " failed with error: " +
+                         subError + ".\n";
+    }
+
+    // Complete the parent once the last child has finished, reporting any
+    // child failure collected along the way
+    if (subTranMap_.empty() && doneCreatingSubTransactions_) {
+        if (subTranError_.empty())
+            done();
+        else
+            errorStr(subTranError_);
     }
 }
 
