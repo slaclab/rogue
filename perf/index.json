@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T20:36:11Z",
+  "generated_at": "2026-11-09T20:40:04Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,6 +299,37 @@
       }
     },
     {
+      "ref_name": "fix-udprssipack-stop-cmd",
+      "ref_slug": "fix-udprssipack-stop-cmd",
+      "latest_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-udprssipack-stop-cmd",
+          "sha": "68d409d48a74b7724c44ff9f401693fa913ff23e",
+          "short_sha": "68d409d",
+          "published_at": "2026-11-09T20:40:04Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42693672034",
+          "summary_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/history/68d409d48a74b7724c44ff9f401693fa913ff23e.json"
+        },
+        {
+          "ref_name": "fix-udprssipack-stop-cmd",
+          "sha": "4523fca31c6ed56041dc262e0cf230dcc8b23ab0",
+          "short_sha": "4523fca",
+          "published_at": "2026-10-29T23:06:34Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/40969696757",
+          "summary_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/history/4523fca31c6ed56041dc262e0cf230dcc8b23ab0.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-udprssipack-stop-cmd",
+        "sha": "68d409d48a74b7724c44ff9f401693fa913ff23e",
+        "short_sha": "68d409d",
+        "published_at": "2026-11-09T20:40:04Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42693672034",
+        "summary_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/latest.json"
+      }
+    },
+    {
       "ref_name": "fix-rssi-ack-window",
       "ref_slug": "fix-rssi-ack-window",
       "latest_url": "/rogue/perf/branches/fix-rssi-ack-window/latest.json",
@@ -381,29 +412,6 @@
         "published_at": "2026-11-07T05:20:26Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42341754233",
         "summary_url": "/rogue/perf/branches/fix-float8-nan-collision/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-udprssipack-stop-cmd",
-      "ref_slug": "fix-udprssipack-stop-cmd",
-      "latest_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-udprssipack-stop-cmd",
-          "sha": "4523fca31c6ed56041dc262e0cf230dcc8b23ab0",
-          "short_sha": "4523fca",
-          "published_at": "2026-10-29T23:06:34Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/40969696757",
-          "summary_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/history/4523fca31c6ed56041dc262e0cf230dcc8b23ab0.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-udprssipack-stop-cmd",
-        "sha": "4523fca31c6ed56041dc262e0cf230dcc8b23ab0",
-        "short_sha": "4523fca",
-        "published_at": "2026-10-29T23:06:34Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/40969696757",
-        "summary_url": "/rogue/perf/branches/fix-udprssipack-stop-cmd/latest.json"
       }
     },
     {
