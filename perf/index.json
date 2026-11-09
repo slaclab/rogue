@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T20:14:57Z",
+  "generated_at": "2026-11-09T20:15:58Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-09T20:04:57Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42688345743",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-stream-writer-excl-open",
+      "ref_slug": "fix-stream-writer-excl-open",
+      "latest_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-stream-writer-excl-open",
+          "sha": "65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d",
+          "short_sha": "65e39f3",
+          "published_at": "2026-11-09T20:15:57Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42689934662",
+          "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/history/65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-stream-writer-excl-open",
+        "sha": "65e39f3bdb6ec1b99ba2a8a3ca3eb4d01378560d",
+        "short_sha": "65e39f3",
+        "published_at": "2026-11-09T20:15:57Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42689934662",
+        "summary_url": "/rogue/perf/branches/fix-stream-writer-excl-open/latest.json"
       }
     },
     {
