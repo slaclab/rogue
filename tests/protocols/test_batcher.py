@@ -12,7 +12,7 @@
 #-----------------------------------------------------------------------------
 #
 # Uses the SW batcher (CombinerV1/V2) as a controlled frame source to
-# regression-test the unbatcher classes (SplitterV1/V2, InverterV1/V2).
+# regression-test the unbatcher classes (SplitterV1/V2, InverterV1).
 #
 # Test strategy:
 #   1. Combiner round-trip: Combiner -> Splitter verifies both directions.
@@ -295,9 +295,9 @@ def test_splitter_v2_many_small_frames():
 # =========================================================================
 # Section 3: Inverter regression tests via Combiner
 #
-# The inverter rewrites framing in-place. For V1 this requires
-# headerSize == tailSize (width >= 3). For V2 the header (2 bytes)
-# is always overwritten with the first 2 bytes of the first tail.
+# The inverter rewrites framing in-place. This requires headerSize ==
+# tailSize, which holds for V1 (width >= 3) but never for V2 (2-byte
+# header, 7-byte tail), so there is no V2 inverter.
 # =========================================================================
 
 def test_inverter_v1_processes_combiner_output():
@@ -328,52 +328,6 @@ def test_inverter_v1_processes_combiner_output():
     # Inverter emits one reframed super-frame
     assert len(sink.frames) == 1
     assert len(sink.frames[0]) > 0
-
-
-def test_inverter_v2_processes_combiner_output():
-    """InverterV2 accepts and processes a combiner-generated super-frame.
-
-    InverterV2 overwrites the 2-byte header with first tail data and
-    removes the last tail. We verify it produces exactly one output frame.
-    """
-    source = FrameSource()
-    combiner = rogue.protocols.batcher.CombinerV2()
-    inverter = rogue.protocols.batcher.InverterV2()
-    sink = RawFrameSink()
-
-    source >> combiner
-    combiner >> inverter >> sink
-
-    payloads = [
-        b'\xAA' * 16,
-        b'\xBB' * 32,
-    ]
-    for p in payloads:
-        source.sendData(p)
-    combiner.sendBatch()
-
-    _wait_for_frames(sink, 1)
-
-    # Inverter emits one reframed super-frame
-    assert len(sink.frames) == 1
-    assert len(sink.frames[0]) > 0
-
-
-def test_inverter_v2_single_record():
-    """InverterV2 processes a single-record combiner super-frame."""
-    source = FrameSource()
-    combiner = rogue.protocols.batcher.CombinerV2()
-    inverter = rogue.protocols.batcher.InverterV2()
-    sink = RawFrameSink()
-
-    source >> combiner
-    combiner >> inverter >> sink
-
-    source.sendData(b'\xCC' * 64)
-    combiner.sendBatch()
-
-    _wait_for_frames(sink, 1)
-    assert len(sink.frames) == 1
 
 
 # =========================================================================

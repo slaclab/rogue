@@ -1,16 +1,15 @@
 .. _protocols_batcher_inverter:
 .. _protocols_batcher_inverterV1:
-.. _protocols_batcher_inverterV2:
 
 =========================
 Batcher Protocol Inverter
 =========================
 
-For in-place transformation of batched super-frames, Rogue provides
-``rogue.protocols.batcher.InverterV1`` and ``InverterV2``. These classes are
-not unbatchers: each input frame produces exactly one output frame.
+For in-place transformation of batched v1 super-frames, Rogue provides
+``rogue.protocols.batcher.InverterV1``. This class is not an unbatcher: each
+input frame produces exactly one output frame.
 
-Use an inverter when the downstream stage still wants one super-frame-shaped
+Use the inverter when the downstream stage still wants one super-frame-shaped
 message, but needs the framing rewritten into the layout expected by that
 consumer.
 
@@ -18,31 +17,23 @@ Version Selection
 =================
 
 - Use ``InverterV1`` with batcher v1 framing.
-- Use ``InverterV2`` with batcher v2 framing.
+- There is no v2 inverter. The v2 format has a fixed 2-byte header and a fixed
+  7-byte tail, so the in-place transform described below is not defined for
+  it. Use :doc:`splitter` to unbatch v2 frames.
 
 How Inversion Works
 ===================
 
-The inverter uses the corresponding parser core to locate record boundaries and
-tail metadata, then rewrites the frame in place:
+The inverter uses ``CoreV1`` to locate record boundaries and tail metadata,
+then rewrites the frame in place. The transform requires the header and tail
+to have the same width. In v1 the header width equals the AXI stream width and
+the tail is at least 8 bytes, so this holds for 64-bit and wider interfaces.
+Frames whose header and tail widths differ are dropped.
 
-- ``InverterV1`` uses ``CoreV1``.
-- ``InverterV2`` uses ``CoreV2``.
-
-In both cases, one input frame yields one output frame. No record fan-out
-occurs. Instead, the framing information is shifted into the layout expected by
-the downstream consumer, and the payload is trimmed to remove the final framing
-segment that has been folded into the transformed layout.
-
-Version Behavior
-================
-
-``InverterV1`` rewrites batcher v1 framing by copying per-record tail fields
-into the positions expected by downstream consumers and trimming the final
-tail-width segment from the payload.
-
-``InverterV2`` performs the same overall role for the v2 format, trimming the
-final header-width segment after the in-place framing transform.
+One input frame yields one output frame. No record fan-out occurs. Instead,
+each record's tail is copied into the header or tail slot that precedes it,
+and the payload is trimmed to remove the final tail-width segment that has been
+folded into the transformed layout.
 
 Inverter vs Splitter
 ====================
@@ -50,11 +41,8 @@ Inverter vs Splitter
 Use an inverter when downstream expects one transformed super-frame. Use
 :doc:`splitter` when downstream expects one frame per logical record.
 
-Python Examples
-===============
-
-V1
---
+Python Example
+==============
 
 .. code-block:: python
 
@@ -69,37 +57,21 @@ V1
 
    src >> inv >> dst
 
-V2
---
-
-.. code-block:: python
-
-   import rogue.protocols.batcher
-
-   # Source produces batcher-v2 super-frames.
-   src = MyBatcherV2Source()
-
-   # Rewrite framing in place and keep one output frame per input frame.
-   inv = rogue.protocols.batcher.InverterV2()
-   dst = MyTransformedFrameSink()
-
-   src >> inv >> dst
-
 C++ Example
 ===========
 
 .. code-block:: cpp
 
-   #include <rogue/protocols/batcher/InverterV2.h>
+   #include <rogue/protocols/batcher/InverterV1.h>
 
    namespace rpb = rogue::protocols::batcher;
 
    int main() {
-       // Source produces batcher-v2 super-frames.
+       // Source produces batcher-v1 super-frames.
        auto src = MyBatchedFrameSource::create();
 
        // Rewrite framing in place and keep one output frame per input frame.
-       auto inv = rpb::InverterV2::create();
+       auto inv = rpb::InverterV1::create();
        auto dst = MyTransformedFrameSink::create();
 
        *(*src >> inv) >> dst;
@@ -109,7 +81,7 @@ C++ Example
 Threading And Lifecycle
 =======================
 
-The inverter classes do not create worker threads. Frame transformation runs
+The inverter does not create worker threads. Frame transformation runs
 synchronously inside ``acceptFrame()`` in the caller thread.
 
 Related Topics
@@ -121,9 +93,5 @@ Related Topics
 API Reference
 =============
 
-- Python:
-  :doc:`/api/python/rogue/protocols/batcher/inverterv1`
-  :doc:`/api/python/rogue/protocols/batcher/inverterv2`
-- C++:
-  :doc:`/api/cpp/protocols/batcher/inverterV1`
-  :doc:`/api/cpp/protocols/batcher/inverterV2`
+- Python: :doc:`/api/python/rogue/protocols/batcher/inverterv1`
+- C++: :doc:`/api/cpp/protocols/batcher/inverterV1`
