@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-validate-membase-rewired-slave",
+  "ref_slug": "fix-validate-membase-rewired-slave",
+  "latest_url": "/rogue/perf/branches/fix-validate-membase-rewired-slave/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-validate-membase-rewired-slave",
+      "sha": "df4403d72caaa91f24da30efc043660323494883",
+      "short_sha": "df4403d",
+      "published_at": "2026-11-09T19:49:38Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42685709112",
+      "summary_url": "/rogue/perf/branches/fix-validate-membase-rewired-slave/history/df4403d72caaa91f24da30efc043660323494883.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-validate-membase-rewired-slave",
+    "sha": "df4403d72caaa91f24da30efc043660323494883",
+    "short_sha": "df4403d",
+    "published_at": "2026-11-09T19:49:38Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42685709112",
+    "summary_url": "/rogue/perf/branches/fix-validate-membase-rewired-slave/latest.json"
+  }
+}
