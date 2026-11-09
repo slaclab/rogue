@@ -56,6 +56,21 @@ The direct writer has the matching lower-level methods:
 - ``open(path)``
 - ``close()``
 
+New-File-Only Behavior
+======================
+
+``StreamWriter`` is a write-once data logger. Every file it creates, the base
+file and every ``.N`` rollover file, must be a new file. If ``open(path)`` (or
+the tree ``Open`` command) is given a path that already exists, the call raises
+a ``rogue.GeneralError`` stating that the data file already exists and the
+writer stays closed. The existing file is left untouched: it is never truncated
+or appended to. The same rule applies to rollover; if ``<path>.N`` already
+exists when the writer needs it, the write raises and the writer closes rather
+than writing into the leftover file.
+
+Rerunning an acquisition script therefore needs a fresh ``DataFile`` path (or
+``AutoName``), or the previous output must be removed first.
+
 Channel Behavior
 ================
 
@@ -121,6 +136,7 @@ Python Direct-Utility Example
    fwrite.setBufferSize(10000)
 
    # Split output file at 100 MB boundaries: myFile.dat.1, .2, ...
+   # Each split file must not already exist or the rollover raises.
    fwrite.setMaxSize(100000000)
 
    # Drop incoming frames with non-zero frame error.
@@ -130,6 +146,7 @@ Python Direct-Utility Example
    streamA >> fwrite.getChannel(0)
    streamB >> fwrite.getChannel(1)
 
+   # Raises GeneralError if myFile.dat.1 already exists.
    fwrite.open("myFile.dat")
    # ... stream traffic is captured while file is open ...
    fwrite.close()
@@ -159,6 +176,7 @@ Python Tree-Managed Example
    root = MyRoot()
 
    # File control can be performed through Device variables/commands.
+   # Open() raises if the path already exists; use AutoName() for reruns.
    root.Writer.DataFile.set("myFile.dat")
    root.Writer.Open()
    # ...
@@ -184,6 +202,7 @@ C++ StreamWriter Example
    streamA >> fwrite->getChannel(0);
    streamB >> fwrite->getChannel(1);
 
+   // Throws rogue::GeneralError if myFile.dat.1 already exists.
    fwrite->open("myFile.dat");
    // ... stream traffic is captured while file is open ...
    fwrite->close();

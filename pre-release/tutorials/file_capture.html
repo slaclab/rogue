@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Capture Data To Disk And Replay It &mdash; Rogue v6.16.0-203-gd169fc7e0 documentation</title>
+  <title>Capture Data To Disk And Replay It &mdash; Rogue v6.16.0-206-gb36f627f4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=d93d357a"></script>
+      <script src="../_static/documentation_options.js?v=3702cb5e"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -222,6 +222,11 @@ Python methods:</p>
 </div>
 <p>Closing matters. The writer buffers, so a reader that opens the file before
 <code class="docutils literal notranslate"><span class="pre">Close()</span></code> sees a truncated final record.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Open()</span></code> always creates a new file. If the <code class="docutils literal notranslate"><span class="pre">DataFile</span></code> path already exists
+the command raises an error and leaves the existing file untouched, so rerunning
+a capture script with the same path fails on the second run. Either point
+<code class="docutils literal notranslate"><span class="pre">DataFile</span></code> at a fresh path each run, call <code class="docutils literal notranslate"><span class="pre">AutoName()</span></code> to generate a
+timestamped filename, or remove the previous output first.</p>
 </section>
 <section id="replaying-a-capture">
 <h2>Replaying A Capture<a class="headerlink" href="#replaying-a-capture" title="Link to this heading"></a></h2>
@@ -383,7 +388,10 @@ time rather than frame count.</p>
 <tr class="row-odd"><td><p>Long unattended runs</p></td>
 <td><p>Set <code class="docutils literal notranslate"><span class="pre">MaxFileSize</span></code> and enable <code class="docutils literal notranslate"><span class="pre">AutoName</span></code> to roll files</p></td>
 </tr>
-<tr class="row-even"><td><p>Compressible payloads</p></td>
+<tr class="row-even"><td><p>Rerunning the same script</p></td>
+<td><p>Use <code class="docutils literal notranslate"><span class="pre">AutoName</span></code> or a new <code class="docutils literal notranslate"><span class="pre">DataFile</span></code> path; <code class="docutils literal notranslate"><span class="pre">Open</span></code> refuses an existing file</p></td>
+</tr>
+<tr class="row-odd"><td><p>Compressible payloads</p></td>
 <td><p>Add <code class="docutils literal notranslate"><span class="pre">StreamZip</span></code>; measure your own ratio first</p></td>
 </tr>
 </tbody>
