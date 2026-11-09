@@ -15,7 +15,6 @@ Python-visible batcher protocol classes exported from Rogue C++.
    splitterv1
    splitterv2
    inverterv1
-   inverterv2
 
 
 .. rubric:: Related Topics

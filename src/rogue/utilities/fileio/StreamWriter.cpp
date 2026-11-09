@@ -33,6 +33,7 @@
 #include "rogue/utilities/fileio/StreamWriter.h"
 
 #include <chrono>
+#include <errno.h>
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
@@ -108,6 +109,8 @@ ruf::StreamWriter::StreamWriter() {
 //! Deconstructor
 ruf::StreamWriter::~StreamWriter() {
     this->close();
+    if (buffer_ != NULL) free(buffer_);
+    buffer_ = NULL;
 }
 
 //! Open a data file
@@ -129,10 +132,15 @@ void ruf::StreamWriter::open(std::string file) {
 
     if (sizeLimit_ > 0) name.append(".1");
 
+    // The data file must not already exist. O_EXCL refuses to open an existing
+    // file so a previous session's data is never overwritten or appended to.
     if ((fd_ = ::open(name.c_str(),
-                      O_RDWR | O_CREAT,
-                      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0)
+                      O_WRONLY | O_CREAT | O_EXCL,
+                      S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0) {
+        if (errno == EEXIST)
+            throw(rogue::GeneralError::create("StreamWriter::open", "Data file already exists: %s", name.c_str()));
         throw(rogue::GeneralError::create("StreamWriter::open", "Failed to open data file: %s", name.c_str()));
+    }
 
     totSize_    = 0;
     currSize_   = 0;
@@ -188,6 +196,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 
         // Free old buffer
         if (buffer_ != NULL) free(buffer_);
+        buffer_   = NULL;
         buffSize_ = 0;
 
         // Buffer is enabled
@@ -397,11 +406,16 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 
         name = baseName_ + "." + std::to_string(fdIdx_);
 
-        // Open new file
+        // Open new file. The rollover file must not already exist, see open().
+        // On failure the writer is left closed so no further data is written.
         if ((fd_ = ::open(name.c_str(),
-                          O_RDWR | O_CREAT | O_APPEND,
-                          S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0)
+                          O_WRONLY | O_CREAT | O_EXCL,
+                          S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0) {
+            isOpen_ = false;
+            if (errno == EEXIST)
+                throw(rogue::GeneralError::create("StreamWriter::checkSize", "Data file already exists: %s", name.c_str()));
             throw(rogue::GeneralError::create("StreamWriter::checkSize", "Failed to open file %s", name.c_str()));
+        }
 
         currSize_ = 0;
     }

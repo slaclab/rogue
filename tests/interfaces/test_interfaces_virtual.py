@@ -176,6 +176,39 @@ def test_virtual_factory_command_call_and_node_errors():
             pass
 
 
+def test_virtual_client_hash_and_eq(monkeypatch):
+    virtual_mod.VirtualClient.ClientCache.clear()
+
+    # No-op base ctor so the client attributes come only from VirtualClient.
+    monkeypatch.setattr(virtual_mod.rogue.interfaces.ZmqClient, "__init__", lambda self, addr, port, flag: None)
+    monkeypatch.setattr(virtual_mod.VirtualClient, "setTimeout", lambda self, warnTime, failTime=0: None)
+    monkeypatch.setattr(virtual_mod.threading, "Thread", FakeThread)
+
+    root = virtual_mod.VirtualFactory({
+        "name": "Top",
+        "class": "RootNode",
+        "bases": [str(pr.Root)],
+        "description": "root desc",
+        "groups": [],
+        "path": "Top",
+        "expand": True,
+        "guiGroup": None,
+        "nodes": {},
+        "props": [],
+        "funcs": {},
+    })
+    monkeypatch.setattr(virtual_mod.VirtualClient, "_remoteAttr", lambda self, path, attr, *args, **kwargs: root)
+
+    client = virtual_mod.VirtualClient("localhost", 9201)
+    assert hash(client) == hash(client)
+    assert client == client
+    assert (client != object()) is True
+    assert client in {client}
+    assert client in [client]
+
+    virtual_mod.VirtualClient.ClientCache.clear()
+
+
 def test_virtual_client_cache_update_dispatch_and_monitor(monkeypatch):
     virtual_mod.VirtualClient.ClientCache.clear()
 
