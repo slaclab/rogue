@@ -38,7 +38,8 @@ Most ``DataWriter`` subclasses care about only a few constructor parameters:
 
 * ``hidden`` when the writer should stay out of the main user tree
 * ``bufferSize`` for filesystem buffering
-* ``maxFileSize`` for rolling to a new file after a size limit
+* ``maxFileSize`` for rolling to a new file after a size limit (each rolled
+  file must be new; an existing ``.N`` file causes the rollover to fail)
 
 How Subclassing Works
 =====================
@@ -65,10 +66,15 @@ while delegating the actual writing behavior to the Rogue file-I/O utility.
 The base class always creates the same operator-facing controls:
 
 * ``DataFile`` holds the path that ``Open`` will use.
-* ``Open`` and ``Close`` control the underlying writer.
+* ``Open`` and ``Close`` control the underlying writer. ``Open`` creates a new
+  file; if ``DataFile`` already exists the command raises an error and the
+  existing file is left untouched (it is neither overwritten nor appended to).
 * ``AutoName`` creates a timestamped filename using the current ``DataFile``
-  directory, if any.
-* ``BufferSize`` and ``MaxFileSize`` are writable control points.
+  directory, if any. Use it when rerunning a capture so ``Open`` always targets
+  a fresh path.
+* ``BufferSize`` and ``MaxFileSize`` are writable control points. With a
+  non-zero ``MaxFileSize`` the output is split into ``<DataFile>.1``, ``.2``,
+  and so on; each split file must also be new or the rollover raises.
 * ``IsOpen``, ``CurrentSize``, ``TotalSize``, ``Bandwidth``, and
   ``FrameCount`` are read-only status/monitoring fields.
 

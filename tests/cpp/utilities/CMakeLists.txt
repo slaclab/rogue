@@ -26,3 +26,13 @@ rogue_add_cpp_test(rogue-cpp-utilities-stream-reader-close
 )
 
 set_tests_properties(rogue-cpp-utilities-stream-reader-close PROPERTIES TIMEOUT 30)
+
+rogue_add_cpp_test(rogue-cpp-utilities-stream-writer-new-file-only
+   SOURCES
+      test_stream_writer_new_file_only.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+
+set_tests_properties(rogue-cpp-utilities-stream-writer-new-file-only PROPERTIES TIMEOUT 30)
