@@ -6,7 +6,8 @@
  * Native C++ tests for memory block transaction behavior, including write,
  * read, and verify sequencing, minimum-access expansion to the downstream
  * slave contract, propagation of verify mismatches as block-level errors,
- * expiry of hub sub-transactions once their parent has completed, and Hub
+ * expiry of hub sub-transactions once their parent has completed, retention
+ * of sub-transaction errors until every child has finished, and Hub
  * forwarding to an unconnected downstream slave.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
@@ -24,8 +25,10 @@
 #include <chrono>
 #include <cmath>
 #include <cstring>
+#include <initializer_list>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "doctest/doctest.h"
@@ -102,6 +105,67 @@ class StashingMemorySlave : public rim::Slave {
     }
 
     std::vector<rim::TransactionPtr> stashed;
+};
+
+// Completes every transaction inline, failing those that start at one of the
+// listed addresses, the way a slave reporting a bad status during Hub
+// forwarding does.
+class InlineCompletingSlave : public rim::Slave {
+  public:
+    InlineCompletingSlave(uint32_t maxAccess, std::vector<uint64_t> failAddresses)
+        : rim::Slave(maxAccess, maxAccess), failAddresses_(std::move(failAddresses)) {}
+
+    void doTransaction(rim::TransactionPtr transaction) override {
+        auto lock = transaction->lock();
+        if (std::find(failAddresses_.begin(), failAddresses_.end(), transaction->address()) != failAddresses_.end())
+            transaction->errorStr("inline child failure");
+        else
+            transaction->done();
+    }
+
+  private:
+    std::vector<uint64_t> failAddresses_;
+};
+
+// Issues one read that the Hub splits into kSplitChildren stashed children,
+// so a test can complete them in any order and with any outcome.
+constexpr uint32_t kSplitMaxAccess = 4;
+constexpr uint32_t kSplitChildren  = 3;
+
+struct SplitRead {
+    SplitRead()
+        : slave(std::make_shared<StashingMemorySlave>(kSplitMaxAccess)),
+          hub(rim::Hub::create(0, 0, 0)),
+          master(rim::Master::create()),
+          buffer(kSplitMaxAccess * kSplitChildren, 0) {
+        hub->setSlave(slave);
+        master->setSlave(hub);
+        master->setTimeout(2000000);  // 2 s
+        id = master->reqTransaction(0, static_cast<uint32_t>(buffer.size()), buffer.data(), rim::Read);
+        REQUIRE_EQ(slave->stashed.size(), kSplitChildren);
+    }
+
+    // Completes child `index`, with an error when `error` is non-empty.
+    void finish(std::size_t index, const std::string& error = "") {
+        auto& sub = slave->stashed.at(index);
+        auto lock = sub->lock();
+        if (error.empty())
+            sub->done();
+        else
+            sub->errorStr(error);
+    }
+
+    bool childExpired(std::size_t index) {
+        auto& sub = slave->stashed.at(index);
+        auto lock = sub->lock();
+        return sub->expired();
+    }
+
+    std::shared_ptr<StashingMemorySlave> slave;
+    rim::HubPtr hub;
+    rim::MasterPtr master;
+    std::vector<uint8_t> buffer;
+    uint32_t id;
 };
 
 // Keeps the parent transaction alive after the master has released it, the
@@ -262,6 +326,81 @@ TEST_CASE("Memory hub forwards to an unconnected slave instead of splitting by z
 
     CHECK_NE(master->getError().find("unconnected memory bus"), std::string::npos);
     CHECK_LT(elapsed, std::chrono::seconds(1));
+}
+
+TEST_CASE("Split transaction retains an earlier child error until every child completes") {
+    SplitRead read;
+
+    read.finish(0, "first child failed");
+
+    // The parent must stay open while other children still use its buffer.
+    CHECK_FALSE(read.childExpired(1));
+    CHECK_FALSE(read.childExpired(2));
+
+    read.finish(1);
+    CHECK_FALSE(read.childExpired(2));
+
+    read.finish(2);
+    CHECK(read.childExpired(2));
+
+    read.master->waitTransaction(read.id);
+    CHECK_NE(read.master->getError().find("first child failed"), std::string::npos);
+}
+
+TEST_CASE("Split transaction reports a later child error after earlier children succeed") {
+    SplitRead read;
+
+    read.finish(0);
+    read.finish(1);
+    read.finish(2, "last child failed");
+
+    read.master->waitTransaction(read.id);
+    CHECK_NE(read.master->getError().find("last child failed"), std::string::npos);
+}
+
+TEST_CASE("Split transaction reports every failed child") {
+    SplitRead read;
+
+    read.finish(0, "first child failed");
+    read.finish(1);
+    read.finish(2, "last child failed");
+
+    read.master->waitTransaction(read.id);
+    const std::string error = read.master->getError();
+    CHECK_NE(error.find("first child failed"), std::string::npos);
+    CHECK_NE(error.find("last child failed"), std::string::npos);
+}
+
+TEST_CASE("Split transaction succeeds when every child succeeds") {
+    SplitRead read;
+
+    read.finish(2);
+    read.finish(0);
+    read.finish(1);
+
+    read.master->waitTransaction(read.id);
+    CHECK(read.master->getError().empty());
+}
+
+TEST_CASE("Split transaction retains a child error raised while the Hub is still forwarding") {
+    constexpr uint32_t kMaxAccess = 4;
+    constexpr uint32_t kSize      = 12;
+
+    for (uint64_t failAddress : std::initializer_list<uint64_t>{0, 4, 8}) {
+        CAPTURE(failAddress);
+        auto slave  = std::make_shared<InlineCompletingSlave>(kMaxAccess, std::vector<uint64_t>{failAddress});
+        auto hub    = rim::Hub::create(0, 0, 0);
+        auto master = rim::Master::create();
+        hub->setSlave(slave);
+        master->setSlave(hub);
+        master->setTimeout(2000000);  // 2 s
+
+        std::vector<uint8_t> buffer(kSize, 0);
+        const uint32_t id = master->reqTransaction(0, kSize, buffer.data(), rim::Read);
+        master->waitTransaction(id);
+
+        CHECK_NE(master->getError().find("inline child failure"), std::string::npos);
+    }
 }
 
 TEST_CASE("Memory block float8 encoder clamps near-overflow values instead of producing NaN") {
