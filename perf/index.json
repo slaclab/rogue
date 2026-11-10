@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T00:12:46Z",
+  "generated_at": "2026-11-10T00:13:23Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -299,33 +299,18 @@
       }
     },
     {
-      "ref_name": "fix/remove-batcher-inverter-v2",
-      "ref_slug": "fix_remove-batcher-inverter-v2",
-      "latest_url": "/rogue/perf/branches/fix_remove-batcher-inverter-v2/latest.json",
-      "history": [
-        {
-          "ref_name": "fix/remove-batcher-inverter-v2",
-          "sha": "667a038c056dc418f46b67988d8b12b92a4c243d",
-          "short_sha": "667a038",
-          "published_at": "2026-11-09T21:54:06Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/42705493890",
-          "summary_url": "/rogue/perf/branches/fix_remove-batcher-inverter-v2/history/667a038c056dc418f46b67988d8b12b92a4c243d.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix/remove-batcher-inverter-v2",
-        "sha": "667a038c056dc418f46b67988d8b12b92a4c243d",
-        "short_sha": "667a038",
-        "published_at": "2026-11-09T21:54:06Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42705493890",
-        "summary_url": "/rogue/perf/branches/fix_remove-batcher-inverter-v2/latest.json"
-      }
-    },
-    {
       "ref_name": "fix-float8-nan-collision",
       "ref_slug": "fix-float8-nan-collision",
       "latest_url": "/rogue/perf/branches/fix-float8-nan-collision/latest.json",
       "history": [
+        {
+          "ref_name": "fix-float8-nan-collision",
+          "sha": "71d12d622535c285fb3ded6e8a9bca29ceb41419",
+          "short_sha": "71d12d6",
+          "published_at": "2026-11-10T00:13:23Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42725713823",
+          "summary_url": "/rogue/perf/branches/fix-float8-nan-collision/history/71d12d622535c285fb3ded6e8a9bca29ceb41419.json"
+        },
         {
           "ref_name": "fix-float8-nan-collision",
           "sha": "a51efa9f92be8ed95a4bd0a730b2af3186f1364d",
@@ -353,11 +338,34 @@
       ],
       "latest": {
         "ref_name": "fix-float8-nan-collision",
-        "sha": "a51efa9f92be8ed95a4bd0a730b2af3186f1364d",
-        "short_sha": "a51efa9",
-        "published_at": "2026-11-07T05:20:26Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/42341754233",
+        "sha": "71d12d622535c285fb3ded6e8a9bca29ceb41419",
+        "short_sha": "71d12d6",
+        "published_at": "2026-11-10T00:13:23Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42725713823",
         "summary_url": "/rogue/perf/branches/fix-float8-nan-collision/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix/remove-batcher-inverter-v2",
+      "ref_slug": "fix_remove-batcher-inverter-v2",
+      "latest_url": "/rogue/perf/branches/fix_remove-batcher-inverter-v2/latest.json",
+      "history": [
+        {
+          "ref_name": "fix/remove-batcher-inverter-v2",
+          "sha": "667a038c056dc418f46b67988d8b12b92a4c243d",
+          "short_sha": "667a038",
+          "published_at": "2026-11-09T21:54:06Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42705493890",
+          "summary_url": "/rogue/perf/branches/fix_remove-batcher-inverter-v2/history/667a038c056dc418f46b67988d8b12b92a4c243d.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix/remove-batcher-inverter-v2",
+        "sha": "667a038c056dc418f46b67988d8b12b92a4c243d",
+        "short_sha": "667a038",
+        "published_at": "2026-11-09T21:54:06Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42705493890",
+        "summary_url": "/rogue/perf/branches/fix_remove-batcher-inverter-v2/latest.json"
       }
     }
   ]

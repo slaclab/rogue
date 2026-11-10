@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-float8-nan-collision",
+      "sha": "71d12d622535c285fb3ded6e8a9bca29ceb41419",
+      "short_sha": "71d12d6",
+      "published_at": "2026-11-10T00:13:23Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/42725713823",
+      "summary_url": "/rogue/perf/branches/fix-float8-nan-collision/history/71d12d622535c285fb3ded6e8a9bca29ceb41419.json"
+    },
+    {
+      "ref_name": "fix-float8-nan-collision",
       "sha": "a51efa9f92be8ed95a4bd0a730b2af3186f1364d",
       "short_sha": "a51efa9",
       "published_at": "2026-11-07T05:20:26Z",
@@ -30,10 +38,10 @@
   ],
   "latest": {
     "ref_name": "fix-float8-nan-collision",
-    "sha": "a51efa9f92be8ed95a4bd0a730b2af3186f1364d",
-    "short_sha": "a51efa9",
-    "published_at": "2026-11-07T05:20:26Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/42341754233",
+    "sha": "71d12d622535c285fb3ded6e8a9bca29ceb41419",
+    "short_sha": "71d12d6",
+    "published_at": "2026-11-10T00:13:23Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/42725713823",
     "summary_url": "/rogue/perf/branches/fix-float8-nan-collision/latest.json"
   }
 }
