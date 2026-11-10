@@ -25,6 +25,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstring>
+#include <initializer_list>
 #include <memory>
 #include <string>
 #include <utility>
@@ -385,7 +386,7 @@ TEST_CASE("Split transaction retains a child error raised while the Hub is still
     constexpr uint32_t kMaxAccess = 4;
     constexpr uint32_t kSize      = 12;
 
-    for (uint64_t failAddress : {uint64_t(0), uint64_t(4), uint64_t(8)}) {
+    for (uint64_t failAddress : std::initializer_list<uint64_t>{0, 4, 8}) {
         CAPTURE(failAddress);
         auto slave  = std::make_shared<InlineCompletingSlave>(kMaxAccess, std::vector<uint64_t>{failAddress});
         auto hub    = rim::Hub::create(0, 0, 0);
