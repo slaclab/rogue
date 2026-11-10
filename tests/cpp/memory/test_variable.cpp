@@ -95,6 +95,63 @@ TEST_CASE("Memory variable shiftOffsetDown updates offset and transfer coverage"
     CHECK_EQ(variable->varBytes(), 4U);
 }
 
+// Byte range computation must stay exact once bit positions exceed 2^24, where
+// float32 arithmetic starts rounding to even integers.
+TEST_CASE("Memory list variable byte range stays exact past the float32 boundary") {
+    struct Geometry {
+        uint32_t numValues;
+        uint32_t valueBits;
+        uint32_t valueStride;
+    };
+
+    const std::vector<Geometry> cases = {
+        {16777215U, 1U, 1U},
+        {16777216U, 1U, 1U},
+        {16777217U, 1U, 1U},
+        {16777220U, 1U, 1U},
+        {2097152U, 1U, 9U},
+        {2097153U, 1U, 9U},
+        {2097154U, 1U, 9U},
+        {2097154U, 9U, 9U},
+    };
+
+    for (const auto& geometry : cases) {
+        CAPTURE(geometry.numValues);
+        CAPTURE(geometry.valueBits);
+        CAPTURE(geometry.valueStride);
+
+        auto variable = rim::Variable::create("Large",
+                                              "RW",
+                                              0,
+                                              0,
+                                              0,
+                                              {0},
+                                              {geometry.valueBits},
+                                              false,
+                                              true,
+                                              false,
+                                              false,
+                                              rim::UInt,
+                                              false,
+                                              false,
+                                              0,
+                                              geometry.numValues,
+                                              geometry.valueBits,
+                                              geometry.valueStride,
+                                              0);
+
+        const uint64_t highBit =
+            static_cast<uint64_t>(geometry.numValues - 1) * geometry.valueStride + geometry.valueBits;
+        const uint32_t expected = static_cast<uint32_t>((highBit + 7) / 8);
+
+        CHECK_EQ(variable->varBytes(), expected);
+
+        // Realigning to a 4-byte access size must also round up exactly
+        variable->shiftOffsetDown(0, 4);
+        CHECK_EQ(variable->varBytes(), static_cast<uint32_t>(((highBit + 31) / 32) * 4));
+    }
+}
+
 TEST_CASE("Memory variable rejects incompatible typed accessors") {
     auto variable =
         rim::Variable::create("Text", "RW", 0, 0, 0, {0}, {32}, false, false, false, false, rim::String, false, false, 0, 0, 0, 0, 0);
@@ -201,3 +258,13 @@ TEST_CASE("Block::setBytes byte-reverse path frees its temporary on range throw"
     CHECK_LT(delta, leakedIfNoFix / 4);
 }
 #endif  // __GLIBC__
+
+// Variable::setLogLevel guards on ``block_``, so the constructor must leave
+// the pointer NULL rather than uninitialized. Calling it before the variable
+// is attached to any block must be a no-op instead of a wild dereference.
+TEST_CASE("Memory variable setLogLevel is safe before block attachment") {
+    auto variable =
+        rim::Variable::create("Detached", "RW", 0, 0, 0, {0}, {32}, false, false, false, false, rim::UInt, false, false, 0, 0, 0, 0, 0);
+
+    CHECK_NOTHROW(variable->setLogLevel(0));
+}

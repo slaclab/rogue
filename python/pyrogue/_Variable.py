@@ -112,13 +112,13 @@ class VariableWaitClass(object):
 
     def wait(self) -> bool:
         """Wait until the condition is met or timeout occurs."""
-        start  = time.time()
+        start  = time.monotonic()
 
         with self._cv:
             ret = self._check()
 
             # Run until timeout or all conditions have been met
-            while (not ret) and ((self._timeout == 0) or ((time.time()-start) < self._timeout)):
+            while (not ret) and ((self._timeout == 0) or ((time.monotonic()-start) < self._timeout)):
                 self._cv.wait(0.5)
                 ret = self._check()
 
@@ -421,7 +421,7 @@ class BaseVariable(pr.Node):
     def precision(self) -> int:
         """Return the display precision for float-like values."""
         if self.nativeType is float or self.nativeType is np.ndarray:
-            res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
+            res = re.search(r':([0-9]*)\.([0-9]+)f',self._disp)
             try:
                 return int(res[2])
             except Exception:
@@ -1025,11 +1025,18 @@ class BaseVariable(pr.Node):
                 self._log.error("Entry %s with key %s not found", self.name, keys)
 
             elif self._mode in modes:
+                # _numValues() comes from rim.Variable, so only RemoteVariable
+                # has it; other list/ndarray variables use the stored length.
+                if isinstance(self, RemoteVariable):
+                    count = self._numValues()
+                else:
+                    count = len(self.value())
+
                 if keys[0] == '*' or keys[0] == ':':
-                    for i in range(self._numValues()):
+                    for i in range(count):
                         self.setDisp(d, write=writeEach, index=i)
                 else:
-                    idxSlice = eval(f'[i for i in range(self._numValues())][{keys[0]}]')
+                    idxSlice = eval(f'[i for i in range(count)][{keys[0]}]')
 
                     # Single entry item
                     if ':' not in keys[0]:
@@ -1324,7 +1331,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         offset, bitOffset, bitSize = addrParams # Assign back
 
         # Verify the the list lengths match
-        if len(offset) != len(bitOffset) != len(bitSize):
+        if not (len(offset) == len(bitOffset) == len(bitSize)):
             raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))
 
         # Check for invalid values
@@ -1814,7 +1821,7 @@ class LocalVariable(BaseVariable):
         """Initialize a local variable."""
 
         if value is None and localGet is None:
-            raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
+            raise VariableError(f'LocalVariable {name} without localGet() must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description,
                               mode=mode, value=value, disp=disp,

@@ -63,7 +63,7 @@ class UdpRssiPack(pr.Device):
         server: bool = False,
         **kwargs: Any,
     ) -> None:
-        super(self.__class__, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         # Local copy host/port arg values
         self._host = host
@@ -319,7 +319,9 @@ class UdpRssiPack(pr.Device):
 
         self.add(pr.LocalCommand(
             name        = 'stop',
-            function    = self._stop
+            # RSSI only: the UDP socket has no restart API, so the full
+            # _stop() is reserved for Root.stop()
+            function    = lambda: self._rssi._stop()
         ))
 
         self.add(pr.LocalCommand(

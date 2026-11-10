@@ -67,8 +67,9 @@ using TransactionMap = std::map<uint32_t, std::shared_ptr<rogue::interfaces::mem
  *
  * Subtransaction behavior:
  * - A transaction can be split into child subtransactions.
- * - Parent tracks children in `subTranMap_` and completes only after all children complete
- *   (or propagates child error to the parent).
+ * - Parent tracks children in `subTranMap_` and completes only after all children complete.
+ * - Child errors are retained and reported as a parent error once the last child finishes,
+ *   regardless of the order in which children complete.
  *
  * Python integration:
  * - Python buffer-backed transactions are supported when Python APIs are used.
@@ -145,6 +146,9 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     // Done creating subtransactions for this transaction
     bool doneCreatingSubTransactions_;
 
+    // Errors collected from completed sub-transactions, reported when the last one finishes
+    std::string subTranError_;
+
     // Identify if it's a parent or a sub transaction
     bool isSubTransaction_;
 
@@ -168,6 +172,20 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
 
     // Wait for the transaction to complete, called by Master
     std::string wait();
+
+    /**
+     * @brief Records completion of one sub-transaction.
+     *
+     * @details
+     * Removes the child from the pending map and retains its error, if any.
+     * The parent completes only after every child has finished, so a caller
+     * cannot release the shared buffer while other children still access it.
+     * The parent reports an error when any child failed.
+     *
+     * @param subId Identifier of the completed sub-transaction.
+     * @param subError Sub-transaction error string, empty on success.
+     */
+    void subTransactionDone(uint32_t subId, const std::string& subError);
 
   public:
     // Setup class for use in python

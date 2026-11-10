@@ -22,6 +22,7 @@
 
 #define NO_IMPORT_ARRAY
 #include "doctest/doctest.h"
+#include "rogue/GeneralError.h"
 #include "rogue/interfaces/api/Bsp.h"
 #include "rogue/numpy.h"
 #include "support/test_python.h"
@@ -75,6 +76,12 @@ sys.modules["rogue_cpp_api_smoke"] = module
 
         bsp["WriteAll"]();
         bsp["ReadAll"]();
+
+        // A failed accessor must clear the Python error indicator so that
+        // subsequent Boost.Python calls do not see a stale exception.
+        CHECK_THROWS_AS(bsp.getAttribute("noSuchAttribute"), rogue::GeneralError);
+        CHECK_EQ(PyErr_Occurred(), nullptr);
+        CHECK_NE(bsp["AxiVersion"]["ScratchPad"].get().find("1111"), std::string::npos);
     } catch (const boost::python::error_already_set&) {
         if (PyErr_Occurred()) {
             PyErr_Print();

@@ -39,6 +39,13 @@ Split files use incrementing numeric suffixes:
    myFile.dat.2
    myFile.dat.3
 
+Every file is opened as a new file. ``open()`` throws ``rogue::GeneralError``
+if the target path (``myFile.dat``, or ``myFile.dat.1`` when splitting is
+enabled) already exists, and the writer remains closed. Likewise, if the next
+split file already exists when a rollover is needed, the write throws and the
+writer closes instead of writing into the existing file. An existing data file
+is never truncated or appended to.
+
 
 StreamWriter objects in C++ are referenced by the following shared pointer typedef:
 

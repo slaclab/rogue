@@ -31,7 +31,6 @@
 #include "rogue/protocols/batcher/CombinerV1.h"
 
 #include "rogue/protocols/batcher/CoreV2.h"
-#include "rogue/protocols/batcher/InverterV2.h"
 #include "rogue/protocols/batcher/SplitterV2.h"
 #include "rogue/protocols/batcher/CombinerV2.h"
 
@@ -56,6 +55,5 @@ void rogue::protocols::batcher::setup_module() {
 
     rogue::protocols::batcher::CoreV2::setup_python();
     rogue::protocols::batcher::SplitterV2::setup_python();
-    rogue::protocols::batcher::InverterV2::setup_python();
     rogue::protocols::batcher::CombinerV2::setup_python();
 }

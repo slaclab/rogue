@@ -67,6 +67,33 @@ def test_prbs_pair_loopback():
         assert root.Rx.rxErrors.get() == 0
 
 
+def test_prbs_pair_stream_loopback():
+    # Connect through the pair itself so PrbsPair._getStreamMaster() and
+    # _getStreamSlave() are exercised: TX -> fifo -> RX.
+    fifo = rogue.interfaces.stream.Fifo(100, 0, False)
+    root = PrbsDeviceRoot()
+    root.add(PrbsPair(name='Pair'))
+    root.Pair >> fifo >> root.Pair
+
+    with root:
+        root.Pair.PrbsTx.genFrame.call(5)
+        assert wait_for(lambda: root.Pair.PrbsRx.rxCount.get() >= 5, timeout=5.0)
+        assert root.Pair.PrbsRx.rxErrors.get() == 0
+
+
+def test_prbs_pair_bidir_loopback():
+    # pair == fifo wires TX -> fifo and fifo -> RX via streamConnectBiDir.
+    fifo = rogue.interfaces.stream.Fifo(100, 0, False)
+    root = PrbsDeviceRoot()
+    root.add(PrbsPair(name='Pair'))
+    root.Pair == fifo
+
+    with root:
+        root.Pair.PrbsTx.genFrame.call(5)
+        assert wait_for(lambda: root.Pair.PrbsRx.rxCount.get() >= 5, timeout=5.0)
+        assert root.Pair.PrbsRx.rxErrors.get() == 0
+
+
 def test_prbs_tx_gen_frame_command():
     fifo = rogue.interfaces.stream.Fifo(100, 0, False)
     root = PrbsDeviceRoot()

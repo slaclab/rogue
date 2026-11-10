@@ -4,7 +4,8 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Native C++ lifecycle test for deferred AxiStreamDma zero-copy buffer
- * returns overlapping stop(), using the fake_dma_preload LD_PRELOAD backend.
+ * returns overlapping stop() and RX worker shutdown on a failed driver read,
+ * using the fake_dma_preload LD_PRELOAD backend.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -133,5 +134,28 @@ TEST_CASE("AxiStreamDma stop waits for an in-flight zero-copy buffer return") {
 
     frame.reset();
     dma.reset();
+    checkFakeDmaClean();
+}
+
+TEST_CASE("AxiStreamDma worker exits cleanly when the driver read fails") {
+    requireFakeDmaClean();
+    auto& fake = rogue_test::fakeDma();
+    fake.reset();
+
+    auto dma = rha::AxiStreamDma::create(fake.path(), 0, false);
+
+    // Next RX poll reports POLLIN and the following read() returns -1. Before
+    // the fix runThread() threw here and std::terminate aborted the process.
+    fake.failNextRead();
+    REQUIRE(fake.waitReadFailed(1000));
+
+    // The worker must have left its loop: a second armed failure is never consumed.
+    fake.failNextRead();
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    CHECK_EQ(fake.readFailCount(), 1);
+
+    dma->stop();
+    dma.reset();
+    fake.reset();
     checkFakeDmaClean();
 }

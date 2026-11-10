@@ -2,8 +2,8 @@
 set -ex
 
 # Version.cpp::init() requires ROGUE_VERSION to start with 'v'/'V'.
-# PKG_VERSION may or may not already include the leading 'v' depending on whether
-# this recipe is built from tidair-tag (with 'v') or a conda-forge feedstock (no 'v').
+# PKG_VERSION follows the conda-forge convention (no leading 'v'), so prepend one
+# unless it is already there.
 case "${PKG_VERSION}" in
     v*|V*) ROGUE_VERSION_STR="${PKG_VERSION}" ;;
     *)     ROGUE_VERSION_STR="v${PKG_VERSION}" ;;
