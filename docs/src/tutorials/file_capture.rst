@@ -61,6 +61,12 @@ Python methods:
 Closing matters. The writer buffers, so a reader that opens the file before
 ``Close()`` sees a truncated final record.
 
+``Open()`` always creates a new file. If the ``DataFile`` path already exists
+the command raises an error and leaves the existing file untouched, so rerunning
+a capture script with the same path fails on the second run. Either point
+``DataFile`` at a fresh path each run, call ``AutoName()`` to generate a
+timestamped filename, or remove the previous output first.
+
 Replaying A Capture
 ===================
 
@@ -152,6 +158,8 @@ Choosing A Capture Strategy
      - ``RateDrop(False, N)`` — one frame in N
    * - Long unattended runs
      - Set ``MaxFileSize`` and enable ``AutoName`` to roll files
+   * - Rerunning the same script
+     - Use ``AutoName`` or a new ``DataFile`` path; ``Open`` refuses an existing file
    * - Compressible payloads
      - Add ``StreamZip``; measure your own ratio first
 

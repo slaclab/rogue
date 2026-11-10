@@ -360,9 +360,12 @@ jobs:
 
   docker_build_rogue:
     needs: [full_build_test, small_build_test, external_build_test]
+    # Required by the reusable workflow: it logs in to ghcr.io with GITHUB_TOKEN
+    permissions:
+      contents: read
+      packages: write
     uses: slaclab/ruckus/.github/workflows/docker_build.yml@main
     with:
-      gh_username: slacrherbst
       docker_name: rogue
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}

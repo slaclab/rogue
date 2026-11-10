@@ -13,6 +13,9 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+import os
+import tempfile
+
 import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue.utilities.fileio
@@ -27,7 +30,7 @@ FrameSize  = 1000
 BufferSize = 100004
 MaxSize    = 1000003
 
-def write_files():
+def write_files(dirName):
 
     fwrC = rogue.utilities.fileio.StreamWriter()
     fwrC.setBufferSize(BufferSize)
@@ -44,8 +47,10 @@ def write_files():
     prbs >> fwrU.getChannel(0)
     prbs >> comp >> fwrC.getChannel(0)
 
-    fwrC.open("compressed.dat")
-    fwrU.open("uncompressed.dat")
+    # StreamWriter refuses to open an existing file, so always write into a
+    # fresh directory rather than the working directory.
+    fwrC.open(os.path.join(dirName, "compressed.dat"))
+    fwrU.open(os.path.join(dirName, "uncompressed.dat"))
 
     print("Writing data files")
     for _ in range(FrameCount):
@@ -55,7 +60,7 @@ def write_files():
     fwrC.close()
     fwrU.close()
 
-def read_files():
+def read_files(dirName):
 
     frdC = rogue.utilities.fileio.StreamReader()
     frdU = rogue.utilities.fileio.StreamReader()
@@ -68,8 +73,8 @@ def read_files():
     frdU >> prbsU
     frdC >> comp >> prbsC
 
-    frdU.open("uncompressed.dat.1")
-    frdC.open("compressed.dat.1")
+    frdU.open(os.path.join(dirName, "uncompressed.dat.1"))
+    frdC.open(os.path.join(dirName, "compressed.dat.1"))
 
     print("Reading data files")
     frdU.closeWait()
@@ -87,22 +92,23 @@ def read_files():
     if prbsC.getRxErrors() != 0:
         raise AssertionError('Read compressed error. PRBS Frame errors detected!')
 
-def file_reader():
+def file_reader(dirName):
     print("pyrogue file reader")
-    with pyrogue.utilities.fileio.FileReader(files="uncompressed.dat.1") as fd:
+    with pyrogue.utilities.fileio.FileReader(files=os.path.join(dirName, "uncompressed.dat.1")) as fd:
         for header,data in fd.records():
             if header.size != FrameSize:
                 raise AssertionError('frame size mismatch detected in FileReader')
             if header.error != 0:
                 raise AssertionError('Error Flag detected in FileReader')
 
-def test_file_compress():
+def test_file_compress(tmp_path):
     return
-    write_files()
-    read_files()
-    file_reader()
+    write_files(str(tmp_path))
+    read_files(str(tmp_path))
+    file_reader(str(tmp_path))
 
 if __name__ == "__main__":
-    write_files()
-    read_files()
-    file_reader()
+    with tempfile.TemporaryDirectory() as dirName:
+        write_files(dirName)
+        read_files(dirName)
+        file_reader(dirName)
