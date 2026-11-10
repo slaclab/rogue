@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._DataReceiver &mdash; Rogue v6.16.0 documentation</title>
+  <title>pyrogue._DataReceiver &mdash; Rogue v6.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../_static/documentation_options.js?v=527a2ae5"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -143,8 +143,9 @@
 <span class="sd">        Type string for the data variable.</span>
 <span class="sd">    hideData : bool, optional (default = True)</span>
 <span class="sd">        If True, hide the data variable in the GUI.</span>
-<span class="sd">    value : object, optional (default = numpy.zeros(shape=1, dtype=numpy.uint8, order='C'))</span>
-<span class="sd">        Initial data value.</span>
+<span class="sd">    value : object, optional (default = None)</span>
+<span class="sd">        Initial data value. If None, a new ``numpy.zeros(shape=1, dtype=numpy.uint8, order='C')``</span>
+<span class="sd">        array is allocated for this instance.</span>
 <span class="sd">    enableOnStart : bool, optional (default = True)</span>
 <span class="sd">        If True, enable Rx on start.</span>
 <span class="sd">    **kwargs : Any</span>
@@ -154,10 +155,15 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">typeStr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'UInt8[np]'</span><span class="p">,</span>
                  <span class="n">hideData</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'C'</span><span class="p">),</span>
+                 <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">enableOnStart</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Initialize the data receiver."""</span>
+
+        <span class="c1"># Allocate a fresh default per instance. A mutable default argument</span>
+        <span class="c1"># would be a single array shared by every receiver.</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">'C'</span><span class="p">)</span>
 
         <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>

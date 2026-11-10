@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Device &mdash; Rogue v6.16.0 documentation</title>
+  <title>pyrogue._Device &mdash; Rogue v6.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../_static/documentation_options.js?v=527a2ae5"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -579,7 +579,8 @@
             <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">pollInterval</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">setPollInterval</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span></div>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">x</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">setPollInterval</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Device.hideVariables">
@@ -604,7 +605,7 @@
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">):</span>
                 <span class="n">v</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span></div>
 
 
@@ -1237,6 +1238,11 @@
                     <span class="sa">f</span><span class="s2">"Device '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">' has RemoteVariables or RemoteCommands but no memBase. "</span>
                     <span class="sa">f</span><span class="s2">"Pass memBase= when creating this device or when adding it to the tree."</span>
                 <span class="p">)</span>
+            <span class="c1"># Device.add installs the parent as the default slave. Any other slave</span>
+            <span class="c1"># means the memory path was wired after add() via busConnect(), &gt;&gt; or</span>
+            <span class="c1"># _setSlave(), so the C++ path is valid even though _memBase is None.</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">_getSlave</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">node</span><span class="o">.</span><span class="n">_parent</span><span class="p">:</span>
+                <span class="k">return</span>
             <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">_parent</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_buildBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1307,10 +1313,11 @@
 
                         <span class="c1"># Just in case a variable extends past the end of pre-made block, user mistake</span>
                         <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">varBytes</span> <span class="o">&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                            <span class="n">msg</span> <span class="o">=</span> <span class="s1">'Failed to add variable </span><span class="si">{n.name}</span><span class="s1"> to pre-made block with offset </span><span class="si">{b.offset}</span><span class="s1"> and size </span><span class="si">{b.size}</span><span class="s1">'</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'Failed to add variable </span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> to pre-made block with offset </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s1"> and size </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">'</span>
                             <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">MemoryError</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
 
                         <span class="n">blk</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'offset'</span><span class="p">:</span><span class="n">b</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="s1">'size'</span><span class="p">:</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="s1">'vars'</span><span class="p">:[</span><span class="n">n</span><span class="p">],</span> <span class="s1">'block'</span><span class="p">:</span><span class="n">b</span><span class="p">}</span>
+                        <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blk</span><span class="p">)</span>
                         <span class="k">break</span>
 
                 <span class="c1"># Block not found</span>

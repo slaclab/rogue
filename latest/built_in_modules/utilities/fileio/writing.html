@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing Frames To A File &mdash; Rogue v6.16.0 documentation</title>
+  <title>Writing Frames To A File &mdash; Rogue v6.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../../_static/documentation_options.js?v=527a2ae5"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -183,6 +183,19 @@ record format.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">close()</span></code></p></li>
 </ul>
 </section>
+<section id="new-file-only-behavior">
+<h2>New-File-Only Behavior<a class="headerlink" href="#new-file-only-behavior" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">StreamWriter</span></code> is a write-once data logger. Every file it creates, the base
+file and every <code class="docutils literal notranslate"><span class="pre">.N</span></code> rollover file, must be a new file. If <code class="docutils literal notranslate"><span class="pre">open(path)</span></code> (or
+the tree <code class="docutils literal notranslate"><span class="pre">Open</span></code> command) is given a path that already exists, the call raises
+a <code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code> stating that the data file already exists and the
+writer stays closed. The existing file is left untouched: it is never truncated
+or appended to. The same rule applies to rollover; if <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;.N</span></code> already
+exists when the writer needs it, the write raises and the writer closes rather
+than writing into the leftover file.</p>
+<p>Rerunning an acquisition script therefore needs a fresh <code class="docutils literal notranslate"><span class="pre">DataFile</span></code> path (or
+<code class="docutils literal notranslate"><span class="pre">AutoName</span></code>), or the previous output must be removed first.</p>
+</section>
 <section id="channel-behavior">
 <h2>Channel Behavior<a class="headerlink" href="#channel-behavior" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">StreamWriter</span></code> supports multiple incoming stream channels. That detail is
@@ -238,6 +251,7 @@ writer, so the most useful logging usually comes from the underlying
 <span class="n">fwrite</span><span class="o">.</span><span class="n">setBufferSize</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
 
 <span class="c1"># Split output file at 100 MB boundaries: myFile.dat.1, .2, ...</span>
+<span class="c1"># Each split file must not already exist or the rollover raises.</span>
 <span class="n">fwrite</span><span class="o">.</span><span class="n">setMaxSize</span><span class="p">(</span><span class="mi">100000000</span><span class="p">)</span>
 
 <span class="c1"># Drop incoming frames with non-zero frame error.</span>
@@ -247,6 +261,7 @@ writer, so the most useful logging usually comes from the underlying
 <span class="n">streamA</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">streamB</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
+<span class="c1"># Raises GeneralError if myFile.dat.1 already exists.</span>
 <span class="n">fwrite</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"myFile.dat"</span><span class="p">)</span>
 <span class="c1"># ... stream traffic is captured while file is open ...</span>
 <span class="n">fwrite</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -275,6 +290,7 @@ writer, so the most useful logging usually comes from the underlying
 <span class="n">root</span> <span class="o">=</span> <span class="n">MyRoot</span><span class="p">()</span>
 
 <span class="c1"># File control can be performed through Device variables/commands.</span>
+<span class="c1"># Open() raises if the path already exists; use AutoName() for reruns.</span>
 <span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"myFile.dat"</span><span class="p">)</span>
 <span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
 <span class="c1"># ...</span>
@@ -299,6 +315,7 @@ writer, so the most useful logging usually comes from the underlying
 <span class="n">streamA</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 <span class="n">streamB</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
+<span class="c1">// Throws rogue::GeneralError if myFile.dat.1 already exists.</span>
 <span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">"myFile.dat"</span><span class="p">);</span>
 <span class="c1">// ... stream traffic is captured while file is open ...</span>
 <span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>

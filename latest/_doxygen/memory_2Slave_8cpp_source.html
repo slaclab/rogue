@@ -288,132 +288,140 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span> </div>
 <div class="foldopen" id="foldopen00209" data-start="{" data-end="}">
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#af1619a08ef954998deefee89965dc501">  209</a></span>uint32_t rim::SlaveWrap::doMinAccess() {</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    {</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>        <span class="keywordflow">if</span> (boost::python::override pb = this-&gt;get_override(<span class="stringliteral">&quot;_doMinAccess&quot;</span>)) {</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>            <span class="keywordflow">try</span> {</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                <span class="keywordflow">return</span> (pb());</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            } <span class="keywordflow">catch</span> (...) {</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>                PyErr_Print();</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            }</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        }</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    }</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    <span class="keywordflow">return</span> (rim::Slave::doMinAccess());</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>}</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    <span class="comment">// A C++ worker can still deliver a transaction while the interpreter</span></div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    <span class="comment">// shuts down; PyGILState_Ensure() aborts once finalization has started.</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>    <span class="keywordflow">if</span> (Py_IsInitialized()) {</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        <span class="keywordflow">if</span> (boost::python::override pb = this-&gt;get_override(<span class="stringliteral">&quot;_doMinAccess&quot;</span>)) {</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            <span class="keywordflow">try</span> {</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>                <span class="keywordflow">return</span> (pb());</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            } <span class="keywordflow">catch</span> (...) {</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>                PyErr_Print();</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            }</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        }</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    }</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    <span class="keywordflow">return</span> (rim::Slave::doMinAccess());</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>}</div>
 </div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="foldopen" id="foldopen00225" data-start="{" data-end="}">
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a6a5d3229ec5c6bb5dd52f4e51935919d">  225</a></span>uint32_t rim::SlaveWrap::defDoMinAccess() {</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    <span class="keywordflow">return</span> (rim::Slave::doMinAccess());</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>}</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
+<div class="foldopen" id="foldopen00227" data-start="{" data-end="}">
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a6a5d3229ec5c6bb5dd52f4e51935919d">  227</a></span>uint32_t rim::SlaveWrap::defDoMinAccess() {</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    <span class="keywordflow">return</span> (rim::Slave::doMinAccess());</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>}</div>
 </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span> </div>
-<div class="foldopen" id="foldopen00230" data-start="{" data-end="}">
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a27f91bb48d6669f80130c58502b4bec2">  230</a></span>uint32_t rim::SlaveWrap::doMaxAccess() {</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    {</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span> </div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>        <span class="keywordflow">if</span> (boost::python::override pb = this-&gt;get_override(<span class="stringliteral">&quot;_doMaxAccess&quot;</span>)) {</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            <span class="keywordflow">try</span> {</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                <span class="keywordflow">return</span> (pb());</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>            } <span class="keywordflow">catch</span> (...) {</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>                PyErr_Print();</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>            }</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        }</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    }</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    <span class="keywordflow">return</span> (rim::Slave::doMaxAccess());</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>}</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span> </div>
+<div class="foldopen" id="foldopen00232" data-start="{" data-end="}">
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a27f91bb48d6669f80130c58502b4bec2">  232</a></span>uint32_t rim::SlaveWrap::doMaxAccess() {</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    <span class="comment">// A C++ worker can still deliver a transaction while the interpreter</span></div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    <span class="comment">// shuts down; PyGILState_Ensure() aborts once finalization has started.</span></div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    <span class="keywordflow">if</span> (Py_IsInitialized()) {</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span> </div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        <span class="keywordflow">if</span> (boost::python::override pb = this-&gt;get_override(<span class="stringliteral">&quot;_doMaxAccess&quot;</span>)) {</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>            <span class="keywordflow">try</span> {</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                <span class="keywordflow">return</span> (pb());</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>            } <span class="keywordflow">catch</span> (...) {</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                PyErr_Print();</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            }</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        }</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    }</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    <span class="keywordflow">return</span> (rim::Slave::doMaxAccess());</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>}</div>
 </div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
-<div class="foldopen" id="foldopen00246" data-start="{" data-end="}">
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a1294e37d75a4a21a453893de9946bd06">  246</a></span>uint32_t rim::SlaveWrap::defDoMaxAccess() {</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    <span class="keywordflow">return</span> (rim::Slave::doMinAccess());</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>}</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
+<div class="foldopen" id="foldopen00250" data-start="{" data-end="}">
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a1294e37d75a4a21a453893de9946bd06">  250</a></span>uint32_t rim::SlaveWrap::defDoMaxAccess() {</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="keywordflow">return</span> (rim::Slave::doMaxAccess());</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>}</div>
 </div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span> </div>
-<div class="foldopen" id="foldopen00251" data-start="{" data-end="}">
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#acc0560d8ae8b10f0dab32d9cc94d3b40">  251</a></span>uint64_t rim::SlaveWrap::doAddress() {</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>    {</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span> </div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keywordflow">if</span> (boost::python::override pb = this-&gt;get_override(<span class="stringliteral">&quot;_doAddress&quot;</span>)) {</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>            <span class="keywordflow">try</span> {</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>                <span class="keywordflow">return</span> (pb());</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>            } <span class="keywordflow">catch</span> (...) {</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                PyErr_Print();</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>            }</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        }</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>    }</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="keywordflow">return</span> (rim::Slave::doAddress());</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>}</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span> </div>
+<div class="foldopen" id="foldopen00255" data-start="{" data-end="}">
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#acc0560d8ae8b10f0dab32d9cc94d3b40">  255</a></span>uint64_t rim::SlaveWrap::doAddress() {</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    <span class="comment">// A C++ worker can still deliver a transaction while the interpreter</span></div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    <span class="comment">// shuts down; PyGILState_Ensure() aborts once finalization has started.</span></div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keywordflow">if</span> (Py_IsInitialized()) {</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span> </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        <span class="keywordflow">if</span> (boost::python::override pb = this-&gt;get_override(<span class="stringliteral">&quot;_doAddress&quot;</span>)) {</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>            <span class="keywordflow">try</span> {</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>                <span class="keywordflow">return</span> (pb());</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            } <span class="keywordflow">catch</span> (...) {</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                PyErr_Print();</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>            }</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>        }</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    }</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keywordflow">return</span> (rim::Slave::doAddress());</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>}</div>
 </div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
-<div class="foldopen" id="foldopen00267" data-start="{" data-end="}">
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a3431d3429229dfd5f0bfe57a399c68a1">  267</a></span>uint64_t rim::SlaveWrap::defDoAddress() {</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="keywordflow">return</span> (rim::Slave::doAddress());</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>}</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
+<div class="foldopen" id="foldopen00273" data-start="{" data-end="}">
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a3431d3429229dfd5f0bfe57a399c68a1">  273</a></span>uint64_t rim::SlaveWrap::defDoAddress() {</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keywordflow">return</span> (rim::Slave::doAddress());</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>}</div>
 </div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
-<div class="foldopen" id="foldopen00272" data-start="{" data-end="}">
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#ad67e84e312c96a23bb1518cc52cf5c05">  272</a></span><span class="keywordtype">void</span> rim::SlaveWrap::doTransaction(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a7c6250994b065d9570e27405efe61a13">rim::TransactionPtr</a> transaction) {</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    {</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span> </div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        <span class="keywordflow">if</span> (boost::python::override pb = this-&gt;get_override(<span class="stringliteral">&quot;_doTransaction&quot;</span>)) {</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>            <span class="keywordflow">try</span> {</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>                pb(transaction);</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>                <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>            } <span class="keywordflow">catch</span> (...) {</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>                PyErr_Print();</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>            }</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        }</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    }</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    rim::Slave::doTransaction(transaction);</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>}</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span> </div>
+<div class="foldopen" id="foldopen00278" data-start="{" data-end="}">
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#ad67e84e312c96a23bb1518cc52cf5c05">  278</a></span><span class="keywordtype">void</span> rim::SlaveWrap::doTransaction(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a7c6250994b065d9570e27405efe61a13">rim::TransactionPtr</a> transaction) {</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="comment">// A C++ worker can still deliver a transaction while the interpreter</span></div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    <span class="comment">// shuts down; PyGILState_Ensure() aborts once finalization has started.</span></div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="keywordflow">if</span> (Py_IsInitialized()) {</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span> </div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        <span class="keywordflow">if</span> (boost::python::override pb = this-&gt;get_override(<span class="stringliteral">&quot;_doTransaction&quot;</span>)) {</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>            <span class="keywordflow">try</span> {</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>                pb(transaction);</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>                <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>            } <span class="keywordflow">catch</span> (...) {</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>                PyErr_Print();</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>            }</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>        }</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    }</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    rim::Slave::doTransaction(transaction);</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>}</div>
 </div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
-<div class="foldopen" id="foldopen00289" data-start="{" data-end="}">
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a6b9f2614b18c2ef20d7f2a7251567e2e">  289</a></span><span class="keywordtype">void</span> rim::SlaveWrap::defDoTransaction(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a7c6250994b065d9570e27405efe61a13">rim::TransactionPtr</a> transaction) {</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    rim::Slave::doTransaction(transaction);</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>}</div>
-</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
-<div class="foldopen" id="foldopen00293" data-start="{" data-end="}">
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Slave.html#aa934540c189dc41ee19f7124e7526f85">  293</a></span><span class="keywordtype">void</span> rim::Slave::lshiftPy(boost::python::object p) {</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a102fe4dcab8755eeec15e5b5f7b21591">rim::MasterPtr</a> mst;</div>
 <div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span> </div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    <span class="comment">// First Attempt to access object as a memory master</span></div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    boost::python::extract&lt;rim::MasterPtr&gt; get_master(p);</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    <span class="comment">// Test extraction</span></div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <span class="keywordflow">if</span> (get_master.check()) {</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>        mst = get_master();</div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>        <span class="comment">// Otherwise look for indirect call</span></div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (PyObject_HasAttrString(p.ptr(), <span class="stringliteral">&quot;_getMemoryMaster&quot;</span>)) {</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>        <span class="comment">// Attempt to convert returned object to master pointer</span></div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>        boost::python::extract&lt;rim::MasterPtr&gt; get_master(p.attr(<span class="stringliteral">&quot;_getMemoryMaster&quot;</span>)());</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span> </div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>        <span class="comment">// Test extraction</span></div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        <span class="keywordflow">if</span> (get_master.check()) mst = get_master();</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    }</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    <span class="comment">// Success</span></div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    <span class="keywordflow">if</span> (mst != NULL)</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        mst-&gt;setSlave(shared_from_this());</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;memory::Slave::lshiftPy&quot;</span>,</div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>                                          <span class="stringliteral">&quot;Attempt to use &lt;&lt; operator with incompatible memory master&quot;</span>));</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>}</div>
+<div class="foldopen" id="foldopen00297" data-start="{" data-end="}">
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html#a6b9f2614b18c2ef20d7f2a7251567e2e">  297</a></span><span class="keywordtype">void</span> rim::SlaveWrap::defDoTransaction(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a7c6250994b065d9570e27405efe61a13">rim::TransactionPtr</a> transaction) {</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>    rim::Slave::doTransaction(transaction);</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>}</div>
 </div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span> </div>
+<div class="foldopen" id="foldopen00301" data-start="{" data-end="}">
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Slave.html#aa934540c189dc41ee19f7124e7526f85">  301</a></span><span class="keywordtype">void</span> rim::Slave::lshiftPy(boost::python::object p) {</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a102fe4dcab8755eeec15e5b5f7b21591">rim::MasterPtr</a> mst;</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span> </div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    <span class="comment">// First Attempt to access object as a memory master</span></div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    boost::python::extract&lt;rim::MasterPtr&gt; get_master(p);</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span> </div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    <span class="comment">// Test extraction</span></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    <span class="keywordflow">if</span> (get_master.check()) {</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        mst = get_master();</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span> </div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        <span class="comment">// Otherwise look for indirect call</span></div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (PyObject_HasAttrString(p.ptr(), <span class="stringliteral">&quot;_getMemoryMaster&quot;</span>)) {</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>        <span class="comment">// Attempt to convert returned object to master pointer</span></div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        boost::python::extract&lt;rim::MasterPtr&gt; get_master(p.attr(<span class="stringliteral">&quot;_getMemoryMaster&quot;</span>)());</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span> </div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        <span class="comment">// Test extraction</span></div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        <span class="keywordflow">if</span> (get_master.check()) mst = get_master();</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    }</div>
 <div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span> </div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span> </div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span><a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a102fe4dcab8755eeec15e5b5f7b21591">rim::MasterPtr</a>&amp; rim::Slave::operator&lt;&lt;(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a102fe4dcab8755eeec15e5b5f7b21591">rim::MasterPtr</a>&amp; other) {</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>    other-&gt;setSlave(shared_from_this());</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>    <span class="keywordflow">return</span> other;</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    <span class="comment">// Success</span></div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>    <span class="keywordflow">if</span> (mst != NULL)</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        mst-&gt;setSlave(shared_from_this());</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;memory::Slave::lshiftPy&quot;</span>,</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>                                          <span class="stringliteral">&quot;Attempt to use &lt;&lt; operator with incompatible memory master&quot;</span>));</div>
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>}</div>
+</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span> </div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span> </div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span><a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a102fe4dcab8755eeec15e5b5f7b21591">rim::MasterPtr</a>&amp; rim::Slave::operator&lt;&lt;(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a102fe4dcab8755eeec15e5b5f7b21591">rim::MasterPtr</a>&amp; other) {</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>    other-&gt;setSlave(shared_from_this());</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>    <span class="keywordflow">return</span> other;</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>}</div>
 <div class="ttc" id="aConstants_8h_html"><div class="ttname"><a href="Constants_8h.html">Constants.h</a></div></div>
 <div class="ttc" id="aDirectives_8h_html"><div class="ttname"><a href="Directives_8h.html">Directives.h</a></div></div>
 <div class="ttc" id="aGeneralError_8h_html"><div class="ttname"><a href="GeneralError_8h.html">GeneralError.h</a></div></div>
@@ -431,7 +439,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html">rogue::interfaces::memory</a></div><div class="ttdef"><b>Definition</b> <a href="Block_8h_source.html#l00036">Block.h:36</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_a0ae7d54d7f7d1fc7978fa98a10a80cad"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#a0ae7d54d7f7d1fc7978fa98a10a80cad">rogue::interfaces::memory::SlavePtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::memory::Slave &gt; SlavePtr</div><div class="ttdoc">Shared pointer alias for Slave.</div><div class="ttdef"><b>Definition</b> <a href="memory_2Slave_8h_source.html#l00310">Slave.h:310</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_a102fe4dcab8755eeec15e5b5f7b21591"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#a102fe4dcab8755eeec15e5b5f7b21591">rogue::interfaces::memory::MasterPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::memory::Master &gt; MasterPtr</div><div class="ttdoc">Shared pointer alias for Master.</div><div class="ttdef"><b>Definition</b> <a href="memory_2Master_8h_source.html#l00410">Master.h:410</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_a7c6250994b065d9570e27405efe61a13"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#a7c6250994b065d9570e27405efe61a13">rogue::interfaces::memory::TransactionPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; TransactionPtr</div><div class="ttdoc">Shared pointer alias for Transaction.</div><div class="ttdef"><b>Definition</b> <a href="Transaction_8h_source.html#l00357">Transaction.h:357</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_a7c6250994b065d9570e27405efe61a13"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#a7c6250994b065d9570e27405efe61a13">rogue::interfaces::memory::TransactionPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; TransactionPtr</div><div class="ttdoc">Shared pointer alias for Transaction.</div><div class="ttdef"><b>Definition</b> <a href="Transaction_8h_source.html#l00375">Transaction.h:375</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

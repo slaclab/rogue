@@ -182,6 +182,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a537f6cdff63245d873e75eadf31a85ce" id="r_a537f6cdff63245d873e75eadf31a85ce"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a537f6cdff63245d873e75eadf31a85ce">wait</a> ()</td></tr>
 <tr class="memdesc:a537f6cdff63245d873e75eadf31a85ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wait for the transaction to complete.  <br /></td></tr>
 <tr class="separator:a537f6cdff63245d873e75eadf31a85ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9506df1d74c8943211c11721ba8b7574" id="r_a9506df1d74c8943211c11721ba8b7574"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a9506df1d74c8943211c11721ba8b7574">subTransactionDone</a> (uint32_t subId, const std::string &amp;subError)</td></tr>
+<tr class="memdesc:a9506df1d74c8943211c11721ba8b7574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Records completion of one sub-transaction.  <br /></td></tr>
+<tr class="separator:a9506df1d74c8943211c11721ba8b7574"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-static-methods" name="pro-static-methods"></a>
 Static Protected Member Functions</h2></td></tr>
@@ -223,6 +226,8 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:ae59a137a9e38b55175646e4f68376c26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8c5f28528b660c394130ddb86e49d1f" id="r_ac8c5f28528b660c394130ddb86e49d1f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#ac8c5f28528b660c394130ddb86e49d1f">doneCreatingSubTransactions_</a></td></tr>
 <tr class="separator:ac8c5f28528b660c394130ddb86e49d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab33549a5485518469367204fa0c8e5fc" id="r_ab33549a5485518469367204fa0c8e5fc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#ab33549a5485518469367204fa0c8e5fc">subTranError_</a></td></tr>
+<tr class="separator:ab33549a5485518469367204fa0c8e5fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6568883a9f978921bf8e245a0c0e0049" id="r_a6568883a9f978921bf8e245a0c0e0049"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a6568883a9f978921bf8e245a0c0e0049">isSubTransaction_</a></td></tr>
 <tr class="separator:a6568883a9f978921bf8e245a0c0e0049"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a3b302b8a1197e3280b1fe7c0581a09" id="r_a1a3b302b8a1197e3280b1fe7c0581a09"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classrogue_1_1Logging.html">rogue::Logging</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a1a3b302b8a1197e3280b1fe7c0581a09">log_</a></td></tr>
@@ -255,14 +260,15 @@ Friends</h2></td></tr>
 </ul>
 <p>Subtransaction behavior:</p><ul>
 <li>A transaction can be split into child subtransactions.</li>
-<li>Parent tracks children in <code>subTranMap_</code> and completes only after all children complete (or propagates child error to the parent).</li>
+<li>Parent tracks children in <code>subTranMap_</code> and completes only after all children complete.</li>
+<li>Child errors are retained and reported as a parent error once the last child finishes, regardless of the order in which children complete.</li>
 </ul>
 <p>Python integration:</p><ul>
 <li>Python buffer-backed transactions are supported when Python APIs are used.</li>
 <li>Accessors such as <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a1f14874141680a7184b8277c61444d5b" title="Returns the transaction ID.">id()</a></code>, <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a07b199ad3b8c4fec6ab3e7a334722aad" title="Returns the transaction address.">address()</a></code>, <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a7c0e8ed1b737a70043b5e8f4c5eb4153" title="Returns the transaction size.">size()</a></code>, <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#ac03d3ff263b5a59ddbc8ab67bdc2758e" title="Returns the transaction type constant.">type()</a></code>, and <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a35616717f6d15c8978ba296b7fce816c" title="Returns whether this transaction has expired.">expired()</a></code> are exposed to Python bindings. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00078">78</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00079">79</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="ab35827b018cd3000de36a1cad2373d21" name="ab35827b018cd3000de36a1cad2373d21"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab35827b018cd3000de36a1cad2373d21">&#9670;&#160;</a></span>iterator</h2>
@@ -278,7 +284,7 @@ Friends</h2></td></tr>
 
 <p>Iterator alias for transaction byte access. </p>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00085">85</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00086">86</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -363,7 +369,7 @@ Friends</h2></td></tr>
 <p>Exposed as <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a07b199ad3b8c4fec6ab3e7a334722aad" title="Returns the transaction address.">address()</a></code> in Python.</p>
 <dl class="section return"><dt>Returns</dt><dd>64-bit transaction address. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00124">124</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00130">130</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -387,7 +393,7 @@ Friends</h2></td></tr>
 <p>Not exposed to Python. Lock must be held before calling this method and while updating transaction data.</p>
 <dl class="section return"><dt>Returns</dt><dd>Data iterator. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00293">293</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00305">305</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -442,7 +448,7 @@ Friends</h2></td></tr>
 <p>Create a subtransaction.</p>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to the newly created subtransaction. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00139">139</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00145">145</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -465,7 +471,7 @@ Friends</h2></td></tr>
 <p>Complete transaction without error, lock must be held.</p>
 <p>The transaction lock must be held before calling this method. Exposed as <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#af6331d51aebb4d0cf07ea55b62de7f21" title="Marks transaction completion without error.">done()</a></code> in Python. </p>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00156">156</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00162">162</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -486,7 +492,7 @@ Friends</h2></td></tr>
 
 <p>Marks subtransaction creation as complete for this transaction. </p>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00151">151</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00157">157</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -510,7 +516,7 @@ Friends</h2></td></tr>
 <p>Not exposed to Python. Lock must be held before calling this method and while updating transaction data.</p>
 <dl class="section return"><dt>Returns</dt><dd>Data iterator. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00299">299</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00311">311</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -544,7 +550,7 @@ Friends</h2></td></tr>
 <p>Complete transaction with passed error, lock must be held.</p>
 <p>The transaction lock must be held before calling this method. </p>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00214">214</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00226">226</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -574,7 +580,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00182">182</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00181">181</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -639,7 +645,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00330">330</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00342">342</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -663,7 +669,7 @@ Friends</h2></td></tr>
 <p>Exposed as <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a1f14874141680a7184b8277c61444d5b" title="Returns the transaction ID.">id()</a></code> in Python.</p>
 <dl class="section return"><dt>Returns</dt><dd>32-bit transaction ID. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00119">119</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00125">125</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -717,7 +723,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00265">265</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00277">277</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -758,7 +764,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00307">307</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00319">319</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -809,7 +815,56 @@ Friends</h2></td></tr>
 <p>Exposed as <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a7c0e8ed1b737a70043b5e8f4c5eb4153" title="Returns the transaction size.">size()</a></code> in Python.</p>
 <dl class="section return"><dt>Returns</dt><dd>32-bit transaction size in bytes. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00129">129</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00135">135</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a9506df1d74c8943211c11721ba8b7574" name="a9506df1d74c8943211c11721ba8b7574"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9506df1d74c8943211c11721ba8b7574">&#9670;&#160;</a></span>subTransactionDone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rogue::interfaces::memory::Transaction::subTransactionDone </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>subId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>subError</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Records completion of one sub-transaction. </p>
+<p>Record completion of a sub-transaction, called with the child's lock held.</p>
+<p>Removes the child from the pending map and retains its error, if any. The parent completes only after every child has finished, so a caller cannot release the shared buffer while other children still access it. The parent reports an error when any child failed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">subId</td><td>Identifier of the completed sub-transaction. </td></tr>
+    <tr><td class="paramname">subError</td><td>Sub-transaction error string, empty on success. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00203">203</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -839,7 +894,7 @@ Friends</h2></td></tr>
 <p>Exposed as <code><a class="el" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#ac03d3ff263b5a59ddbc8ab67bdc2758e" title="Returns the transaction type constant.">type()</a></code> in Python.</p>
 <dl class="section return"><dt>Returns</dt><dd>32-bit transaction type. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00134">134</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00140">140</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -868,7 +923,7 @@ Friends</h2></td></tr>
 
 <p>Wait for the transaction to complete. </p>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00226">226</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8cpp_source.html#l00238">238</a> of file <a class="el" href="Transaction_8cpp_source.html">Transaction.cpp</a>.</p>
 
 </div>
 </div>
@@ -893,7 +948,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00081">81</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00082">82</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -917,7 +972,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00080">80</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00081">81</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -941,7 +996,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00079">79</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00080">80</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -966,7 +1021,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00122">122</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00123">123</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -990,7 +1045,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00137">137</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00138">138</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1014,7 +1069,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00146">146</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00147">147</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1038,7 +1093,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00102">102</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00103">103</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1062,7 +1117,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00131">131</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00132">132</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1086,7 +1141,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00134">134</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00135">135</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1110,7 +1165,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00149">149</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00153">153</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1134,7 +1189,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00119">119</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00120">120</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1158,7 +1213,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00140">140</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00141">141</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1183,7 +1238,7 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <p>Logger for transaction activity. </p>
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00152">152</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00156">156</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1207,7 +1262,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00155">155</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00159">159</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1231,7 +1286,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00112">112</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00113">113</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1255,7 +1310,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00116">116</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00117">117</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1279,7 +1334,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00125">125</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00126">126</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1303,7 +1358,31 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00105">105</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00106">106</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+
+</div>
+</div>
+<a id="ab33549a5485518469367204fa0c8e5fc" name="ab33549a5485518469367204fa0c8e5fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab33549a5485518469367204fa0c8e5fc">&#9670;&#160;</a></span>subTranError_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string rogue::interfaces::memory::Transaction::subTranError_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00150">150</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1327,7 +1406,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00143">143</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00144">144</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1351,7 +1430,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00099">99</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00100">100</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1375,7 +1454,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00128">128</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00129">129</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>
@@ -1399,7 +1478,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00108">108</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Transaction_8h_source.html#l00109">109</a> of file <a class="el" href="Transaction_8h_source.html">Transaction.h</a>.</p>
 
 </div>
 </div>

@@ -114,6 +114,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a70747b0839c6c3773becfe9cbca757ae" id="r_a70747b0839c6c3773becfe9cbca757ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html#a70747b0839c6c3773becfe9cbca757ae">setController</a> (std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html">rogue::protocols::packetizer::Controller</a> &gt; cntl)</td></tr>
 <tr class="memdesc:a70747b0839c6c3773becfe9cbca757ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attaches the packetizer controller.  <br /></td></tr>
 <tr class="separator:a70747b0839c6c3773becfe9cbca757ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45888e410f4db8bf5e4a362d6a0142c0" id="r_a45888e410f4db8bf5e4a362d6a0142c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html#a45888e410f4db8bf5e4a362d6a0142c0">stop</a> ()</td></tr>
+<tr class="memdesc:a45888e410f4db8bf5e4a362d6a0142c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops and joins the outbound worker thread.  <br /></td></tr>
+<tr class="separator:a45888e410f4db8bf5e4a362d6a0142c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0761cebaa8cb8db28e23159738bd315" id="r_ac0761cebaa8cb8db28e23159738bd315"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html#ac0761cebaa8cb8db28e23159738bd315">acceptFrame</a> (std::shared_ptr&lt; <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html">rogue::interfaces::stream::Frame</a> &gt; frame)</td></tr>
 <tr class="memdesc:ac0761cebaa8cb8db28e23159738bd315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accepts a frame from the upstream stream interface.  <br /></td></tr>
 <tr class="separator:ac0761cebaa8cb8db28e23159738bd315"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,9 +142,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a80fb7808644726ddca72e8e196477229"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a80fb7808644726ddca72e8e196477229">ensureSingleBuffer</a> (std::shared_ptr&lt; <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Frame.html">rogue::interfaces::stream::Frame</a> &gt; &amp;frame, bool reqEn)</td></tr>
 <tr class="memdesc:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensures a frame is represented by a single buffer.  <br /></td></tr>
 <tr class="separator:a80fb7808644726ddca72e8e196477229 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a212b04404a6767dddd1e58ba8298cf9e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">stop</a> ()</td></tr>
-<tr class="memdesc:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops frame generation and shuts down associated threads.  <br /></td></tr>
-<tr class="separator:a212b04404a6767dddd1e58ba8298cf9e inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master" id="r_a913f40b8d390d1b2f26fa0aecfea34eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a913f40b8d390d1b2f26fa0aecfea34eb">equalsPy</a> (boost::python::object p)</td></tr>
 <tr class="memdesc:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="mdescLeft">&#160;</td><td class="mdescRight">Supports <code>==</code> operator usage from Python.  <br /></td></tr>
 <tr class="separator:a913f40b8d390d1b2f26fa0aecfea34eb inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Master"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,9 +169,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_a74588fad9c45c5ac06c75e534db4da42"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#a74588fad9c45c5ac06c75e534db4da42">~Slave</a> ()</td></tr>
 <tr class="memdesc:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the stream slave.  <br /></td></tr>
 <tr class="separator:a74588fad9c45c5ac06c75e534db4da42 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_ac859b66aedfa71ee9ae24a3778599dd3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ac859b66aedfa71ee9ae24a3778599dd3">stop</a> ()</td></tr>
-<tr class="memdesc:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shuts down threads associated with this object.  <br /></td></tr>
-<tr class="separator:ac859b66aedfa71ee9ae24a3778599dd3 inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave" id="r_a0db1eae3e974be56cfe5cd35653d752d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#a0db1eae3e974be56cfe5cd35653d752d">setDebug</a> (uint32_t debug, std::string name)</td></tr>
 <tr class="memdesc:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets debug message verbosity and logger name.  <br /></td></tr>
 <tr class="separator:a0db1eae3e974be56cfe5cd35653d752d inherit pub_methods_classrogue_1_1interfaces_1_1stream_1_1Slave"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -281,10 +278,10 @@ Additional Inherited Members</h2></td></tr>
 <li>Outbound frames are produced by a dedicated background thread started in <code><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html#a70747b0839c6c3773becfe9cbca757ae" title="Attaches the packetizer controller.">setController()</a></code>. That thread drains <code><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Controller.html#ab26b9f4d7d4458843c0099e7748b138f" title="Returns the next frame for transport transmission.">Controller::transportTx()</a></code> and forwards returned frames via <code><a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#ac4270a45820c4c03dd7f2b472df4efd8" title="Sends a frame to all attached slaves.">sendFrame()</a></code>.</li>
 </ul>
 <p>Lifetime contract:</p><ul>
-<li><code><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html#a70747b0839c6c3773becfe9cbca757ae" title="Attaches the packetizer controller.">setController()</a></code> must be called before destruction so the TX queue thread can be started/stopped against a valid controller. </li>
+<li>The controller is held weakly. Once it is destroyed, inbound frames are dropped and the TX thread exits. The owning <a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Core.html" title="Packetizer core wiring object.">Core</a> calls <code><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html#a45888e410f4db8bf5e4a362d6a0142c0" title="Stops and joins the outbound worker thread.">stop()</a></code> before releasing the controller, since upstream masters may keep this endpoint alive. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Transport_8h_source.html#l00052">52</a> of file <a class="el" href="packetizer_2Transport_8h_source.html">Transport.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Transport_8h_source.html#l00053">53</a> of file <a class="el" href="packetizer_2Transport_8h_source.html">Transport.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="afc63ff0152780855ba05f5146f83c128" name="afc63ff0152780855ba05f5146f83c128"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc63ff0152780855ba05f5146f83c128">&#9670;&#160;</a></span>Transport()</h2>
@@ -367,7 +364,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Transport_8cpp_source.html#l00094">94</a> of file <a class="el" href="packetizer_2Transport_8cpp_source.html">Transport.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Transport_8cpp_source.html#l00100">100</a> of file <a class="el" href="packetizer_2Transport_8cpp_source.html">Transport.cpp</a>.</p>
 
 </div>
 </div>
@@ -433,7 +430,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="packetizer_2Transport_8cpp_source.html#l00071">71</a> of file <a class="el" href="packetizer_2Transport_8cpp_source.html">Transport.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="packetizer_2Transport_8cpp_source.html#l00077">77</a> of file <a class="el" href="packetizer_2Transport_8cpp_source.html">Transport.cpp</a>.</p>
 
 </div>
 </div>
@@ -463,6 +460,39 @@ Additional Inherited Members</h2></td></tr>
 <p>Registers Python bindings for this class. </p>
 
 <p class="definition">Definition at line <a class="el" href="packetizer_2Transport_8cpp_source.html#l00044">44</a> of file <a class="el" href="packetizer_2Transport_8cpp_source.html">Transport.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a45888e410f4db8bf5e4a362d6a0142c0" name="a45888e410f4db8bf5e4a362d6a0142c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45888e410f4db8bf5e4a362d6a0142c0">&#9670;&#160;</a></span>stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rogue::protocols::packetizer::Transport::stop </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Stops and joins the outbound worker thread. </p>
+<p>Stop and join the TX thread.</p>
+<p>Idempotent; no-op if <code><a class="el" href="classrogue_1_1protocols_1_1packetizer_1_1Transport.html#a70747b0839c6c3773becfe9cbca757ae" title="Attaches the packetizer controller.">setController()</a></code> never ran. </p>
+
+<p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">rogue::interfaces::stream::Master</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="packetizer_2Transport_8cpp_source.html#l00064">64</a> of file <a class="el" href="packetizer_2Transport_8cpp_source.html">Transport.cpp</a>.</p>
 
 </div>
 </div>

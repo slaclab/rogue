@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RunControl Device Class &mdash; Rogue v6.16.0 documentation</title>
+  <title>RunControl Device Class &mdash; Rogue v6.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../_static/documentation_options.js?v=527a2ae5"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -143,7 +143,9 @@ more complex hardware-integrated and external run-control workflows.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">runState</span></code> is set to <code class="docutils literal notranslate"><span class="pre">Running</span></code>, <code class="docutils literal notranslate"><span class="pre">RunControl</span></code> starts a background
 thread. That thread sleeps for the selected <code class="docutils literal notranslate"><span class="pre">runRate</span></code>, calls the optional
 <code class="docutils literal notranslate"><span class="pre">cmd</span></code> callback, and increments <code class="docutils literal notranslate"><span class="pre">runCount</span></code>. When <code class="docutils literal notranslate"><span class="pre">runState</span></code> leaves the
-running state, the thread exits and is joined.</p>
+running state, the thread exits on its next loop iteration. The write does not
+wait for the thread; it is joined when the device is stopped during
+<code class="docutils literal notranslate"><span class="pre">Root.stop()</span></code>.</p>
 <p>This makes <code class="docutils literal notranslate"><span class="pre">RunControl</span></code> a good fit when the system needs a simple
 operator-visible “start a repeating loop” control surface without building a
 custom thread manager from scratch.</p>

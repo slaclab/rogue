@@ -111,6 +111,8 @@ full-featured query interface. In most deployments the practical workflow is to
 log data with ``SqlLogger`` during the run, then inspect the resulting tables
 with standard SQLAlchemy or database tooling suited to the deployment.
 
+Call ``SqlReader.close()`` when finished to release its database connections.
+
 Logging
 =======
 

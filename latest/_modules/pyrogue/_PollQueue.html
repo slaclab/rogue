@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._PollQueue &mdash; Rogue v6.16.0 documentation</title>
+  <title>pyrogue._PollQueue &mdash; Rogue v6.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../_static/documentation_options.js?v=527a2ae5"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -277,11 +277,16 @@
 <span class="w">        </span><span class="sd">"""Run by the poll thread"""</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused</span><span class="p">():</span>
-                <span class="c1"># Sleep until woken</span>
-                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="c1"># Evaluate the idle condition and wait under the same lock hold so a</span>
+            <span class="c1"># stop or unpause notify issued between the check and the wait</span>
+            <span class="c1"># cannot be lost.</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="p">:</span>
+                <span class="n">idle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">idle</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span>
+                        <span class="k">lambda</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused</span><span class="p">()))</span>
 
+            <span class="k">if</span> <span class="n">idle</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"PollQueue thread exiting"</span><span class="p">)</span>
                     <span class="k">return</span>
@@ -305,9 +310,11 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"PollQueue thread exiting"</span><span class="p">)</span>
                     <span class="k">return</span>
 
-                <span class="c1"># Wait for block count to be zero</span>
-                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">blockCount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                <span class="c1"># Wait for block count to be zero, honoring a stop request</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">blockCount</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"PollQueue thread exiting"</span><span class="p">)</span>
+                    <span class="k">return</span>
 
                 <span class="c1"># Start update capture</span>
                 <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>

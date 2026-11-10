@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._RunControl &mdash; Rogue v6.16.0 documentation</title>
+  <title>pyrogue._RunControl &mdash; Rogue v6.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../_static/documentation_options.js?v=527a2ae5"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -230,19 +230,18 @@
                 <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threadLock</span><span class="p">:</span>
-                <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span>
+            <span class="c1"># Do not join here: this runs under the runState block lock and the</span>
+            <span class="c1"># worker may itself be writing runState. The loop in _run() exits on</span>
+            <span class="c1"># its next iteration; _stop() performs the join.</span>
+            <span class="k">pass</span>
 
-            <span class="c1"># When a caller outside the worker requests "Stopped", wait for the</span>
-            <span class="c1"># current run thread to exit before returning so the state change is</span>
-            <span class="c1"># complete from the caller's perspective.</span>
-            <span class="c1">#</span>
-            <span class="c1"># The current_thread() check is required because _cmd() may stop</span>
-            <span class="c1"># the run by writing runState from inside the worker itself. A</span>
-            <span class="c1"># thread cannot join itself, so in that case we just let _run()</span>
-            <span class="c1"># fall out of its loop and perform the final cleanup.</span>
-            <span class="k">if</span> <span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">thread</span><span class="p">:</span>
-                <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Join the run thread before device teardown."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threadLock</span><span class="p">:</span>
+            <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span>
+        <span class="k">if</span> <span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">thread</span><span class="p">:</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setRunRate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Set run rate.</span>

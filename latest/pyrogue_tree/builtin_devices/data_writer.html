@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DataWriter Device Class &mdash; Rogue v6.16.0 documentation</title>
+  <title>DataWriter Device Class &mdash; Rogue v6.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../_static/documentation_options.js?v=527a2ae5"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -156,7 +156,8 @@ built-in subclass most applications actually instantiate.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">hidden</span></code> when the writer should stay out of the main user tree</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">bufferSize</span></code> for filesystem buffering</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">maxFileSize</span></code> for rolling to a new file after a size limit</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxFileSize</span></code> for rolling to a new file after a size limit (each rolled
+file must be new; an existing <code class="docutils literal notranslate"><span class="pre">.N</span></code> file causes the rollover to fail)</p></li>
 </ul>
 </section>
 <section id="how-subclassing-works">
@@ -181,10 +182,15 @@ while delegating the actual writing behavior to the Rogue file-I/O utility.</p>
 <p>The base class always creates the same operator-facing controls:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">DataFile</span></code> holds the path that <code class="docutils literal notranslate"><span class="pre">Open</span></code> will use.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Open</span></code> and <code class="docutils literal notranslate"><span class="pre">Close</span></code> control the underlying writer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Open</span></code> and <code class="docutils literal notranslate"><span class="pre">Close</span></code> control the underlying writer. <code class="docutils literal notranslate"><span class="pre">Open</span></code> creates a new
+file; if <code class="docutils literal notranslate"><span class="pre">DataFile</span></code> already exists the command raises an error and the
+existing file is left untouched (it is neither overwritten nor appended to).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">AutoName</span></code> creates a timestamped filename using the current <code class="docutils literal notranslate"><span class="pre">DataFile</span></code>
-directory, if any.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">BufferSize</span></code> and <code class="docutils literal notranslate"><span class="pre">MaxFileSize</span></code> are writable control points.</p></li>
+directory, if any. Use it when rerunning a capture so <code class="docutils literal notranslate"><span class="pre">Open</span></code> always targets
+a fresh path.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BufferSize</span></code> and <code class="docutils literal notranslate"><span class="pre">MaxFileSize</span></code> are writable control points. With a
+non-zero <code class="docutils literal notranslate"><span class="pre">MaxFileSize</span></code> the output is split into <code class="docutils literal notranslate"><span class="pre">&lt;DataFile&gt;.1</span></code>, <code class="docutils literal notranslate"><span class="pre">.2</span></code>,
+and so on; each split file must also be new or the rollover raises.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">IsOpen</span></code>, <code class="docutils literal notranslate"><span class="pre">CurrentSize</span></code>, <code class="docutils literal notranslate"><span class="pre">TotalSize</span></code>, <code class="docutils literal notranslate"><span class="pre">Bandwidth</span></code>, and
 <code class="docutils literal notranslate"><span class="pre">FrameCount</span></code> are read-only status/monitoring fields.</p></li>
 </ul>

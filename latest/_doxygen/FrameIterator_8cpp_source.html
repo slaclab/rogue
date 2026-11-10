@@ -94,8 +94,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    frame_     = frame;</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    frameSize_ = (write_) ? frame_-&gt;getSize() : frame_-&gt;getPayload();</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="comment">// end iterator</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keywordflow">if</span> (end) {</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="comment">// end iterator, or a frame with no buffers (nothing to point at)</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keywordflow">if</span> (end || frame_-&gt;isEmpty()) {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        buff_     = frame_-&gt;endBuffer();</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        framePos_ = frameSize_;</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        buffBeg_  = frameSize_;</div>

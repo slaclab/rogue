@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Application &mdash; Rogue v6.16.0 documentation</title>
+  <title>Application &mdash; Rogue v6.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
@@ -17,7 +17,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=23af60bc"></script>
+      <script src="../../../../../_static/documentation_options.js?v=527a2ae5"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -170,7 +170,8 @@
 <ul class="simple">
 <li><p>Inbound application frames are handled synchronously in <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> and forwarded to <code class="docutils literal notranslate"><span class="pre">Controller::applicationRx()</span></code>.</p></li>
 <li><p>Outbound application frames are produced by a background thread started in <code class="docutils literal notranslate"><span class="pre">setController()</span></code> and drained from <code class="docutils literal notranslate"><span class="pre">Controller::applicationTx()</span></code>. Lifetime contract:</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">setController()</span></code> must be called before destruction so the TX thread is created and can be cleanly stopped/joined.</p></li>
+<li><p>The controller reference is weak, so the owner (<code class="docutils literal notranslate"><span class="pre">Client</span></code>/<code class="docutils literal notranslate"><span class="pre">Server</span></code>) must keep the controller alive and call <code class="docutils literal notranslate"><span class="pre">stop()</span></code> before releasing it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stop()</span></code> is idempotent and is also called from the destructor.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py">

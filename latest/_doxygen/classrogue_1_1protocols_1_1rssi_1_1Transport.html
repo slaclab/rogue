@@ -276,9 +276,9 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>RSSI transport endpoint. </p>
 <p>Bridges stream traffic between the RSSI controller and the underlying link.</p>
-<p>Inbound frames are forwarded synchronously to <code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#afa32efe3579c79b8bfbb61f48ab31ba6" title="Processes a frame received from transport.">Controller::transportRx()</a></code>. Outbound transport frames are produced via controller APIs and emitted by other RSSI components. </p>
+<p>Inbound frames are forwarded synchronously to <code><a class="el" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#afa32efe3579c79b8bfbb61f48ab31ba6" title="Processes a frame received from transport.">Controller::transportRx()</a></code>, or dropped once the controller is gone. Outbound transport frames are produced via controller APIs and emitted by other RSSI components. </p>
 
-<p class="definition">Definition at line <a class="el" href="rssi_2Transport_8h_source.html#l00045">45</a> of file <a class="el" href="rssi_2Transport_8h_source.html">Transport.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="rssi_2Transport_8h_source.html#l00046">46</a> of file <a class="el" href="rssi_2Transport_8h_source.html">Transport.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a82053157e1d1cea38b552f98a917009c" name="a82053157e1d1cea38b552f98a917009c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a82053157e1d1cea38b552f98a917009c">&#9670;&#160;</a></span>Transport()</h2>
