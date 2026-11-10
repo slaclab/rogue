@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T00:20:55Z",
+  "generated_at": "2026-11-10T00:39:43Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -296,6 +296,29 @@
         "published_at": "2026-11-10T00:20:55Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42726629815",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-subtran-error-retention",
+      "ref_slug": "fix-subtran-error-retention",
+      "latest_url": "/rogue/perf/branches/fix-subtran-error-retention/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-subtran-error-retention",
+          "sha": "71c478d47399bb6653d3f5ed1c0e43a7c3f86c79",
+          "short_sha": "71c478d",
+          "published_at": "2026-11-10T00:39:43Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/42729109365",
+          "summary_url": "/rogue/perf/branches/fix-subtran-error-retention/history/71c478d47399bb6653d3f5ed1c0e43a7c3f86c79.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-subtran-error-retention",
+        "sha": "71c478d47399bb6653d3f5ed1c0e43a7c3f86c79",
+        "short_sha": "71c478d",
+        "published_at": "2026-11-10T00:39:43Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/42729109365",
+        "summary_url": "/rogue/perf/branches/fix-subtran-error-retention/latest.json"
       }
     },
     {
