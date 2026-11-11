@@ -28,6 +28,14 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    "--tui",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Use the terminal UI",
+)
+
+parser.add_argument(
     "--epics4",
     action   = 'store_true',
     required = False,
@@ -61,6 +69,10 @@ with pyrogue.examples.ExampleRoot(epics4En=args.epics4) as root:
         import pyrogue.pydm
         ui = pyrogue.pydm.__path__[0] + '/examples/rogue_plugin_test.ui'
         pyrogue.pydm.runPyDM(serverList=root.zmqServer.address,ui=ui,title='Test UI',sizeX=1000,sizeY=500)
+
+    elif args.tui:
+        import pyrogue.tui
+        pyrogue.tui.runTui(serverList=root.zmqServer.address, title='Example Root')
 
     else:
         pyrogue.waitCntrlC()

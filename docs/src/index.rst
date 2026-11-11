@@ -71,5 +71,6 @@ development while keeping performance and integration requirements manageable.
    /built_in_modules/index
    /logging/index
    /pydm/index
+   /tui/index
    /api/index
    /migration/index

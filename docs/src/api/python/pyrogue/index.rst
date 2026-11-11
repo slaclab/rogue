@@ -84,6 +84,7 @@ Helpers
    reversebits
    twoscomplement
    pydm_runpydm
+   tui_runtui
 
 PyDM
 ====

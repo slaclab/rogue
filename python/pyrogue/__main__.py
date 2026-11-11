@@ -36,13 +36,22 @@ parser.add_argument('--ipython',
                     help='Add an IPython console tab with a connected client (cmd=gui)',
                     action='store_true')
 
+parser.add_argument('--no-mouse',
+                    help='Leave the mouse to the terminal for text selection (cmd=tui)',
+                    action='store_true')
+
+parser.add_argument('--config-dir',
+                    type=str,
+                    help='Directory listed under Load Config on the System tab (cmd=tui)',
+                    default=None)
+
 parser.add_argument('--details',
                     help='Show log details with stacktrace (cmd=syslog)',
                     action='store_true')
 
 parser.add_argument('cmd',
                     type=str,
-                    choices=['gui','timeplot','syslog','monitor','get','value','set','exec','path'],
+                    choices=['gui','tui','timeplot','syslog','monitor','get','value','set','exec','path'],
                     help='Client command to issue')
 
 parser.add_argument('path',
@@ -75,6 +84,10 @@ print("Connecting to {}".format(args.server))
 if args.cmd == 'gui':
     import pyrogue.pydm
     pyrogue.pydm.runPyDM(serverList=args.server,ui=args.ui,enableTerminal=args.terminal,enableIPython=args.ipython)
+
+elif args.cmd == 'tui':
+    import pyrogue.tui
+    pyrogue.tui.runTui(serverList=args.server, mouse=not args.no_mouse, configDir=args.config_dir)
 
 elif args.cmd == 'timeplot':
     import pyrogue.pydm

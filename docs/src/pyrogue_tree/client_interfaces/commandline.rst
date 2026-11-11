@@ -38,6 +38,8 @@ Command Forms
 +===============+=================+=================+==================================================================================+
 | gui           | NA              | NA              | Start the PyDM GUI                                                               |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
+| tui           | NA              | NA              | Start the terminal UI (System and Debug Tree tabs in curses, no Qt needed)       |
++---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
 | syslog        | NA              | NA              | Dump current syslog and continue streaming updates                               |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
 | monitor       | variable_path   | NA              | Display current Variable value and monitor updates                               |
@@ -59,6 +61,12 @@ Start GUI:
 .. code-block:: bash
 
    python -m pyrogue --server=localhost:9099 gui
+
+Start the terminal UI (works over plain ssh, no X display):
+
+.. code-block:: bash
+
+   python -m pyrogue --server=localhost:9099 tui
 
 Watch syslog:
 
