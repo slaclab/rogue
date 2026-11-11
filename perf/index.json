@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T16:38:39Z",
+  "generated_at": "2026-11-11T22:53:10Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -304,6 +304,29 @@
         "published_at": "2026-11-10T16:38:39Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42855412644",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "feat/rogue-tui",
+      "ref_slug": "feat_rogue-tui",
+      "latest_url": "/rogue/perf/branches/feat_rogue-tui/latest.json",
+      "history": [
+        {
+          "ref_name": "feat/rogue-tui",
+          "sha": "cc8eb4a16678dc102f2f4415673bc59fa18e95a8",
+          "short_sha": "cc8eb4a",
+          "published_at": "2026-11-11T22:53:10Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/43114444205",
+          "summary_url": "/rogue/perf/branches/feat_rogue-tui/history/cc8eb4a16678dc102f2f4415673bc59fa18e95a8.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "feat/rogue-tui",
+        "sha": "cc8eb4a16678dc102f2f4415673bc59fa18e95a8",
+        "short_sha": "cc8eb4a",
+        "published_at": "2026-11-11T22:53:10Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/43114444205",
+        "summary_url": "/rogue/perf/branches/feat_rogue-tui/latest.json"
       }
     }
   ]
