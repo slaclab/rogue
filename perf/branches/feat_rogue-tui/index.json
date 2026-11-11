@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "feat/rogue-tui",
+      "sha": "b4facabaef41d20fd94010b3a173e945cd1e0194",
+      "short_sha": "b4facab",
+      "published_at": "2026-11-11T23:03:14Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/43115810471",
+      "summary_url": "/rogue/perf/branches/feat_rogue-tui/history/b4facabaef41d20fd94010b3a173e945cd1e0194.json"
+    },
+    {
+      "ref_name": "feat/rogue-tui",
       "sha": "cc8eb4a16678dc102f2f4415673bc59fa18e95a8",
       "short_sha": "cc8eb4a",
       "published_at": "2026-11-11T22:53:10Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "feat/rogue-tui",
-    "sha": "cc8eb4a16678dc102f2f4415673bc59fa18e95a8",
-    "short_sha": "cc8eb4a",
-    "published_at": "2026-11-11T22:53:10Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/43114444205",
+    "sha": "b4facabaef41d20fd94010b3a173e945cd1e0194",
+    "short_sha": "b4facab",
+    "published_at": "2026-11-11T23:03:14Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/43115810471",
     "summary_url": "/rogue/perf/branches/feat_rogue-tui/latest.json"
   }
 }
