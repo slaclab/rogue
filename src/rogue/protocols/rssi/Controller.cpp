@@ -20,6 +20,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -40,8 +41,26 @@
 #include "rogue/protocols/rssi/Header.h"
 #include "rogue/protocols/rssi/Transport.h"
 
+#ifndef NO_PYTHON
+    #include <boost/python/converter/shared_ptr_deleter.hpp>
+#endif
+
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+namespace {
+// True when the header wraps a frame handed in from Python. Boost.Python gives
+// C++ a shared_ptr whose control block holds a shared_ptr_deleter owning the
+// PyObject, so releasing the last reference runs Py_DECREF and needs the GIL.
+// Frames allocated in C++ (SRP, PRBS, UDP pools) carry no such deleter.
+bool pythonOwned(const rpr::HeaderPtr& head) {
+    if (!head) return false;
+    ris::FramePtr frame = head->getFrame();
+    return frame && std::get_deleter<boost::python::converter::shared_ptr_deleter>(frame) != nullptr;
+}
+}  // namespace
+#endif
 
 //! Class creation
 rpr::ControllerPtr rpr::Controller::create(uint32_t segSize,
@@ -612,15 +631,19 @@ void rpr::Controller::resetCounters() {
     remBusyCnt_  = 0;
 }
 
-// Release retransmit headers, taking the GIL when Python is running.
+// Release retransmit headers, taking the GIL only when one wraps a Python-owned
+// frame.
 //
 // Each Header owns the frame applicationRx() wrapped uncopied, so a Python-owned
 // frame carries a Boost.Python deleter that calls Py_DECREF without the GIL,
-// which is fatal on a transport thread. Call with txMtx_ released so the GIL is
-// never acquired while holding it.
+// which is fatal on a transport thread. Every other release must not wait for
+// the GIL: this runs on the transport thread for each received ACK and on every
+// transmit, so blocking here while another thread holds the GIL (for example a
+// GUI building its window) stalls the link past its NULL timeout and resets it.
+// Call with txMtx_ released so the GIL is never acquired while holding it.
 void rpr::Controller::releaseHeaders(std::vector<rpr::HeaderPtr>& heads) {
 #ifndef NO_PYTHON
-    if (Py_IsInitialized()) {
+    if (Py_IsInitialized() && std::any_of(heads.begin(), heads.end(), pythonOwned)) {
         rogue::ScopedGil gil;
         heads.clear();
         return;
