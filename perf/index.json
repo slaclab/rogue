@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T23:03:14Z",
+  "generated_at": "2026-11-16T21:07:16Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -304,6 +304,29 @@
         "published_at": "2026-11-10T16:38:39Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42855412644",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-rssi-gil-on-transport",
+      "ref_slug": "fix-rssi-gil-on-transport",
+      "latest_url": "/rogue/perf/branches/fix-rssi-gil-on-transport/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-rssi-gil-on-transport",
+          "sha": "bdd4357d033a596e0f583a78675df23073c1c953",
+          "short_sha": "bdd4357",
+          "published_at": "2026-11-16T21:07:16Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/43955704968",
+          "summary_url": "/rogue/perf/branches/fix-rssi-gil-on-transport/history/bdd4357d033a596e0f583a78675df23073c1c953.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-rssi-gil-on-transport",
+        "sha": "bdd4357d033a596e0f583a78675df23073c1c953",
+        "short_sha": "bdd4357",
+        "published_at": "2026-11-16T21:07:16Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/43955704968",
+        "summary_url": "/rogue/perf/branches/fix-rssi-gil-on-transport/latest.json"
       }
     },
     {
