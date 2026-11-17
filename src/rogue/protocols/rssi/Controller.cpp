@@ -632,6 +632,7 @@ void rpr::Controller::releaseHeaders(std::vector<rpr::HeaderPtr>& heads) {
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txReset) {
     std::vector<rpr::HeaderPtr> acked;
+    std::unique_lock<std::mutex> sendLock(txSendMtx_);
     std::unique_lock<std::mutex> lock(txMtx_);
 
     head->sequence = locSequence_;
@@ -683,20 +684,23 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
               static_cast<void*>(head->getFrame().get()));
 
     flock->unlock();
-
-    // Send under txMtx_ so frames reach the transport in the order their
-    // sequence and acknowledge numbers were assigned. Releasing first lets a
-    // frame stamped later overtake this one, which puts a lower acknowledge
-    // on the wire after a higher one.
-    tran_->sendFrame(head->getFrame());
     lock.unlock();
 
-    // Release any headers the txReset above moved out, now that txMtx_ is dropped.
+    // Send under txSendMtx_ so frames reach the transport in the order their
+    // sequence and acknowledge numbers were assigned. Without it a frame
+    // stamped later can overtake this one, which puts a lower acknowledge on
+    // the wire after a higher one. txMtx_ is already dropped because the
+    // transport may deliver an ack into transportRx() before returning.
+    tran_->sendFrame(head->getFrame());
+    sendLock.unlock();
+
+    // Release any headers the txReset above moved out, now that the locks are dropped.
     releaseHeaders(acked);
 }
 
 // Method to retransmit a frame
 int8_t rpr::Controller::retransmit(uint8_t id) {
+    std::lock_guard<std::mutex> sendLock(txSendMtx_);
     std::unique_lock<std::mutex> lock(txMtx_);
 
     rpr::HeaderPtr head = txList_[id];
@@ -740,10 +744,10 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
     ris::FrameLockPtr flock = head->getFrame()->lock();
     head->update();
     flock->unlock();
-
-    // Send under txMtx_ for the same ordering reason as transportTx().
-    tran_->sendFrame(head->getFrame());
     lock.unlock();
+
+    // Send under txSendMtx_ only, for the same reasons as transportTx().
+    tran_->sendFrame(head->getFrame());
     return 1;
 }
 
