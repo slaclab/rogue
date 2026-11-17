@@ -683,13 +683,16 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
               static_cast<void*>(head->getFrame().get()));
 
     flock->unlock();
+
+    // Send under txMtx_ so frames reach the transport in the order their
+    // sequence and acknowledge numbers were assigned. Releasing first lets a
+    // frame stamped later overtake this one, which puts a lower acknowledge
+    // on the wire after a higher one.
+    tran_->sendFrame(head->getFrame());
     lock.unlock();
 
     // Release any headers the txReset above moved out, now that txMtx_ is dropped.
     releaseHeaders(acked);
-
-    // Send frame
-    tran_->sendFrame(head->getFrame());
 }
 
 // Method to retransmit a frame
@@ -737,10 +740,10 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
     ris::FrameLockPtr flock = head->getFrame()->lock();
     head->update();
     flock->unlock();
-    lock.unlock();
 
-    // Send frame
+    // Send under txMtx_ for the same ordering reason as transportTx().
     tran_->sendFrame(head->getFrame());
+    lock.unlock();
     return 1;
 }
 
