@@ -914,6 +914,11 @@ struct timeval& rpr::Controller::stateSendSynAck() {
     head->timeoutUnit            = TimeoutUnit;
     head->connectionId           = locConnId_;
 
+    // Acknowledge the client's SYN. ackSeqRx_ otherwise stays at 0 until the
+    // application thread pops the first frame, so the SYN-ACK and any NULL or
+    // ACK sent before that would acknowledge 0 instead of the SYN sequence.
+    ackSeqRx_ = lastSeqRx_;
+
     transportTx(head, true, true);
 
     // Update state
