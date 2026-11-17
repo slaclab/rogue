@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T17:05:42Z",
+  "generated_at": "2026-11-17T17:56:05Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -304,6 +304,29 @@
         "published_at": "2026-11-10T16:38:39Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/42855412644",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-rssi-server-synack-ack",
+      "ref_slug": "fix-rssi-server-synack-ack",
+      "latest_url": "/rogue/perf/branches/fix-rssi-server-synack-ack/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-rssi-server-synack-ack",
+          "sha": "b1fb95639f6695b56b432c3233b290426962c78c",
+          "short_sha": "b1fb956",
+          "published_at": "2026-11-17T17:56:05Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/44141318342",
+          "summary_url": "/rogue/perf/branches/fix-rssi-server-synack-ack/history/b1fb95639f6695b56b432c3233b290426962c78c.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-rssi-server-synack-ack",
+        "sha": "b1fb95639f6695b56b432c3233b290426962c78c",
+        "short_sha": "b1fb956",
+        "published_at": "2026-11-17T17:56:05Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/44141318342",
+        "summary_url": "/rogue/perf/branches/fix-rssi-server-synack-ack/latest.json"
       }
     },
     {
