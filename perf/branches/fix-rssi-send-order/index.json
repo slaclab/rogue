@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "fix-rssi-send-order",
+      "sha": "5e37e2f44ca08d788fb5e9c2e3839703b6e73130",
+      "short_sha": "5e37e2f",
+      "published_at": "2026-11-17T21:37:59Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/44180601663",
+      "summary_url": "/rogue/perf/branches/fix-rssi-send-order/history/5e37e2f44ca08d788fb5e9c2e3839703b6e73130.json"
+    },
+    {
+      "ref_name": "fix-rssi-send-order",
       "sha": "cdbb8b1c33ea8d458248fe186e707548dea65622",
       "short_sha": "cdbb8b1",
       "published_at": "2026-11-17T17:05:42Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "fix-rssi-send-order",
-    "sha": "cdbb8b1c33ea8d458248fe186e707548dea65622",
-    "short_sha": "cdbb8b1",
-    "published_at": "2026-11-17T17:05:42Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/44131822912",
+    "sha": "5e37e2f44ca08d788fb5e9c2e3839703b6e73130",
+    "short_sha": "5e37e2f",
+    "published_at": "2026-11-17T21:37:59Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/44180601663",
     "summary_url": "/rogue/perf/branches/fix-rssi-send-order/latest.json"
   }
 }
