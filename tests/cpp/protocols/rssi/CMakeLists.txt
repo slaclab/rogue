@@ -24,3 +24,15 @@ rogue_add_cpp_test(rogue-cpp-rssi-ack-window
       no-python
 )
 set_tests_properties(rogue-cpp-rssi-ack-window PROPERTIES TIMEOUT 30)
+
+# Linux only: the GitHub macOS runners are too jittery for the timed handshake.
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+   rogue_add_cpp_test(rogue-cpp-rssi-server-synack-ack
+      SOURCES
+         test_server_synack_ack.cpp
+      LABELS
+         cpp-core
+         no-python
+   )
+   set_tests_properties(rogue-cpp-rssi-server-synack-ack PROPERTIES TIMEOUT 10)
+endif()
