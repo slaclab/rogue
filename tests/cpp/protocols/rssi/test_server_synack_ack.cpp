@@ -138,10 +138,16 @@ TEST_CASE("rpr::Server acknowledges the client's SYN sequence before any data ar
     server->transport()->addSlave(peer);
     server->start();
 
-    injectSyn(server->transport(), pool);
-
+    // The server thread accepts a SYN only once it has moved from StClosed to
+    // StWaitSyn, so a SYN injected right after start() can be dropped on a
+    // slow host. Retry it the way a real client does until the SYN-ACK shows.
     TxRecord synAck{};
-    REQUIRE(rogue_test::waitUntil([&] { return peer->findSynAck(synAck); }, 2000));
+    bool gotSynAck = false;
+    for (uint32_t attempt = 0; attempt < 5 && !gotSynAck; attempt++) {
+        injectSyn(server->transport(), pool);
+        gotSynAck = rogue_test::waitUntil([&] { return peer->findSynAck(synAck); }, 500);
+    }
+    REQUIRE(gotSynAck);
     CHECK_EQ(synAck.acknowledge, ClientSequence);
     REQUIRE(rogue_test::waitUntil([&] { return server->getOpen(); }, 2000));
 
