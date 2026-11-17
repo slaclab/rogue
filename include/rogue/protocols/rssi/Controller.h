@@ -140,6 +140,12 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     uint8_t locSequence_;
     struct timeval txTime_;
 
+    // Held from header stamping through sendFrame() so frames reach the
+    // transport in sequence and acknowledge order. Taken before txMtx_, which
+    // is dropped before sendFrame() so an ack delivered by the transport
+    // inside that call can still be processed.
+    std::mutex txSendMtx_;
+
     // Time values
     struct timeval retranToutD1_;  // retranTout_ / 1
     struct timeval tryPeriodD1_;   // TryPeriod   / 1

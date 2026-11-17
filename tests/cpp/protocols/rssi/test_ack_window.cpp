@@ -7,7 +7,8 @@
  * that fall inside the outstanding transmit window (lastAckRx_, locSequence_).
  * A stale or out of window ack must leave txList_ intact so the unacknowledged
  * frames are still retransmitted, and a valid cumulative ack must still
- * release them.
+ * release them. Also covers a peer that acknowledges from inside the
+ * transport callback, before sendFrame() returns, which must not deadlock.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -20,10 +21,16 @@
  **/
 #include <stdint.h>
 
+#include <atomic>
 #include <chrono>
+#include <cstdio>
+#include <cstdlib>
+#include <functional>
+#include <iostream>
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include "doctest/doctest.h"
@@ -63,6 +70,10 @@ struct TxRecord {
 // client keeps them for retransmission.
 class FakePeer : public ris::Slave {
   public:
+    // Called with the sequence and transmit count of each data frame, on the
+    // client's sending thread, before sendFrame() returns.
+    using DataHook = std::function<void(uint8_t sequence, uint32_t count)>;
+
     void acceptFrame(ris::FramePtr frame) override {
         rpr::HeaderPtr head    = rpr::Header::create(frame);
         ris::FrameLockPtr lock = frame->lock();
@@ -71,8 +82,24 @@ class FakePeer : public ris::Slave {
             rec{head->syn, head->ack, head->nul, head->rst, head->sequence, head->acknowledge, frame->getPayload()};
         lock->unlock();
 
+        DataHook hook;
+        uint32_t count = 0;
+        {
+            std::lock_guard<std::mutex> guard(mutex_);
+            records_.push_back(rec);
+            if (rec.isData()) {
+                hook = dataHook_;
+                for (const TxRecord& r : records_) {
+                    if (r.isData() && r.sequence == rec.sequence) count++;
+                }
+            }
+        }
+        if (hook) hook(rec.sequence, count);
+    }
+
+    void setDataHook(DataHook hook) {
         std::lock_guard<std::mutex> guard(mutex_);
-        records_.push_back(rec);
+        dataHook_ = std::move(hook);
     }
 
     // Number of data frames transmitted with the given sequence.
@@ -99,6 +126,7 @@ class FakePeer : public ris::Slave {
   private:
     std::mutex mutex_;
     std::vector<TxRecord> records_;
+    DataHook dataHook_;
 };
 
 const uint8_t PeerSequence = 50;
@@ -182,7 +210,19 @@ struct Fixture {
     }
 
     ~Fixture() {
+        peer->setDataHook(nullptr);
         client.reset();
+    }
+
+    // Acknowledge each data frame from inside the transport callback, once it
+    // has been transmitted ackOnCount times.
+    void ackFromCallback(uint32_t ackOnCount) {
+        std::weak_ptr<rpr::Transport> weakTran = client->transport();
+        std::shared_ptr<ris::Pool> hookPool    = pool;
+        peer->setDataHook([weakTran, hookPool, ackOnCount](uint8_t sequence, uint32_t count) {
+            rpr::TransportPtr tran = weakTran.lock();
+            if (tran && count == ackOnCount) injectAck(tran, hookPool, sequence);
+        });
     }
 
     // Send two data frames and wait until both are on the wire once.
@@ -217,6 +257,23 @@ struct Fixture {
         CHECK(client->getOpen());
     }
 };
+
+// Run body on its own thread and require it to finish within timeoutMs. A
+// deadlocked controller cannot be torn down, so exit instead of hanging until
+// the ctest timeout.
+void requireCompletes(const char* what, uint32_t timeoutMs, std::function<void()> body) {
+    auto done = std::make_shared<std::atomic<bool>>(false);
+    std::thread([body, done] {
+        body();
+        done->store(true);
+    }).detach();
+    if (!rogue_test::waitUntil([&] { return done->load(); }, timeoutMs)) {
+        std::cerr << "FATAL: " << what << " did not complete within " << timeoutMs
+                  << " ms, rpr::Controller deadlocked on an ack delivered inside sendFrame()" << std::endl;
+        std::fflush(nullptr);
+        std::_Exit(EXIT_FAILURE);
+    }
+}
 
 }  // namespace
 
@@ -256,4 +313,41 @@ TEST_CASE("rpr::Controller accepts a partial ack inside the transmit window") {
     CHECK_EQ(fx.client->getDropCount(), 0);
 
     fx.expectReleasedByValidAck();
+}
+
+TEST_CASE("rpr::Controller accepts an ack delivered inside sendFrame()") {
+    Fixture fx;
+    fx.ackFromCallback(1);
+
+    // More frames than maxOutstandingSegments: applicationRx() only gets past
+    // the window if each ack is processed while its frame is still being sent.
+    const uint32_t frames = 32;
+    requireCompletes("applicationRx()", 2000, [&] {
+        for (uint32_t i = 0; i < frames; i++) sendData(fx.client->application(), static_cast<uint8_t>(i));
+    });
+
+    for (uint32_t i = 1; i <= frames; i++) CHECK_EQ(fx.peer->dataCount(static_cast<uint8_t>(fx.synSeq + i)), 1);
+    CHECK(fx.client->getOpen());
+    CHECK_EQ(fx.client->getRetranCount(), 0);
+}
+
+TEST_CASE("rpr::Controller accepts an ack delivered inside a retransmit sendFrame()") {
+    Fixture fx;
+    fx.ackFromCallback(2);
+
+    // The first transmission is not acknowledged, so the ack arrives inside
+    // the retransmit() send on the controller thread. Sending the second
+    // frame takes txMtx_ in transportTx(), so it only gets out if that thread
+    // is not stuck holding it.
+    sendData(fx.client->application(), 0xA5);
+    requireCompletes("retransmit()", 2000, [&] {
+        while (fx.peer->dataCount(fx.synSeq + 1) < 2) sleepMs(1);
+        sendData(fx.client->application(), 0x5A);
+        while (fx.peer->dataCount(fx.synSeq + 2) < 2) sleepMs(1);
+    });
+
+    fx.expectReleasedByValidAck();
+    CHECK_EQ(fx.peer->dataCount(fx.synSeq + 1), 2);
+    CHECK_EQ(fx.peer->dataCount(fx.synSeq + 2), 2);
+    CHECK_GE(fx.client->getRetranCount(), 2);
 }

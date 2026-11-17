@@ -632,6 +632,7 @@ void rpr::Controller::releaseHeaders(std::vector<rpr::HeaderPtr>& heads) {
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txReset) {
     std::vector<rpr::HeaderPtr> acked;
+    std::unique_lock<std::mutex> sendLock(txSendMtx_);
     std::unique_lock<std::mutex> lock(txMtx_);
 
     head->sequence = locSequence_;
@@ -685,15 +686,21 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
     flock->unlock();
     lock.unlock();
 
-    // Release any headers the txReset above moved out, now that txMtx_ is dropped.
-    releaseHeaders(acked);
-
-    // Send frame
+    // Send under txSendMtx_ so frames reach the transport in the order their
+    // sequence and acknowledge numbers were assigned. Without it a frame
+    // stamped later can overtake this one, which puts a lower acknowledge on
+    // the wire after a higher one. txMtx_ is already dropped because the
+    // transport may deliver an ack into transportRx() before returning.
     tran_->sendFrame(head->getFrame());
+    sendLock.unlock();
+
+    // Release any headers the txReset above moved out, now that the locks are dropped.
+    releaseHeaders(acked);
 }
 
 // Method to retransmit a frame
 int8_t rpr::Controller::retransmit(uint8_t id) {
+    std::lock_guard<std::mutex> sendLock(txSendMtx_);
     std::unique_lock<std::mutex> lock(txMtx_);
 
     rpr::HeaderPtr head = txList_[id];
@@ -739,7 +746,7 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
     flock->unlock();
     lock.unlock();
 
-    // Send frame
+    // Send under txSendMtx_ only, for the same reasons as transportTx().
     tran_->sendFrame(head->getFrame());
     return 1;
 }
